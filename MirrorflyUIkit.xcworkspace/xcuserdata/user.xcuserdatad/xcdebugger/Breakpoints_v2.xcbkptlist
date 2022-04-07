@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "BAE9AC21-6AEE-4AFA-A94E-CD6D49C15CE1"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CC5C2217-9CDB-40FD-B95A-F829CE917E25"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "269"
+            endingLineNumber = "269"
+            landmarkName = "performPostRequest(restEnd:headers:method:params:interceptor:completionHandler:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CC5C2217-9CDB-40FD-B95A-F829CE917E25 - 5e1dde7d29ad402"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "___lldb_unnamed_symbol133$$FlyNetwork"
+                  moduleName = "FlyNetwork"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "269"
+                  endingLineNumber = "269"
+                  offsetFromSymbolStart = "2664">
+               </Location>
+               <Location
+                  uuid = "CC5C2217-9CDB-40FD-B95A-F829CE917E25 - 5e1dde7d29ad402"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "___lldb_unnamed_symbol133$$FlyNetwork"
+                  moduleName = "FlyNetwork"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "269"
+                  endingLineNumber = "269"
+                  offsetFromSymbolStart = "2802">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "520952A9-412B-4A58-9377-353620B10EE0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "257"
+            endingLineNumber = "257"
+            landmarkName = "performPostRequest(restEnd:headers:method:params:interceptor:completionHandler:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "520952A9-412B-4A58-9377-353620B10EE0 - 5e1dde7d29ad28e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "___lldb_unnamed_symbol133$$FlyNetwork"
+                  moduleName = "FlyNetwork"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "257"
+                  endingLineNumber = "257"
+                  offsetFromSymbolStart = "2472">
+               </Location>
+               <Location
+                  uuid = "520952A9-412B-4A58-9377-353620B10EE0 - 5e1dde7d29ad28e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "___lldb_unnamed_symbol133$$FlyNetwork"
+                  moduleName = "FlyNetwork"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "257"
+                  endingLineNumber = "257"
+                  offsetFromSymbolStart = "2570">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9F505AD8-C919-4174-9328-2DCEBD2A27B2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MirrorflyUIkit/Calls/RootViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
+            landmarkName = "initCallSDK()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

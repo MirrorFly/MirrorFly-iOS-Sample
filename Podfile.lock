@@ -1,0 +1,316 @@
+PODS:
+  - Alamofire (5.5.0)
+  - BSImagePicker (3.3.1)
+  - CocoaAsyncSocket (7.6.5)
+  - CocoaLumberjack (3.7.4):
+    - CocoaLumberjack/Core (= 3.7.4)
+  - CocoaLumberjack/Core (3.7.4)
+  - CocoaLumberjack/Swift (3.7.4):
+    - CocoaLumberjack/Core
+  - Firebase/Analytics (8.11.0):
+    - Firebase/Core
+  - Firebase/Auth (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (~> 8.11.0)
+  - Firebase/Core (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (~> 8.11.0)
+  - Firebase/CoreOnly (8.11.0):
+    - FirebaseCore (= 8.11.0)
+  - Firebase/Crashlytics (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 8.11.0)
+  - Firebase/Messaging (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.11.0)
+  - FirebaseAnalytics (8.11.0):
+    - FirebaseAnalytics/AdIdSupport (= 8.11.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleAppMeasurement (= 8.11.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - FirebaseAuth (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - FirebaseCore (8.11.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Logger (~> 7.7)
+  - FirebaseCoreDiagnostics (8.11.0):
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Logger (~> 7.7)
+    - nanopb (~> 2.30908.0)
+  - FirebaseCrashlytics (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseInstallations (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/UserDefaults (~> 7.7)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseMessaging (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Reachability (~> 7.7)
+    - GoogleUtilities/UserDefaults (~> 7.7)
+    - nanopb (~> 2.30908.0)
+  - Floaty (4.2.0)
+  - GoogleAppMeasurement (8.11.0):
+    - GoogleAppMeasurement/AdIdSupport (= 8.11.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (8.11.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 8.11.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (8.11.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/MethodSwizzler (~> 7.7)
+    - GoogleUtilities/Network (~> 7.7)
+    - "GoogleUtilities/NSData+zlib (~> 7.7)"
+    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.2):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleMaps (6.0.1):
+    - GoogleMaps/Maps (= 6.0.1)
+  - GoogleMaps/Base (6.0.1)
+  - GoogleMaps/Maps (6.0.1):
+    - GoogleMaps/Base
+  - GoogleUtilities/AppDelegateSwizzler (7.7.0):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.7.0):
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/Logger (7.7.0):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (7.7.0):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (7.7.0):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.7.0)"
+  - GoogleUtilities/Reachability (7.7.0):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.7.0):
+    - GoogleUtilities/Logger
+  - GoogleWebRTC (1.1.31999)
+  - GrowingTextViewHandler-Swift (1.2)
+  - GTMSessionFetcher/Core (1.7.0)
+  - IQKeyboardManagerSwift (6.5.9)
+  - KissXML (5.3.1):
+    - KissXML/All (= 5.3.1)
+  - KissXML/Additions (5.3.1):
+    - KissXML/Core
+  - KissXML/All (5.3.1):
+    - KissXML/Additions
+    - KissXML/Core
+  - KissXML/Core (5.3.1)
+  - KMPlaceholderTextView (1.4.0)
+  - libidn (1.35)
+  - libPhoneNumber-iOS (0.9.15)
+  - MarqueeLabel (4.3.0)
+  - MenuItemKit (4.0.1)
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
+  - NicoProgress (0.3.0)
+  - PhoneNumberKit (3.3.3):
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.3.3)
+    - PhoneNumberKit/UIKit (= 3.3.3)
+  - PhoneNumberKit/PhoneNumberKitCore (3.3.3)
+  - PhoneNumberKit/UIKit (3.3.3):
+    - PhoneNumberKit/PhoneNumberKitCore
+  - PromisesObjC (2.0.0)
+  - PulsingHalo (0.2.10)
+  - QCropper (0.1.7)
+  - Realm (10.20.1):
+    - Realm/Headers (= 10.20.1)
+  - Realm/Headers (10.20.1)
+  - RealmSwift (10.20.1):
+    - Realm (= 10.20.1)
+  - RxCocoa (6.5.0):
+    - RxRelay (= 6.5.0)
+    - RxSwift (= 6.5.0)
+  - RxRelay (6.5.0):
+    - RxSwift (= 6.5.0)
+  - RxSwift (6.5.0)
+  - SDWebImage (5.12.2):
+    - SDWebImage/Core (= 5.12.2)
+  - SDWebImage/Core (5.12.2)
+  - Socket.IO-Client-Swift (15.2.0):
+    - Starscream (~> 3.1)
+  - SocketRocket (0.6.0)
+  - Starscream (3.1.1)
+  - Tatsi (1.2.1)
+  - Toaster (2.3.0)
+  - XMPPFramework/default (4.0.0):
+    - CocoaAsyncSocket (~> 7.6)
+    - CocoaLumberjack
+    - KissXML (~> 5.2)
+    - libidn (~> 1.35)
+  - XMPPFramework/Swift (4.0.0):
+    - CocoaLumberjack/Swift
+    - XMPPFramework/default
+
+DEPENDENCIES:
+  - Alamofire
+  - BSImagePicker (~> 3.1)
+  - Firebase/Analytics
+  - Firebase/Auth
+  - Firebase/Crashlytics
+  - Firebase/Messaging
+  - Floaty (~> 4.2.0)
+  - GoogleMaps
+  - GoogleWebRTC
+  - GrowingTextViewHandler-Swift (= 1.2)
+  - IQKeyboardManagerSwift
+  - KMPlaceholderTextView (~> 1.4.0)
+  - libPhoneNumber-iOS
+  - MarqueeLabel
+  - MenuItemKit (~> 4.0.0)
+  - NicoProgress
+  - PhoneNumberKit (~> 3.3)
+  - PulsingHalo
+  - QCropper
+  - RealmSwift (~> 10.20.1)
+  - RxCocoa (= 6.5.0)
+  - RxSwift (= 6.5.0)
+  - SDWebImage
+  - Socket.IO-Client-Swift (~> 15.2.0)
+  - SocketRocket
+  - Tatsi
+  - Toaster
+  - XMPPFramework/Swift
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - BSImagePicker
+    - CocoaAsyncSocket
+    - CocoaLumberjack
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseAuth
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseCrashlytics
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - Floaty
+    - GoogleAppMeasurement
+    - GoogleDataTransport
+    - GoogleMaps
+    - GoogleUtilities
+    - GoogleWebRTC
+    - GrowingTextViewHandler-Swift
+    - GTMSessionFetcher
+    - IQKeyboardManagerSwift
+    - KissXML
+    - KMPlaceholderTextView
+    - libidn
+    - libPhoneNumber-iOS
+    - MarqueeLabel
+    - MenuItemKit
+    - nanopb
+    - NicoProgress
+    - PhoneNumberKit
+    - PromisesObjC
+    - PulsingHalo
+    - QCropper
+    - Realm
+    - RealmSwift
+    - RxCocoa
+    - RxRelay
+    - RxSwift
+    - SDWebImage
+    - Socket.IO-Client-Swift
+    - SocketRocket
+    - Starscream
+    - Tatsi
+    - Toaster
+    - XMPPFramework
+
+SPEC CHECKSUMS:
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
+  BSImagePicker: 0fe04b574d4d6b81093785d2af6c26227efc8428
+  CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
+  CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
+  Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
+  FirebaseAnalytics: 4e4b13031034e6561ed3bd1d47b6fdabbd6487c6
+  FirebaseAuth: d96d73aba85d192d7a7aa0b86dd6d7f8ec170b4b
+  FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
+  FirebaseCoreDiagnostics: 64d9709d804a6c25bd77841371c1fcfd909d5601
+  FirebaseCrashlytics: 62268addefae79601057818156e8bc69d71fee41
+  FirebaseInstallations: 044eede8a049bce71c4541ee68d6e4364fcbe774
+  FirebaseMessaging: 02e248e8997f71fa8cc9d78e9d49ec1a701ba14a
+  Floaty: e2bd5a0f6f7f70899e26ff2da31081c8bee8d1b0
+  GoogleAppMeasurement: aa3cb422fab2b05d2efac543a5720d1a85b9dea5
+  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleMaps: c213fc2334b7374144cede914da779b99be0ab74
+  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
+  GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
+  GrowingTextViewHandler-Swift: 383c961e73aeb1bef187481ad0c8a0cc00a6f351
+  GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  IQKeyboardManagerSwift: 6e839c575c4aa1078d58a596e41244e77abe918f
+  KissXML: 5c8e0f2e8b9f071d3e1ae123dec3eb5da615c10c
+  KMPlaceholderTextView: 2206c3df39979e9396e2d96fa9f427a8951121b0
+  libidn: e4576a956b797c584c77aaedfc6e3dd639b61bdc
+  libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
+  MarqueeLabel: 02f5ac8fd6877c94564556cb93fa86c70c08baeb
+  MenuItemKit: 1459920e984d823e1bcc858b7a964f94e6bfa0f6
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  NicoProgress: 79ef8f1debe2378f7d5e97142c4280ef4a9227b8
+  PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
+  PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
+  PulsingHalo: 1a9c6b65a8e12ac9eee1627fc8476efcce8e1918
+  QCropper: aef6bad1e683e62b501fb8258359ccd10c68b4f2
+  Realm: fac5ecd031fcb81171627b74944c885662d4b266
+  RealmSwift: 9b02d25acb46a14756bde9893abb99e2e3675923
+  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
+  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
+  SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
+  Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
+  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
+  Tatsi: 12ac525e0e8477645d707d4f356f85cb60182f80
+  Toaster: c3473963c78e8cabbf6ea6f11ad0fdaae6f54987
+  XMPPFramework: 5d31ff9f73dce031b24bc49bcf88093627a3a86e
+
+PODFILE CHECKSUM: 0ca630e8ad4a9a1de33d89eb1c52821aba778d45
+
+COCOAPODS: 1.11.2
