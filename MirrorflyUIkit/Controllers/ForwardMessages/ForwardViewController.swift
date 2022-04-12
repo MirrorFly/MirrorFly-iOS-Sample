@@ -35,6 +35,7 @@ class ForwardViewController: UIViewController {
     var pageDismissClosure:(()-> ())?
     var selectedUserDelegate: SendSelectecUserDelegate? = nil
     var getProfileDetails: ProfileDetails?
+    var forwardMessages: [SelectedForwardMessage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,7 +154,10 @@ class ForwardViewController: UIViewController {
             }
             vc?.isPopToRootVC = true
             selectedUserDelegate?.sendSelectedUsers(selectedUsers: selectedMessages ,completion: { [weak self] in
-                    self?.startLoading(withText: "Sending")
+                self?.startLoading(withText: "Sending")
+                let messageIds = self?.forwardMessages.map({$0.chatMessage.messageId})
+                let jids = self?.selectedMessages.map({$0.jid})
+                FlyMessenger.composeForwardMessage(messageIds: messageIds ?? [], toJidList: jids ?? [])
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self?.navigationController?.modalPresentationStyle = .fullScreen
                     guard let viewController = vc else { return }
@@ -163,11 +167,15 @@ class ForwardViewController: UIViewController {
             })
         } else {
             DispatchQueue.main.async { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self?.navigationController?.popViewController(animated: true)
+                    self?.stopLoading()
+                }
                 self?.selectedUserDelegate?.sendSelectedUsers(selectedUsers: self?.selectedMessages ?? [],completion: { [weak self] in
                     self?.startLoading(withText: "Sending")
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self?.navigationController?.popViewController(animated: true)
-                        self?.stopLoading()
+                    if let messageIds = self?.forwardMessages.map({$0.chatMessage.messageId}) {
+                        let jids = self?.selectedMessages.map({$0.jid})
+                        FlyMessenger.composeForwardMessage(messageIds: messageIds, toJidList: jids ?? [])
                     }
                 })
             }
@@ -248,7 +256,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
             switch segmentSelectedIndex {
                 case 0:
                 let contactDetails = isSearchEnabled == true ? filteredContactList[indexPath.row] : allContactsList[indexPath.row]
-                cell.nameUILabel?.text = contactDetails.name
+                cell.nameUILabel?.text = getUserName(name: contactDetails.name, nickName: contactDetails.nickName)
                 cell.statusUILabel?.text = contactDetails.status
                  let hashcode = contactDetails.name.hashValue
                  let color = randomColors[abs(hashcode) % randomColors.count]
@@ -266,6 +274,9 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 let color = randomColors[abs(hashcode) % randomColors.count]
                 cell.setRecentChatDetails(recentChat: recentChatDetails, color: color ?? .gray)
                 cell.hideLastMessageContentInfo()
+                cell.statusUILabel?.isHidden = false
+                cell.removeButton?.isHidden = true
+                cell.removeIcon?.isHidden = true
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).count : getAllRecentChat.filter({$0.profileType == .groupChat}).count)
                 case 2:
                 showHideEmptyMessage(totalCount: 0)
@@ -280,6 +291,9 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 } else {
                     cell.statusUILabel?.text = recentChatDetails.lastMessageContent
                 }
+                cell.statusUILabel?.isHidden = false
+                cell.removeButton?.isHidden = true
+                cell.removeIcon?.isHidden = true
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.count : getAllRecentChat.count)
                 default:
                 break
@@ -625,7 +639,7 @@ func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
             }
     case 1:
         let profileDatas =  isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).filter({ ($0.jid.contains(jid)) }) : getAllRecentChat.filter({$0.profileType == .groupChat}).filter({ ($0.jid.contains(jid)) })
-        if profileDatas.count > 0, let profileData = profileDatas.first  {
+        if profileDatas.count > 0, let profileData = profileDatas.first {
             if isSearchEnabled == true {
                 if  let index = getRecentChat.filter({$0.profileType == .groupChat}).firstIndex(of: profileData) {
                     getRecentChat.filter({$0.profileType == .groupChat})[index].profileImage = profileDetails.image

@@ -99,3 +99,8 @@ extension Dictionary {
     }
 }
 
+extension UITableView {
+    func indexPath(for view: UIView) -> IndexPath? {
+        self.indexPathForRow(at: view.convert(.zero, to: self))
+    }
+}

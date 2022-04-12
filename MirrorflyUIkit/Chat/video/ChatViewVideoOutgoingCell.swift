@@ -79,6 +79,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         replyView?.roundCorners(corners: [.topLeft,.topRight], radius: 10)
         progressLoader?.primaryColor = .white
         progressLoader?.secondaryColor = .clear
+        progressLoader?.determinateAnimationDuration = 0
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -174,8 +175,8 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                DispatchQueue.main.async
                { [self] in
                    // 2. Perform UI Operations.
-                   var position = CLLocationCoordinate2DMake(latitude,longitude)
-                   var marker = GMSMarker(position: position)
+                   let position = CLLocationCoordinate2DMake(latitude,longitude)
+                   let marker = GMSMarker(position: position)
                    marker.map = mediaLocationMapView
                }
                messageTypeIconView?.isHidden = false
@@ -245,27 +246,24 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         switch message?.mediaChatMessage?.mediaUploadStatus {
         case .not_uploaded:
             playButton.isHidden = true
-            if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
-                progressLoader?.isHidden = false
-                progressLoader?.transition(to: .indeterminate)
-                retryButton?.isHidden = true
-                uploadView?.isHidden = true
-                progressView.isHidden = false
-            } else {
-                progressLoader?.isHidden = true
-                retryButton?.isHidden = false
-                uploadView?.isHidden = false
-                progressView?.isHidden = true
-            }
+            progressLoader?.isHidden = true
+            retryButton?.isHidden = false
+            uploadView?.isHidden = false
+            progressView?.isHidden = true
         case .uploading:
             let progrss = message?.mediaChatMessage?.mediaProgressStatus ?? 0
-            print("video cell uploading \(progrss)")
-            progressLoader?.transition(to: .determinate(percentage: CGFloat(progrss/100)))
+            print("Video Upload mediaStatus \(message?.mediaChatMessage?.mediaUploadStatus)")
+            print("video Upload mediaStatus \(progrss)")
             progressLoader.isHidden = false
             progressView.isHidden = false
             uploadView.isHidden = true
             playButton.isHidden = true
             retryButton?.isHidden = true
+            if progrss == 100 || progrss == 0 {
+                progressLoader.transition(to: .indeterminate)
+            } else {
+                progressLoader?.transition(to: .determinate(percentage: CGFloat(progrss/100)))
+            }
         case .uploaded:
             progressLoader.transition(to: .indeterminate)
             progressView.isHidden = true

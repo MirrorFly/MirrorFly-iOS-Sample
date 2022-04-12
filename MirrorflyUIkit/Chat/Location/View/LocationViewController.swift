@@ -28,7 +28,7 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
     
     @IBOutlet weak var sendThisLocationLabel: UILabel!
     var locationManager = CLLocationManager()
-    var marker: GMSMarker!
+    var marker: GMSMarker?
     weak var locationDelegate: LocationDelegate?
 
     var latitude : Double?
@@ -127,7 +127,7 @@ extension LocationViewController {
     @IBAction func onSend(_ sender: Any) {
         emptyViewingData()
         self.navigationController?.popViewController(animated: true)
-        locationDelegate?.didSendPressed(latitude: marker.position.latitude, longitude: marker.position.longitude, jid: "")
+        locationDelegate?.didSendPressed(latitude: marker?.position.latitude ?? 0.0, longitude: marker?.position.longitude ?? 0.0, jid: "")
     }
     
     func goPrevious() {
@@ -224,13 +224,21 @@ extension LocationViewController {
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         print("COORDINATE \(coordinate)") // when you tapped coordinate
         getAddressFromCoordinates(pdblLatitude: coordinate.latitude, withLongitude: coordinate.longitude)
+        updateLocationoordinates(coordinates: coordinate)
+    }
+    
+    func updateLocationoordinates(coordinates:CLLocationCoordinate2D) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.5)
+        marker?.position =  coordinates
+        CATransaction.commit()
     }
     
     func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
         mapView.isMyLocationEnabled = true
         mapView.selectedMarker = nil
-        marker.map = mapView
-        getAddressFromCoordinates(pdblLatitude: marker.position.latitude, withLongitude: marker.position.longitude)
+        marker?.map = mapView
+        getAddressFromCoordinates(pdblLatitude: marker?.position.latitude ?? 0.0, withLongitude: marker?.position.longitude ?? 0.0)
         return false
     }
     
@@ -238,8 +246,7 @@ extension LocationViewController {
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         mapView.clear()
         marker = GMSMarker(position: position.target)
-        marker.map = mapView
-        print(marker.position)
+        marker?.map = mapView
     }
     
     func getAddressFromCoordinates(pdblLatitude: Double, withLongitude pdblLongitude: Double) {
@@ -311,6 +318,8 @@ extension  LocationViewController {
             hideSendButton(hide: true)
             let cLLocationCoordinate2DMake = CLLocationCoordinate2DMake(latitude ?? 0.0 , longitude ?? 0.0)
             cameraMoveToLocation(toLocation: cLLocationCoordinate2DMake)
+            googleMapView.animate(toLocation: cLLocationCoordinate2DMake)
+
         }
     }
     

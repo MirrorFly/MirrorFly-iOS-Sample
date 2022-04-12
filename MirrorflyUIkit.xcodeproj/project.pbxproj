@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0EAD5AD51DDD2B567524A447 /* Pods_NotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A64EA1C82C777B7E4F7D41 /* Pods_NotificationExtention.framework */; };
 		3D12788F27A7AC6D00A34436 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */; };
-		7917ABD468CEF1755848D7D8 /* Pods_MirrorflyUIkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661F03E2C3F8CB510D9C56C3 /* Pods_MirrorflyUIkit.framework */; };
 		CE084E462747687F005D304E /* DateFormatterUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE084E452747687F005D304E /* DateFormatterUtility.swift */; };
 		CE0B4FAC27A3E3E9005349EB /* ContactInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B4FAB27A3E3E9005349EB /* ContactInfoViewController.swift */; };
 		CE0B4FB027A3E44F005349EB /* ContactImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B4FAE27A3E44F005349EB /* ContactImageCell.swift */; };
@@ -22,6 +20,7 @@
 		CE0B4FC027A414E3005349EB /* ContactInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0B4FBE27A414E3005349EB /* ContactInfoCell.xib */; };
 		CE0B757727AD0E7300331AE4 /* ContactSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B757627AD0E7300331AE4 /* ContactSyncController.swift */; };
 		CE0B758227AD513E00331AE4 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B758127AD513E00331AE4 /* NetworkMonitor.swift */; };
+		CE0EE39927D8CAAE00C4823D /* GroupInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */; };
 		CE31D80C274365BD0052FFFF /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE31D80B274365BD0052FFFF /* ChatViewModel.swift */; };
 		CE40C5C426DDC0B5001F829F /* CountryPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5B826DDC0B4001F829F /* CountryPickerViewController.swift */; };
 		CE40C5C526DDC0B5001F829F /* ContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5B926DDC0B4001F829F /* ContactViewController.swift */; };
@@ -35,29 +34,6 @@
 		CE40C5CF26DDC0B5001F829F /* OTPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5C326DDC0B5001F829F /* OTPViewModel.swift */; };
 		CE448B6F27883692002774DD /* fly_call_ringtone.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE448B6E27883692002774DD /* fly_call_ringtone.mp3 */; };
 		CE448B712788426F002774DD /* fly_reconnecting_tone.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE448B702788426F002774DD /* fly_reconnecting_tone.mp3 */; };
-		CE45026D27B3F4D700EE3B6B /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026127B3F4B600EE3B6B /* FlyCall.xcframework */; };
-		CE45026E27B3F4D700EE3B6B /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026127B3F4B600EE3B6B /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE45026F27B3F4D900EE3B6B /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026327B3F4B600EE3B6B /* FlyCommon.xcframework */; };
-		CE45027027B3F4D900EE3B6B /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026327B3F4B600EE3B6B /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE45027127B3F4DA00EE3B6B /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026527B3F4B700EE3B6B /* FlyCore.xcframework */; };
-		CE45027227B3F4DA00EE3B6B /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026527B3F4B700EE3B6B /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE45027327B3F4DC00EE3B6B /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026227B3F4B600EE3B6B /* FlyDatabase.xcframework */; };
-		CE45027427B3F4DC00EE3B6B /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026227B3F4B600EE3B6B /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE45027527B3F4DE00EE3B6B /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026627B3F4B700EE3B6B /* FlyNetwork.xcframework */; };
-		CE45027627B3F4DE00EE3B6B /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026627B3F4B700EE3B6B /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE45027727B3F4E000EE3B6B /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026427B3F4B700EE3B6B /* FlyXmpp.xcframework */; };
-		CE45027827B3F4E000EE3B6B /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026427B3F4B700EE3B6B /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE4502E427BCEA4B00EE3B6B /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026127B3F4B600EE3B6B /* FlyCall.xcframework */; };
-		CE4502E527BCEA4B00EE3B6B /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026127B3F4B600EE3B6B /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE4502E727BCEA4C00EE3B6B /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026327B3F4B600EE3B6B /* FlyCommon.xcframework */; };
-		CE4502E827BCEA4C00EE3B6B /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026327B3F4B600EE3B6B /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE4502E927BCEA4E00EE3B6B /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026527B3F4B700EE3B6B /* FlyCore.xcframework */; };
-		CE4502EA27BCEA4E00EE3B6B /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026527B3F4B700EE3B6B /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE4502EB27BCEA5000EE3B6B /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026227B3F4B600EE3B6B /* FlyDatabase.xcframework */; };
-		CE4502EC27BCEA5000EE3B6B /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026227B3F4B600EE3B6B /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE4502ED27BCEA5100EE3B6B /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026627B3F4B700EE3B6B /* FlyNetwork.xcframework */; };
-		CE4502EE27BCEA5100EE3B6B /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026627B3F4B700EE3B6B /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE4502EF27BCED1400EE3B6B /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45026427B3F4B700EE3B6B /* FlyXmpp.xcframework */; };
 		CE48C12D26E1EB420016AEFC /* ImageEditController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE48C12B26E1EB410016AEFC /* ImageEditController.swift */; };
 		CE48C13226E1EBBD0016AEFC /* EditImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE48C13126E1EBBD0016AEFC /* EditImageCell.swift */; };
 		CE48C13426E1EBC80016AEFC /* ListImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE48C13326E1EBC80016AEFC /* ListImageCell.swift */; };
@@ -81,8 +57,17 @@
 		CE56257026E2B49D0020BDD3 /* ChatViewContactIncomingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE56256F26E2B49D0020BDD3 /* ChatViewContactIncomingCell.xib */; };
 		CE56257226E2B7400020BDD3 /* ChatContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE56257126E2B7400020BDD3 /* ChatContactViewController.swift */; };
 		CE5625B526E38F550020BDD3 /* ChatContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5625B426E38F550020BDD3 /* ChatContactCell.swift */; };
+		CE60641727E1A716003AE9F0 /* MirrorflyUIkit-info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEA2F93626569C5C0013F5E8 /* MirrorflyUIkit-info.plist */; };
 		CE62CD9C275E85E100E77310 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE62CD9B275E85E100E77310 /* BaseTableViewCell.swift */; };
+		CE6839F327D0B59E0056DB8D /* GroupMembersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6839F127D0B59E0056DB8D /* GroupMembersTableViewCell.swift */; };
+		CE6839F427D0B59F0056DB8D /* GroupMembersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6839F227D0B59E0056DB8D /* GroupMembersTableViewCell.xib */; };
+		CE6839F727D0E7440056DB8D /* GroupOptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6839F527D0E7440056DB8D /* GroupOptionsTableViewCell.swift */; };
+		CE6839F827D0E7440056DB8D /* GroupOptionsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6839F627D0E7440056DB8D /* GroupOptionsTableViewCell.xib */; };
+		CE72209827D07BFF001F64FF /* GroupInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE72209727D07BFF001F64FF /* GroupInfoViewController.swift */; };
 		CE7C1A9C26E7AADB00A20754 /* IntegerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C1A9B26E7AADB00A20754 /* IntegerExtension.swift */; };
+		CE7D017E27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D017D27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift */; };
+		CE7D018427D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D018227D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift */; };
+		CE7D018527D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE7D018327D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.xib */; };
 		CE8289A5274E160800D4531E /* GroupCreationPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8289A4274E160800D4531E /* GroupCreationPreviewController.swift */; };
 		CE8289A8274E3D6100D4531E /* GroupCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8289A7274E3D6100D4531E /* GroupCreationViewModel.swift */; };
 		CE8460C026FA02ED0091C13B /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8460BF26FA02ED0091C13B /* ViewExtension.swift */; };
@@ -91,6 +76,7 @@
 		CE85EDF6274CDAED002A6D50 /* AddParticipantsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85EDF5274CDAED002A6D50 /* AddParticipantsViewController.swift */; };
 		CE85EDFA274CF9AF002A6D50 /* ParticipantCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85EDF8274CF9AF002A6D50 /* ParticipantCell.swift */; };
 		CE85EDFB274CF9AF002A6D50 /* ParticipantCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85EDF9274CF9AF002A6D50 /* ParticipantCell.xib */; };
+		CE86939F27D641FB00A27769 /* UpdateGroupInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE86939E27D641FB00A27769 /* UpdateGroupInfoViewController.swift */; };
 		CE8849E527A7C40700C5D7B2 /* ViewUserImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8849E427A7C40700C5D7B2 /* ViewUserImageController.swift */; };
 		CE887BBD27672964002E62AF /* DeleteAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE887BBB27672964002E62AF /* DeleteAlertViewController.swift */; };
 		CE8C1AB226E6225C00433470 /* test-image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE8C1AB126E6225C00433470 /* test-image.jpg */; };
@@ -175,6 +161,18 @@
 		CECB992F26CE720900B24448 /* SF-UI-Display-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CECB992E26CE720900B24448 /* SF-UI-Display-Semibold.otf */; };
 		CED0F3D926CBB355002E376A /* ActivityIndicatorClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED0F3D826CBB355002E376A /* ActivityIndicatorClass.swift */; };
 		CED0F3DB26CBB35E002E376A /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED0F3DA26CBB35E002E376A /* NetworkReachability.swift */; };
+		CED46E7727E4A75C0034A289 /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6C27E4A5020034A289 /* FlyCall.xcframework */; };
+		CED46E7827E4A75C0034A289 /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6C27E4A5020034A289 /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CED46E7927E4A75D0034A289 /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6E27E4A5030034A289 /* FlyCommon.xcframework */; };
+		CED46E7A27E4A75D0034A289 /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6E27E4A5030034A289 /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CED46E7B27E4A7600034A289 /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6B27E4A5020034A289 /* FlyCore.xcframework */; };
+		CED46E7C27E4A7600034A289 /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6B27E4A5020034A289 /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CED46E7D27E4A7610034A289 /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E7027E4A5040034A289 /* FlyDatabase.xcframework */; };
+		CED46E7E27E4A7610034A289 /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E7027E4A5040034A289 /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CED46E7F27E4A7630034A289 /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6D27E4A5030034A289 /* FlyNetwork.xcframework */; };
+		CED46E8027E4A7630034A289 /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6D27E4A5030034A289 /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CED46E8127E4A7640034A289 /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6F27E4A5030034A289 /* FlyXmpp.xcframework */; };
+		CED46E8227E4A7640034A289 /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CED46E6F27E4A5030034A289 /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CED4FB5F277DEE2E008FAF15 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4FB5E277DEE2E008FAF15 /* SettingsViewController.swift */; };
 		CED5EE0827990D850071A109 /* WebSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED5EE0627990D850071A109 /* WebSettingsCell.swift */; };
 		CED5EE0927990D850071A109 /* WebSettingsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED5EE0727990D850071A109 /* WebSettingsCell.xib */; };
@@ -195,9 +193,11 @@
 		CEF4372D27392174008D0F39 /* CallMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF4372C27392174008D0F39 /* CallMember.swift */; };
 		CEF4372F27392183008D0F39 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF4372E27392183008D0F39 /* RootViewController.swift */; };
 		CEF43747273BCA77008D0F39 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF43746273BCA77008D0F39 /* NotificationService.swift */; };
-		CEF4374B273BCA77008D0F39 /* NotificationExtention.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CEF43744273BCA76008D0F39 /* NotificationExtention.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CEF4374B273BCA77008D0F39 /* UiKitQaNotificationExtention.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CEF43744273BCA76008D0F39 /* UiKitQaNotificationExtention.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CEFD043026CD25B90017287F /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = CEFD042F26CD25B90017287F /* countries.json */; };
 		CEFD043226CD3D4B0017287F /* CountryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFD043126CD3D4B0017287F /* CountryModel.swift */; };
+		CF1317C7BB7AB549CAAFE309 /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 480199BED8114F6AD051F165 /* Pods_UiKitQa.framework */; };
+		EDCFFBF1F26D69FC2CBE5D0F /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F8A7898B34440290BE721A /* Pods_UiKitQaNotificationExtention.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -211,33 +211,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CE4502E627BCEA4B00EE3B6B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				CE4502E827BCEA4C00EE3B6B /* FlyCommon.xcframework in Embed Frameworks */,
-				CE4502E527BCEA4B00EE3B6B /* FlyCall.xcframework in Embed Frameworks */,
-				CE4502EE27BCEA5100EE3B6B /* FlyNetwork.xcframework in Embed Frameworks */,
-				CE4502EC27BCEA5000EE3B6B /* FlyDatabase.xcframework in Embed Frameworks */,
-				CE4502EA27BCEA4E00EE3B6B /* FlyCore.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CE84625C26FA21FF0091C13B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE45027027B3F4D900EE3B6B /* FlyCommon.xcframework in Embed Frameworks */,
-				CE45026E27B3F4D700EE3B6B /* FlyCall.xcframework in Embed Frameworks */,
-				CE45027627B3F4DE00EE3B6B /* FlyNetwork.xcframework in Embed Frameworks */,
-				CE45027427B3F4DC00EE3B6B /* FlyDatabase.xcframework in Embed Frameworks */,
-				CE45027827B3F4E000EE3B6B /* FlyXmpp.xcframework in Embed Frameworks */,
-				CE45027227B3F4DA00EE3B6B /* FlyCore.xcframework in Embed Frameworks */,
+				CED46E7A27E4A75D0034A289 /* FlyCommon.xcframework in Embed Frameworks */,
+				CED46E7827E4A75C0034A289 /* FlyCall.xcframework in Embed Frameworks */,
+				CED46E8027E4A7630034A289 /* FlyNetwork.xcframework in Embed Frameworks */,
+				CED46E7E27E4A7610034A289 /* FlyDatabase.xcframework in Embed Frameworks */,
+				CED46E8227E4A7640034A289 /* FlyXmpp.xcframework in Embed Frameworks */,
+				CED46E7C27E4A7600034A289 /* FlyCore.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,26 +233,30 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				CEF4374B273BCA77008D0F39 /* NotificationExtention.appex in Embed App Extensions */,
+				CEF4374B273BCA77008D0F39 /* UiKitQaNotificationExtention.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF43753273BCC5B008D0F39 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0508048F2BB8339EE3A3012E /* Pods-MirrorflyUIkit.dev-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyUIkit.dev-release.xcconfig"; path = "Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit.dev-release.xcconfig"; sourceTree = "<group>"; };
-		10B513896B2AB3A64DC68A6B /* Pods-NotificationExtention.qa-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtention.qa-debug.xcconfig"; path = "Target Support Files/Pods-NotificationExtention/Pods-NotificationExtention.qa-debug.xcconfig"; sourceTree = "<group>"; };
-		1D3D123501040B9370A1ED14 /* Pods-MirrorflyUIkit.qa-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyUIkit.qa-release.xcconfig"; path = "Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit.qa-release.xcconfig"; sourceTree = "<group>"; };
 		3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
-		64BCBE9C92414A07C04CAA08 /* Pods-NotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-NotificationExtention/Pods-NotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
-		661F03E2C3F8CB510D9C56C3 /* Pods_MirrorflyUIkit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MirrorflyUIkit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		66C4343DA4A42690B892750D /* Pods-MirrorflyUIkit.dev-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyUIkit.dev-debug.xcconfig"; path = "Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit.dev-debug.xcconfig"; sourceTree = "<group>"; };
-		9955B831BBCF71283A63E88E /* Pods-NotificationExtention.dev-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtention.dev-debug.xcconfig"; path = "Target Support Files/Pods-NotificationExtention/Pods-NotificationExtention.dev-debug.xcconfig"; sourceTree = "<group>"; };
-		AE620CC8B6C6FE5ED138BD09 /* Pods-MirrorflyUIkit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyUIkit.release.xcconfig"; path = "Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit.release.xcconfig"; sourceTree = "<group>"; };
-		BD8FDE2621E44BF256A3F78D /* Pods-MirrorflyUIkit.qa-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyUIkit.qa-debug.xcconfig"; path = "Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit.qa-debug.xcconfig"; sourceTree = "<group>"; };
-		C2B4CA4A0697F14DA625551F /* Pods-NotificationExtention.dev-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtention.dev-release.xcconfig"; path = "Target Support Files/Pods-NotificationExtention/Pods-NotificationExtention.dev-release.xcconfig"; sourceTree = "<group>"; };
-		C7A64EA1C82C777B7E4F7D41 /* Pods_NotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		480199BED8114F6AD051F165 /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5587853EDFA19BB297CA0D98 /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
+		7EF82D500A79CCD132095983 /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
+		947EBA783015E0A9152F090E /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
+		A5F8A7898B34440290BE721A /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE084E452747687F005D304E /* DateFormatterUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterUtility.swift; sourceTree = "<group>"; };
 		CE0B4FAB27A3E3E9005349EB /* ContactInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactInfoViewController.swift; sourceTree = "<group>"; };
 		CE0B4FAE27A3E44F005349EB /* ContactImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactImageCell.swift; sourceTree = "<group>"; };
@@ -280,6 +269,7 @@
 		CE0B4FBE27A414E3005349EB /* ContactInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContactInfoCell.xib; sourceTree = "<group>"; };
 		CE0B757627AD0E7300331AE4 /* ContactSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSyncController.swift; sourceTree = "<group>"; };
 		CE0B758127AD513E00331AE4 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoViewModel.swift; sourceTree = "<group>"; };
 		CE31D80B274365BD0052FFFF /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		CE40C5B826DDC0B4001F829F /* CountryPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryPickerViewController.swift; sourceTree = "<group>"; };
 		CE40C5B926DDC0B4001F829F /* ContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactViewController.swift; sourceTree = "<group>"; };
@@ -293,12 +283,6 @@
 		CE40C5C326DDC0B5001F829F /* OTPViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OTPViewModel.swift; sourceTree = "<group>"; };
 		CE448B6E27883692002774DD /* fly_call_ringtone.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = fly_call_ringtone.mp3; sourceTree = "<group>"; };
 		CE448B702788426F002774DD /* fly_reconnecting_tone.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = fly_reconnecting_tone.mp3; sourceTree = "<group>"; };
-		CE45026127B3F4B600EE3B6B /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
-		CE45026227B3F4B600EE3B6B /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
-		CE45026327B3F4B600EE3B6B /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
-		CE45026427B3F4B700EE3B6B /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
-		CE45026527B3F4B700EE3B6B /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
-		CE45026627B3F4B700EE3B6B /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
 		CE48C12B26E1EB410016AEFC /* ImageEditController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageEditController.swift; sourceTree = "<group>"; };
 		CE48C13126E1EBBD0016AEFC /* EditImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageCell.swift; sourceTree = "<group>"; };
 		CE48C13326E1EBC80016AEFC /* ListImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListImageCell.swift; sourceTree = "<group>"; };
@@ -323,7 +307,15 @@
 		CE56257126E2B7400020BDD3 /* ChatContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContactViewController.swift; sourceTree = "<group>"; };
 		CE5625B426E38F550020BDD3 /* ChatContactCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContactCell.swift; sourceTree = "<group>"; };
 		CE62CD9B275E85E100E77310 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
+		CE6839F127D0B59E0056DB8D /* GroupMembersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMembersTableViewCell.swift; sourceTree = "<group>"; };
+		CE6839F227D0B59E0056DB8D /* GroupMembersTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupMembersTableViewCell.xib; sourceTree = "<group>"; };
+		CE6839F527D0E7440056DB8D /* GroupOptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupOptionsTableViewCell.swift; sourceTree = "<group>"; };
+		CE6839F627D0E7440056DB8D /* GroupOptionsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupOptionsTableViewCell.xib; sourceTree = "<group>"; };
+		CE72209727D07BFF001F64FF /* GroupInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoViewController.swift; sourceTree = "<group>"; };
 		CE7C1A9B26E7AADB00A20754 /* IntegerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegerExtension.swift; sourceTree = "<group>"; };
+		CE7D017D27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoOptionsViewController.swift; sourceTree = "<group>"; };
+		CE7D018227D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoOptionsTableViewCell.swift; sourceTree = "<group>"; };
+		CE7D018327D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupInfoOptionsTableViewCell.xib; sourceTree = "<group>"; };
 		CE8289A4274E160800D4531E /* GroupCreationPreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCreationPreviewController.swift; sourceTree = "<group>"; };
 		CE8289A7274E3D6100D4531E /* GroupCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCreationViewModel.swift; sourceTree = "<group>"; };
 		CE8460BF26FA02ED0091C13B /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
@@ -332,6 +324,7 @@
 		CE85EDF5274CDAED002A6D50 /* AddParticipantsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddParticipantsViewController.swift; sourceTree = "<group>"; };
 		CE85EDF8274CF9AF002A6D50 /* ParticipantCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantCell.swift; sourceTree = "<group>"; };
 		CE85EDF9274CF9AF002A6D50 /* ParticipantCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ParticipantCell.xib; sourceTree = "<group>"; };
+		CE86939E27D641FB00A27769 /* UpdateGroupInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateGroupInfoViewController.swift; sourceTree = "<group>"; };
 		CE8849E427A7C40700C5D7B2 /* ViewUserImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewUserImageController.swift; sourceTree = "<group>"; };
 		CE887BBB27672964002E62AF /* DeleteAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAlertViewController.swift; sourceTree = "<group>"; };
 		CE8C1AB126E6225C00433470 /* test-image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "test-image.jpg"; sourceTree = "<group>"; };
@@ -368,12 +361,14 @@
 		CE9F7F0B26F2BB1B002BF24A /* IPImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPImage.swift; sourceTree = "<group>"; };
 		CE9FA02526F067D20082EFA5 /* RecentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentChatTableViewCell.swift; sourceTree = "<group>"; };
 		CE9FA02726F06BC70082EFA5 /* SearchRecentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRecentChatTableViewCell.swift; sourceTree = "<group>"; };
+		CEA178D3274F8ABC00EAD2A3 /* FlyCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlyCommon.framework; path = MirrorflyUIkit/Framework/FlyCommon.framework; sourceTree = "<group>"; };
+		CEA178D4274F8ABC00EAD2A3 /* FlyCall.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlyCall.framework; path = MirrorflyUIkit/Framework/FlyCall.framework; sourceTree = "<group>"; };
 		CEA22DB926F4A5D2002034C0 /* ContactDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetails.swift; sourceTree = "<group>"; };
 		CEA22DBC26F4A5F4002034C0 /* MenuItemWithIndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemWithIndexPath.swift; sourceTree = "<group>"; };
 		CEA22E0B26F4B54C002034C0 /* AppUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUtils.swift; sourceTree = "<group>"; };
 		CEA22F2326F62901002034C0 /* TableviewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableviewExtension.swift; sourceTree = "<group>"; };
 		CEA22F5926F630AF002034C0 /* TextTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTransformation.swift; sourceTree = "<group>"; };
-		CEA2F92526569C590013F5E8 /* MirrorflyUIkit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MirrorflyUIkit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEA2F92526569C590013F5E8 /* UiKitQa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UiKitQa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA2F92826569C590013F5E8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEA2F92A26569C590013F5E8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		CEA2F92F26569C590013F5E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -409,9 +404,11 @@
 		CEA4FFB826DFBB42004A1268 /* ProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		CEA664ED26D5315A007B8774 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CEABA5F427704731004CF761 /* ChatUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatUtils.swift; sourceTree = "<group>"; };
+		CEC08B7227E23B9F005E48C5 /* MirrorflyNotificationExtention-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MirrorflyNotificationExtention-Info.plist"; path = "/Users/user/Desktop/UiKit/MirrorflyNotificationExtention-Info.plist"; sourceTree = "<absolute>"; };
+		CEC08B7427E243D9005E48C5 /* MirrorflyNotificationextention.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MirrorflyNotificationextention.entitlements; sourceTree = "<group>"; };
 		CEC2D48827A5AAA700AB107A /* ContactInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactInfoViewModel.swift; sourceTree = "<group>"; };
-		CECB98F426CE658D00B24448 /* MirrorflyUIkit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MirrorflyUIkit.entitlements; sourceTree = "<group>"; };
-		CECB98F526CE65EE00B24448 /* MirrorflyUIkitRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MirrorflyUIkitRelease.entitlements; sourceTree = "<group>"; };
+		CECB98F426CE658D00B24448 /* Mirrorfly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirrorfly.entitlements; sourceTree = "<group>"; };
+		CECB98F526CE65EE00B24448 /* MirrorflyUIkitQa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MirrorflyUIkitQa.entitlements; sourceTree = "<group>"; };
 		CECB992426CE71BF00B24448 /* SF-UI-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Bold.otf"; sourceTree = "<group>"; };
 		CECB992626CE71CB00B24448 /* SF-UI-Display-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Heavy.otf"; sourceTree = "<group>"; };
 		CECB992826CE71D400B24448 /* SF-UI-Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Light.otf"; sourceTree = "<group>"; };
@@ -420,6 +417,12 @@
 		CECB992E26CE720900B24448 /* SF-UI-Display-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Semibold.otf"; sourceTree = "<group>"; };
 		CED0F3D826CBB355002E376A /* ActivityIndicatorClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorClass.swift; sourceTree = "<group>"; };
 		CED0F3DA26CBB35E002E376A /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		CED46E6B27E4A5020034A289 /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
+		CED46E6C27E4A5020034A289 /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
+		CED46E6D27E4A5030034A289 /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
+		CED46E6E27E4A5030034A289 /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
+		CED46E6F27E4A5030034A289 /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
+		CED46E7027E4A5040034A289 /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
 		CED4FB5E277DEE2E008FAF15 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		CED5EE0627990D850071A109 /* WebSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSettingsCell.swift; sourceTree = "<group>"; };
 		CED5EE0727990D850071A109 /* WebSettingsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebSettingsCell.xib; sourceTree = "<group>"; };
@@ -439,15 +442,13 @@
 		CEF4372A2739216E008D0F39 /* GroupCallCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupCallCell.swift; sourceTree = "<group>"; };
 		CEF4372C27392174008D0F39 /* CallMember.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallMember.swift; sourceTree = "<group>"; };
 		CEF4372E27392183008D0F39 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		CEF43744273BCA76008D0F39 /* NotificationExtention.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtention.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEF43744273BCA76008D0F39 /* UiKitQaNotificationExtention.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UiKitQaNotificationExtention.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF43746273BCA77008D0F39 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		CEF43748273BCA77008D0F39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CEF43750273BCAB2008D0F39 /* NotificationExtention.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtention.entitlements; sourceTree = "<group>"; };
+		CEF43750273BCAB2008D0F39 /* NotificationExtentionQa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtentionQa.entitlements; sourceTree = "<group>"; };
 		CEFD042F26CD25B90017287F /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		CEFD043126CD3D4B0017287F /* CountryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryModel.swift; sourceTree = "<group>"; };
-		CF81A8DD5840A998760BD123 /* Pods-NotificationExtention.qa-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtention.qa-release.xcconfig"; path = "Target Support Files/Pods-NotificationExtention/Pods-NotificationExtention.qa-release.xcconfig"; sourceTree = "<group>"; };
-		E77CACFDBBEBDFF05F4AE00C /* Pods-NotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-NotificationExtention/Pods-NotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
-		E7D726D9F097897F6ED0F405 /* Pods-MirrorflyUIkit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyUIkit.debug.xcconfig"; path = "Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit.debug.xcconfig"; sourceTree = "<group>"; };
+		DE2877988F60722EABBCE9AB /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -455,13 +456,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE45027127B3F4DA00EE3B6B /* FlyCore.xcframework in Frameworks */,
-				CE45026F27B3F4D900EE3B6B /* FlyCommon.xcframework in Frameworks */,
-				CE45027527B3F4DE00EE3B6B /* FlyNetwork.xcframework in Frameworks */,
-				CE45027727B3F4E000EE3B6B /* FlyXmpp.xcframework in Frameworks */,
-				CE45027327B3F4DC00EE3B6B /* FlyDatabase.xcframework in Frameworks */,
-				CE45026D27B3F4D700EE3B6B /* FlyCall.xcframework in Frameworks */,
-				7917ABD468CEF1755848D7D8 /* Pods_MirrorflyUIkit.framework in Frameworks */,
+				CED46E7927E4A75D0034A289 /* FlyCommon.xcframework in Frameworks */,
+				CED46E7B27E4A7600034A289 /* FlyCore.xcframework in Frameworks */,
+				CF1317C7BB7AB549CAAFE309 /* Pods_UiKitQa.framework in Frameworks */,
+				CED46E7D27E4A7610034A289 /* FlyDatabase.xcframework in Frameworks */,
+				CED46E8127E4A7640034A289 /* FlyXmpp.xcframework in Frameworks */,
+				CED46E7F27E4A7630034A289 /* FlyNetwork.xcframework in Frameworks */,
+				CED46E7727E4A75C0034A289 /* FlyCall.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,13 +470,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE4502E427BCEA4B00EE3B6B /* FlyCall.xcframework in Frameworks */,
-				CE4502ED27BCEA5100EE3B6B /* FlyNetwork.xcframework in Frameworks */,
-				CE4502EB27BCEA5000EE3B6B /* FlyDatabase.xcframework in Frameworks */,
-				CE4502EF27BCED1400EE3B6B /* FlyXmpp.xcframework in Frameworks */,
-				CE4502E927BCEA4E00EE3B6B /* FlyCore.xcframework in Frameworks */,
-				CE4502E727BCEA4C00EE3B6B /* FlyCommon.xcframework in Frameworks */,
-				0EAD5AD51DDD2B567524A447 /* Pods_NotificationExtention.framework in Frameworks */,
+				EDCFFBF1F26D69FC2CBE5D0F /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,21 +485,24 @@
 			path = UserProfile;
 			sourceTree = "<group>";
 		};
+		418B1E6BE4FB1EDA43ED8456 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CEA178D4274F8ABC00EAD2A3 /* FlyCall.framework */,
+				CEA178D3274F8ABC00EAD2A3 /* FlyCommon.framework */,
+				480199BED8114F6AD051F165 /* Pods_UiKitQa.framework */,
+				A5F8A7898B34440290BE721A /* Pods_UiKitQaNotificationExtention.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6B19A949DEFF3996B7AA7823 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E7D726D9F097897F6ED0F405 /* Pods-MirrorflyUIkit.debug.xcconfig */,
-				BD8FDE2621E44BF256A3F78D /* Pods-MirrorflyUIkit.qa-debug.xcconfig */,
-				66C4343DA4A42690B892750D /* Pods-MirrorflyUIkit.dev-debug.xcconfig */,
-				AE620CC8B6C6FE5ED138BD09 /* Pods-MirrorflyUIkit.release.xcconfig */,
-				1D3D123501040B9370A1ED14 /* Pods-MirrorflyUIkit.qa-release.xcconfig */,
-				0508048F2BB8339EE3A3012E /* Pods-MirrorflyUIkit.dev-release.xcconfig */,
-				64BCBE9C92414A07C04CAA08 /* Pods-NotificationExtention.debug.xcconfig */,
-				10B513896B2AB3A64DC68A6B /* Pods-NotificationExtention.qa-debug.xcconfig */,
-				9955B831BBCF71283A63E88E /* Pods-NotificationExtention.dev-debug.xcconfig */,
-				E77CACFDBBEBDFF05F4AE00C /* Pods-NotificationExtention.release.xcconfig */,
-				CF81A8DD5840A998760BD123 /* Pods-NotificationExtention.qa-release.xcconfig */,
-				C2B4CA4A0697F14DA625551F /* Pods-NotificationExtention.dev-release.xcconfig */,
+				5587853EDFA19BB297CA0D98 /* Pods-UiKitQa.debug.xcconfig */,
+				947EBA783015E0A9152F090E /* Pods-UiKitQa.release.xcconfig */,
+				7EF82D500A79CCD132095983 /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
+				DE2877988F60722EABBCE9AB /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -709,6 +707,69 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		CE72209527D07BCB001F64FF /* Group Info */ = {
+			isa = PBXGroup;
+			children = (
+				CE72209627D07BDA001F64FF /* Controller */,
+				CE72209927D07C0D001F64FF /* Views */,
+			);
+			path = "Group Info";
+			sourceTree = "<group>";
+		};
+		CE72209627D07BDA001F64FF /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				CE72209727D07BFF001F64FF /* GroupInfoViewController.swift */,
+				CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CE72209927D07C0D001F64FF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CE6839F527D0E7440056DB8D /* GroupOptionsTableViewCell.swift */,
+				CE6839F627D0E7440056DB8D /* GroupOptionsTableViewCell.xib */,
+				CE6839F127D0B59E0056DB8D /* GroupMembersTableViewCell.swift */,
+				CE6839F227D0B59E0056DB8D /* GroupMembersTableViewCell.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		CE7D017A27D9B886006DDB23 /* Group Info Options */ = {
+			isa = PBXGroup;
+			children = (
+				CE7D017C27D9B8B7006DDB23 /* Controller */,
+				CE7D017F27D9B8F4006DDB23 /* Views */,
+			);
+			path = "Group Info Options";
+			sourceTree = "<group>";
+		};
+		CE7D017B27D9B8A7006DDB23 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				CE86939E27D641FB00A27769 /* UpdateGroupInfoViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CE7D017C27D9B8B7006DDB23 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				CE7D017D27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CE7D017F27D9B8F4006DDB23 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CE7D018227D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift */,
+				CE7D018327D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		CE85EDF4274CDACB002A6D50 /* addParticipants */ = {
 			isa = PBXGroup;
 			children = (
@@ -726,6 +787,14 @@
 				CE85EDF9274CF9AF002A6D50 /* ParticipantCell.xib */,
 			);
 			path = participantCell;
+			sourceTree = "<group>";
+		};
+		CE86939D27D641BF00A27769 /* Update Group Info */ = {
+			isa = PBXGroup;
+			children = (
+				CE7D017B27D9B8A7006DDB23 /* Controller */,
+			);
+			path = "Update Group Info";
 			sourceTree = "<group>";
 		};
 		CE8F53CD2743AD5B00B201F4 /* video */ = {
@@ -802,29 +871,22 @@
 		CEA2F91C26569C590013F5E8 = {
 			isa = PBXGroup;
 			children = (
-				CE45026127B3F4B600EE3B6B /* FlyCall.xcframework */,
-				CE45026327B3F4B600EE3B6B /* FlyCommon.xcframework */,
-				CE45026527B3F4B700EE3B6B /* FlyCore.xcframework */,
-				CE45026227B3F4B600EE3B6B /* FlyDatabase.xcframework */,
-				CE45026627B3F4B700EE3B6B /* FlyNetwork.xcframework */,
-				CE45026427B3F4B700EE3B6B /* FlyXmpp.xcframework */,
-				CEA2F93D26569D8B0013F5E8 /* Plist */,
 				CEA2F92726569C590013F5E8 /* MirrorflyUIkit */,
 				CE448B6E27883692002774DD /* fly_call_ringtone.mp3 */,
 				CE448B702788426F002774DD /* fly_reconnecting_tone.mp3 */,
 				CEF43745273BCA77008D0F39 /* NotificationExtention */,
 				CEA2F92626569C590013F5E8 /* Products */,
 				6B19A949DEFF3996B7AA7823 /* Pods */,
+				418B1E6BE4FB1EDA43ED8456 /* Frameworks */,
 				CE31D802274365020052FFFF /* Recovered References */,
-				D3EE570D10651E9EE95044A9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		CEA2F92626569C590013F5E8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEA2F92526569C590013F5E8 /* MirrorflyUIkit.app */,
-				CEF43744273BCA76008D0F39 /* NotificationExtention.appex */,
+				CEA2F92526569C590013F5E8 /* UiKitQa.app */,
+				CEF43744273BCA76008D0F39 /* UiKitQaNotificationExtention.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -832,11 +894,22 @@
 		CEA2F92726569C590013F5E8 /* MirrorflyUIkit */ = {
 			isa = PBXGroup;
 			children = (
+				CED46E6C27E4A5020034A289 /* FlyCall.xcframework */,
+				CED46E6E27E4A5030034A289 /* FlyCommon.xcframework */,
+				CED46E6B27E4A5020034A289 /* FlyCore.xcframework */,
+				CED46E7027E4A5040034A289 /* FlyDatabase.xcframework */,
+				CED46E6D27E4A5030034A289 /* FlyNetwork.xcframework */,
+				CED46E6F27E4A5030034A289 /* FlyXmpp.xcframework */,
+				CE94E80326D9FA9800F2E3A7 /* GoogleService-Info.plist */,
+				CEA2F93D26569D8B0013F5E8 /* Plist */,
+				CE72209527D07BCB001F64FF /* Group Info */,
+				CE86939D27D641BF00A27769 /* Update Group Info */,
+				CE7D017A27D9B886006DDB23 /* Group Info Options */,
 				CE0B4FAA27A3E35C005349EB /* contactInfo */,
 				CE9121122795453100B007E0 /* qrCode */,
 				CE968372274B94E600701ADF /* group */,
-				CECB98F526CE65EE00B24448 /* MirrorflyUIkitRelease.entitlements */,
-				CECB98F426CE658D00B24448 /* MirrorflyUIkit.entitlements */,
+				CECB98F526CE65EE00B24448 /* MirrorflyUIkitQa.entitlements */,
+				CECB98F426CE658D00B24448 /* Mirrorfly.entitlements */,
 				CEF4371827390BDA008D0F39 /* Calls */,
 				CE31D80A274365760052FFFF /* ViewModels */,
 				CEA2F9C62657D0210013F5E8 /* Strings */,
@@ -859,7 +932,6 @@
 			isa = PBXGroup;
 			children = (
 				CEA2F93626569C5C0013F5E8 /* MirrorflyUIkit-info.plist */,
-				CE94E80326D9FA9800F2E3A7 /* GoogleService-Info.plist */,
 			);
 			path = Plist;
 			sourceTree = "<group>";
@@ -1152,8 +1224,10 @@
 		CEF43745273BCA77008D0F39 /* NotificationExtention */ = {
 			isa = PBXGroup;
 			children = (
-				CEF43750273BCAB2008D0F39 /* NotificationExtention.entitlements */,
+				CEC08B7427E243D9005E48C5 /* MirrorflyNotificationextention.entitlements */,
+				CEF43750273BCAB2008D0F39 /* NotificationExtentionQa.entitlements */,
 				CEF43746273BCA77008D0F39 /* NotificationService.swift */,
+				CEC08B7227E23B9F005E48C5 /* MirrorflyNotificationExtention-Info.plist */,
 				CEF43748273BCA77008D0F39 /* Info.plist */,
 			);
 			path = NotificationExtention;
@@ -1167,59 +1241,50 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		D3EE570D10651E9EE95044A9 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				661F03E2C3F8CB510D9C56C3 /* Pods_MirrorflyUIkit.framework */,
-				C7A64EA1C82C777B7E4F7D41 /* Pods_NotificationExtention.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CEA2F92426569C590013F5E8 /* MirrorflyUIkit */ = {
+		CEA2F92426569C590013F5E8 /* UiKitQa */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "MirrorflyUIkit" */;
+			buildConfigurationList = CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "UiKitQa" */;
 			buildPhases = (
-				F26F8AA83F72981EF03F3ABE /* [CP] Check Pods Manifest.lock */,
+				D1C1C5A75FE863B276702116 /* [CP] Check Pods Manifest.lock */,
 				CEA2F92126569C590013F5E8 /* Sources */,
 				CEA2F92226569C590013F5E8 /* Frameworks */,
 				CEA2F92326569C590013F5E8 /* Resources */,
 				CE84625C26FA21FF0091C13B /* Embed Frameworks */,
 				CEF4374C273BCA77008D0F39 /* Embed App Extensions */,
 				CED4FB5C277DE60D008FAF15 /* ShellScript */,
-				470EDB96E71FA55EC15EFFB5 /* [CP] Embed Pods Frameworks */,
-				B623AC8B7B45B25552AC44E0 /* [CP] Copy Pods Resources */,
+				3FAB5AC97F8EBBA71CBD83E5 /* [CP] Embed Pods Frameworks */,
+				66AB3872A01CEAA479F6B91F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				CEF4374A273BCA77008D0F39 /* PBXTargetDependency */,
 			);
-			name = MirrorflyUIkit;
+			name = UiKitQa;
 			productName = MirrorflyUIkit;
-			productReference = CEA2F92526569C590013F5E8 /* MirrorflyUIkit.app */;
+			productReference = CEA2F92526569C590013F5E8 /* UiKitQa.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CEF43743273BCA76008D0F39 /* NotificationExtention */ = {
+		CEF43743273BCA76008D0F39 /* UiKitQaNotificationExtention */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "NotificationExtention" */;
+			buildConfigurationList = CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "UiKitQaNotificationExtention" */;
 			buildPhases = (
-				7772AF6749FF241BA3541AB9 /* [CP] Check Pods Manifest.lock */,
+				F9373A235ABCBBB85C08F032 /* [CP] Check Pods Manifest.lock */,
 				CEF43740273BCA76008D0F39 /* Sources */,
 				CEF43741273BCA76008D0F39 /* Frameworks */,
 				CEF43742273BCA76008D0F39 /* Resources */,
-				CE4502E627BCEA4B00EE3B6B /* Embed Frameworks */,
+				CEF43753273BCC5B008D0F39 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = NotificationExtention;
+			name = UiKitQaNotificationExtention;
 			productName = notificationextention;
-			productReference = CEF43744273BCA76008D0F39 /* NotificationExtention.appex */;
+			productReference = CEF43744273BCA76008D0F39 /* UiKitQaNotificationExtention.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -1252,8 +1317,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CEA2F92426569C590013F5E8 /* MirrorflyUIkit */,
-				CEF43743273BCA76008D0F39 /* NotificationExtention */,
+				CEA2F92426569C590013F5E8 /* UiKitQa */,
+				CEF43743273BCA76008D0F39 /* UiKitQaNotificationExtention */,
 			);
 		};
 /* End PBXProject section */
@@ -1276,14 +1341,18 @@
 				CE4AF3AA26F23AA3001EBB3B /* AudioSender.xib in Resources */,
 				CE0B4FBC27A40CD7005349EB /* ViewAllMediaCell.xib in Resources */,
 				CEA664EC26D5315A007B8774 /* Localizable.strings in Resources */,
+				CE7D018527D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.xib in Resources */,
 				CE56254A26E14E610020BDD3 /* ChatViewLocationOutgoingCell.xib in Resources */,
 				CEA387372751142E00F35120 /* NotificationCell.xib in Resources */,
 				CE8F53D52743AD7C00B201F4 /* ChatViewVideoIncomingCell.xib in Resources */,
+				CE6839F827D0E7440056DB8D /* GroupOptionsTableViewCell.xib in Resources */,
 				CECB992B26CE71DF00B24448 /* SF-UI-Display-Medium.otf in Resources */,
 				CE8FAC6C27269AA000C92634 /* AudioView.xib in Resources */,
 				CEEC63BE2768C60B00FD3C35 /* ForwardTableViewCell.xib in Resources */,
+				CE6839F427D0B59F0056DB8D /* GroupMembersTableViewCell.xib in Resources */,
 				CE85EDFB274CF9AF002A6D50 /* ParticipantCell.xib in Resources */,
 				CE48C13E26E1F1B00016AEFC /* ReceiverImageCell.xib in Resources */,
+				CE60641727E1A716003AE9F0 /* MirrorflyUIkit-info.plist in Resources */,
 				CEA2F97C2656A0DD0013F5E8 /* Profile.storyboard in Resources */,
 				CE9A65562754A997007DB23C /* NoResultFoundCell.xib in Resources */,
 				CEF4372127390C82008D0F39 /* OutGoingCallXib.xib in Resources */,
@@ -1320,60 +1389,38 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		470EDB96E71FA55EC15EFFB5 /* [CP] Embed Pods Frameworks */ = {
+		3FAB5AC97F8EBBA71CBD83E5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7772AF6749FF241BA3541AB9 /* [CP] Check Pods Manifest.lock */ = {
+		66AB3872A01CEAA479F6B91F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NotificationExtention-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B623AC8B7B45B25552AC44E0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MirrorflyUIkit/Pods-MirrorflyUIkit-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CED4FB5C277DE60D008FAF15 /* ShellScript */ = {
@@ -1395,7 +1442,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
-		F26F8AA83F72981EF03F3ABE /* [CP] Check Pods Manifest.lock */ = {
+		D1C1C5A75FE863B276702116 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1410,7 +1457,29 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MirrorflyUIkit-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-UiKitQa-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9373A235ABCBBB85C08F032 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UiKitQaNotificationExtention-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1426,7 +1495,9 @@
 			files = (
 				CE5625B526E38F550020BDD3 /* ChatContactCell.swift in Sources */,
 				CEA387362751142E00F35120 /* NotificationCell.swift in Sources */,
+				CE6839F327D0B59E0056DB8D /* GroupMembersTableViewCell.swift in Sources */,
 				CE8289A8274E3D6100D4531E /* GroupCreationViewModel.swift in Sources */,
+				CE6839F727D0E7440056DB8D /* GroupOptionsTableViewCell.swift in Sources */,
 				CE40C5C826DDC0B5001F829F /* MainTabBarController.swift in Sources */,
 				CE9EC7EF26CA71CE0089D9EB /* NotificationNameExtension.swift in Sources */,
 				CED0F3D926CBB355002E376A /* ActivityIndicatorClass.swift in Sources */,
@@ -1467,6 +1538,7 @@
 				CEA4FFB926DFBB42004A1268 /* ProfileModel.swift in Sources */,
 				CE40C5C726DDC0B5001F829F /* RecentChatViewController.swift in Sources */,
 				CE48C12D26E1EB420016AEFC /* ImageEditController.swift in Sources */,
+				CE7D018427D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift in Sources */,
 				CE56250A26E0ED550020BDD3 /* LocationViewController.swift in Sources */,
 				CE0B4FAC27A3E3E9005349EB /* ContactInfoViewController.swift in Sources */,
 				CEF4372727391D78008D0F39 /* GroupCallViewController.swift in Sources */,
@@ -1519,6 +1591,8 @@
 				CEF437292739212D008D0F39 /* OutGoingCallXib.swift in Sources */,
 				CE9EC7E226CA67BA0089D9EB /* Identifiers.swift in Sources */,
 				CE968374274B950400701ADF /* NewGroupViewController.swift in Sources */,
+				CE0EE39927D8CAAE00C4823D /* GroupInfoViewModel.swift in Sources */,
+				CE72209827D07BFF001F64FF /* GroupInfoViewController.swift in Sources */,
 				CE9EC7E626CA67BA0089D9EB /* ImageConstants.swift in Sources */,
 				CE51791226E202600077636C /* ImageCell.swift in Sources */,
 				CEA4FFAD26DFBA94004A1268 /* ImageViewerViewController.swift in Sources */,
@@ -1528,12 +1602,14 @@
 				CEF4372527391D6C008D0F39 /* CallViewController.swift in Sources */,
 				CEA4FEEA26DF7419004A1268 /* ChatViewParentController.swift in Sources */,
 				CE40C5C926DDC0B5001F829F /* VerifyOTPViewController.swift in Sources */,
+				CE86939F27D641FB00A27769 /* UpdateGroupInfoViewController.swift in Sources */,
 				CE968370274B696700701ADF /* AppActionSheet.swift in Sources */,
 				CEF4372D27392174008D0F39 /* CallMember.swift in Sources */,
 				CEC2D48927A5AAA700AB107A /* ContactInfoViewModel.swift in Sources */,
 				CEA2F95726569FC70013F5E8 /* StringConstants.swift in Sources */,
 				CE48C13D26E1F1B00016AEFC /* ReceiverImageCell.swift in Sources */,
 				CE9EC7E926CA689B0089D9EB /* StringExtension.swift in Sources */,
+				CE7D017E27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift in Sources */,
 				CEA4FFB326DFBAA7004A1268 /* ProfileViewController.swift in Sources */,
 				CE9EC7EB26CA69AD0089D9EB /* ButtonExtension.swift in Sources */,
 				CEABA5F527704731004CF761 /* ChatUtils.swift in Sources */,
@@ -1562,7 +1638,7 @@
 /* Begin PBXTargetDependency section */
 		CEF4374A273BCA77008D0F39 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CEF43743273BCA76008D0F39 /* NotificationExtention */;
+			target = CEF43743273BCA76008D0F39 /* UiKitQaNotificationExtention */;
 			targetProxy = CEF43749273BCA77008D0F39 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1595,607 +1671,10 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		CE6FD598275FA8A80094C2B0 /* Dev-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_BITCODE = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Dev-Debug";
-		};
-		CE6FD599275FA8A80094C2B0 /* Dev-Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 66C4343DA4A42690B892750D /* Pods-MirrorflyUIkit.dev-debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
-				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkit.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development: Balasubramaniyam Kandaswamy (HSBG5S6ZV9)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-					"$(PROJECT_DIR)/MirrorflyUIkit",
-				);
-				INFOPLIST_FILE = "Plist/MirrorflyUIkit-info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"$(BUILT_PRODUCTS_DIR)/FlyCommon",
-					"$(BUILT_PRODUCTS_DIR)/FlyCore",
-					"$(BUILT_PRODUCTS_DIR)/FlyDatabase",
-					"$(BUILT_PRODUCTS_DIR)/FlyNetwork",
-					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
-					"$(BUILT_PRODUCTS_DIR)/FlyCall",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DDEV";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Development Profile";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_WORKSPACE = YES;
-			};
-			name = "Dev-Debug";
-		};
-		CE6FD59A275FA8A80094C2B0 /* Dev-Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9955B831BBCF71283A63E88E /* Pods-NotificationExtention.dev-debug.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = notificationextention/notificationextention.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 59;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = notificationextention/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification Dev Profile";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = "Dev-Debug";
-		};
-		CE6FD59B275FA8B40094C2B0 /* Dev-Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = NO;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Dev-Release";
-		};
-		CE6FD59C275FA8B40094C2B0 /* Dev-Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0508048F2BB8339EE3A3012E /* Pods-MirrorflyUIkit.dev-release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
-				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitRelease.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-					"$(PROJECT_DIR)/MirrorflyUIkit",
-				);
-				INFOPLIST_FILE = "Plist/MirrorflyUIkit-info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"$(BUILT_PRODUCTS_DIR)/FlyCommon",
-					"$(BUILT_PRODUCTS_DIR)/FlyCore",
-					"$(BUILT_PRODUCTS_DIR)/FlyDatabase",
-					"$(BUILT_PRODUCTS_DIR)/FlyNetwork",
-					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
-					"$(BUILT_PRODUCTS_DIR)/FlyCall",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DDEV";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Inhouse Profile";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_WORKSPACE = YES;
-			};
-			name = "Dev-Release";
-		};
-		CE6FD59D275FA8B40094C2B0 /* Dev-Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C2B4CA4A0697F14DA625551F /* Pods-NotificationExtention.dev-release.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = notificationextention/notificationextention.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 59;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = notificationextention/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.3.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification In house Profile";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = "Dev-Release";
-		};
-		CE6FD59E275FA91A0094C2B0 /* Qa-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_BITCODE = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Qa-Debug";
-		};
-		CE6FD59F275FA91A0094C2B0 /* Qa-Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD8FDE2621E44BF256A3F78D /* Pods-MirrorflyUIkit.qa-debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
-				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkit.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development: Balasubramaniyam Kandaswamy (HSBG5S6ZV9)";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-					"$(PROJECT_DIR)/MirrorflyUIkit",
-				);
-				INFOPLIST_FILE = "Plist/MirrorflyUIkit-info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"$(BUILT_PRODUCTS_DIR)/FlyCommon",
-					"$(BUILT_PRODUCTS_DIR)/FlyCore",
-					"$(BUILT_PRODUCTS_DIR)/FlyDatabase",
-					"$(BUILT_PRODUCTS_DIR)/FlyNetwork",
-					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
-					"$(BUILT_PRODUCTS_DIR)/FlyCall",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Development Profile";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_WORKSPACE = YES;
-			};
-			name = "Qa-Debug";
-		};
-		CE6FD5A0275FA91A0094C2B0 /* Qa-Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 10B513896B2AB3A64DC68A6B /* Pods-NotificationExtention.qa-debug.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = notificationextention/notificationextention.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 59;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = notificationextention/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification Dev Profile";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = "Qa-Debug";
-		};
-		CE6FD5A1275FA9260094C2B0 /* Qa-Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Qa-Release";
-		};
-		CE6FD5A2275FA9260094C2B0 /* Qa-Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D3D123501040B9370A1ED14 /* Pods-MirrorflyUIkit.qa-release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
-				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitRelease.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-					"$(PROJECT_DIR)/MirrorflyUIkit",
-				);
-				INFOPLIST_FILE = "Plist/MirrorflyUIkit-info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"$(BUILT_PRODUCTS_DIR)/FlyCommon",
-					"$(BUILT_PRODUCTS_DIR)/FlyCore",
-					"$(BUILT_PRODUCTS_DIR)/FlyDatabase",
-					"$(BUILT_PRODUCTS_DIR)/FlyNetwork",
-					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
-					"$(BUILT_PRODUCTS_DIR)/FlyCall",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Inhouse Profile";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_WORKSPACE = YES;
-			};
-			name = "Qa-Release";
-		};
-		CE6FD5A3275FA9260094C2B0 /* Qa-Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CF81A8DD5840A998760BD123 /* Pods-NotificationExtention.qa-release.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = notificationextention/notificationextention.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 59;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
-				);
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = notificationextention/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification In house Profile";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = "Qa-Release";
-		};
 		CEA2F93726569C5C0013F5E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -2258,7 +1737,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -2314,17 +1792,16 @@
 		};
 		CEA2F93A26569C5C0013F5E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E7D726D9F097897F6ED0F405 /* Pods-MirrorflyUIkit.debug.xcconfig */;
+			baseConfigurationReference = 5587853EDFA19BB297CA0D98 /* Pods-UiKitQa.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
-				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkit.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitQa.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development: Balasubramaniyam Kandaswamy (HSBG5S6ZV9)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -2333,7 +1810,7 @@
 					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
 					"$(PROJECT_DIR)/MirrorflyUIkit",
 				);
-				INFOPLIST_FILE = "Plist/MirrorflyUIkit-info.plist";
+				INFOPLIST_FILE = "MirrorflyUIkit/Plist/MirrorflyUIkit-info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2345,13 +1822,9 @@
 					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
 					"$(BUILT_PRODUCTS_DIR)/FlyCall",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				MARKETING_VERSION = 1.3.0;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DPREPROD";
+				MARKETING_VERSION = 4.5.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Development Profile";
@@ -2364,25 +1837,26 @@
 		};
 		CEA2F93B26569C5C0013F5E8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE620CC8B6C6FE5ED138BD09 /* Pods-MirrorflyUIkit.release.xcconfig */;
+			baseConfigurationReference = 947EBA783015E0A9152F090E /* Pods-UiKitQa.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
-				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 76;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
+				EXCLUDED_ARCHS = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MirrorflyUIkit/Framework",
 					"$(PROJECT_DIR)/MirrorflyUIkit",
 				);
-				INFOPLIST_FILE = "Plist/MirrorflyUIkit-info.plist";
+				INFOPLIST_FILE = "MirrorflyUIkit/Plist/MirrorflyUIkit-info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2394,13 +1868,9 @@
 					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
 					"$(BUILT_PRODUCTS_DIR)/FlyCall",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 4.5.0;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DPREPROD";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Inhouse Profile";
@@ -2413,15 +1883,14 @@
 		};
 		CEF4374D273BCA77008D0F39 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 64BCBE9C92414A07C04CAA08 /* Pods-NotificationExtention.debug.xcconfig */;
+			baseConfigurationReference = 7EF82D500A79CCD132095983 /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = notificationextention/notificationextention.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development: Balasubramaniyam Kandaswamy (HSBG5S6ZV9)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2438,8 +1907,9 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 4.5.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification Dev Profile";
@@ -2452,15 +1922,14 @@
 		};
 		CEF4374E273BCA77008D0F39 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E77CACFDBBEBDFF05F4AE00C /* Pods-NotificationExtention.release.xcconfig */;
+			baseConfigurationReference = DE2877988F60722EABBCE9AB /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = notificationextention/notificationextention.entitlements;
+				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2477,7 +1946,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 4.5.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification In house Profile";
@@ -2495,37 +1965,25 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEA2F93726569C5C0013F5E8 /* Debug */,
-				CE6FD59E275FA91A0094C2B0 /* Qa-Debug */,
-				CE6FD598275FA8A80094C2B0 /* Dev-Debug */,
 				CEA2F93826569C5C0013F5E8 /* Release */,
-				CE6FD5A1275FA9260094C2B0 /* Qa-Release */,
-				CE6FD59B275FA8B40094C2B0 /* Dev-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "MirrorflyUIkit" */ = {
+		CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "UiKitQa" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEA2F93A26569C5C0013F5E8 /* Debug */,
-				CE6FD59F275FA91A0094C2B0 /* Qa-Debug */,
-				CE6FD599275FA8A80094C2B0 /* Dev-Debug */,
 				CEA2F93B26569C5C0013F5E8 /* Release */,
-				CE6FD5A2275FA9260094C2B0 /* Qa-Release */,
-				CE6FD59C275FA8B40094C2B0 /* Dev-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "NotificationExtention" */ = {
+		CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "UiKitQaNotificationExtention" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEF4374D273BCA77008D0F39 /* Debug */,
-				CE6FD5A0275FA91A0094C2B0 /* Qa-Debug */,
-				CE6FD59A275FA8A80094C2B0 /* Dev-Debug */,
 				CEF4374E273BCA77008D0F39 /* Release */,
-				CE6FD5A3275FA9260094C2B0 /* Qa-Release */,
-				CE6FD59D275FA8B40094C2B0 /* Dev-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

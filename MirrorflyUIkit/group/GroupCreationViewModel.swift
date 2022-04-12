@@ -40,7 +40,7 @@ class GroupCreationViewModel : NSObject {
     
     func searchContacts(text : String,contacts : [ProfileDetails])  -> [ProfileDetails] {
         text.isEmpty ? contacts : contacts.filter { term in
-            return term.name.lowercased().contains(text.lowercased())
+            return getUserName(name: term.name, nickName: term.nickName).lowercased().contains(text.lowercased())
         }
     }
     
@@ -79,4 +79,38 @@ class GroupCreationViewModel : NSObject {
         })
     }
     
+    private func getParticiapntsJID() -> [String] {
+        
+        var participantJid = [String]()
+        GroupCreationData.participants.forEach { participant in
+            participantJid.append(participant.jid)
+        }
+        
+        return participantJid
+    }
+    
+    func removeExistingParticipants(groupID: String, contacts: [ProfileDetails]) -> [ProfileDetails]? {
+        
+        var contactsList = contacts
+        
+        let groupMembers = GroupManager.shared.getGroupMemeberFromLocal(groupJid: groupID)
+        groupMembers.participantDetailArray.forEach { groupParticipantDetail in
+            contactsList = contactsList.filter({$0.jid != groupParticipantDetail.memberJid})
+        }
+        return contactsList
+    }
+    
+    func addNewParticipantToGroup(groupID: String,
+                                  completionHandler: @escaping (Bool) -> Void) {
+        
+        let contactList = getParticiapntsJID()
+        
+        try! GroupManager.shared.addParticipantToGroup(groupId: groupID,                                                                   newUserJidList: contactList) { isSuccess, error, data in
+            
+            if isSuccess {
+                print("SUCCESSSS")
+            }
+            completionHandler(isSuccess)
+        }
+    }
 }

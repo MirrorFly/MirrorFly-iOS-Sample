@@ -24,7 +24,7 @@ class ChatTextView: UIView, UITextViewDelegate {
     @IBOutlet weak var spacierView: UIView?
     @IBOutlet weak var mapView: GMSMapView?
     @IBOutlet weak var contactNameLabel: UILabel?
-    
+    @IBOutlet weak var cannotSendMessageView: UIView?
     override init(frame: CGRect) {
         super.init(frame: frame)
     }

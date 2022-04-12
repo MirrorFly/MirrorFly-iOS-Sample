@@ -26,6 +26,7 @@ class ImagePreview: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationController?.navigationBar.isHidden = false
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -107,7 +108,7 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     var cell:ImageCell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.imageCell, for: indexPath) as! ImageCell
     let imgeDetail = imageAray[indexPath.row]
-    cell.cellImage.contentMode = .scaleToFill
+        cell.cellImage.contentMode = .scaleAspectFit
     cell = cell.getCellFor(imgeDetail, at: indexPath)!
     return cell
     }

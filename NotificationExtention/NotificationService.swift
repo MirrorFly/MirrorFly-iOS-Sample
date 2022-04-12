@@ -11,17 +11,21 @@ import FlyXmpp
 import FlyCore
 import FlyCommon
 
+let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
+let CONTAINER_ID = "group.com.mirrorfly.qa"
+
+
 class NotificationService: UNNotificationServiceExtension {
     
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
-
+    
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         let payloadType = bestAttemptContent?.userInfo["type"] as? String
-        print("Push Received UserInfo \(String(describing: bestAttemptContent?.userInfo))")
-        CallManager.setAppGroupContainerId(id: "group.com.mirrorfly.qa")
+        CallManager.setAppGroupContainerId(id: CONTAINER_ID)
+        print("#push-api withContentHandler received")
         if payloadType == "media_call" {
             NotificationExtensionSupport.shared.didReceiveNotificationRequest(request.content.mutableCopy() as? UNMutableNotificationContent, onCompletion: { [self] bestAttemptContent in
                 if let userInfo = bestAttemptContent?.userInfo["message_id"] {
@@ -34,7 +38,6 @@ class NotificationService: UNNotificationServiceExtension {
         else {
             ChatSDK.Builder.initializeDelegate()
             // Handle Message Push messages
-            print("Push Received UserInfo \(String(describing: bestAttemptContent?.userInfo))")
             NotificationMessageSupport.shared.didReceiveNotificationRequest(request.content.mutableCopy() as? UNMutableNotificationContent, onCompletion: { [self] bestAttemptContent in
                 if let userInfo = bestAttemptContent?.userInfo["message_id"] {
                     print("Push Show title: \(bestAttemptContent?.title ?? "") body: \(bestAttemptContent?.body ?? ""), ID - \(userInfo)")
@@ -52,5 +55,5 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(bestAttemptContent)
         }
     }
-
+    
 }

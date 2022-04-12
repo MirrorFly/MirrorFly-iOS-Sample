@@ -54,7 +54,7 @@ class ReceiverImageCell: BaseTableViewCell {
     @IBOutlet weak var bubbleImageLeadingCons: NSLayoutConstraint?
     @IBOutlet weak var forwardButton: UIButton?
     var composeMailDelegate: ShowMailComposeDelegate?
-    
+    var receivedMediaMessages: [ChatMessage]? = []
     var message : ChatMessage?
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     var selectedForwardMessage: [SelectedForwardMessage]? = []
@@ -67,7 +67,7 @@ class ReceiverImageCell: BaseTableViewCell {
     func setupUI() {
     imageGeasture = UITapGestureRecognizer()
     imageContainer.addGestureRecognizer(imageGeasture)
-    progressBar?.transition(to: .determinate(percentage: 30.0))
+    //progressBar?.transition(to: .determinate(percentage: 30.0))
     caption.font = UIFont.font12px_appRegular()
     filseSize.font = UIFont.font12px_appSemibold()
     progressView.layer.cornerRadius = 5
@@ -78,9 +78,9 @@ class ReceiverImageCell: BaseTableViewCell {
         progressBar?.secondaryColor = .clear
         cellView.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 10.0)
     }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
     
@@ -117,12 +117,12 @@ class ReceiverImageCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
-            fwdView?.isHidden = true
-            fwdIcon?.isHidden = true
-        } else {
+        if (message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && isShowForwardView == false) {
             fwdView?.isHidden = false
             fwdIcon?.isHidden = false
+        } else {
+            fwdView?.isHidden = true
+            fwdIcon?.isHidden = true
         }
         
         // Reply view elements and its data
@@ -174,8 +174,7 @@ class ReceiverImageCell: BaseTableViewCell {
                
                chatMapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
       
-               DispatchQueue.main.async
-               { [self] in
+               DispatchQueue.main.async { [self] in
                    // 2. Perform UI Operations.
                    let position = CLLocationCoordinate2DMake(latitude,longitude)
                    let marker = GMSMarker(position: position)
@@ -205,9 +204,8 @@ class ReceiverImageCell: BaseTableViewCell {
         
         self.message = message
         
-        if let senderName = message?.senderUserName, message?.messageChatType == .groupChat {
-            print("ReceiverImageCell senderName \(senderName)")
-            groupSenderNameLabel.text = senderName
+        if message?.messageChatType == .groupChat {
+            groupSenderNameLabel.text = ChatUtils.getGroupSenderName(messsage: message)
         } else {
             groupSenderNameLabel.isHidden = true
             senderNameContainer.isHidden = true
@@ -216,8 +214,8 @@ class ReceiverImageCell: BaseTableViewCell {
             caption.attributedText = processTextMessage(message: message?.mediaChatMessage?.mediaCaptionText ?? "", uiLabel: caption)
             receivedTimeBottomcons?.constant = 0
             timeTopCons?.isActive = true
-            captionTop?.constant = 7
-            captionBotom?.constant = 0
+            captionTop?.constant = 8
+            captionBotom?.constant = -7
             timeTopCons?.constant = 0
             overlayImage.isHidden = true
         }else{
@@ -231,34 +229,39 @@ class ReceiverImageCell: BaseTableViewCell {
         }
         if message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer.image = image
-                progressBar?.isHidden = true
-                progressView.isHidden = true
-                progrssButton.isHidden = true
-                downoadButton.isHidden = false
-                downloadView.isHidden = false
+                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                if ((receivedMediaMessages?.count ?? 0) > 0 && (receivedMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
+                    progressBar?.isHidden = false
+                    progressBar?.transition(to: .indeterminate)
+                    downoadButton?.isHidden = true
+                    downloadView?.isHidden = true
+                    progressView?.isHidden = false
+                    progrssButton?.isHidden = false
+                    close.isHidden = false
+                } else {
+                    progressBar?.isHidden = true
+                    downoadButton?.isHidden = false
+                    downloadView?.isHidden = false
+                    progressView?.isHidden = true
+                    progrssButton?.isHidden = true
+                    close.isHidden = true
+                }
                 if let fileSiz = message?.mediaChatMessage?.mediaFileSize{
                     filseSize.text = "\(fileSiz.byteSize)"
                 } else {
                     filseSize.text = ""
                 }
-                close.isHidden = true
        }
     } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloading {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-            let converter = ImageConverter()
-            var image =  converter.base64ToImage(thumbImage)
-            image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer.image = image
+                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
             }
             progressBar?.isHidden = false
             progressView.isHidden = false
             progrssButton.isHidden = false
             downoadButton.isHidden = true
             downloadView.isHidden = true
+            progressBar?.transition(to: .indeterminate)
             filseSize.text = ""
             close.isHidden = false
     } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloaded {
@@ -272,12 +275,9 @@ class ReceiverImageCell: BaseTableViewCell {
                     imageContainer.image = image
                 }
             } else {
-            if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-            let converter = ImageConverter()
-            var image =  converter.base64ToImage(thumbImage)
-            image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer.image = image
-            }
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                }
             }
             progressView.isHidden = true
             progrssButton.isHidden = true
@@ -287,10 +287,7 @@ class ReceiverImageCell: BaseTableViewCell {
             close.isHidden = true
         } else {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer.image = image
+                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
             }
                 downloadView.isHidden = false
                 downoadButton.isHidden = false

@@ -16,6 +16,9 @@ class ContactViewModel : NSObject
         
     }
     func getContacts(fromServer: Bool, completionHandler:  @escaping ([ProfileDetails]?, String?)-> Void) {
+        if fromServer{
+            syncContacts()
+        }
         ContactManager.shared.getFriendsList(fromServer: fromServer) {  isSuccess, flyError, flyData in
             var data  = flyData
             if isSuccess {
@@ -32,7 +35,7 @@ class ContactViewModel : NSObject
     }
     
     func syncContacts(){
-        ContactSyncManager.shared.syncContacts(firstLogin: false) { isSuccess, error, data in
+        ContactSyncManager.shared.syncContacts() { isSuccess, error, data in
             if isSuccess{
                 print("#contact sync SUCCESS")
             }else {

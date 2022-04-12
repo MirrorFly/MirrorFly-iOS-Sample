@@ -111,7 +111,7 @@ class Utility: NSObject{
         let lblNameInitialize = UILabel()
         lblNameInitialize.frame.size = CGSize(width: frameSize, height: frameSize)
         lblNameInitialize.textColor = UIColor.white
-        lblNameInitialize.font = AppFont.Medium.size(fontSize)
+        lblNameInitialize.font = AppFont.Bold.size(fontSize)
         let wordArray = name.split(separator: " ")
         if wordArray.count >= 2 {
             let firstTwoChar = String(wordArray[0].first!).uppercased() + String(wordArray[1].first!).uppercased()
@@ -123,7 +123,7 @@ class Utility: NSObject{
         UIGraphicsBeginImageContext(CGSize(width: frameSize, height: frameSize))
         lblNameInitialize.layer.render(in: UIGraphicsGetCurrentContext()!)
         imageView.image = UIGraphicsGetImageFromCurrentImageContext()
-        imageView.backgroundColor = Utility.color(fromHexString: colorCode)
+        imageView.backgroundColor = getColor(userName: name)
         imageView.contentMode = .center
         UIGraphicsEndImageContext()
     }

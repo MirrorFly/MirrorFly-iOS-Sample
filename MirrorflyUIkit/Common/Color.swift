@@ -62,6 +62,8 @@ enum Color {
     static let senderBubbleColor = UIColor(named: "sender_bubble_color")
     static let receiverBubbleColor = UIColor(named: "receiver_bubble_color")
     static let forwardCircleBorderColor = UIColor(hex: "C4C4C6")
+    static let previewCaptionTextColor = UIColor(named: "previewCaptionColor")
+    static let leaveGroupTextColor = UIColor(named: "leaveGroup")
 }
 
 extension UIColor {

@@ -78,6 +78,8 @@ let contactTitle = "Contact"
 
 
 let profileUpdateSuccess = "Profile updated successfully"
+let groupImageUpdateSuccess = "Group Image updated successfully"
+let enterGroupName = "Please enter Group name"
 let statusUpdateSuccess = "Status updated successfully"
 let jpg = ".jpg"
 let jpeg = ".jpeg"
@@ -150,6 +152,7 @@ let mainUrl = Bundle.main.url(forResource: "countries", withExtension: "json")
 let isLoggedIn = "isLoggedIn"
 let isProfileSaved = "isProfileSaved"
 let googleToken = "googleToken"
+let voipToken = "voipToken"
 let password = "password"
 let username = "username"
 let isLoginContactSyncDone = "isLoginContactSyncDone"
@@ -169,6 +172,7 @@ let seen = "Seen"
 let notAcknowledged = "Not Acknowledged"
 let typing = "typing..."
 let processingVideo = "Processsing Video..."
+let waitingForNetwork = "Waiting for Network"
 
 //MARK: Group
 let groupNameRequired = "Please provide group name"
@@ -191,6 +195,9 @@ let youWantToLogout = "Are you sure you want to logout?"
 let email = "Email"
 let mobileNumber = "Mobile Number"
 let status = "Status"
+
+// MARK: notification name
+let foregroundNotification = "foregroundNotification"
 
 // Error messages
 public struct ErrorMessage {
@@ -230,7 +237,7 @@ public let cameraMediaTypeImage = "public.image"
 
 enum CreateGroupOptions : String, CaseIterable {
     case createGroup = "Create Group"
-    case broadCastList = "Broadcast List"
+   // case broadCastList = "Broadcast List"
     case web = "Web"
 }
 

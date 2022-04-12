@@ -7,27 +7,49 @@
 
 import UIKit
 import FlyCommon
+import FlyCore
+import AudioToolbox
+
+protocol AddParticipantsDelegate: class {
+    func updatedAddParticipants()
+}
 
 class AddParticipantsViewController: UIViewController {
     
     let groupCreationViewModel = GroupCreationViewModel()
     var groupCreationDeletgate : GroupCreationDelegate?
     
+    @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var participantTableView: UITableView!
+    
+    weak var delegate: AddParticipantsDelegate? = nil
+    
     var participants = [ProfileDetails]()
     var searchedParticipants = [ProfileDetails]()
+    var existingParticipants: ProfileDetails!
+    var filteredContacts = [String]()
+    
+    var isFromGroupInfo: Bool = false
+    var groupID = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
         setUpTableView()
         getContacts()
+        checkExistingGroup()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         resetSearch()
         participantTableView.reloadData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
     }
     
     func setUpUI() {
@@ -56,33 +78,56 @@ class AddParticipantsViewController: UIViewController {
     
     
     @IBAction func didBackTap(_ sender: Any) {
+        if isFromGroupInfo {
+            groupCreationViewModel.initializeGroupCreationData()
+        }
         navigationController?.popViewController(animated: true)
     }
     
     
     @IBAction func didNextTap(_ sender: Any) {
         
-        if groupCreationViewModel.checkMaximumParticipant(selectedParticipant: GroupCreationData.participants) {
-            AppAlert.shared.showToast(message: maximumGroupUsers)
-            return
-        }
-        
-        if groupCreationViewModel.checkMinimumParticipant(selectedParticipants: GroupCreationData.participants) {
-            print("groupName \(GroupCreationData.groupName) imagePath\(GroupCreationData.groupImageLocalPath) selectedparticipantCount \(GroupCreationData.participants.count)")
-            performSegue(withIdentifier: Identifiers.groupCreationPreview, sender: nil)
+        if isFromGroupInfo == true {
+            groupCreationViewModel.addNewParticipantToGroup(groupID: groupID) { [weak self] success in
+                if success {
+                    self?.groupCreationViewModel.initializeGroupCreationData()
+                    self?.navigationController?.popViewController(animated: true)
+                    self?.delegate?.updatedAddParticipants()
+                    AppAlert.shared.showToast(message: "Members added successfully")
+                }
+            }
+            
         } else {
-            AppAlert.shared.showToast(message: atLeastTwoParticipant)
+            if groupCreationViewModel.checkMaximumParticipant(selectedParticipant: GroupCreationData.participants) {
+                AppAlert.shared.showToast(message: maximumGroupUsers)
+                return
+            }
+            
+            if groupCreationViewModel.checkMinimumParticipant(selectedParticipants: GroupCreationData.participants) {
+                print("groupName\(GroupCreationData.groupName) imagePath\(GroupCreationData.groupImageLocalPath)                                selecteddd\(GroupCreationData.participants.count)")
+                performSegue(withIdentifier: Identifiers.groupCreationPreview, sender: nil)
+            } else {
+                AppAlert.shared.showToast(message: atLeastTwoParticipant)
+            }
         }
     }
     
     func getContacts() {
-        groupCreationViewModel.getContacts(fromServer: false, completionHandler: { [weak self] (profiles, error)  in
+        groupCreationViewModel.getContacts(fromServer: false,
+                                           completionHandler: { [weak self] (profiles, error) in
             if error != nil {
                 return
             }
-            self?.participants = (profiles?.sorted{ $0.name.capitalized < $1.name.capitalized }) ?? []
-            self?.searchedParticipants = (profiles?.sorted{ $0.name.capitalized < $1.name.capitalized }) ?? []  
-            self?.participantTableView.reloadData()
+            
+            if self?.isFromGroupInfo == true {
+                self?.participants = self?.groupCreationViewModel.removeExistingParticipants(groupID: self?.groupID ?? "", contacts: profiles ?? []) ?? []
+                self?.participantTableView.reloadData()
+            } else {
+                
+                self?.participants = (profiles?.sorted{ $0.name.capitalized < $1.name.capitalized }) ?? []
+                self?.searchedParticipants = (profiles?.sorted{ $0.name.capitalized < $1.name.capitalized }) ?? []
+                self?.participantTableView.reloadData()
+            }
         })
     }
     
@@ -90,6 +135,14 @@ class AddParticipantsViewController: UIViewController {
         if segue.identifier == Identifiers.groupCreationPreview {
             let groupCreationPreviewController = segue.destination as! GroupCreationPreviewController
             groupCreationPreviewController.groupCreationDeletgate = groupCreationDeletgate
+        }
+    }
+        
+    func checkExistingGroup() {
+        if isFromGroupInfo {
+            nextButton.setTitle("Add", for: .normal)
+        } else {
+            nextButton.setTitle("Next", for: .normal)
         }
     }
 }
@@ -110,13 +163,14 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
         if searchedParticipants.count > 0 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell)!
             let profileDetail = searchedParticipants[indexPath.row]
-            cell.nameUILabel?.text = profileDetail.name
+            let name = getUserName(name: profileDetail.name, nickName: profileDetail.nickName)
+            cell.nameUILabel?.text = name
             cell.statusUILabel?.text = profileDetail.status
             let hashcode = profileDetail.name.hashValue
-            let color = getColor(userName: profileDetail.name)
+            let color = getColor(userName: name)
             cell.removeButton?.isHidden = true
             cell.removeIcon?.isHidden = true
-            cell.setImage(imageURL: profileDetail.image, name: profileDetail.name, color: color ?? .gray)
+            cell.setImage(imageURL: profileDetail.image, name: name, color: color ?? .gray)
             cell.checkBoxImageView?.image = GroupCreationData.participants.contains(where: {$0.jid == profileDetail.jid}) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
             cell.setTextColorWhileSearch(searchText: searchBar.text ?? "", profileDetail: profileDetail)
             cell.emptyView?.isHidden = true
@@ -174,3 +228,19 @@ extension AddParticipantsViewController : UISearchBarDelegate {
     }
 }
 
+extension AddParticipantsViewController {
+    @objc func contactSyncCompleted(notification: Notification) {
+        if let contactSyncState = notification.userInfo?[FlyConstants.contactSyncState] as? String {
+            switch ContactSyncState(rawValue: contactSyncState) {
+            case .inprogress:
+                break
+            case .success:
+                getContacts()
+            case .failed:
+                print("contact sync failed")
+            case .none:
+                print("contact sync failed")
+            }
+        }
+    }
+}

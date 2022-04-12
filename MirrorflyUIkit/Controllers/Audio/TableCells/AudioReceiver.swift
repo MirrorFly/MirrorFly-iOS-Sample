@@ -226,15 +226,14 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             slider?.isUserInteractionEnabled = false
         case .downloading:
             download?.image = UIImage(named: ImageConstant.ic_download_cancel)
-            playBtn?.isHidden = false
-            downloadButton?.isHidden = true
+            playBtn?.isHidden = true
+            downloadButton?.isHidden = false
             download?.isHidden = false
             playImage?.isHidden = true
             nicoProgressBar?.isHidden = false
             slider?.isUserInteractionEnabled = false
         case .downloaded:
             playImage?.image = isPlaying ? UIImage(named: ImageConstant.ic_audio_pause_gray) : UIImage(named: ImageConstant.ic_play_dark)
-            download?.image = UIImage(named: ImageConstant.ic_download_cancel)
             download?.isHidden = true
             playBtn?.isHidden = false
             downloadButton?.isHidden = true
@@ -274,4 +273,29 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         player.stop()
         stopDisplayLink()
 }
+    
+    func startDownload() {
+        DispatchQueue.main.async { [weak self] in
+            self?.download?.image = UIImage(named: ImageConstant.ic_download_cancel)
+            self?.playBtn?.isHidden = true
+            self?.downloadButton?.isHidden = false
+            self?.download?.isHidden = false
+            self?.playImage?.isHidden = true
+            self?.nicoProgressBar?.isHidden = false
+            self?.nicoProgressBar?.transition(to: .indeterminate)
+            self?.slider?.isUserInteractionEnabled = false
+        }
+    }
+    
+    func stopDownload() {
+        DispatchQueue.main.async { [weak self] in
+            self?.download?.image = UIImage(named: ImageConstant.ic_download)
+            self?.download?.isHidden = false
+            self?.playImage?.isHidden = true
+            self?.nicoProgressBar?.isHidden = true
+            self?.playBtn?.isHidden = true
+            self?.downloadButton?.isHidden = false
+            self?.slider?.isUserInteractionEnabled = false
+        }
+    }
 }

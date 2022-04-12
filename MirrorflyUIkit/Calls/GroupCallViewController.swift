@@ -70,10 +70,10 @@ class GroupCallViewController: UIViewController {
             for i in 0...contactJidArr.count - 1{
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                     if i == 1{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                 }
             }
@@ -83,18 +83,18 @@ class GroupCallViewController: UIViewController {
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
                         
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                         
                     }
                     if i == 1{
                         
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                         
                     }
                     
                     if i == 2{
                         
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                         
                     }
                 }
@@ -110,22 +110,22 @@ class GroupCallViewController: UIViewController {
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
                         
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                         
                     }
                     if i == 1{
                         
-                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                         
                     }
                     
                     if i == 2{
                         
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                         
                     }
                     if i == 3{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                 }
             }
@@ -134,7 +134,7 @@ class GroupCallViewController: UIViewController {
             imgFour.isHidden = false
             plusCountLbl.isHidden = true
             
-        }else{
+        }else if contactJidArr.count != 0{
             imgOne.isHidden = false
             imgTwo.isHidden = false
             imgThree.isHidden = false
@@ -144,17 +144,17 @@ class GroupCallViewController: UIViewController {
             for i in 0...contactJidArr.count - 1{
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                     if i == 1{
-                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                     
                     if i == 2{
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                     if i == 3{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
                     }
                 }
             }
@@ -245,9 +245,9 @@ extension GroupCallViewController : UITableViewDataSource, UITableViewDelegate {
         memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
         memberCell?.userImageView.layer.masksToBounds = true
         
-        Utility.download(token: contact.image, profileImage: (memberCell?.userImageView)!, uniqueId: contact.jid,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+        Utility.download(token: contact.image, profileImage: (memberCell?.userImageView)!, uniqueId: contact.jid,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
         
-        memberCell?.contactNamelabel.text = contact.name
+        memberCell?.contactNamelabel.text = getUserName(name: contact.name, nickName: contact.nickName)
         return memberCell!
     }
     

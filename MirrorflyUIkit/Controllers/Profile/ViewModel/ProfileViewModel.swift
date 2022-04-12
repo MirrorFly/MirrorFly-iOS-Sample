@@ -8,6 +8,7 @@
 import Foundation
 import FlyCommon
 import Alamofire
+import FlyCore
 class ProfileViewModel {
     var profileModel: ProfileModel!
     
@@ -55,7 +56,7 @@ class ProfileViewModel {
     func contactSync() {
         let  apiService =  ApiService()
         let params = ["licenseKey": FlyDefaults.licenseKey]
-        let url = Environment.sandboxContact.baseURL + syncContacts
+        let url = FlyDefaults.baseURL + "contacts/sandbox/" + syncContacts
         let headers: HTTPHeaders
         let authtoken = FlyDefaults.authtoken
         headers = [
@@ -63,32 +64,33 @@ class ProfileViewModel {
         print(headers)
         print(params)
         apiService.post(withEndPoint: url, params: params, headers: headers).responseJSON { [weak self] (response) in
-        if response.response?.statusCode == 401 {
-            apiService.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
-                if isSuccess {
-                    var resultDict : [String: Any] = [:]
-                    resultDict = flyData
-                    let profiledict = resultDict.getData() as? NSDictionary ?? [:]
-                    guard let token = profiledict.value(forKey: "token") as? String else{
-                        return
+            if response.response?.statusCode == 401 {
+                apiService.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
+                    if isSuccess {
+                        var resultDict : [String: Any] = [:]
+                        resultDict = flyData
+                        let profiledict = resultDict.getData() as? NSDictionary ?? [:]
+                        guard let token = profiledict.value(forKey: "token") as? String else{
+                            return
+                        }
+                        FlyDefaults.authtoken = token
+                        self?.contactSync()
                     }
-                    FlyDefaults.authtoken = token
-                    self?.contactSync()
-                }
-        })
-        return
-        }
-        switch response.result {
-        case .success(let JSON):
-            guard let responseDictionary = JSON as?[String : Any]  else{
+                })
                 return
             }
-            print("success \(responseDictionary)")
-            break
-        case .failure(let error):
-            print("Faill \(error.localizedDescription)")
-            break
+            switch response.result {
+            case .success(let JSON):
+                guard let responseDictionary = JSON as?[String : Any]  else{
+                    return
+                }
+                ContactManager.shared.getFriendsList(fromServer: true) { isSuccess, error, data in }
+                print("success \(responseDictionary)")
+                break
+            case .failure(let error):
+                print("Faill \(error.localizedDescription)")
+                break
+            }
         }
-    }
     }
 }

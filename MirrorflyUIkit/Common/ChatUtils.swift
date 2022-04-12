@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 import AVKit
 import FlyCommon
+import SDWebImage
+import FlyCore
 
 class ChatUtils {
     
@@ -121,6 +123,42 @@ class ChatUtils {
         }
     }
     
+    static func resize(_ image: UIImage) -> UIImage {
+        var actualHeight = Float(image.size.height)
+        var actualWidth = Float(image.size.width)
+        let maxHeight: Float = 300.0
+        let maxWidth: Float = 400.0
+        var imgRatio: Float = actualWidth / actualHeight
+        let maxRatio: Float = maxWidth / maxHeight
+        let compressionQuality: Float = 0.5
+        //50 percent compression
+        if actualHeight > maxHeight || actualWidth > maxWidth {
+            if imgRatio < maxRatio {
+                //adjust width according to maxHeight
+                imgRatio = maxHeight / actualHeight
+                actualWidth = imgRatio * actualWidth
+                actualHeight = maxHeight
+            }
+            else if imgRatio > maxRatio {
+                //adjust height according to maxWidth
+                imgRatio = maxWidth / actualWidth
+                actualHeight = imgRatio * actualHeight
+                actualWidth = maxWidth
+            }
+            else {
+                actualHeight = maxHeight
+                actualWidth = maxWidth
+            }
+        }
+        let rect = CGRect(x: 0.0, y: 0.0, width: CGFloat(actualWidth), height: CGFloat(actualHeight))
+        UIGraphicsBeginImageContext(rect.size)
+        image.draw(in: rect)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        let imageData = img?.jpegData(compressionQuality: CGFloat(compressionQuality))
+        UIGraphicsEndImageContext()
+        return UIImage(data: imageData!) ?? UIImage()
+    }
+    
    static func getPlaceholder(name: String , userColor: UIColor, userImage : UIImageView)->UIImage {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let ipimage = IPImage(text: trimmedName, radius: Double(userImage.frame.size.height), font: UIFont.font200px_appBold(), textColor: nil, color: userColor)
@@ -129,7 +167,7 @@ class ChatUtils {
     }
     
     static func getUserImaeUrl(imageUrl : String) -> URL? {
-        let urlString = Environment.sandboxImage.baseURL + "media/" + imageUrl + "?mf=" + FlyDefaults.authtoken
+        let urlString = FlyDefaults.baseURL + "media/" + imageUrl + "?mf=" + FlyDefaults.authtoken
         print("ContactInfoViewController setProfile \(urlString)")
         return URL(string: urlString)
     }
@@ -140,4 +178,8 @@ class ChatUtils {
         imageContainer.image = image
     }
     
+    static func getGroupSenderName(messsage: ChatMessage?) -> String{
+        let result = ChatManager.getUserNameAndNickName(userJid: messsage?.senderUserJid ?? "")
+        return getUserName(name: result.name, nickName: result.nickName)
+    }
 }

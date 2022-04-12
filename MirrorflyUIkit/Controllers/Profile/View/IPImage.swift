@@ -294,7 +294,6 @@ public class IPImage: NSObject {
         return image
     }
     
-    
     public func generateInitialImage() -> UIImage? {
             let view = setupView()
             UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, 0.0)

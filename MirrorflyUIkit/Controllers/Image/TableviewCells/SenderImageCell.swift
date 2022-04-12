@@ -18,7 +18,6 @@ protocol ShowMailComposeDelegate {
 
 class SenderImageCell: BaseTableViewCell {
     @IBOutlet weak var imgHight: NSLayoutConstraint?
-    @IBOutlet weak var progressButton: UIButton?
     @IBOutlet weak var uploadView: UIView?
     @IBOutlet weak var retryLab: UILabel?
     @IBOutlet weak var retryButton: UIButton?
@@ -67,12 +66,12 @@ class SenderImageCell: BaseTableViewCell {
         setupUI()
     }
     func setupUI() {
-    retryLab?.text = retry
-    imageGeasture = UITapGestureRecognizer()
+        retryLab?.text = retry
+        imageGeasture = UITapGestureRecognizer()
         imageContainer?.addGestureRecognizer(imageGeasture)
-    caption?.font = UIFont.font12px_appRegular()
-    progressView?.layer.cornerRadius = 5
-    uploadView?.layer.cornerRadius = 5
+        caption?.font = UIFont.font12px_appRegular()
+        progressView?.layer.cornerRadius = 5
+        uploadView?.layer.cornerRadius = 5
         cellView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
         imageContainer?.layer.cornerRadius = 5.0
         imageContainer?.clipsToBounds = true
@@ -97,7 +96,19 @@ class SenderImageCell: BaseTableViewCell {
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?) -> SenderImageCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
-        
+        if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt != "" {
+            captionTop?.constant = 7
+            caption?.attributedText = processTextMessage(message: captionTxt, uiLabel: caption ?? UILabel())
+            overlayImage?.isHidden = true
+            captionBottomCons?.constant = 12
+           
+        }else{
+            captionTop?.constant = 5
+            caption?.text = ""
+            overlayImage?.isHidden = false
+            captionBottomCons?.constant = 1
+           
+        }
         // Forward view elements and its data
         forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) ? false : true
         forwardLeadingCons?.constant = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) ? 20 : 0
@@ -115,7 +126,7 @@ class SenderImageCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded  || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+        if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded  || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
             fwdView?.isHidden = true
             fwdButton?.isHidden = true
         } else {
@@ -203,52 +214,33 @@ class SenderImageCell: BaseTableViewCell {
         ChatUtils.setSenderBubbleBackground(imageView: bubbleImageView)
         
         self.message = message
-        if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt != "" {
-            captionTop?.constant = 7
-            caption?.attributedText = processTextMessage(message: captionTxt, uiLabel: caption ?? UILabel())
-            overlayImage?.isHidden = true
-            captionBottomCons?.constant = 7
-           
-        }else{
-            captionTop?.constant = 5
-            caption?.text = ""
-            overlayImage?.isHidden = false
-            captionBottomCons?.constant = 1
-           
-        }
-        if message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
+        
+        if message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.messageStatus == .sent {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer?.image = image
+                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                 if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
+                    print("sender",sendMediaMessages?.count)
                     nicoProgressBar?.isHidden = false
                     nicoProgressBar?.transition(to: .indeterminate)
-                    retryButton?.isHidden = true
                     uploadView?.isHidden = true
                     progressView?.isHidden = false
-                    progressButton?.isHidden = false
+                    retryButton?.isHidden = false
                 } else {
+                    print("sender",sendMediaMessages?.count)
                     nicoProgressBar?.isHidden = true
                     retryButton?.isHidden = false
                     uploadView?.isHidden = false
                     progressView?.isHidden = true
-                    progressButton?.isHidden = true
                 }
             }
     } else if message?.mediaChatMessage?.mediaUploadStatus == .uploading {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer?.image = image
+                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                 nicoProgressBar?.isHidden = false
+                nicoProgressBar?.transition(to: .indeterminate)
                 progressView?.isHidden = false
-                progressButton?.isHidden = false
                 uploadView?.isHidden = true
-                retryButton?.isHidden = true
-                progressButton?.isHidden = false
+                retryButton?.isHidden = false
         }
     } else if message?.mediaChatMessage?.mediaUploadStatus == .uploaded {
             if let localPath = message?.mediaChatMessage?.mediaFileName {
@@ -262,29 +254,31 @@ class SenderImageCell: BaseTableViewCell {
                   }
             } else {
                 if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                    let converter = ImageConverter()
-                    let image =  converter.base64ToImage(thumbImage)
-                    imageContainer?.image = image
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                 }
             }
             retryButton?.isHidden = true
-            progressButton?.isHidden = true
             nicoProgressBar?.isHidden = true
             progressView?.isHidden = true
             uploadView?.isHidden = true
         } else {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                imageContainer?.image = image
+                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                 nicoProgressBar?.isHidden = true
                 progressView?.isHidden = true
-                retryButton?.isHidden = false
-                uploadView?.isHidden = false
-                progressButton?.isHidden = true
+                retryButton?.isHidden = true
+                uploadView?.isHidden = true
         }
     }
+            let status = message?.messageStatus
+            if status == .acknowledged || status == .received || status == .delivered || status == .seen {
+                uploadView?.isHidden = true
+                progressView?.isHidden = true
+                nicoProgressBar?.isHidden = true
+                retryButton?.isHidden = true
+            }
+       
+
         switch message?.messageStatus {
         case .notAcknowledged:
             msgStatus?.image = UIImage(named: ImageConstant.ic_hour)
@@ -322,29 +316,26 @@ class SenderImageCell: BaseTableViewCell {
         switch message?.mediaChatMessage?.mediaUploadStatus {
         case .not_uploaded:
             progressView?.isHidden = false
-            progressButton?.isHidden = false
             nicoProgressBar?.transition(to: .indeterminate)
             nicoProgressBar?.isHidden = false
-            retryButton?.isHidden = true
+            retryButton?.isHidden = false
             uploadView?.isHidden = true
         case .uploading:
             progressView?.isHidden = false
-            progressButton?.isHidden = false
             nicoProgressBar?.isHidden = false
-            retryButton?.isHidden = true
+            nicoProgressBar?.transition(to: .indeterminate)
+            retryButton?.isHidden = false
             uploadView?.isHidden = true
         case .uploaded:
             progressView?.isHidden = false
-            progressButton?.isHidden = true
             nicoProgressBar?.transition(to: .indeterminate)
             nicoProgressBar?.isHidden = false
-            retryButton?.isHidden = true
+            retryButton?.isHidden = false
             uploadView?.isHidden = true
         default:
            break
         }
     }
-    
     
     func processTextMessage(message : String, uiLabel : UILabel) -> NSMutableAttributedString? {
         var attributedString : NSMutableAttributedString?

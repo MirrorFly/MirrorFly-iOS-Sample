@@ -12,6 +12,7 @@ class ContactImageCell: UITableViewCell {
     @IBOutlet weak var onlineStatus: UILabel?
     @IBOutlet weak var userNameLabel: UILabel?
     @IBOutlet weak var editButton: UIButton?
+    @IBOutlet weak var editProfileButton: UIButton?
     @IBOutlet weak var userImage: UIImageView?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -20,7 +21,7 @@ class ContactImageCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        editButton?.isHidden = true
+        //editButton?.isHidden = true
         // Configure the view for the selected state
     }
     

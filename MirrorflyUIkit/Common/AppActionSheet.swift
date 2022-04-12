@@ -36,6 +36,5 @@ class AppActionSheet : NSObject {
             alertController.addAction(cancel)
             UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
         }
-        
     }
 }

@@ -47,9 +47,9 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     var sendMediaMessages: [ChatMessage]? = []
     var selectedForwardMessage: [SelectedForwardMessage]? = []
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
-    var currentlyUploadingAudioObj: [ChatMessage]? = []
+    var uploadingMediaObjects: [ChatMessage]? = []
     var audioPlayer:AVAudioPlayer?
-    var isOpenedDoc: Bool? = false
+    var isShowAudioLoadingIcon: Bool? = false
     var updater : CADisplayLink! = nil
     typealias AudioCallBack = (_ sliderValue : Float) -> Void
         var audioCallBack: AudioCallBack? = nil
@@ -209,8 +209,9 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         if message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
             uploadCancel?.isHidden = false
             playIcon?.isHidden = true
-            uploadCancel?.image = (isOpenedDoc == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: ImageConstant.ic_upload)
-            updateCancelButton?.isHidden = (isOpenedDoc == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
+            playButton?.isHidden = true
+            uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: ImageConstant.ic_upload)
+            updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
             audioPlaySlider?.isUserInteractionEnabled = false
             nicoProgressBar?.isHidden = true
         } else if message?.mediaChatMessage?.mediaUploadStatus == .uploading {
@@ -221,9 +222,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             playButton?.isHidden = true
             updateCancelButton?.isHidden = false
             audioPlaySlider?.isUserInteractionEnabled = false
-            currentlyUploadingAudioObj?.forEach({ chatMessage in
-                print("forLoop",chatMessage.messageId)
-                print("messageId",message?.messageId)
+            uploadingMediaObjects?.forEach({ chatMessage in
                 if chatMessage.messageId == message?.messageId {
                     nicoProgressBar?.transition(to: .indeterminate)
                     nicoProgressBar?.isHidden = false
@@ -296,6 +295,27 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         if audioCallBack != nil {
             audioCallBack!(audioPlaySlider?.value ?? 0)
         }
+    }
+    
+    func startUpload() {
+        uploadCancel?.isHidden = false
+        playIcon?.isHidden = true
+        playButton?.isHidden = true
+        uploadCancel?.image = UIImage(named: ImageConstant.ic_audioUploadCancel)
+        updateCancelButton?.isHidden = false
+        audioPlaySlider?.isUserInteractionEnabled = false
+        nicoProgressBar?.isHidden = false
+        nicoProgressBar?.transition(to: .indeterminate)
+    }
+    
+    func stopUpload() {
+        uploadCancel?.isHidden = false
+        playIcon?.isHidden = true
+        playButton?.isHidden = true
+        uploadCancel?.image = UIImage(named: ImageConstant.ic_upload)
+        updateCancelButton?.isHidden = false
+        audioPlaySlider?.isUserInteractionEnabled = false
+        nicoProgressBar?.isHidden = true
     }
 }
 

@@ -55,7 +55,7 @@ class ParticipantCell: UITableViewCell {
     }
     
     func setImage(imageURL: String, name: String, color: UIColor) {
-       let urlString = "\(Environment.sandboxImage.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
+        let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken
         let url = URL(string: urlString)
         contactImageView?.sd_setImage(with: url, placeholderImage: getPlaceholder(name: name, color: color))
     }
@@ -69,19 +69,20 @@ class ParticipantCell: UITableViewCell {
     
     func setTextColorWhileSearch(searchText: String,profileDetail: ProfileDetails) {
         let tempSearchText = searchText.trim()
-        if let range = profileDetail.name.range(of: tempSearchText, options: [.caseInsensitive, .diacriticInsensitive]) {
-            let convertedRange = NSRange(range, in: profileDetail.name)
-            let attributedString = NSMutableAttributedString(string: profileDetail.name.capitalized)
+        let name = getUserName(name: profileDetail.name, nickName: profileDetail.nickName)
+        if let range = name.range(of: tempSearchText, options: [.caseInsensitive, .diacriticInsensitive]) {
+            let convertedRange = NSRange(range, in: name)
+            let attributedString = NSMutableAttributedString(string: name.capitalized)
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
             nameUILabel?.attributedText = attributedString
         } else {
-            nameUILabel?.text = profileDetail.name.capitalized
+            nameUILabel?.text = name.capitalized
             nameUILabel?.textColor = Color.userNameTextColor
         }
     }
     
     func setImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
-        let urlString = "\(Environment.sandboxImage.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
+        let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
         let url = URL(string: urlString)
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
@@ -94,7 +95,7 @@ class ParticipantCell: UITableViewCell {
     }
     
     func setRecentChatDetails(recentChat: RecentChat,color: UIColor) {
-        nameUILabel?.text = recentChat.profileName
+        nameUILabel?.text = getUserName(name: recentChat.profileName, nickName: recentChat.nickName)
         statusUILabel?.text = recentChat.lastMessageContent
         setImage(imageURL: recentChat.profileImage ?? "", name: recentChat.profileName, color: color)
         checkBoxImageView?.image = recentChat.isSelected ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)

@@ -30,6 +30,8 @@ class VerifyOTPViewController: UIViewController
     var timer: Timer?
     public var mobileNumber = ""
     var getMobileNumber: String = ""
+    var isAuthorizedSuccess: Bool = false
+    let chatManager = ChatManager.shared
     private var verifyOTPViewModel : VerifyOTPViewModel!
     private var otpViewModel : OTPViewModel!
     var currentBackgroundDate = Date()
@@ -39,11 +41,12 @@ class VerifyOTPViewController: UIViewController
         // Do any additional setup after loading the view.
         setupUI()
         configureDefaults()
-        
+        handleBackgroundAndForground()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
+        chatManager.connectionDelegate = nil
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -69,13 +72,19 @@ class VerifyOTPViewController: UIViewController
         notificationCenter.addObserver(self, selector: #selector(appCameToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         self.otpTimerLbl.text = "01:30"
         sheduletimer()
-        txtFirst.textContentType = .oneTimeCode
+        txtFirst.textContentType = .username
+        txtSecond.textContentType = .username
+        txtThird.textContentType = .username
+        txtForth.textContentType = .username
+        txtFifth.textContentType = .username
+        txtSixth.textContentType = .username
         txtFirst.delegate = self
         txtSecond.delegate = self
         txtThird.delegate = self
         txtForth.delegate = self
         txtFifth.delegate = self
         txtSixth.delegate = self
+        chatManager.connectionDelegate = self
         verifyOTPViewModel =  VerifyOTPViewModel()
         otpViewModel = OTPViewModel()
     }
@@ -89,6 +98,7 @@ class VerifyOTPViewController: UIViewController
         let difference = Int(Date().timeIntervalSince(currentBackgroundDate)) //self.currentBackgroundDate.timeIntervalSince(NSDate() as Date)
         print(difference)
         print(self.secondsRemaining)
+        isAuthorizedSuccess = false
         if secondsRemaining  > Int(difference) {
             self.secondsRemaining = secondsRemaining - difference
             print(  secondsRemaining - Int(difference))
@@ -136,7 +146,7 @@ class VerifyOTPViewController: UIViewController
         self.stopLoading()
         let localGoogleToken = Utility.getStringFromPreference(key: googleToken)
         if userData.verifyUserData?.deviceToken == nil {
-            registration()
+            checkLoginExistance()
         }else if localGoogleToken != userData.verifyUserData?.deviceToken
         {
             let localGoogleToken = Utility.getStringFromPreference(key: googleToken)
@@ -145,14 +155,59 @@ class VerifyOTPViewController: UIViewController
                 AppAlert.shared.onAlertAction = { (result) ->
                     Void in
                     if result == 1 {
-                        self.registration()
+                        self.checkLoginExistance()
                     }else {
                         self.popView()
                     }
                 }
             }
         }else {
-            self.registration()
+            self.checkLoginExistance()
+        }
+    }
+    
+    func checkLoginExistance() {
+        registration()
+//        let mobile = Utility.removeCharFromString(string: self.mobileNumber, char: "+")
+//        let deviceToken = Utility.getStringFromPreference(key: googleToken)
+//        let param = NSMutableDictionary()
+//        param.setValue(deviceToken, forKey: "googleToken")
+//        param.setValue(mobile, forKey: "mobileNumber")
+//        print("verifyOTPViewModel.validateUser \(param)")
+//        verifyOTPViewModel.validateUser(params: param) { [weak self] verifyToken, error in
+//            let token = verifyToken?.data?["deviceToken"] ?? ""
+//            print("verifyOTPViewModel.validateUser \(token) \(verifyToken?.message ?? "")")
+//            if token.isEmpty || token == deviceToken {
+//                self?.registration()
+//            } else {
+//                self?.showAlreadyLoggedIn()
+//            }
+//
+//        }
+    }
+    
+    func showAlreadyLoggedIn() {
+        AppAlert.shared.showAlert(view: self, title: nil, message: youWantToLogout, buttonOneTitle: noButton, buttonTwoTitle: yesButton)
+        AppAlert.shared.onAlertAction = { [weak self] (result)  ->
+            Void in
+            if result == 1 {
+                self?.requestLogout()
+            }else {
+                
+            }
+        }
+    }
+    
+    func requestLogout() {
+        startLoading(withText: pleaseWait)
+         ChatManager.logoutApi { [weak self] isSuccess, flyError, flyData in
+            if isSuccess {
+                print("requestLogout Logout api isSuccess")
+                self?.registration()
+            }else{
+                print("Logout api error : \(String(describing: flyError))")
+                self?.stopLoading()
+            }
         }
     }
     
@@ -179,8 +234,9 @@ class VerifyOTPViewController: UIViewController
                 FlyDefaults.myMobileNumber = self.getMobileNumber
                 FlyDefaults.isProfileUpdated = profileUpdateStatus == 1
                 AppAlert.shared.showToast(message: SuccessMessage.successAuth)
+                self.isAuthorizedSuccess = true
                 self.verifyOTPViewModel.initializeChatCredentials(username: userName, secretKey: userPassword)
-                self.performSegue(withIdentifier: Identifiers.otpNextToProfile, sender: nil)
+                self.startLoading(withText: pleaseWait)
             } else{
                 self.stopLoading()
                 if let errorMsg  = error {
@@ -265,7 +321,7 @@ class VerifyOTPViewController: UIViewController
                         }
                         self?.stopTimer()
                         DispatchQueue.main.async { [weak self] in
-                            self?.registration()
+                            self?.checkLoginExistance()
                         }
                         
                     }
@@ -427,5 +483,20 @@ extension VerifyOTPViewController: UITextFieldDelegate, CustomTextFieldDelegate 
     
     func popView() {
         self.navigationController?.popViewController(animated: true)
+    }
+}
+
+extension VerifyOTPViewController : ConnectionEventDelegate {
+    func onConnected() {
+        if isAuthorizedSuccess == true {
+            self.performSegue(withIdentifier: Identifiers.otpNextToProfile, sender: nil)
+        }
+    }
+    func onDisconnected() {
+        print("Xmmpp DisConnected")
+    }
+    
+    func onConnectionNotAuthorized() {
+        stopLoading()
     }
 }

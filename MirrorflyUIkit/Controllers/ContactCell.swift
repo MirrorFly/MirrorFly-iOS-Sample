@@ -33,13 +33,14 @@ class ContactCell: UITableViewCell {
     
     // MARK: SetTextColor whileSearch
     func setTextColorWhileSearch(searchText: String,profile: ProfileDetails) {
-        if let range = profile.name.range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive])  {
-            let convertedRange = NSRange(range, in: profile.name.capitalized)
-            let attributedString = NSMutableAttributedString(string: profile.name.capitalized)
+        let profileName = getUserName(name: profile.name, nickName: profile.nickName)
+        if let range = profileName.range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive])  {
+            let convertedRange = NSRange(range, in: profileName.capitalized)
+            let attributedString = NSMutableAttributedString(string: profileName.capitalized)
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
             name?.attributedText = attributedString
         } else {
-            name?.text = profile.name.capitalized
+            name?.text = profileName.capitalized
             name?.textColor = Color.userNameTextColor
         }
         
@@ -61,7 +62,7 @@ class ContactCell: UITableViewCell {
     }
     
     func setImage(imageURL: String, name: String, color: UIColor) {
-       let urlString = "\(Environment.sandboxImage.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
+        let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken
         let url = URL(string: urlString)
         profile.sd_setImage(with: url, placeholderImage: getPlaceholder(name: name, color: color))
     }

@@ -26,6 +26,7 @@ let XMPP_PORT = 5222
 let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
 let JANUS_URL = "wss://janus.mirrorfly.com"
 let CONTAINER_ID = "group.com.mirrorfly.qa"
+let ENABLE_CONTACT_SYNC = false
 let IS_LIVE = false
 
 @main
@@ -40,6 +41,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         FlyDefaults.licenseKey = LICENSE_KEY
         FlyDefaults.isTrialLicense = !IS_LIVE
         startObservingContactChanges()
+        FlyDefaults.isTrialLicense = !IS_LIVE
+        FlyDefaults.licenseKey = LICENSE_KEY
+        FlyDefaults.baseURL = BASE_URL
+        if ENABLE_CONTACT_SYNC{
+            startObservingContactChanges()
+        }
+        print(Utility.getStringFromPreference(key: username),Utility.getStringFromPreference(key: password))
+        print(FlyDefaults.myXmppPassword,FlyDefaults.myXmppUsername )
+        print(FlyDefaults.myJid)
+        print(FlyDefaults.authtoken)
         IQKeyboardManager.shared.enable = true
         GMSServices.provideAPIKey(googleApiKey)
         IQKeyboardManager.shared.shouldResignOnTouchOutside = true
@@ -81,8 +92,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
             .build()
         assert(groupConfig != nil)
         
-        try? ChatSDK.Builder.enableMobileNumberLogin(isEnable: true)
+        ChatManager.shared.logoutDelegate = self
+        
+        try? ChatSDK.Builder.enableContactSync(isEnable: ENABLE_CONTACT_SYNC)
             .setDomainBaseUrl(baseUrl: BASE_URL)
+            .signalServer(signalServerUrl: SOCKETIO_SERVER_HOST)
             .setMaximumPinningForRecentChat(maxPinChat: 4)
             .setGroupConfiguration(groupConfig: groupConfig!)
             .deleteMediaFromDevice(delete: true)
@@ -118,6 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.CNContactStoreDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(contactsDidChange), name: NSNotification.Name.CNContactStoreDidChange, object: nil)
         NetworkMonitor.shared.startMonitoring()
+        
         return true
     }
     
@@ -196,7 +211,9 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
             return;
         }
         print("#token appDelegate \(token)")
+        print("#token application DT => \(token)")
         FlyCallUtils.sharedInstance.setConfigUserDefaults(token, withKey: "updatedTokenAPNS")
+        Utility.saveInPreference(key: googleToken, value: token)
         VOIPManager.sharedInstance.updateDeviceToken()
     }
     
@@ -211,14 +228,8 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         completionHandler(.noData)
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        if response.notification.request.identifier.contains("#missed_call"){
-//            if let navRootController = window?.rootViewController as? UINavigationController {
-//                if !(navRootController.viewControllers.last?.isKind(of: callLogViewController.self) ?? false) {
-//                    let storyBoard = UIStoryboard(name: Storyboards.main, bundle: nil)
-//                    let callLogController = storyBoard.instantiateViewController(withIdentifier: "callLogViewController") as! callLogViewController
-//                    navRootController.pushViewController(callLogController, animated: true)
-//                }
-//            }
+        if response.notification.request.content.threadIdentifier.contains(XMPP_DOMAIN){
+            navigateToChatScreen(chatId: response.notification.request.content.threadIdentifier, completionHandler: completionHandler)
         }
     }
 }
@@ -235,8 +246,10 @@ extension AppDelegate : PKPushRegistryDelegate {
         //print out the VoIP token. We will use this to test the nofications.
         NSLog("VoIP Token: \(pushCredentials)")
         let deviceTokenString = pushCredentials.token.reduce("") { $0 + String(format: "%02X", $1) }
+        print("#token pushRegistry VT => \(deviceTokenString)")
         print(deviceTokenString)
         FlyCallUtils.sharedInstance.setConfigUserDefaults(deviceTokenString, withKey: "updatedTokenVOIP")
+        Utility.saveInPreference(key: voipToken, value: deviceTokenString)
         VOIPManager.sharedInstance.updateDeviceToken()
     }
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
@@ -251,7 +264,7 @@ extension AppDelegate {
     func startObservingContactChanges(){
         contactSyncSubscription = contactSyncSubject.throttle(.seconds(3), latest: false ,scheduler: MainScheduler.instance).subscribe(onNext: { bool in
             if bool{
-                ContactSyncManager.shared.syncContacts(firstLogin: false){ isSuccess,_,_ in
+                ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
                    print("#contact Sync status => \(isSuccess)")
                 }
             }
@@ -261,9 +274,79 @@ extension AppDelegate {
     
     @objc func contactsDidChange(notification: NSNotification){
         print("#contact #appdelegate @contactsDidChange")
-        if Utility.getBoolFromPreference(key: isLoggedIn) {
+        if Utility.getBoolFromPreference(key: isLoggedIn) && ENABLE_CONTACT_SYNC {
             FlyDefaults.isContactSyncNeeded = true
             contactSyncSubject.onNext(true)
+        }
+    }
+    
+    
+    func navigateToChatScreen(chatId : String,completionHandler: @escaping () -> Void){
+        var dismisLastViewController = false
+        if let profileDetails = ContactManager.shared.getUserProfileDetails(for: chatId) , chatId != FlyDefaults.myJid{
+            if #available(iOS 13, *) {
+                guard let rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else {
+                    completionHandler()
+                    return
+                }
+                
+                if let rootVC = rootViewController as? UINavigationController{
+                    if let currentVC = rootVC.children.last, currentVC.isKind(of: ChatViewParentController.self){
+                        dismisLastViewController = true
+                    }
+                }
+                
+                if let chatViewController =  UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController, let navigationController = rootViewController as? UINavigationController{
+                    chatViewController.getProfileDetails = profileDetails
+                    let color = getColor(userName:  getUserName(name: profileDetails.name, nickName: profileDetails.nickName))
+                    chatViewController.contactColor = color
+                    if dismisLastViewController{
+                        navigationController.popViewController(animated: false)
+                    }
+                    navigationController.pushViewController(chatViewController, animated: !dismisLastViewController)
+                }
+                completionHandler()
+            } else {
+                if let rootVC = self.window?.rootViewController as? UINavigationController {
+                    if let currentVC = rootVC.children.last, currentVC.isKind(of: ChatViewParentController.self){
+                        rootVC.popViewController(animated: true)
+                    }
+                }
+                if let chatViewController =  UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController, let navigationController = self.window?.rootViewController as? UINavigationController{
+                    chatViewController.getProfileDetails = profileDetails
+                    let color = getColor(userName:  getUserName(name: profileDetails.name, nickName: profileDetails.nickName))
+                    chatViewController.contactColor = color
+                    if dismisLastViewController{
+                        navigationController.popViewController(animated: false)
+                    }
+                    navigationController.pushViewController(chatViewController, animated: !dismisLastViewController)
+                }
+                completionHandler()
+            }
+        }
+    }
+}
+// If a user logged in a new device this delegate will be triggered.otpViewController
+extension AppDelegate : LogoutDelegate {
+    func didReceiveLogout() {
+        print("AppDelegate LogoutDelegate ===> LogoutDelegate")
+        Utility.saveInPreference(key: isProfileSaved, value: false)
+        Utility.saveInPreference(key: isLoggedIn, value: false)
+        ChatManager.disconnectXMPPConnection()
+        ChatManager.shared.clearAllTablesInDB()
+        ChatManager.shared.resetFlyDefaults()
+        var controller : OTPViewController?
+        if #available(iOS 13.0, *) {
+            controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")
+        } else {
+            // Fallback on earlier versions
+            controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OTPViewController") as? OTPViewController
+        }
+        let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        if let navigationController = window?.rootViewController  as? UINavigationController, let otpViewController = controller {
+            navigationController.popToRootViewController(animated: false)
+            navigationController.navigationBar.isHidden = true
+            navigationController.pushViewController(otpViewController, animated: false)
         }
     }
 }

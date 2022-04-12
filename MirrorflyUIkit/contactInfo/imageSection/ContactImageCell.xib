@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -100,18 +100,31 @@
                                 </constraints>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kGJ-qN-SAx">
-                                <rect key="frame" x="18" y="20" width="18.5" height="22"/>
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="ahm-RG-bTa"/>
+                                    <constraint firstAttribute="width" constant="50" id="eD2-Rz-qKp"/>
+                                </constraints>
                                 <state key="normal" image="ic_backarrow"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1og-10-u0c">
+                                <rect key="frame" x="410" y="13" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Ocd-1a-w9K"/>
+                                    <constraint firstAttribute="width" constant="30" id="YX0-rm-rY3"/>
+                                </constraints>
+                                <state key="normal" image="image_edit"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="J70-XQ-F6e" firstAttribute="leading" secondItem="jz5-D6-bkL" secondAttribute="leading" constant="18" id="02n-Hi-tMM"/>
+                            <constraint firstItem="1og-10-u0c" firstAttribute="top" secondItem="jz5-D6-bkL" secondAttribute="top" constant="13" id="0aN-zX-uoM"/>
                             <constraint firstItem="85P-Q8-vGA" firstAttribute="top" secondItem="jz5-D6-bkL" secondAttribute="top" id="2Bp-Xh-PSM"/>
                             <constraint firstAttribute="trailing" secondItem="SNY-kx-5tk" secondAttribute="trailing" id="3Ah-Ex-og3"/>
                             <constraint firstAttribute="height" constant="250" id="9M1-O2-15L"/>
                             <constraint firstAttribute="trailing" secondItem="odH-a7-0gQ" secondAttribute="trailing" id="E1d-zf-8os"/>
-                            <constraint firstItem="kGJ-qN-SAx" firstAttribute="leading" secondItem="jz5-D6-bkL" secondAttribute="leading" constant="18" id="GvM-wF-TQO"/>
+                            <constraint firstItem="kGJ-qN-SAx" firstAttribute="leading" secondItem="jz5-D6-bkL" secondAttribute="leading" id="GvM-wF-TQO"/>
                             <constraint firstAttribute="trailing" secondItem="85P-Q8-vGA" secondAttribute="trailing" id="J5I-Kl-ZCb"/>
                             <constraint firstAttribute="bottom" secondItem="odH-a7-0gQ" secondAttribute="bottom" id="Q3S-LK-n2X"/>
                             <constraint firstAttribute="bottom" secondItem="J70-XQ-F6e" secondAttribute="bottom" constant="16" id="RVe-aq-Byp"/>
@@ -121,7 +134,8 @@
                             <constraint firstItem="SNY-kx-5tk" firstAttribute="top" secondItem="jz5-D6-bkL" secondAttribute="top" id="tyb-Ro-01c"/>
                             <constraint firstAttribute="bottom" secondItem="SNY-kx-5tk" secondAttribute="bottom" id="uU5-lY-NRG"/>
                             <constraint firstAttribute="trailing" secondItem="J70-XQ-F6e" secondAttribute="trailing" constant="18" id="wXS-eF-fPz"/>
-                            <constraint firstItem="kGJ-qN-SAx" firstAttribute="top" secondItem="jz5-D6-bkL" secondAttribute="top" constant="20" id="y3P-m1-Dlc"/>
+                            <constraint firstItem="kGJ-qN-SAx" firstAttribute="top" secondItem="jz5-D6-bkL" secondAttribute="top" id="y3P-m1-Dlc"/>
+                            <constraint firstAttribute="trailing" secondItem="1og-10-u0c" secondAttribute="trailing" constant="13" id="zFs-iI-Yyg"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -136,6 +150,7 @@
             <connections>
                 <outlet property="backButton" destination="kGJ-qN-SAx" id="iZE-zR-WKe"/>
                 <outlet property="editButton" destination="xQz-55-UyI" id="tb2-AS-YjT"/>
+                <outlet property="editProfileButton" destination="1og-10-u0c" id="uwH-G5-0Ar"/>
                 <outlet property="onlineStatus" destination="BAV-3S-dA6" id="x5h-We-Obl"/>
                 <outlet property="userImage" destination="SNY-kx-5tk" id="Kd5-pw-NNY"/>
                 <outlet property="userNameLabel" destination="w8m-aG-Sux" id="XS0-fL-Dk9"/>
@@ -149,6 +164,7 @@
         <image name="editPencilWhite" width="18.5" height="17"/>
         <image name="ic_backarrow" width="18.5" height="15.5"/>
         <image name="ic_profile_placeholder" width="139" height="139"/>
+        <image name="image_edit" width="29" height="28"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

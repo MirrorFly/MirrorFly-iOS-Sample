@@ -94,9 +94,13 @@ enum Identifiers {
     static let contactImageCell = "ContactImageCell"
     static let contactInfoViewController = "ContactInfoViewController"
     static let viewUserImageController = "ViewUserImamgeController"
-    
-    
     static let contactSyncController = "ContactSyncController"
+    static let groupInfoViewController = "GroupInfoViewController"
+    static let groupMembersTableViewCell = "GroupMembersTableViewCell"
+    static let groupOptionsTableViewCell = "GroupOptionsTableViewCell"
+    static let updateGroupInfoViewController = "UpdateGroupInfoViewController"
+    static let groupInfoOptionsViewController = "GroupInfoOptionsViewController"
+    static let groupInfoOptionsTableViewCell = "GroupInfoOptionsTableViewCell"
 }
 
 //MARK: - Storyboards

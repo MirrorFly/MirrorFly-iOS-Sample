@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import AVKit
 import Photos
+import FlyCommon
 
 class AppUtils: NSObject {
     
@@ -115,43 +116,16 @@ class AppUtils: NSObject {
         return getRandomColors()
     }
     
-    
-    func generateThumbnail(path: URL) -> UIImage? {
-        do {
-            let asset = AVURLAsset(url: path, options: nil)
-            let imgGenerator = AVAssetImageGenerator(asset: asset)
-            imgGenerator.appliesPreferredTrackTransform = true
-            var time = asset.duration
-            time.value = 0
-            let cgImage = try imgGenerator.copyCGImage(at: time, actualTime: nil)
-            var thumbnail = UIImage(cgImage: cgImage)
-            let imageData = thumbnail.jpegData(compressionQuality: 0.5)
-            thumbnail = UIImage(data: imageData!)!
-            return thumbnail
-        } catch let error {
-            print("*** Error generating thumbnail: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
     func marqueeTextToWebKit(text : String) -> String{
         return "<html><body><marquee>" + text + "</marquee></body></html>"
     }
     
-    func compressVideo(inputURL: URL, outputURL: URL, handler:@escaping (_ exportSession: AVAssetExportSession?)-> Void) {
-        let urlAsset = AVURLAsset(url: inputURL, options: nil)
-        guard let exportSession = AVAssetExportSession(asset: urlAsset, presetName: AVAssetExportPresetMediumQuality) else {
-            handler(nil)
-            
-            return
-        }
-        
-        exportSession.outputURL = outputURL
-        exportSession.outputFileType = AVFileType.mov
-        exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.exportAsynchronously { () -> Void in
-            handler(exportSession)
-        }
+    func registerForegroundNotification() {
+       // NotificationCenter.default.post(name:NSNotification.Name(foregroundNotification),object: nil)
+    }
+    
+    func removeForegroundNotification() {
+      //  NotificationCenter.default.removeObserver(self, name:  NSNotification.Name(foregroundNotification), object: nil)
     }
     
 }
@@ -197,5 +171,14 @@ func executeOnMainThread( codeBlock: @escaping () -> Void) {
     DispatchQueue.main.async {
         codeBlock()
     }
+}
+
+
+func getUserName(name : String , nickName : String ) -> String {
+    FlyUtils.getUserName(name: name, nickName: nickName)
+}
+
+func getColor(userName : String) -> UIColor {
+    return ChatUtils.getColorForUser(userName: userName)
 }
 

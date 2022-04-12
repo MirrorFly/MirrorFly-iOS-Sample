@@ -37,7 +37,7 @@ extension UIViewController {
     func handleBackgroundAndForground() {
         if #available(iOS 13.0, *) {
             NotificationCenter.default.addObserver(self, selector: #selector(didMoveToBackground), name: UIScene.willDeactivateNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(willCometoForeground), name: UIScene.didActivateNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(willCometoForeground), name: UIScene.willEnterForegroundNotification, object: nil)
         } else {
             NotificationCenter.default.addObserver(self, selector: #selector(didMoveToBackground), name: UIApplication.willResignActiveNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(willCometoForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -45,12 +45,12 @@ extension UIViewController {
     }
 
     
-   @objc func didMoveToBackground() {
+    @objc func didMoveToBackground() {
         print("UIViewController moved to background")
-
-   }
+        
+    }
     
     @objc func willCometoForeground() {
-         print("UIViewController appComestoForeground")
+        print("UIViewController appComestoForeground")
     }
 }

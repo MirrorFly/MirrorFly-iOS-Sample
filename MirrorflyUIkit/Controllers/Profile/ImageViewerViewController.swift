@@ -44,7 +44,7 @@ class ImageViewerViewController: UIViewController {
 //    }
     
     func setImage(imageURL: String) {
-        let urlString = "\(Environment.sandboxImage.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
+        let urlString = "\(FlyDefaults.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
         let url = URL(string: urlString)
         imageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"))
     }

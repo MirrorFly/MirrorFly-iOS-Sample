@@ -24,6 +24,43 @@ class DateFormatterUtility: NSObject {
         return dateFormatter.date(from: str) ?? Date()
     }
     
+    func getGroupMilliSeconds(milliSeconds : Double) -> Double {
+        var sec = "\(milliSeconds)"
+        var milli = milliSeconds
+        if sec.contains(".") && sec.count == 15 {
+            let index = sec.firstIndex(of: ".")!
+            sec.insert(contentsOf: "000", at: index)
+            milli = Double(sec) ?? milli
+            return milli
+        }
+        return milliSeconds
+    }
+    
+    func convertGroupMillisecondsToDateTime(milliSeconds: Double)  -> Date {
+        let milli = getGroupMilliSeconds(milliSeconds: milliSeconds)
+        let timeStamp = milli / 1000
+        let date2 = Date(timeIntervalSince1970: (Double(timeStamp) / 1000.0))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-DD"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        guard let str = groupUtcToLocal(dateStr:dateFormatter.string(from: date2)) else {
+            return Date()
+        }
+        return dateFormatter.date(from: str) ?? Date()
+    }
+    
+    func groupUtcToLocal(dateStr: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-DD"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        if let date = dateFormatter.date(from: dateStr) {
+            dateFormatter.timeZone = TimeZone.current
+            return dateFormatter.string(from: date)
+        }
+        return nil
+    }
+    
     func convertMillisecondsToTime(milliSeconds: Double)  -> Date {
         let timeStamp = milliSeconds / 1000
         let date2 = Date(timeIntervalSince1970: (Double(timeStamp) / 1000.0))

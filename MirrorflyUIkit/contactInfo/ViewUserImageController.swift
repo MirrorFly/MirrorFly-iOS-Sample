@@ -28,7 +28,7 @@ class ViewUserImageController: ViewController {
     }
     
     private func setInformation() {
-        let name = (profileDetails?.name.isEmpty ?? false) ? profileDetails?.nickName : profileDetails?.name
+        let name = getUserName(name: profileDetails?.name ?? "", nickName: profileDetails?.nickName ?? "")
         let placeholder = ChatUtils.getPlaceholder(name: profileDetails?.name ?? "", userColor: ChatUtils.getColorForUser(userName: name), userImage: userImage ?? UIImageView())
         let imageUrl = profileDetails?.image  ?? ""
         userImage?.sd_setImage(with: ChatUtils.getUserImaeUrl(imageUrl: imageUrl), placeholderImage: placeholder)

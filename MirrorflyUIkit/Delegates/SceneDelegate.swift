@@ -19,12 +19,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        if  Utility.getBoolFromPreference(key: isProfileSaved) {
-            let navigationController : UINavigationController
+        if Utility.getBoolFromPreference(key: isProfileSaved) {
+            var navigationController : UINavigationController
             if IS_LIVE {
                 let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
                 let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
                 navigationController =  UINavigationController(rootViewController: initialViewController)
+                if !Utility.getBoolFromPreference(key: isLoginContactSyncDone){
+                    let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
+                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }else{
+                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                    let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
             }else{
                 let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
                 let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
@@ -32,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             self.window?.rootViewController = navigationController
             self.window?.makeKeyAndVisible()
-        }else if  Utility.getBoolFromPreference(key: isLoggedIn) {
+        }else if Utility.getBoolFromPreference(key: isLoggedIn) {
             let storyboard = UIStoryboard(name: "Profile", bundle: nil)
             let initialViewController = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
             self.window?.rootViewController =  UINavigationController(rootViewController: initialViewController)

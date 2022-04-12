@@ -282,7 +282,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if membersJid.count == 1{
             returnToCall.image = UIImage(named: "Default Avatar_ic")
             if let contact = rosterManager.getContact(jid: membersJid[0].lowercased()){
-                Utility.download(token: contact.image, profileImage: returnToCall, uniqueId: membersJid[0],name: contact.name,colorCode: contact.colorCode,frameSize:100,fontSize:40, completion: {})
+                Utility.download(token: contact.image, profileImage: returnToCall, uniqueId: membersJid[0],name: getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:100,fontSize:40, completion: {})
             }
         }else{
             returnToCall.image = UIImage(named: "ic_groupPlaceHolder")
@@ -733,15 +733,15 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if membersJid.count == 1 {
             if let contact = rosterManager.getContact(jid: membersJid[0].lowercased()){
                 outgoingCallView?.outGoingAudioCallImageView.image = UIImage.init(named: "Default Avatar_ic")
-                outgoingCallView?.OutGoingPersonLabel.text = contact.name
-                Utility.download(token: contact.image, profileImage: outgoingCallView.outGoingAudioCallImageView, uniqueId: membersJid[0],name: contact.name,colorCode: contact.colorCode,frameSize:100,fontSize:40, completion: {})
+                outgoingCallView?.OutGoingPersonLabel.text = getUserName(name: contact.name, nickName: contact.nickName)
+                Utility.download(token: contact.image, profileImage: outgoingCallView.outGoingAudioCallImageView, uniqueId: membersJid[0],name: getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:100,fontSize:40, completion: {})
             }else{
                 outgoingCallView?.outGoingAudioCallImageView.image = UIImage.init(named: "Default Avatar_ic")
             }
         } else if membersJid.count == 2 {
             for i in 0...1{
                 if let contact = rosterManager.getContact(jid: membersJid[i].lowercased()){
-                    unknowGroupMembers.append(contact.name)
+                    unknowGroupMembers.append(getUserName(name: contact.name, nickName: contact.nickName))
                 }
             }
             let groupMemberName = unknowGroupMembers.joined(separator: ",")
@@ -751,7 +751,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             unknowGroupMembers.removeAll()
             for i in 0...1{
                 if let contact = rosterManager.getContact(jid: membersJid[i].lowercased()){
-                    unknowGroupMembers.append(contact.name)
+                    unknowGroupMembers.append(getUserName(name: contact.name, nickName: contact.nickName))
                 }
             }
             let groupMemberName = unknowGroupMembers.joined(separator: ",")
@@ -824,14 +824,6 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
                 self?.outgoingCallView?.audioMuteStackView.isHidden = true
             }
         }
-    }
-    
-    func getUserName(jid : String) -> String {
-        let arrayOfelememnts = jid.components(separatedBy: "@")
-        if arrayOfelememnts.count > 0 {
-            return  arrayOfelememnts[0]
-        }
-        return ""
     }
     
 }
@@ -1172,7 +1164,7 @@ extension CallViewController : CallViewControllerDelegate {
 
 extension CallViewController {
     
-    func makeCall(usersList : [String], callType: CallType) {
+    func makeCall(usersList : [String], callType: CallType, groupId : String = "") {
         CallManager.setMyInfo(name: FlyDefaults.myName, imageUrl: FlyDefaults.myImageUrl)
         AudioManager.shared().audioManagerDelegate = self
         print("#lifecycle makeCall")
@@ -1195,7 +1187,7 @@ extension CallViewController {
                 }
             } else {
                 membersJid.remove(at: members.count - 1)
-                CallManager.makeGroupVoiceCall(membersJid, groupID: "") {[weak self] isSuccess , message in
+                CallManager.makeGroupVoiceCall(membersJid, groupID: groupId) {[weak self] isSuccess , message in
                     if isSuccess == false {
                         AppAlert.shared.showAlert(view: self!, title: "", message: message, buttonTitle: "Okay")
                     }
@@ -1214,7 +1206,7 @@ extension CallViewController {
                 }
             } else {
                 membersJid.remove(at: members.count - 1)
-                CallManager.makeGroupVideoCall(membersJid, groupID: "") { [weak self] (isSuccess, message) in
+                CallManager.makeGroupVideoCall(membersJid, groupID: groupId) { [weak self] (isSuccess, message) in
                     if isSuccess == false {
                         AppAlert.shared.showAlert(view: self!, title: "", message: message, buttonTitle: "Okay")
                     }
@@ -1246,11 +1238,13 @@ extension CallViewController : CallManagerDelegate {
         for JID in IncomingUser{
             print("#jid \(JID)")
             if let contact = rosterManager.getContact(jid: JID.lowercased()){
-                userString.append(contact.name)
+                userString.append(getUserName(name: contact.name, nickName: contact.nickName))
             }else {
-                print("#jid \(JID)")
+                let pd = ContactManager.shared.saveTempContact(userId: JID)
+                userString.append(pd?.name ?? "User")
             }
         }
+        print("#names \(userString)")
         CallManager.getContactNames(IncomingUserName: userString)
     }
     
@@ -1715,11 +1709,17 @@ extension CallViewController {
     
     func addRemoteMembers(for user : ProfileDetails, with status: CallStatus = .calling) -> Int  {
         print("#call addRemoteMembers \(user.name) \(user.colorCode)")
-        let remoteUserProfile =  rosterManager.getContact(jid: user.jid.lowercased())
+        var remoteUserProfile : ProfileDetails? = nil
+        if let pd = rosterManager.getContact(jid: user.jid.lowercased()) {
+            remoteUserProfile = pd
+        }else{
+            remoteUserProfile = ContactManager.shared.saveTempContact(userId: user.jid)
+        }
         let callMember = CallMember()
         callMember.jid = user.jid
         callMember.callStatus = status
-        callMember.name = remoteUserProfile?.name ?? user.jid.components(separatedBy: "@").first!
+        let userId = user.jid.components(separatedBy: "@").first!
+        callMember.name = getUserName(name: remoteUserProfile?.name ?? userId, nickName: remoteUserProfile?.nickName ?? userId)
         callMember.image = remoteUserProfile?.image ?? user.image
         callMember.color = remoteUserProfile?.colorCode ?? "#00008B"
         callMember.isVideoMuted = CallManager.getCallType() == .Audio

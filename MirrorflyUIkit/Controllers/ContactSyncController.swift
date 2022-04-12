@@ -27,19 +27,15 @@ class ContactSyncController: UIViewController {
         userName.text = FlyDefaults.myName
         
         let authorizationStatus = CNContactStore.authorizationStatus(for: .contacts)
-        if authorizationStatus == .authorized{
+        if authorizationStatus == .authorized || authorizationStatus == .denied{
             executeOnMainThread { [weak self] in
                 self?.startSyncingContacts()
             }
         }else{
-            progressInfoLabel.text = ""
+            progressInfoLabel.text = "Waiting for Contact permission"
             CNContactStore().requestAccess(for: .contacts){ [weak self] (access, error)  in
-                if access {
-                    executeOnMainThread { [weak self] in
-                        self?.startSyncingContacts()
-                    }
-                }else{
-                    self?.contactPermissionDenied()
+                executeOnMainThread { [weak self] in
+                    self?.startSyncingContacts()
                 }
             }
         }
@@ -75,22 +71,51 @@ class ContactSyncController: UIViewController {
     }
     
     
-    func startSyncingContacts(initialSync : Bool = true) {
-        if NetworkMonitor.shared.isConnected{
-            self.progressInfoLabel.text = "Contact sync is in progress"
+    func syncProgressUiUpdate(){
+        let authorizationStatus = CNContactStore.authorizationStatus(for: .contacts)
+        if authorizationStatus == .authorized {
+            progressInfoLabel.text = "Contact sync is in progress"
+            syncImage.isHidden = false
             syncImage.startRotating(duration: 1)
-            ContactSyncManager.shared.syncContacts(firstLogin: initialSync){ [weak self] (isSuccess, flyError, flyData)  in
-                if isSuccess{
-                    Utility.saveInPreference(key: isLoginContactSyncDone, value: true)
-                    Toast.init(text: "Contacts synced successfully  ").show()
-                    self?.progressInfoLabel.text = "Contacts Synced"
-                    self?.syncImage.stopRotating()
-                    self?.moveToDashboard()
-                }else{
-                    Utility.saveInPreference(key: isLoginContactSyncDone, value: false)
-                    self?.progressInfoLabel.text = "Internet not available"
-                    self?.syncImage.stopRotating()
-                    AppAlert.shared.showToast(message: "Contact sync failure \(flyError?.localizedDescription)")
+        }else if authorizationStatus == .denied {
+            progressInfoLabel.text = "Contact permission denied"
+            syncImage.isHidden = true
+        }else {
+            progressInfoLabel.text = "Contact read contact permission"
+            syncImage.isHidden = true
+        }
+    }
+    
+    
+    func startSyncingContacts(initialSync : Bool = true) {
+        let authorizationStatus = CNContactStore.authorizationStatus(for: .contacts)
+        if authorizationStatus == .authorized{
+            FlyDefaults.isContactPermissionDenied = false
+            FlyDefaults.isContactSyncNeeded = true
+        }else if authorizationStatus == .denied{
+            FlyDefaults.isContactPermissionDenied = true
+            FlyDefaults.isContactSyncNeeded = false
+        }
+        if NetworkMonitor.shared.isConnected{
+            executeOnMainThread {
+                self.syncProgressUiUpdate()
+            }
+            ContactSyncManager.shared.syncContacts(){ [weak self] (isSuccess, flyError, flyData)  in
+                executeOnMainThread {
+                    if isSuccess{
+                        Utility.saveInPreference(key: isLoginContactSyncDone, value: true)
+                        if authorizationStatus == .authorized{
+                            Toast.init(text: "Contacts synced successfully  ").show()
+                            self?.progressInfoLabel.text = "Contacts Synced"
+                            self?.syncImage.stopRotating()
+                        }
+                        self?.moveToDashboard()
+                    }else{
+                        Utility.saveInPreference(key: isLoginContactSyncDone, value: false)
+                        self?.progressInfoLabel.text = "Internet not available"
+                        self?.syncImage.stopRotating()
+                        AppAlert.shared.showToast(message: "Contact sync failure \(flyError?.localizedDescription)")
+                    }
                 }
             }
         }else{
@@ -106,14 +131,15 @@ class ContactSyncController: UIViewController {
     }
     
     func moveToDashboard(){
-        Utility.saveInPreference(key: isLoginContactSyncDone, value: true)
-        let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
-        let mainTabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-        navigationController?.pushViewController(mainTabBarController, animated: true)
-        navigationController?.viewControllers.removeAll(where: { viewControllers in
-            !viewControllers.isKind(of: MainTabBarController.self)
-        })
-       
+        DispatchQueue.main.async { [weak self] in
+            Utility.saveInPreference(key: isLoginContactSyncDone, value: true)
+            let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
+            let mainTabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+            self?.navigationController?.pushViewController(mainTabBarController, animated: true)
+            self?.navigationController?.viewControllers.removeAll(where: { viewControllers in
+                !viewControllers.isKind(of: MainTabBarController.self)
+            })
+        }
     }
     
     deinit {
@@ -126,16 +152,18 @@ class ContactSyncController: UIViewController {
 extension UIView {
     
     func startRotating(duration: CFTimeInterval = 3, repeatCount: Float = Float.infinity, clockwise: Bool = true) {
-        if self.layer.animation(forKey: "transform.rotation.z") != nil {
-            return
+        DispatchQueue.main.async { [weak self] in
+            if self?.layer.animation(forKey: "transform.rotation.z") != nil {
+                return
+            }
+            let animation = CABasicAnimation(keyPath: "transform.rotation.z")
+            let direction = clockwise ? 1.0 : -1.0
+            animation.toValue = NSNumber(value: .pi * 2 * direction)
+            animation.duration = duration
+            animation.isCumulative = true
+            animation.repeatCount = repeatCount
+            self?.layer.add(animation, forKey:"transform.rotation.z")
         }
-        let animation = CABasicAnimation(keyPath: "transform.rotation.z")
-        let direction = clockwise ? 1.0 : -1.0
-        animation.toValue = NSNumber(value: .pi * 2 * direction)
-        animation.duration = duration
-        animation.isCumulative = true
-        animation.repeatCount = repeatCount
-        self.layer.add(animation, forKey:"transform.rotation.z")
     }
     
     func stopRotating() {

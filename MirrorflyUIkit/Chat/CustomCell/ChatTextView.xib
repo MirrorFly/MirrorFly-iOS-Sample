@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -334,6 +334,35 @@
                         <constraint firstAttribute="bottom" secondItem="Cwn-gv-Uj5" secondAttribute="bottom" id="xkK-nS-aZq"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hgF-ZN-9aj">
+                    <rect key="frame" x="0.0" y="95" width="392" height="55"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5D8-EC-4nl">
+                            <rect key="frame" x="0.0" y="0.0" width="392" height="1"/>
+                            <color key="backgroundColor" name="dividerColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="B8a-QW-MfW"/>
+                            </constraints>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can't send messages to this group because you're no longer a participant." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0fV-Cl-Gft">
+                            <rect key="frame" x="45" y="14.5" width="302" height="26.5"/>
+                            <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="11"/>
+                            <color key="textColor" name="PrimaryTextColor2"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="0fV-Cl-Gft" secondAttribute="trailing" constant="45" id="YrC-1b-er7"/>
+                        <constraint firstItem="0fV-Cl-Gft" firstAttribute="centerX" secondItem="hgF-ZN-9aj" secondAttribute="centerX" id="pEz-dV-faO"/>
+                        <constraint firstAttribute="trailing" secondItem="5D8-EC-4nl" secondAttribute="trailing" id="rjd-3C-P4Y"/>
+                        <constraint firstItem="0fV-Cl-Gft" firstAttribute="centerY" secondItem="hgF-ZN-9aj" secondAttribute="centerY" id="sFZ-iL-bgt"/>
+                        <constraint firstItem="5D8-EC-4nl" firstAttribute="leading" secondItem="hgF-ZN-9aj" secondAttribute="leading" id="tmu-fx-pKi"/>
+                        <constraint firstItem="5D8-EC-4nl" firstAttribute="top" secondItem="hgF-ZN-9aj" secondAttribute="top" id="vfN-vp-qY8"/>
+                        <constraint firstItem="0fV-Cl-Gft" firstAttribute="leading" secondItem="hgF-ZN-9aj" secondAttribute="leading" constant="45" id="wlu-XQ-DEJ"/>
+                        <constraint firstAttribute="height" constant="55" id="ziC-Vd-hiX"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="rNf-dF-H5I"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -341,6 +370,9 @@
                 <constraint firstItem="hTz-Dd-WG2" firstAttribute="leading" secondItem="iTM-Ua-DqF" secondAttribute="leading" id="2Cr-qc-CXo"/>
                 <constraint firstItem="rNf-dF-H5I" firstAttribute="trailing" secondItem="nc4-oM-KsT" secondAttribute="trailing" id="4Qa-HO-xgW"/>
                 <constraint firstItem="iTM-Ua-DqF" firstAttribute="leading" secondItem="rNf-dF-H5I" secondAttribute="leading" id="7Ye-Sx-dZc"/>
+                <constraint firstItem="nc4-oM-KsT" firstAttribute="leading" secondItem="hgF-ZN-9aj" secondAttribute="trailing" id="BOd-6H-jDJ"/>
+                <constraint firstItem="hgF-ZN-9aj" firstAttribute="leading" secondItem="rNf-dF-H5I" secondAttribute="leading" id="DE7-ag-095"/>
+                <constraint firstItem="rNf-dF-H5I" firstAttribute="bottom" secondItem="hgF-ZN-9aj" secondAttribute="bottom" id="H3M-WX-MB5"/>
                 <constraint firstItem="hTz-Dd-WG2" firstAttribute="bottom" secondItem="iTM-Ua-DqF" secondAttribute="bottom" id="IyW-A0-oKv"/>
                 <constraint firstItem="A89-l2-58z" firstAttribute="trailing" secondItem="nc4-oM-KsT" secondAttribute="leading" id="OML-i3-93g"/>
                 <constraint firstItem="iTM-Ua-DqF" firstAttribute="trailing" secondItem="rNf-dF-H5I" secondAttribute="trailing" id="dVk-1g-zVM"/>
@@ -355,6 +387,7 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="cannotSendMessageView" destination="hgF-ZN-9aj" id="2FO-S3-tgg"/>
                 <outlet property="closeButton" destination="81H-e4-dZT" id="wFV-ha-PZJ"/>
                 <outlet property="closeImage" destination="agj-yg-i4a" id="Ppw-Km-6cw"/>
                 <outlet property="closeView" destination="BOY-yP-Kb2" id="Gue-mj-PXx"/>
@@ -377,6 +410,12 @@
         <image name="closeIcon" width="24" height="24"/>
         <image name="ic_send" width="11.5" height="16.5"/>
         <image name="test-image.jpg" width="269" height="187"/>
+        <namedColor name="PrimaryTextColor2">
+            <color red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="dividerColor">
+            <color red="0.88627450980392153" green="0.88627450980392153" blue="0.88627450980392153" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="replyViewOuter">
             <color red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

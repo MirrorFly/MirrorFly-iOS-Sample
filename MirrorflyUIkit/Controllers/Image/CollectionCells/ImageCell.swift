@@ -45,7 +45,7 @@ class ImageCell: UICollectionViewCell, UIScrollViewDelegate {
             cellImage.image = image
             }
             }
-        cellImage.contentMode = .scaleToFill
+        cellImage.contentMode = .scaleAspectFit
       //  }
         return self
     }

@@ -8,6 +8,7 @@ import FlyCore
 import FlyCommon
 import SDWebImage
 import FlyCall
+import Contacts
 
 class ContactViewController: UIViewController {
     @IBOutlet weak var profilePopupContainer: UIView!
@@ -36,7 +37,9 @@ class ContactViewController: UIViewController {
     var replyJid: String?
     var messageTxt: String?
     var replyTagDelegate: ReplyMessagesDelegate?
-    var isFromRecentChat = false
+    var hideNavigationbar = false
+    var tappedProfile : ProfileDetails? = nil
+    var groupJid : String = ""
     
     public var profileCount = Int()
     //var randomColors = [UIColor?]()
@@ -53,6 +56,7 @@ class ContactViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        handleBackgroundAndForground()
         configureDefaults()
         bottomBtn.isEnabled = false
         bottomBtn.setTitleColor(UIColor.white, for: .normal)
@@ -69,10 +73,13 @@ class ContactViewController: UIViewController {
             bottomBtnHeight.constant = 0
         }
     }
+    @objc override func willCometoForeground() {
+        getCotactFromLocal(fromServer: true)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if isFromRecentChat{
+        if hideNavigationbar{
             headerVIewHeight.constant = 0
             topBarViewHeight.constant = 48
             serachFieldTopMargin.constant = 0
@@ -84,18 +91,19 @@ class ContactViewController: UIViewController {
         ContactManager.shared.profileDelegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(self.methodOfReceivedNotification(notification:)), name: Notification.Name(Identifiers.ncContactRefresh), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
-        getCotactFromLocal()
+        getCotactFromLocal(fromServer: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
         replyTagDelegate?.replyMessageObj(message: replyMessageObj, jid: replyJid ?? "", messageText: messageTxt ?? "")
+        ContactManager.shared.profileDelegate = nil
     }
     
     func setupUI() {
         navigationController?.view.backgroundColor = .white
-        navigationController?.setNavigationBarHidden(false, animated: false)
+        navigationController?.setNavigationBarHidden(!hideNavigationbar, animated: false)
         profilePopupContainer.isHidden = true
         self.title = contact
         userName.font = UIFont.font22px_appSemibold()
@@ -118,11 +126,15 @@ class ContactViewController: UIViewController {
     
     @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
         if NetworkReachability.shared.isConnected {
-            refreshContacts()
+            if groupJid.isEmpty{
+                showContactPermissionAlert()
+            }else{
+                refreshContacts()
+            }
         }else {
+            refreshControl.endRefreshing()
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
-        refreshControl.endRefreshing()
     }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
@@ -133,49 +145,84 @@ class ContactViewController: UIViewController {
     
     @objc func methodOfReceivedNotification(notification: Notification) {
         if (self.view.window != nil) {
-            getCotactFromLocal()
+            getCotactFromLocal(fromServer: false)
         }
     }
     
     @objc func contactSyncCompleted(notification: Notification){
-        if let contactSyncState = notification.userInfo?[FlyConstants.contactSyncState] as? ContactSyncState {
-            switch contactSyncState {
+        if let contactSyncState = notification.userInfo?[FlyConstants.contactSyncState] as? String {
+            switch ContactSyncState(rawValue: contactSyncState) {
             case .inprogress:
                 refreshControl.startRotating()
             case .success:
                 refreshControl.endRefreshing()
-                getCotactFromLocal()
+                getCotactFromLocal(fromServer: false)
             case .failed:
                 refreshControl.endRefreshing()
+                print("contact sync failed")
+            case .none:
                 print("contact sync failed")
             }
         }
     }
     
-    func getCotactFromLocal() {
-        contactViewModel.getContacts(fromServer: false) { [weak self] (profiles, error)  in
-            if error != nil {
-                return
-            }
-            self?.allContacts.removeAll()
-            self?.contacts.removeAll()
-            if  let  contactsList = profiles {
-                self?.allContacts = contactsList.sorted { $0.name.capitalized < $1.name.capitalized }
-                self?.contacts = contactsList
-                if  let contactDetails = self?.searchTxt.text?.count == 0 ? self?.allContacts : self?.allContacts.filter({ $0.name.capitalized.contains(self?.searchTxt.text?.capitalized ?? "")}) {
-                    self?.contacts = contactDetails
-                    self?.contactList.reloadData()
-                    let index = self?.currentIndex ?? -1
-                    if index > -1 {
-                        self?.userName.text = self?.contacts[index].name
-                        self?.setProfile()
+    func getCotactFromLocal(fromServer: Bool) {
+        var profileDetails = [ProfileDetails]()
+        if groupJid.isEmpty{
+            if fromServer{
+                contactViewModel.getContacts(fromServer: true) { [weak self] (profiles, error)  in
+                    if error != nil {
+                        return
+                    }
+                    if  let  contactsList = profiles {
+                        profileDetails.append(contentsOf: contactsList)
+                        self?.reloadTableView(profileDetails: profileDetails)
                     }
                 }
+            }
+            contactViewModel.getContacts(fromServer: false) { [weak self] (profiles, error)  in
+                if error != nil {
+                    return
+                }
+                if  let  contactsList = profiles {
+                    profileDetails.append(contentsOf: contactsList)
+                    self?.reloadTableView(profileDetails: profileDetails)
+                }
+            }
+        }else{
+            let groupMembers =  GroupManager.shared.getGroupMemeberFromLocal(groupJid: groupJid).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid})
+            for item in groupMembers{
+                if let pd = item.profileDetail{
+                    profileDetails.append(pd)
+                }
+            }
+            reloadTableView(profileDetails: profileDetails)
+        }
+    }
+    
+    func reloadTableView(profileDetails: [ProfileDetails]){
+        DispatchQueue.main.async { [weak self] in
+            self?.allContacts.removeAll()
+            self?.contacts.removeAll()
+            self?.allContacts = profileDetails.sorted { getUserName(name: $0.name, nickName: $0.nickName).capitalized < getUserName(name: $1.name, nickName: $1.nickName).capitalized }
+            self?.contacts = profileDetails
+            let contactDetails = self?.searchTxt.text?.count == 0 ? self?.allContacts : self?.allContacts.filter({ getUserName(name: $0.name, nickName: $0.nickName).capitalized.contains(self?.searchTxt.text?.capitalized ?? "")})
+            self?.contacts = contactDetails ?? []
+            self?.contactList.reloadData()
+            let index = self?.currentIndex
+            let count = self?.contacts.count
+            if index ?? 0 > -1  && index ?? 0 < count ?? 0 {
+                self?.userName.text = self?.contacts[index ?? 0].name
+                self?.setProfile()
             }
         }
     }
     
     func refreshContacts() {
+        if !groupJid.isEmpty{
+            refreshControl.endRefreshing()
+            return
+        }
         searchTxt.resignFirstResponder()
         searchTxt.setShowsCancelButton(false, animated: true)
         searchTxt.text = ""
@@ -192,7 +239,7 @@ class ContactViewController: UIViewController {
                 if  let  contactsList = profiles {
                     weakSelf.allContacts.removeAll()
                     weakSelf.contacts.removeAll()
-                    weakSelf.allContacts = contactsList.sorted { $0.name.capitalized < $1.name.capitalized }
+                    weakSelf.allContacts = contactsList.sorted { getUserName(name: $0.name, nickName: $0.nickName).capitalized < getUserName(name: $1.name, nickName: $1.nickName).capitalized }
                     weakSelf.contacts = weakSelf.allContacts
                 }
             }
@@ -235,16 +282,40 @@ class ContactViewController: UIViewController {
     }
     
     func setProfile() {
-        let profile = contacts[currentIndex]
-        userName.text = profile.name
-        let urlString = "\(Environment.sandboxImage.baseURL)\(media)/\(profile.image)?mf=\(FlyDefaults.authtoken)"
-        let url = URL(string: urlString)
-        let color = getColor(userName: profile.name)
-        userImage.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        userImage.sd_setImage(with: url, placeholderImage: getPlaceholder(name: profile.name, color: color))
+        var apiService = ApiService()
+        tappedProfile = contacts[currentIndex]
+        if let profile =  tappedProfile{
+            let name = getUserName(name: profile.name, nickName: profile.nickName)
+            userName.text = name
+            let urlString = "\(FlyDefaults.baseURL)\(media)/\(profile.image)?mf=\(FlyDefaults.authtoken)"
+            print("Token ::",FlyDefaults.authtoken)
+            let url = URL(string: urlString)
+            let color = getColor(userName: name)
+            if profile.image.isNotEmpty {
+                userImage.sd_imageIndicator = SDWebImageActivityIndicator.gray
+                userImage.sd_setImage(with: url) { image, error, cache, url in
+                    if error != nil {
+                        apiService.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
+                               if isSuccess {
+                                   var resultDict : [String: Any] = [:]
+                                   resultDict = flyData
+                                   let profiledict = resultDict.getData() as? NSDictionary ?? [:]
+                                   guard let token = profiledict.value(forKey: "token") as? String else{
+                                       return
+                                   }
+                                   FlyDefaults.authtoken = token
+                                   self?.setProfile()
+                               }
+                           })
+                    }
+                }
+            } else {
+                userImage.image = getPlaceholder(name: name, color: getColor(userName: name))
+            }
+        }
     }
     
-    func getPlaceholder(name: String, color: UIColor)->UIImage {
+    func getPlaceholder(name: String, color: UIColor)-> UIImage {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let ipimage = IPImage(text: trimmedName, radius: Double(userImage.frame.size.height), font: UIFont.font84px_appBold(), textColor: nil, color: color)
         let placeholder = ipimage.generateInitialSqareImage()
@@ -264,6 +335,44 @@ class ContactViewController: UIViewController {
     @IBAction func userInfo(_ sender: Any) {
     }
     
+    func showContactPermissionAlert(){
+        if ENABLE_CONTACT_SYNC {
+            let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+            if contactPermissionStatus == .authorized{
+                refreshContacts()
+                refreshControl.endRefreshing()
+            }else if contactPermissionStatus == .denied{
+                alertContactAccessNeeded()
+            }else if (contactPermissionStatus == .restricted || contactPermissionStatus == .notDetermined){
+                CNContactStore().requestAccess(for: .contacts){ [weak self] (access, error)  in
+                    if access{
+                        self?.contactViewModel.syncContacts()
+                    }
+                    self?.refreshControl.endRefreshing()
+                }
+            }
+        }else{
+            refreshContacts()
+        }
+    }
+    
+    func alertContactAccessNeeded() {
+        let settingsAppURL = URL(string: UIApplication.openSettingsURLString)!
+        let alert = UIAlertController(
+            title: "Need Contacts permission",
+            message: "Contacts access has been denied. Kindly enable contact access in app settings.",
+            preferredStyle: UIAlertController.Style.alert
+        )
+        alert.addAction(UIAlertAction(title: "Go to settings", style: .default, handler: { (alert) -> Void in
+            UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "Don't  Allow ", style: .cancel, handler: { (alert) -> Void in
+            self.refreshControl.endRefreshing()
+        }))
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 // SearchBar Delegate Method
@@ -271,7 +380,7 @@ extension ContactViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
         contacts = searchText.isEmpty ? allContacts : allContacts.filter { term in
-            return term.name.lowercased().contains(searchText.lowercased())
+            return getUserName(name: term.name, nickName: term.nickName).lowercased().contains(searchText.lowercased())
         }
         self.contactList.reloadData()
     }
@@ -305,16 +414,18 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if contacts.count > 0 {
+        if contacts.count > 0 && indexPath.row < contacts.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.contactCell) as! ContactCell
             cell.selectionStyle = .none
+            print("Contact XYZ \(contacts.count) \(indexPath.row)")
             let profile = contacts[indexPath.row]
+            let name = getUserName(name: profile.name, nickName: profile.nickName)
             cell.profileButton.tag = indexPath.row
             cell.profileButton.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
-            cell.name.text = profile.name
+            cell.name.text = name
             cell.status.text = profile.status
-            let color = getColor(userName: profile.name)
-            cell.setImage(imageURL: profile.image, name: profile.name, color: color)
+            let color = getColor(userName: name)
+            cell.setImage(imageURL: profile.image, name: name, color: color)
             cell.checkBox.tag = indexPath.row
             cell.checkBox.isSelected = selectedProfilesJid.contains(profile.jid)
             cell.checkBox.isHidden = !isMultiSelect
@@ -416,9 +527,6 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    private func getColor(userName : String) -> UIColor {
-        return ChatUtils.getColorForUser(userName: userName)
-    }
 }
 
 extension ContactViewController : ProfileEventsDelegate {
@@ -439,7 +547,7 @@ extension ContactViewController : ProfileEventsDelegate {
     }
     
     func usersProfilesFetched() {
-        
+        getCotactFromLocal(fromServer: false)
     }
     
     func blockedThisUser(jid: String) {
@@ -460,22 +568,27 @@ extension ContactViewController : ProfileEventsDelegate {
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         print("userUpdatedTheirProfile \(jid)")
-        let profileDatas =  contacts.filter({ ($0.jid.contains(jid)) })
-        if profileDatas.count > 0, let profileData = profileDatas.first  {
-            if  let indx = contacts.firstIndex(of: profileData) {
-                contacts[indx] = profileDetails
-                if let contactIndx = allContacts.firstIndex(of: profileData) {
-                    allContacts[contactIndx] = profileDetails
-                }
-                print("userUpdatedTheirProfile currentIndex \(currentIndex)")
-                if currentIndex > -1 {
-                    contacts[currentIndex] = profileDetails
-                    userName.text = profileDetails.name
+        if  let index = allContacts.firstIndex(where: { pd in pd.jid == jid }) {
+            allContacts[index] = profileDetails
+            print("userUpdatedTheirProfile currentIndex \(currentIndex)")
+            let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+            NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
+            NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil, userInfo: profile as [AnyHashable : Any])
+            if let index = contacts.firstIndex(where: { pd in pd.jid == jid })  {
+                contacts[index] = profileDetails
+                let indexPath = IndexPath(item: index, section: 0)
+                contactList?.reloadRows(at: [indexPath], with: .fade)
+                if let tappedPd = tappedProfile, tappedPd.jid == profileDetails.jid{
+                    currentIndex = index
                     setProfile()
                 }
-                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
-                NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
-                contactList.reloadData()
+            }else{
+                let indexPath = IndexPath(item: index, section: 0)
+                contactList?.reloadRows(at: [indexPath], with: .fade)
+                if let tappedPd = tappedProfile, tappedPd.jid == profileDetails.jid{
+                    currentIndex = index
+                    setProfile()
+                }
             }
         }
     }

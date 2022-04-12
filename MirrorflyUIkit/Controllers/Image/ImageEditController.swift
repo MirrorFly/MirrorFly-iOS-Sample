@@ -82,6 +82,7 @@ class ImageEditController: UIViewController {
         super.viewWillAppear(true)
         NotificationCenter.default.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -101,10 +102,10 @@ class ImageEditController: UIViewController {
         botomCollection.isPagingEnabled = true
         setDefault()
         captionTxt?.delegate = self
-        captionTxt?.font = UIFont.font12px_appMedium()
+        captionTxt?.font = UIFont.font12px_appRegular()
         captionTxt?.textContainerInset = UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 10)
         captionTxt?.text = (captionText?.isNotEmpty ?? false) ? captionText : addCaption
-        captionTxt?.textColor = UIColor.darkGray
+        captionTxt?.textColor = Color.captionTxt
         captionTxt?.layer.cornerRadius = 20
         captionTxt?.clipsToBounds = true
         growingTextViewHandler = GrowingTextViewHandler(textView: captionTxt ?? UITextView(), heightConstraint: captionHeightCons ?? NSLayoutConstraint())
@@ -361,7 +362,7 @@ extension ImageEditController: UICollectionViewDelegate, UICollectionViewDataSou
         }else{
             let cell:ListImageCell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.listImageCell, for: indexPath) as! ListImageCell
             let imgeDetail = imageAray[indexPath.row]
-            cell.cellImage.contentMode = .scaleAspectFill
+            cell.cellImage.contentMode = .scaleAspectFit
             cell.cellImage.image = imgeDetail.image
             if botmImageIndex == indexPath.row {
                 cell.setBorder()
@@ -421,7 +422,7 @@ extension ImageEditController: UICollectionViewDelegate, UICollectionViewDataSou
                 setCaptionHeightCons()
             } else{
                 captionTxt?.text = (captionText?.isNotEmpty ?? false && imageEditIndex == 0) ? captionText : addCaption
-                captionTxt?.textColor = UIColor.darkGray
+                captionTxt?.textColor = Color.captionTxt
                 setCaptionHeightCons()
             }
         }
@@ -461,6 +462,9 @@ extension ImageEditController : UITextViewDelegate {
                 }
             }
         }
+        if captionTxt?.text.contains(addCaption) == true {
+            textView.text = captionTxt?.text.replacingOccurrences(of: addCaption, with: "")
+        }
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -488,10 +492,6 @@ extension ImageEditController : UITextViewDelegate {
                 captionHeightCons?.constant = 110
                 captionTxt?.isScrollEnabled = true
             }
-            
-            if captionTxt?.text.contains(addCaption) == true {
-                textView.text = captionTxt?.text.replacingOccurrences(of: addCaption, with: "")
-            }
         }
     }
     
@@ -499,6 +499,7 @@ extension ImageEditController : UITextViewDelegate {
         removeKeyboardConstraints()
         if textView == captionTxt {
             if textView.text.isEmpty {
+                captionTxt?.text = (captionText?.isNotEmpty ?? false) ? captionText : addCaption
             }else {
                 var imgDetail = imageAray[imageEditIndex]
                 imgDetail.caption = textView.text == addCaption ? "" : textView.text.trim()

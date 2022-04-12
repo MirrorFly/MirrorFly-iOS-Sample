@@ -22,6 +22,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     @IBOutlet weak var baseView: UIView?
     @IBOutlet weak var bubbleImageView: UIImageView?
     
+    @IBOutlet weak var replyUserLabelWidthCons: NSLayoutConstraint?
     @IBOutlet weak var locationOutgoingView: UIView!
     @IBOutlet weak var favouriteIcon: UIImageView?
     @IBOutlet weak var baseViewTopConstraint: NSLayoutConstraint!
@@ -94,9 +95,6 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         currentIndexPath = indexPath
         replyViewHeightCons?.isActive = true
         // Forward view elements and its data
-        forwardView?.isHidden = (isShowForwardView == true) ? false : true
-        forwardLeadingCons?.constant = (isShowForwardView == true) ? 20 : 0
-        forwardButton?.isHidden = (isShowForwardView == true) ? false : true
         bubbleImageLeadingCons?.constant = (isShowForwardView == true) ? 10 : 0
         
         if selectedForwardMessage?.filter({$0.chatMessage.messageId == message?.messageId}).first?.isSelected == true {
@@ -109,12 +107,22 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if (message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+        if (message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
             quickForwardView?.isHidden = true
             quickForwardButton?.isHidden = true
         } else {
-            quickForwardView?.isHidden = false
+                quickForwardView?.isHidden = false
             quickForwardButton?.isHidden = false
+        }
+        
+        if !(isShowForwardView ?? false) {
+            forwardView?.isHidden = true
+            forwardButton?.isHidden = true
+            forwardLeadingCons?.constant = 0
+        } else {
+            forwardView?.isHidden = false
+            forwardButton?.isHidden = false
+            forwardLeadingCons?.constant = 20
         }
         
         // Favorite message icon
@@ -236,7 +244,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             ChatUtils.setReceiverBubbleBackground(imageView: bubbleImageView)
             if message?.messageChatType == .groupChat {
                 if let nameLabel = groupMsgSenderName {
-                    nameLabel.text = message?.senderUserName
+                    nameLabel.text = ChatUtils.getGroupSenderName(messsage: message)
                 }
             } else {
                 groupMsgNameView?.isHidden = true

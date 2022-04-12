@@ -16,11 +16,12 @@ class ImageConverter {
         return UIImage(data: imageData)
     }
     
+
     func convertImageToBase64 (img: UIImage) -> String {
         return img.jpegData(compressionQuality: 0.5)?.base64EncodedString(options: .endLineWithLineFeed) ?? ""
     }
     
-    
+
     func convertImageToBase64String (img: UIImage) -> String {
         var image = img
         var imageData = img.pngData()

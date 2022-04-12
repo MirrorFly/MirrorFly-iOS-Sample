@@ -84,7 +84,7 @@ class ApiService
     }
     
     func refreshToken(completionHandler : @escaping FlyCompletionHandler) {
-        let url = Environment.login.baseURL + login
+        let url = FlyDefaults.baseURL + login
         print(url)
         let parameter:[String:String] = ["username":Utility.getStringFromPreference(key: username),
                                       "type": "",

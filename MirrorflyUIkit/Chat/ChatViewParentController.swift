@@ -9,6 +9,7 @@ import GrowingTextViewHandler_Swift
 import IQKeyboardManagerSwift
 import FlyCore
 import FlyCommon
+import FlyNetwork
 import BSImagePicker
 import Photos
 import AVFoundation
@@ -101,7 +102,9 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
     var alertController : UIAlertController?
     var isPopToRootVC: Bool? = false
     var sendMediaMessages: [ChatMessage]? = []
-    var isShowOpenedDoc: Bool? = false
+    var receivedMediaMessages: [ChatMessage]? = []
+    var uploadingMediaObjects: [ChatMessage]? = []
+    var isShowAudioLoadingIcon: Bool? = false
     var callDurationTimer : Timer?
     var lastSelectedCollection: PHAssetCollection?
     var replyMessagesDelegate: ReplyMessagesDelegate?
@@ -141,19 +144,15 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
     var currentIndexPath: IndexPath = IndexPath()
     private var selectedAssets = [PHAsset]()
     var isNetworkConnected: Bool = true
-    var currentlyUploadingAudioObj: [ChatMessage]? = []
-    var isAudioPlaying: Bool? = false
     var mLatitude : Double = 0.0
     var mLongitude : Double = 0.0
     var toViewLocation = false
-    
     var groupMembers = [GroupParticipantDetail]()
     
     //contact
     var contactColor = UIColor()
     
-    private var contactViewModel : ContactViewModel!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
@@ -170,15 +169,20 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
         view.bringSubviewToFront(chatTableView)
         loadAudioView()
-        handleBackgroundAndForground()
        handleSendButton()
         audioButton.imageEdgeInsets = UIEdgeInsets(top: 6, left: 8, bottom: 6, right: 8)
         videoButton.imageEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
         print("MYJId \(FlyDefaults.myJid)")
         print("username : \(FlyDefaults.myXmppUsername)")
         checkGalleryPermission()
+        chatTextViewXib?.cannotSendMessageView?.isHidden = true
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+            let matchingNotifications = notifications.filter({ $0.request.content.threadIdentifier == self.getProfileDetails.jid })
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: matchingNotifications.map({ $0.request.identifier }))
+        }
+        NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
     }
     
     @objc private func keyboardWillShow(notification: NSNotification) {
@@ -218,17 +222,16 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
    }
     
     @objc override func willCometoForeground() {
-        print("ChatViewParentController appComestoForeground")
+        print("ChatViewParentController ABC appComestoForeground")
         if !(messageTextView?.text.isEmpty ?? false) {
             //  messageTextView?.becomeFirstResponder()
         }
         if isReplyViewOpen == true {
-            messageTextView?.becomeFirstResponder()
+            if !(messageTextView?.becomeFirstResponder() ?? false) == true {
+                messageTextView?.becomeFirstResponder()
+            }
         }
         if (chatMessages.count) > 0 {
-            if let audioFile = chatMessages[currenAudioIndexPath?.section ?? 0][currenAudioIndexPath?.row ?? 0].mediaChatMessage?.mediaFileName, isAudioPlaying == true {
-                playAudio(audioUrl: audioFile)
-            }
             handleSendButton()
         }
         
@@ -241,11 +244,10 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
                 }
             }
         }
-        
+        FlyMessenger.resetFailedMediaMessages(chatUserJid: getProfileDetails.jid)
         configureDefaults()
         markMessagessAsRead()
         getMessages()
-        
     }
     
     func getMessages() {
@@ -257,6 +259,7 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         }
         getAllMessages = FlyMessenger.getMessagesOf(jid: getProfileDetails.jid)
         if(getAllMessages.count > 0) {
+            getAllMessages = getAllMessages.filter({$0.messageType != MessageType.document}) // This line to be removed after document message implementation
             groupPreviousMessages(messages: getAllMessages)
         }
     }
@@ -270,11 +273,15 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         chatManager.typingStatusDelegate = self
         ContactManager.shared.profileDelegate = self
         GroupManager.shared.groupDelegate = self
+        networkMonitor()
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        ChatManager.setOnGoingChatUser(jid: getProfileDetails.jid)
+        print("ChatViewParentController ABC viewWillAppear")
+        handleBackgroundAndForground()
         getLastSeen()
         markMessagessAsRead()
         headerView.isHidden = false
@@ -292,7 +299,8 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         
         if getProfileDetails.profileChatType == .groupChat {
             getParticipants()
-            getGrouMember()
+            getGroupMember()
+            checkMemberOfGroup()
         }
         forwardBottomView?.isHidden = isShowForwardView == true ? false : true
         lastSeenLabel.isHidden = (getProfileDetails.profileChatType == .groupChat)
@@ -306,9 +314,8 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
                     }
                 }
             }
-        } else {
-            replyCloseButtonTapped = true
         }
+        resetReplyView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -355,6 +362,13 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
     func showForwardBottomView() {
         forwardBottomView?.isHidden = false
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
+        ContactManager.shared.profileDelegate = nil
+        ChatManager.setOnGoingChatUser(jid: "")
+    }
 }
 
 //MARK - Chat Grouping Logic
@@ -390,17 +404,22 @@ extension ChatViewParentController {
     //This method groups the  previous messages as per timestamp.
     private func groupPreviousMessages(messages: [ChatMessage]){
         let groupedMessages = Dictionary(grouping: messages) { (element) -> Date in
-            let date = DateFormatterUtility.shared.convertMillisecondsToDateTime(milliSeconds: element.messageSentTime)
+            let date : Date
+            if element.messageChatType == .singleChat {
+                 date = DateFormatterUtility.shared.convertMillisecondsToDateTime(milliSeconds: element.messageSentTime)
+            } else {
+                 date = DateFormatterUtility.shared.convertGroupMillisecondsToDateTime(milliSeconds: element.messageSentTime)
+            }
             return date.reduceToMonthDayYear()
         }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yyyy"
         let sortedKeys = groupedMessages.keys.sorted()
         sortedKeys.forEach { (key) in
             var values = groupedMessages[key]
             values = values?.reversed()
             chatMessages.insert(values ?? [], at: 0)
-            chatTableView?.reloadData()
+            DispatchQueue.main.async { [weak self] in
+                self?.chatTableView?.reloadData()
+            }
         }
     }
     
@@ -444,30 +463,34 @@ extension ChatViewParentController {
         userImage.addGestureRecognizer(gestureRecognizer)
         userInfoStack.isUserInteractionEnabled = true
         userInfoStack.addGestureRecognizer(gestureRecognizer)
-
     }
     
     @objc func goToInfoScreen(sender: Any){
         if getProfileDetails.profileChatType == .singleChat {
             performSegue(withIdentifier: Identifiers.contactInfoViewController, sender: nil)
+        } else if getProfileDetails.profileChatType == .groupChat {
+            performSegue(withIdentifier: Identifiers.groupInfoViewController, sender: nil)
         }
     }
     
     func setProfile() {
-        userNameLabel.text = (getProfileDetails?.name.isEmpty ?? false) ? getProfileDetails.nickName : getProfileDetails?.name
-        let imageUrl = getProfileDetails?.image  ?? ""
-        let urlString = Environment.sandboxImage.baseURL + "media/" + imageUrl + "?mf=" + FlyDefaults.authtoken
-        print("setProfile \(urlString)")
-        let url = URL(string: urlString)
-        var placeholder = UIImage()
-        
-        if getProfileDetails.profileChatType == .groupChat {
-            placeholder = UIImage(named: ImageConstant.ic_group_small_placeholder)!
-        } else {
-            placeholder = getPlaceholder(name: getProfileDetails?.name ?? "", color: contactColor)
+        if getProfileDetails != nil {
+            userNameLabel.text = getUserName(name: getProfileDetails.name, nickName: getProfileDetails.nickName)
+            let imageUrl = getProfileDetails?.image  ?? ""
+            let urlString = FlyDefaults.baseURL + "media/" + imageUrl + "?mf=" + FlyDefaults.authtoken
+            print("setProfile \(urlString)")
+            let url = URL(string: urlString)
+            var placeholder = UIImage()
+            
+            if getProfileDetails.profileChatType == .groupChat {
+                placeholder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
+            } else {
+                placeholder = getPlaceholder(name: getUserName(name: getProfileDetails.name, nickName: getProfileDetails.nickName), color: contactColor)
+            }
+            userImage.sd_setImage(with: url, placeholderImage: placeholder)
         }
-        userImage.sd_setImage(with: url, placeholderImage: placeholder)
     }
+    
     func setUpHeaderView() {
         multiSelectionView.isHidden = true
         headerView.isHidden = false
@@ -544,9 +567,10 @@ extension ChatViewParentController {
         }
     }
     
-    func navicateToSelectForwardList(forwardMessages: [SelectedForwardMessage?],dismissClosure:(()->())?) {
+    func navicateToSelectForwardList(forwardMessages: [SelectedForwardMessage],dismissClosure:(()->())?) {
         let destination = ForwardViewController(nibName: Identifiers.forwardVC, bundle: nil)
         destination.pageDismissClosure = dismissClosure
+        destination.forwardMessages = forwardMessages
         destination.selectedUserDelegate = self
         presentViewController(source: self, destination: destination)
     }
@@ -577,13 +601,13 @@ extension ChatViewParentController {
                             }
                         }
                     }
-                        let starImage = UIImage(named: "star")
-                        let starItem = UIMenuItem(title: "Star", image: starImage) { _ in
-                        }
-                        let copyItem = UIMenuItem(title: "Copy") { _ in
-                        }
-                        let deleteItem = UIMenuItem(title: "Delete") { _ in
-                        }
+                       // let starImage = UIImage(named: "star")
+//                        let starItem = UIMenuItem(title: "Star", image: starImage) { _ in
+//                        }
+//                        let copyItem = UIMenuItem(title: "Copy") { _ in
+//                        }
+//                        let deleteItem = UIMenuItem(title: "Delete") { _ in
+//                        }
                     
                     if (messageStatus == .delivered || messageStatus == .sent || messageStatus == .received || messageStatus == .seen || messageStatus == .acknowledged)  {
                         if ((chatMessages[indexPath.section ][indexPath.row].mediaChatMessage != nil) && chatMessages[indexPath.section ][indexPath.row].mediaChatMessage?.mediaUploadStatus == .uploaded || chatMessages[indexPath.section ][indexPath.row].mediaChatMessage?.mediaDownloadStatus == .downloaded) {
@@ -593,7 +617,10 @@ extension ChatViewParentController {
                                 self?.refreshBubbleImageView(indexPath: indexPath, isSelected: true)
                                 self?.chatTableView.reloadData()
                             }
-                        } else if chatMessages[indexPath.section ][indexPath.row].mediaChatMessage == nil {
+                        }
+                    }
+                    if (messageStatus == .delivered || messageStatus == .received || messageStatus == .seen || messageStatus == .acknowledged)  {
+                        if chatMessages[indexPath.section ][indexPath.row].mediaChatMessage == nil {
                             forwardItem = UIMenuItem(title: "Forward") { [weak self] _ in
                                 self?.isShowForwardView = true
                                 self?.currentIndexPath = indexPath
@@ -602,20 +629,20 @@ extension ChatViewParentController {
                             }
                         }
                     }
-                        let infoItem = UIMenuItem(title: "Info") { _ in
-                        }
+//                        let infoItem = UIMenuItem(title: "Info") { _ in
+//                        }
                     
                     switch true {
                     case replyItem == nil && forwardItem == nil:
-                        toolTipController.menuItems = [starItem, copyItem,deleteItem,infoItem]
+                        toolTipController.menuItems = []
                     case replyItem != nil && forwardItem != nil:
-                        toolTipController.menuItems = [replyItem,starItem, copyItem,deleteItem,forwardItem,infoItem]
+                        toolTipController.menuItems = [replyItem,forwardItem]
                     case replyItem != nil:
-                        toolTipController.menuItems = [replyItem, starItem, copyItem,deleteItem,infoItem]
+                        toolTipController.menuItems = [replyItem]
                     case forwardItem != nil:
-                        toolTipController.menuItems = [starItem, copyItem,deleteItem,forwardItem,infoItem]
+                        toolTipController.menuItems = [forwardItem]
                     default:
-                        toolTipController.menuItems = [replyItem,starItem, copyItem,deleteItem,forwardItem,infoItem]
+                        toolTipController.menuItems = [replyItem,forwardItem]
                     }
     
                         let chatMessage = chatMessages[indexPath.section][indexPath.row]
@@ -772,11 +799,13 @@ extension ChatViewParentController {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         print("textViewDidEndEditing")
+        ChatManager.sendTypingGoneStatus(to: getProfileDetails.jid, chatType: getProfileDetails.profileChatType)
         if isReplyViewOpen == false {
             textToolBarViewHeight?.constant = CGFloat(chatBottomConstant)
             tableViewBottomConstraint?.constant = CGFloat(chatBottomConstant)
+            guard let indexPath = chatTableView.indexPath(for: chatTableView), chatMessages[indexPath.section][indexPath.row].replyParentChatMessage != nil else { return }
+            chatTableView.delegate?.tableView?(chatTableView, didSelectRowAt: indexPath)
         }
-        ChatManager.sendTypingGoneStatus(to: getProfileDetails.jid, chatType: getProfileDetails.profileChatType)
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -949,9 +978,6 @@ extension ChatViewParentController {
                         chatMessages[currenAudioIndexPath?.section ?? 0][currenAudioIndexPath?.row ?? 0].audioTrackTime = 0.0
                     }
                 }
-                if isBecomeBackGround == true {
-                    isAudioPlaying = player.isPlaying ? true : false
-                }
             
                 if player.isPlaying {
                     player.stop()
@@ -966,11 +992,17 @@ extension ChatViewParentController {
         updater = nil
      }
     
+    func audioPermission() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch _ {
+        }
+    }
+    
     func playAudio(audioUrl: String) {
+        audioPermission()
         stopPlayer(isBecomeBackGround: false)
-        audioSetup()
-        if let recorder = audioRecorder {
-            if !recorder.isRecording {
                 let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Audio", isDirectory: true)
                 let fileURL: URL = folderPath.appendingPathComponent(audioUrl)
@@ -985,6 +1017,8 @@ extension ChatViewParentController {
                 updater = CADisplayLink(target: self, selector: #selector( trackAudio))
                     updater.frameInterval = 1
                     updater.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
+                    print("currentIndexPath:",currenAudioIndexPath)
+                    print("previousAudioIndexPath:",previousAudioIndexPath)
                     if previousAudioIndexPath != currenAudioIndexPath {
                         if chatMessages.count > 0 && previousAudioIndexPath?.section != -1 {
                             if chatMessages[previousAudioIndexPath?.section ?? 0].count > previousAudioIndexPath?.row ?? 0 {
@@ -993,7 +1027,6 @@ extension ChatViewParentController {
                             }
                         }
                     }
-                    isAudioPlaying = true
                     audioPlayer?.currentTime = TimeInterval(chatMessages[currenAudioIndexPath?.section ?? 0][currenAudioIndexPath?.row ?? 0].audioTrackTime ?? 0.0)
                     audioPlayer?.prepareToPlay()
                     audioPlayer?.play()
@@ -1008,13 +1041,11 @@ extension ChatViewParentController {
                         }
                     }
                 }
-            }
         }
-    }
     
     func startRecord(isOpenAudioFile: Bool) {
-        audioSetup()
         if isOpenAudioFile == false {
+                audioSetup()
             if let recorder = audioRecorder {
                 if !recorder.isRecording {
                     recordAudio()
@@ -1023,6 +1054,7 @@ extension ChatViewParentController {
                 }
             }
         } else {
+            audioPermission()
             openAudioFiles()
         }
     }
@@ -1113,8 +1145,10 @@ extension ChatViewParentController {
                     self?.reloadList(message: chatMessage)
                     self?.replyMessageId = ""
                     self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
-                    self?.replyMessageObj = nil
-                    self?.isReplyViewOpen = false
+                    if self?.replyJid == self?.getProfileDetails.jid {
+                        self?.replyMessageObj = nil
+                        self?.isReplyViewOpen = false
+                    }
                 }
             }
         } else {
@@ -1165,7 +1199,7 @@ extension ChatViewParentController:  UIDocumentPickerDelegate {
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         
-        guard let audioData = try? Data(contentsOf: url) else{
+        guard let audioData = try? Data(contentsOf: url) else {
             return
         }
         let byteCountFormatter = ByteCountFormatter()
@@ -1186,12 +1220,20 @@ extension ChatViewParentController:  UIDocumentPickerDelegate {
             if currenAudioIndexPath == nil {
                 currenAudioIndexPath = previousAudioIndexPath != nil ? previousAudioIndexPath : nil
             }
+            if audioPlayer?.isPlaying == true {
+                if currenAudioIndexPath != nil {
+                    if currenAudioIndexPath == IndexPath(row: 0, section: 0) {
+                        previousAudioIndexPath = IndexPath(row: 1, section: 0)
+                    }
+                }
+            }
             if currenAudioIndexPath != nil {
                 let nextRow = (currenAudioIndexPath?.row ?? 0) + 1
                 let indexPath = IndexPath(row: nextRow, section: currenAudioIndexPath?.section ?? 0)
                 currenAudioIndexPath = indexPath
             }
-            isShowOpenedDoc = true
+          
+            isShowAudioLoadingIcon = true
             sendAudio(fileUrl: url)
         } else {
             AppAlert.shared.showToast(message: ErrorMessage.fileSizeLarge)
@@ -1231,8 +1273,10 @@ extension ChatViewParentController {
         if let navController = navigationController {
             if chatMessages.count > 0 && currentPreviewIndexPath != nil {
                 if chatMessages[currentPreviewIndexPath?.section ?? 0].count > 0 {
-                    if replyCloseButtonTapped == false {
-                        replyMessagesDelegate?.replyMessageObj(message: chatMessages[currentPreviewIndexPath?.section ?? 0][currentPreviewIndexPath?.row ?? 0], jid: getProfileDetails.jid,messageText: messageTextView?.text ?? "")
+                    if replyCloseButtonTapped == false && replyMessageObj != nil {
+                        if replyJid == getProfileDetails.jid  {
+                            replyMessagesDelegate?.replyMessageObj(message: chatMessages[currentPreviewIndexPath?.section ?? 0][currentPreviewIndexPath?.row ?? 0], jid: getProfileDetails.jid,messageText: messageTextView?.text ?? "")
+                        }
                     } else {
                         replyMessagesDelegate?.replyMessageObj(message: nil, jid: "",messageText: messageTextView?.text ?? "")
                     }
@@ -1253,11 +1297,7 @@ extension ChatViewParentController {
         }))
         
         alert.addAction(UIAlertAction(title: gallery, style: .default, handler: { [weak self] _ in
-            self?.checkForPhotoPermission(isImageDownload: false)
-        }))
-        
-        alert.addAction(UIAlertAction(title: documents, style: .default, handler: { (_) in
-            
+            self?.checkForPhotoPermission()
         }))
         
         alert.addAction(UIAlertAction(title: audio, style: .default, handler: {  [weak self] _ in
@@ -1407,54 +1447,11 @@ extension ChatViewParentController {
         }
     }
     
-    func checkForPhotoPermission(sender: UIButton? = nil,isImageDownload:Bool) {
+    func checkForPhotoPermission(sender: UIButton? = nil) {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
         case .authorized:
-            //handle authorized status
-            if isImageDownload == true {
-            if let sender = sender {
-                let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
-                if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
-                    let message = chatMessages[indexPath.section][indexPath.row]
-                    if NetworkReachability.shared.isConnected {
-                        if message.mediaChatMessage?.mediaDownloadStatus == .not_downloaded {
-                            if let cell = chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
-                                cell.nicoProgressBar?.transition(to: .indeterminate)
-                                cell.nicoProgressBar?.isHidden = false
-                                cell.download?.image = UIImage(named: ImageConstant.ic_download_cancel)
-                                cell.download?.isHidden = false
-                                cell.downloadButton?.isHidden = true
-                            }
-                            if let cell = chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
-                                cell.progressBar?.transition(to: .indeterminate)
-                                cell.progressBar?.isHidden = false
-                                cell.downloadView?.isHidden = true
-                                cell.progressView.isHidden = false
-                                cell.close.isHidden = false
-                                cell.downoadButton?.isHidden = true
-                                cell.progrssButton.isHidden = false
-                            }
-                            FlyMessenger.downloadMediaRetry(message: message) { [weak self] (success, error, message) in
-                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
-                                    cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
-                                }
-                                
-                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
-                                    self?.chatTableView.reloadRows(at: [indexPath], with: .none)
-                                }
-
-                            }
-                        }
-                    } else {
-                        AppAlert.shared.showToast(message: ErrorMessage.noInternet)
-                    }
-                }
-                
-            }
-            } else {
                 openGallery()
-            }
             break
         case .denied, .restricted :
             presentPhotosSettings()
@@ -1464,32 +1461,7 @@ extension ChatViewParentController {
             AppPermissions.shared.checkGalleryPermission {  [weak self] status in
                 switch status {
                 case .authorized:
-                    //handle authorized status
-                    if isImageDownload == true {
-                        if let sender = sender {
-                            DispatchQueue.main.async {
-                                let buttonPosition = sender.convert(CGPoint.zero, to: self?.chatTableView)
-                                if let indexPath = self?.chatTableView.indexPathForRow(at:buttonPosition) {
-                                    let message = self?.chatMessages[indexPath.section][indexPath.row]
-                                    if NetworkReachability.shared.isConnected {
-                                        if message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded,let msg = message {
-                                            FlyMessenger.downloadMediaRetry(message: msg) { (success, error, message) in
-                                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
-                                                    cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else {
-                                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
-                                }
-                                
-                            }
-                        }
-                    } else {
                         self?.openGallery()
-                    }
                     break
                     // as above
                 case .denied, .restricted: break
@@ -1674,7 +1646,7 @@ extension ChatViewParentController {
         }
     }
     
-    func sendImageMessage(imageInfo: ImageData, jid: String?,sendMessageListener : @escaping (_ isSuccess: Bool?) -> Void) {
+    func sendImageMessage(imageInfo: ImageData, jid: String?) {
         selectedIndexs.removeAll()
         guard let image = imageInfo.image else { return }
         let compressedImage = image.jpeg(.high)
@@ -1685,60 +1657,33 @@ extension ChatViewParentController {
         if let imageLocalPath  = FlyUtils.saveInDirectory(with: imageData , fileName: imageName, messageType: .image) {
             let imageUrl = URL(fileURLWithPath: imageLocalPath)
             let thumbail = UIImage(data: imageData)
-            let base64 = ImageConverter.shared.convertImageToBase64String(img: thumbail ?? UIImage())
+            let resizedImage = ChatUtils.resize(thumbail ?? UIImage())
+            let base64 = FlyUtils.convertImageToBase64(img: resizedImage)
             FlyMessenger.sendImageMessage(toJid: getProfileDetails.jid , imageFileName: imageName, imageFileSize: Double(imageData.count), imageFileUrl: imageUrl, imageFileLocalPath: imageLocalPath, base64Thumbnail: base64 , caption: imageInfo.caption?.trim(), replyMessageId: replyMessageId) { [weak self] isSuccess, error, sendMessage in
-            if isSuccess {
                 if let chatMessage = sendMessage {
                     chatMessage.mediaChatMessage?.mediaThumbImage = base64
                     chatMessage.mediaChatMessage?.mediaUploadStatus = .not_uploaded
-                    self?.sendMediaMessages?.append(chatMessage)
+                    if NetworkReachability.shared.isConnected {
+                        if self?.sendMediaMessages?.filter({$0.messageId == chatMessage.messageId}).count == 0 {
+                            self?.sendMediaMessages?.append(chatMessage)
+                        }
+                    }
                     guard let msg = sendMessage else { return }
                     self?.reloadList(message: msg)
                     self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
-                    self?.replyMessageObj = nil
-                    self?.isReplyViewOpen = false
+                    if self?.replyJid == self?.getProfileDetails.jid {
+                        self?.replyMessageObj = nil
+                        self?.isReplyViewOpen = false
                     }
                 }
-                sendMessageListener(true)
             }
         }
     }
+
     
-    func uploadImages(count: Int) {
-        if sendMediaMessages?.count ?? 0 > 0 {
-            if sendMediaMessages?.count == count {
-                sendMediaMessages?.removeAll()
-                return
-            }
-            if let message = sendMediaMessages?[count] {
-                uploadFileMessage(uploadFileMessage: message,count: count)
-            }
-        }
-    }
-    
-    func uploadFileMessage(uploadFileMessage: ChatMessage,count: Int) {
-        var uploadCount = count
-        FlyMessenger.uploadFile(chatMessage: uploadFileMessage) { [weak self] isSuccess,error,chatMessage in
-            uploadCount += 1
-            self?.uploadImages(count: uploadCount)
-        }
-    }
-    
-    func doLongSyncTaskInSerialQueue() {
-        let serialQueue = DispatchQueue(label: "com.queue.Serial")
-        for i in 1...5 {
-            serialQueue.sync {
-                if Thread.isMainThread{
-                    print("doLongSyncTaskInSerialQueue task running in main thread")
-                }else{
-                    print("tdoLongSyncTaskInSerialQueue ask running in background thread")
-                }
-                let imgURL = URL(string: "https://upload.wikimedia.org/wikipedia/commons/0/07/Huge_ball_at_Vilnius_center.jpg")!
-                let _ = try! Data(contentsOf: imgURL)
-                print("\(i) doLongSyncTaskInSerialQueue completed downloading")
-            }
-        }
-    }
+//    func uploadFileMessage(uploadFileMessage: ChatMessage) {
+//        FlyMessenger.uploadFile(chatMessage: uploadFileMessage)
+//    }
     
     func reloadList(message: ChatMessage) {
         if chatMessages.count == 0 {
@@ -1751,13 +1696,20 @@ extension ChatViewParentController {
                 self?.chatTableView?.scrollToRow(at: indexPath, at: .top, animated: true)
             }
             chatTableView.reloadData()
-
+            
+//            if let cell = chatTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AudioSender {
+//                cell.nicoProgressBar?.transition(to: .indeterminate)
+//                cell.uploadCancel?.isHidden = false
+//                cell.updateCancelButton?.isHidden = false
+//                cell.playButton?.isHidden = true
+//                cell.playIcon?.isHidden = true
+//            }
+            
             if let cell = chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
                 if NetworkReachability.shared.isConnected {
                     cell.setImageCell(message)
                 }
             }
-            isShowOpenedDoc = false
             if !NetworkReachability.shared.isConnected {
                 AppAlert.shared.showToast(message: ErrorMessage.noInternet)
             }
@@ -1775,29 +1727,6 @@ extension ChatViewParentController {
         controller.profileName = getProfileDetails.name
         navigationController?.navigationBar.isHidden = true
         navigationController?.pushViewController(controller, animated: false)
-    }
-    
-    @objc func imageDownload(sender: UIButton) {
-        checkForPhotoPermission(sender: sender,isImageDownload: true)
-    }
-    
-    @objc func imageUpload(sender: UIButton) {
-        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
-        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
-            let message = chatMessages[indexPath.section][indexPath.row]
-            currentlyUploadingAudioObj?.insert(message, at: 0)
-        if NetworkReachability.shared.isConnected {
-            if let progress = message.mediaChatMessage?.mediaUploadStatus, progress != .uploaded {
-                DispatchQueue.main.async {
-                    FlyMessenger.uploadMediaRetry(message: message) { (success, error, message) in
-                        
-                    }
-                }
-            }
-        } else {
-                AppAlert.shared.showToast(message: ErrorMessage.noInternet)
-            }
-        }
     }
     
     @objc func quickForwardAction(sender: UIButton) {
@@ -1824,119 +1753,17 @@ extension ChatViewParentController {
             }
         }
     
-    @objc func cancelImageDownload(sender: UIButton) {
-        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
-        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
-            let message = chatMessages[indexPath.section][indexPath.row]
-            if message.isMessageSentByMe {
-                message.mediaChatMessage?.mediaUploadStatus = .not_uploaded
-                chatMessages[indexPath.section][indexPath.row] = message
-                FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
-                    if message.messageType == .image {
-                        DispatchQueue.main.async {
-                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
-                                cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
-                                cell.progressButton?.isHidden = true
-                                cell.retryButton?.isHidden = false
-                            }
-                        }
-                    }
-                }
-            } else {
-                    message.mediaChatMessage?.mediaDownloadStatus = .not_downloaded
-                    chatMessages[indexPath.section][indexPath.row] = message
-                    FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
-                        if message.messageType == .image {
-                        DispatchQueue.main.async {
-                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
-                                cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    
-    @objc func cancelAudioUploadDownload(sender: UIButton) {
-        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
-        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
-            let message = chatMessages[indexPath.section][indexPath.row]
-            if message.isMessageSentByMe {
-                message.mediaChatMessage?.mediaUploadStatus = .not_uploaded
-            } else {
-                message.mediaChatMessage?.mediaDownloadStatus = .not_downloaded
-            }
-            FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
-            if message.isMessageSentByMe {
-                message.mediaChatMessage?.mediaUploadStatus = .not_uploaded
-                self?.chatMessages[indexPath.section][indexPath.row] = message
-                if message.messageType == .audio {
-                    if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
-                        cell.getCellFor(message, at: indexPath, isPlaying: false, audioClosureCallBack: {sliderValue in
-                        }, isShowForwardView: self?.isShowForwardView)
-                        cell.updateCancelButton?.removeTarget(self, action: nil, for: .touchUpInside)
-                        cell.updateCancelButton?.addTarget(self, action: #selector(self?.reUploadAudio(sender:)), for: .touchUpInside)
-                        }
-                }
-            } else {
-                if message.messageType == .audio {
-                    message.mediaChatMessage?.mediaDownloadStatus = .not_downloaded
-                    self?.chatMessages[indexPath.section][indexPath.row] = message
-                    if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
-                        cell.getCellFor(message, at: indexPath, isPlaying: false, audioClosureCallBack: {sliderValue in
-                        }, isShowForwardView: self?.isShowForwardView)
-                    }
-                }
-            }
-        }
-    }
-}
-    
-    @objc func reUploadAudio(sender: UIButton) {
-        if !NetworkReachability.shared.isConnected {
-            AppAlert.shared.showToast(message: ErrorMessage.checkYourInternet)
-            return
-        }
-        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
-        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
-            let message = chatMessages[indexPath.section][indexPath.row]
-            if message.isMessageSentByMe {
-                message.mediaChatMessage?.mediaUploadStatus = .uploading
-                chatMessages[indexPath.section][indexPath.row] = message
-                if message.messageType == .audio {
-                    if let cell = chatTableView.cellForRow(at: indexPath) as? AudioSender {
-                       imageUpload(sender: sender)
-                        cell.uploadCancel?.image = UIImage(named: ImageConstant.ic_audioUploadCancel)
-                        cell.updateCancelButton?.isHidden = false
-                        cell.uploadCancel?.isHidden = false
-                        cell.updateCancelButton?.removeTarget(self, action: nil, for: .touchUpInside)
-                        cell.updateCancelButton?.addTarget(self, action: #selector(cancelAudioUploadDownload(sender:)), for: .touchUpInside)
-                    }
-                }
-                
-            } else {
-                message.mediaChatMessage?.mediaDownloadStatus = .not_downloaded
-                chatMessages[indexPath.section][indexPath.row] = message
-                if message.messageType == .audio {
-                    if let cell = chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
-                        imageDownload(sender: sender)
-                        cell.download?.image = UIImage(named: ImageConstant.ic_download_cancel)
-                    }
-                }
-            }
-        }
-    }
-    
     @objc func imageGestureAction(_ sender:AnyObject){
         let buttonPostion = sender.view.convert(CGPoint.zero, to: chatTableView)
         if let indexPath = chatTableView.indexPathForRow(at: buttonPostion) {
             let message = chatMessages[indexPath.section][indexPath.row]
             if message.mediaChatMessage?.mediaUploadStatus == .uploaded || message.mediaChatMessage?.mediaDownloadStatus == .downloaded {
+                view.endEditing(true)
                 let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
                 let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.imagePreview) as! ImagePreview
                 controller.jid = message.chatUserJid
                 controller.messageId = message.messageId
+                controller.navigationController?.isNavigationBarHidden = false
                 navigationController?.pushViewController(controller, animated: true)
             }
         }
@@ -1960,7 +1787,7 @@ extension ChatViewParentController {
                                 return
                             }
                             cell.playButton?.tag = indexPath.row
-                            cell.playButton?.addTarget(self, action: #selector(imageUpload(sender:)), for: .touchUpInside)
+                            cell.playButton?.addTarget(self, action: #selector(audioUpload(sender:)), for: .touchUpInside)
                         case .uploaded:
                             cell.playIcon?.isHidden = false
                             cell.playButton?.isHidden = false
@@ -1990,11 +1817,11 @@ extension ChatViewParentController {
                             cell.nicoProgressBar?.isHidden = true
                         case .not_downloaded:
                             cell.download?.isHidden = false
-                            imageDownload(sender: sender)
+                            uploadCancelaudioAction(sender: sender)
                         case .downloading:
-                            cell.downloadButton?.isHidden = true
-                            cell.playBtn?.isHidden = false
-                            cancelAudioUploadDownload(sender: sender)
+                            cell.downloadButton?.isHidden = false
+                            cell.playBtn?.isHidden = true
+                            uploadCancelaudioAction(sender: sender)
                         default:
                             break
                         }
@@ -2018,7 +1845,6 @@ extension ChatViewParentController {
     
     @objc func longPressGesture(sender: UIGestureRecognizer) {
         isSelectOn = true
-        
         print("longpressed")
         if chatTableView.isEditing {
             return
@@ -2028,10 +1854,7 @@ extension ChatViewParentController {
             let touchPoint = sender.location(in: chatTableView)
             if let indexPath = chatTableView.indexPathForRow(at: touchPoint) {
                 selectedIndexs.append(indexPath)
-                //   chatTableView.reloadRows(at: [indexPath], with: .automatic)
                 chatTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
-                //   chatTableView.delegate?.tableView!( chatTableView, didSelectRowAt: indexPath)
-                
                 didLongPressActionForIndexPath(index: indexPath, gestureView: sender)
             }
         }
@@ -2097,6 +1920,11 @@ extension ChatViewParentController {
         } else if segue.identifier == Identifiers.contactInfoViewController {
             let contcatInfo =  segue.destination as! ContactInfoViewController
             contcatInfo.contactJid = getProfileDetails.jid
+            view.endEditing(true)
+        } else if segue.identifier == Identifiers.groupInfoViewController {
+            let contcatInfo =  segue.destination as! GroupInfoViewController
+            contcatInfo.groupID = getProfileDetails.jid
+            view.endEditing(true)
         }
     }
 }
@@ -2117,7 +1945,12 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if let firstMessageInSection = chatMessages[section].first {
-            let date = DateFormatterUtility.shared.convertMillisecondsToDateTime(milliSeconds: firstMessageInSection.messageSentTime)
+            let date : Date
+            if firstMessageInSection.messageChatType == .singleChat {
+                 date = DateFormatterUtility.shared.convertMillisecondsToDateTime(milliSeconds: firstMessageInSection.messageSentTime)
+            } else {
+                 date = DateFormatterUtility.shared.convertGroupMillisecondsToDateTime(milliSeconds: firstMessageInSection.messageSentTime)
+            }
             let finaldateFormatter = DateFormatter()
             finaldateFormatter.dateFormat = "d MMM, yyyy"
             let dateString = String().fetchMessageDateHeader(for: date)
@@ -2152,6 +1985,7 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
          var cell : ChatViewParentMessageCell!
         let message = chatMessages[indexPath.section][indexPath.row]
+        print("Chat XYZ = \(message.messageType)")
         switch(message.messageType) {
         case .text:
             if(message.isMessageSentByMe) {
@@ -2267,8 +2101,8 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
                 cell?.imageContainer?.tag = indexPath.row
                 cell?.imageContainer?.isUserInteractionEnabled = true
                 cell?.imageGeasture.addTarget(self, action: #selector(imageGestureAction(_:)))
-                cell?.retryButton?.addTarget(self, action: #selector(imageUpload(sender:)), for: .touchUpInside)
-                cell?.progressButton?.addTarget(self, action: #selector(cancelImageDownload(sender:)), for: .touchUpInside)
+                cell?.retryButton?.tag = (indexPath.section * 1000) + indexPath.row
+                cell?.retryButton?.addTarget(self, action: #selector(cancelOrUploadImages(sender:)), for: .touchUpInside)
                 cell?.fwdButton?.addTarget(self, action: #selector(quickForwardAction(sender:)), for: .touchUpInside)
                 cell?.forwardButton?.tag = (indexPath.section * 1000) + indexPath.row
                 cell?.forwardButton?.addTarget(self, action: #selector(forwardAction(sender:)), for: .touchUpInside)
@@ -2293,8 +2127,9 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
                 cell?.progrssButton.addTarget(self, action: #selector(cancelImageDownload(sender:)), for: .touchUpInside)
                 cell?.forwardButton?.tag = (indexPath.section * 1000) + indexPath.row
                 cell?.forwardButton?.addTarget(self, action: #selector(forwardAction(sender:)), for: .touchUpInside)
+                cell?.receivedMediaMessages = receivedMediaMessages
                 cell = cell?.getCellFor(chatMessages[indexPath.section][indexPath.row], at: indexPath, isShowForwardView: isShowForwardView)!
-                cell?.progrssButton.tag = indexPath.row
+                cell?.progrssButton.tag = (indexPath.section * 1000) + indexPath.row
                 cell?.delegate = self
                 cell?.composeMailDelegate = self
                 cell?.refreshDelegate = self
@@ -2317,8 +2152,8 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
             if(message.isMessageSentByMe) {
                 var cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.audioSender, for: indexPath) as? AudioSender
                 cell?.selectedForwardMessage = forwardMessages
-                cell?.isOpenedDoc = isShowOpenedDoc
-                cell?.currentlyUploadingAudioObj = currentlyUploadingAudioObj
+                cell?.isShowAudioLoadingIcon = isShowAudioLoadingIcon
+                cell?.uploadingMediaObjects = uploadingMediaObjects
                 cell = cell?.getCellFor(chatMessages[indexPath.section][indexPath.row], at: indexPath, isPlaying: currenAudioIndexPath == indexPath ? audioPlayer?.isPlaying ?? false : false, audioClosureCallBack: { [weak self] (sliderValue)  in
                     self?.forwardAudio(sliderValue: sliderValue,indexPath:indexPath)
                 }, isShowForwardView: isShowForwardView)
@@ -2328,11 +2163,7 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
                 cell?.delegate = self
                 cell?.refreshDelegate = self
                 cell?.playButton?.addTarget(self, action: #selector(audioAction(sender:)), for: .touchUpInside)
-                if message.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
-                    cell?.updateCancelButton?.addTarget(self, action: #selector(reUploadAudio(sender: )), for: .touchUpInside)
-                } else {
-                    cell?.updateCancelButton?.addTarget(self, action: #selector(cancelAudioUploadDownload(sender:)), for: .touchUpInside)
-                }
+                cell?.updateCancelButton?.addTarget(self, action: #selector(uploadCancelaudioAction(sender:)), for: .touchUpInside)
                 cell?.forwardButton?.tag = (indexPath.section * 1000) + indexPath.row
                 cell?.forwardButton?.addTarget(self, action: #selector(forwardAction(sender:)), for: .touchUpInside)
                 cell?.fwdBtn?.addTarget(self, action: #selector(quickForwardAction(sender:)), for: .touchUpInside)
@@ -2350,7 +2181,7 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
                 cell?.slider?.value = Float((indexPath == currenAudioIndexPath) ? (audioPlayer?.currentTime ?? 0.0) : 0.0)
                 cell?.delegate = self
                 cell?.refreshDelegate = self
-                cell?.downloadButton?.addTarget(self, action:#selector(imageDownload(sender: )), for: .touchUpInside)
+                cell?.downloadButton?.addTarget(self, action:#selector(uploadCancelaudioAction(sender: )), for: .touchUpInside)
                 cell?.playBtn?.addTarget(self, action: #selector(audioAction(sender:)), for: .touchUpInside)
                 cell?.forwardButton?.tag = (indexPath.section * 1000) + indexPath.row
                 cell?.forwardButton?.addTarget(self, action: #selector(forwardAction(sender:)), for: .touchUpInside)
@@ -2506,6 +2337,7 @@ extension ChatViewParentController {
         toViewLocation = true
         mLatitude = selectedLatitude
         mLongitude = selectedLongitude
+        view.endEditing(true)
         goToMap()
     }
     
@@ -2661,6 +2493,10 @@ extension ChatViewParentController {
     }
 
     @objc func closeButtontapped(sender: UIButton) {
+        resetReplyView()
+    }
+    
+    func resetReplyView() {
         replyView.isHidden = true
         isReplyViewOpen = false
         longPressCount = 0
@@ -2686,76 +2522,20 @@ extension ChatViewParentController {
 }
 
 extension ChatViewParentController : UIImagePickerControllerDelegate, EditImageDelegate {
-    
     func selectedImages(images: [ImageData]) {
-        if images.filter({$0.isVideo == true}).count == 0 {
-        DispatchQueue.main.async { [weak self] in
-            images.forEach { item in
-                if item.isVideo {
-                    self?.sendVideoMessage(videoDetail: item, jid: self?.getProfileDetails.jid) { isSuccess in
-                    }
-                }else {
-                    self?.sendImageMessage(imageInfo: item, jid: self?.getProfileDetails.jid) { isSuccess in
-                    }
-                }
-            }
-                // Here we do imageUpload after insert images into ChatTableView
-                self?.uploadImages(count: 0)
-                self?.replyMessageId = ""
-            }
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                var count: Int = 0
-                if count == images.count {
-                    // Here we do imageUpload after insert images into ChatTableView
-                    self?.uploadImages(count: 0)
-                    self?.replyMessageId = ""
-                    return
-                }
-                if images[count].isVideo {
-                    self?.sendVideoMessage(videoDetail: images[count], jid: self?.getProfileDetails.jid) { isSuccess in
-                        if isSuccess ?? false {
-                            count += 1
-                            self?.insertVideoAndImage(images: images, count: count)
-                        }
-                    }
-                } else {
-                    self?.sendImageMessage(imageInfo: images[count], jid: self?.getProfileDetails.jid) { isSuccess in
-                        if isSuccess ?? false {
-                            count += 1
-                            self?.insertVideoAndImage(images: images, count: count)
-                        }
-                    }
-                }
+        images.forEach { item in
+            if item.isVideo {
+                sendVideoMessage(videoDetail: item, jid: getProfileDetails.jid)
+            } else {
+                sendImageMessage(imageInfo: item, jid: getProfileDetails.jid)
             }
         }
+        // Here we do imageUpload after insert images into ChatTableView
+        replyMessageId = ""
     }
     
   func insertVideoAndImage(images: [ImageData],count: Int) {
-      DispatchQueue.main.async { [weak self] in
-            var totalCount = count
-            if totalCount == images.count {
-                // Here we do imageUpload after insert images into ChatTableView
-                self?.uploadImages(count: 0)
-                self?.replyMessageId = ""
-                return
-            }
-            if images[count].isVideo {
-                self?.sendVideoMessage(videoDetail: images[count], jid: self?.getProfileDetails.jid) { isSuccess in
-                    if isSuccess ?? false {
-                        totalCount += 1
-                        self?.insertVideoAndImage(images: images, count: totalCount)
-                    }
-                }
-            } else {
-                self?.sendImageMessage(imageInfo: images[count], jid: self?.getProfileDetails.jid) { isSuccess in
-                    if isSuccess ?? false {
-                        totalCount += 1
-                        self?.insertVideoAndImage(images: images, count: totalCount)
-                    }
-                }
-            }
-        }
+      
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -2777,7 +2557,7 @@ extension ChatViewParentController : UIImagePickerControllerDelegate, EditImageD
             // save image in local folder
             let customPhotoAlbum = CustomPhotoAlbum()
             let assetCollection = customPhotoAlbum.createFolder(image: selectedImage, currentFolder: "MirrorFlyUIkit Camera Roll")
-            customPhotoAlbum.saveImage(image: selectedImage, currentFolder: "MirrorFlyUIkit Camera Roll", assetsCollection: assetCollection)
+             customPhotoAlbum.saveImage(image: selectedImage, currentFolder: "MirrorFlyUIkit Camera Roll", assetsCollection: assetCollection)
             moveToImageEdit(images: arrayOfImages, isPushVc: false)
             
         case kUTTypeMovie:
@@ -2801,9 +2581,8 @@ extension ChatViewParentController : UIImagePickerControllerDelegate, EditImageD
     }
     
     @objc func video(videoPath: NSString, didFinishSavingWithError error: NSError?, contextInfo info: AnyObject) {
-       
         let videoURL = URL(fileURLWithPath: videoPath as String)
-        let image = AppUtils.shared.generateThumbnail(path: videoURL)
+        let image = FlyUtils.generateThumbnail(path: videoURL)
         PHPhotoLibrary.shared().performChanges({
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoURL)
         }) { saved, error in
@@ -2820,14 +2599,26 @@ extension ChatViewParentController : UIImagePickerControllerDelegate, EditImageD
             }
             print("saved \(saved), erro \(error)")
         }
-
     }
 }
 
 extension ChatViewParentController : MessageEventsDelegate {
-    
     func onMessageReceived(message: ChatMessage, chatJid: String) {
+        // document message not implemneted
+        if message.messageType == MessageType.document {
+            return
+        }
         print("onMessageReceived  \(getProfileDetails.jid) = \(message.chatUserJid) \(message.isMessageSentByMe)")
+        if currenAudioIndexPath == nil {
+            currenAudioIndexPath = previousAudioIndexPath != nil ? previousAudioIndexPath : nil
+        }
+        if audioPlayer?.isPlaying == true {
+            if currenAudioIndexPath != nil {
+                if currenAudioIndexPath == IndexPath(row: 0, section: 0) {
+                    previousAudioIndexPath = IndexPath(row: 1, section: 0)
+                }
+            }
+        }
         if currenAudioIndexPath != nil {
             let nextRow = (currenAudioIndexPath?.row ?? 0) + 1
             let indexPath = IndexPath(row: nextRow, section: currenAudioIndexPath?.section ?? 0)
@@ -2838,6 +2629,15 @@ extension ChatViewParentController : MessageEventsDelegate {
             selectedIndexs.removeAll()
             if FlyDefaults.myJid != chatJid {
                 appendNewMessage(message: message)
+            } else if FlyDefaults.myJid == chatJid && message.chatUserJid == getProfileDetails.jid {
+                if getProfileDetails.profileChatType == .singleChat {
+                    appendNewMessage(message: message)
+                } else if getProfileDetails.profileChatType == .groupChat {
+                    if !isMessageExist(messageId: message.messageId) {
+                        appendNewMessage(message: message)
+                    }
+                }
+                    
             }
             markMessagessAsRead()
             DispatchQueue.main.async { [weak self] in
@@ -2847,18 +2647,47 @@ extension ChatViewParentController : MessageEventsDelegate {
         }
   }
     
+    func isMessageExist(messageId : String) -> Bool{
+        let tempMessages = chatMessages.reversed()
+        for (index, messageArray) in tempMessages.enumerated() {
+            print("isMessageExist \(index)")
+            for message in messageArray {
+                if messageId == message.messageId {
+                    print("isMessageExist if messageId == message.messageId")
+                    return true
+                }
+            }
+            if index > 1 {
+                return false
+            }
+        }
+        return false
+    }
+    
     func onMessageStatusUpdated(messageId: String, chatJid: String, status: MessageStatus) {
         print("onMessageStatusUpdated \(messageId) \(chatJid) \(status)")
-            if let indexpath = chatMessages.indexPath(where: {$0.messageId == messageId}){
-                DispatchQueue.main.async { [weak self] in
-                    self?.chatMessages[indexpath.section][indexpath.row].messageStatus = status
-                    self?.chatTableView?.beginUpdates()
-                    self?.chatMessages[indexpath.section][indexpath.row].messageStatus = status
-                    self?.chatTableView?.reloadRows(at: [indexpath], with: .none)
-                    self?.chatTableView?.endUpdates()
+        if let indexpath = chatMessages.indexPath(where: {$0.messageId == messageId}) {
+            DispatchQueue.main.async { [weak self] in
+                self?.chatMessages[indexpath.section][indexpath.row].messageStatus = status
+                self?.chatTableView?.beginUpdates()
+                self?.chatMessages[indexpath.section][indexpath.row].messageStatus = status
+                self?.chatTableView?.reloadRows(at: [indexpath], with: .none)
+                self?.chatTableView?.endUpdates()
+                if let cell = self?.chatTableView.cellForRow(at: indexpath) as? SenderImageCell {
+                    if status == .acknowledged || status == .received || status == .delivered || status == .seen {
+                        cell.uploadView?.isHidden = true
+                        cell.progressView?.isHidden = true
+                        cell.nicoProgressBar?.isHidden = true
+                        cell.retryButton?.isHidden = true
+                    } else if status == .sent {
+                        cell.nicoProgressBar?.transition(to: .indeterminate)
+                        cell.nicoProgressBar?.isHidden = false
+                        cell.uploadView?.isHidden = true
+                    }
                 }
             }
         }
+    }
     
     func onMediaStatusUpdated(message: ChatMessage) {
         print("onMediaStatusUpdated \(message.messageType) \(message.messageId)")
@@ -2877,6 +2706,7 @@ extension ChatViewParentController : MessageEventsDelegate {
     
     func updateForImageStatus(message: ChatMessage, index: IndexPath) {
         if message.isMessageSentByMe {
+            chatMessages[index.section][index.row] = message
             if let cell = chatTableView.cellForRow(at: index) as? SenderImageCell {
                 if let localPath = message.mediaChatMessage?.mediaFileName {
                     let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -2887,29 +2717,30 @@ extension ChatViewParentController : MessageEventsDelegate {
                           let image = UIImage(data: data! as Data)
                         cell.imageContainer?.image = image
                       }
-                }else{
+                } else {
                     if let thumbImage = message.mediaChatMessage?.mediaThumbImage {
-                        let converter = ImageConverter()
-                        let image =  converter.base64ToImage(thumbImage)
-                        cell.imageContainer?.image = image
+                        ChatUtils.setThumbnail(imageContainer: cell.imageContainer ?? UIImageView(), base64String: thumbImage)
                     }
                 }
 
-                if  (message.mediaChatMessage?.mediaUploadStatus == .not_uploaded  || message.mediaChatMessage?.mediaUploadStatus == .uploading || message.messageStatus == .notAcknowledged || isShowForwardView == true) {
+                if  (message.mediaChatMessage?.mediaUploadStatus == .not_uploaded  || message.mediaChatMessage?.mediaUploadStatus == .uploading || message.messageStatus == .notAcknowledged || isShowForwardView == true || message.messageStatus == .sent) {
                     cell.fwdView?.isHidden = true
                     cell.fwdButton?.isHidden = true
                 } else {
                     cell.fwdView?.isHidden = false
                     cell.fwdButton?.isHidden = false
                 }
-                
-                cell.nicoProgressBar?.isHidden = true
-
-                cell.progressView?.isHidden = true
-                cell.uploadView?.isHidden = true
-
+               
+                sendMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                    if chatMessage.messageId == message.messageId {
+                        if (sendMediaMessages?.count ?? 0) > index {
+                            sendMediaMessages?.remove(at: index)
+                        }
+                    }
+                })
             }
-        }else {
+        } else {
+            chatMessages[index.section][index.row] = message
             if let cell = chatTableView.cellForRow(at: index) as? ReceiverImageCell {
                 if let localPath = message.mediaChatMessage?.mediaFileName {
                     let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -2921,20 +2752,13 @@ extension ChatViewParentController : MessageEventsDelegate {
                             // save image in local folder
                             let customPhotoAlbum = CustomPhotoAlbum()
                             let assetCollection =  customPhotoAlbum.createFolder(image: image, currentFolder: "MirrorFlyUIkit")
-                            customPhotoAlbum.saveImage(image: image, currentFolder: "MirrorFlyUIkit", assetsCollection: assetCollection)
+                          customPhotoAlbum.saveImage(image: image, currentFolder: "MirrorFlyUIkit", assetsCollection: assetCollection)
                             cell.imageContainer.image = image
                         }
                     }
-                    cell.progressBar?.isHidden = true
-                    cell.progressView.isHidden = true
                 }else {
-                    cell.progressBar?.isHidden = false
-                    cell.progressView.isHidden = false
                     if let thumbImage = message.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                    cell.imageContainer.image = image
+                        ChatUtils.setThumbnail(imageContainer: cell.imageContainer ?? UIImageView(), base64String: thumbImage)
                 }
                 }
                 
@@ -2947,7 +2771,9 @@ extension ChatViewParentController : MessageEventsDelegate {
                 }
                 
                 cell.downloadView.isHidden = true
-                cell.progressBar?.transition(to: .determinate(percentage: 1.0))
+                cell.progressView.isHidden = true
+                cell.downoadButton.isHidden = true
+                cell.progressBar?.isHidden = true
                 cell.filseSize.text = ""
                 cell.close.isHidden = true
             }
@@ -2955,14 +2781,16 @@ extension ChatViewParentController : MessageEventsDelegate {
     }
     
     func onMediaStatusFailed(error: String, messageId: String) {
-        print("onMediaStatusFailed \(error) \(messageId)")
         if let indexPath = chatMessages.indexPath(where: {$0.messageId == messageId}){
+            print("onMediaStatusFailed \(error) \(messageId) \(indexPath)")
             let message = chatMessages[indexPath.section][indexPath.row]
             switch message.messageType {
             case .video:
                 onVideoUploadFailed(message: message, indexPath: indexPath)
             case .image:
                 onImageUploadFailed(message: message, indexPath: indexPath)
+            case .audio:
+                onAudioUploadFailed(message: message, indexPath: indexPath)
             default:
                 break
             }
@@ -3004,10 +2832,10 @@ extension ChatViewParentController : MessageEventsDelegate {
                     cell.fwdViw?.isHidden = false
                     cell.fwdBtn?.isHidden = false
                 }
-                currentlyUploadingAudioObj?.enumerated().forEach({ (index,chatMessage) in
+                uploadingMediaObjects?.enumerated().forEach({ (index,chatMessage) in
                     if chatMessage.messageId == message.messageId {
-                        if (currentlyUploadingAudioObj?.count ?? 0) > index {
-                            currentlyUploadingAudioObj?.remove(at: index)
+                        if (uploadingMediaObjects?.count ?? 0) > index {
+                            uploadingMediaObjects?.remove(at: index)
                         }
                     }
                 })
@@ -3018,6 +2846,8 @@ extension ChatViewParentController : MessageEventsDelegate {
                 cell.download?.isHidden = true
                 cell.playImage?.isHidden = false
                 cell.nicoProgressBar?.isHidden = true
+                cell.playBtn?.isHidden = false
+                cell.playBtn?.addTarget(self, action: #selector(audioAction(sender:)), for: .touchUpInside)
                 cell.nicoProgressBar?.transition(to: .determinate(percentage: 0.0))
                 if (message.mediaChatMessage?.mediaDownloadStatus == .not_downloaded  || message.mediaChatMessage?.mediaDownloadStatus == .downloading || message.messageStatus == .notAcknowledged || isShowForwardView == true) {
                     cell.fwdViw?.isHidden = true
@@ -3034,36 +2864,20 @@ extension ChatViewParentController : MessageEventsDelegate {
         if message.isMessageSentByMe {
             if let cell = chatTableView.cellForRow(at: index) as? SenderImageCell {
                 if let thumbImage = message.mediaChatMessage?.mediaThumbImage {
-                    let converter = ImageConverter()
-                    var image =  converter.base64ToImage(thumbImage)
-                    image = image?.sd_blurredImage(withRadius: 5.0)
+                    ChatUtils.setThumbnail(imageContainer: cell.imageContainer ?? UIImageView(), base64String: thumbImage)
                     cell.nicoProgressBar?.isHidden = false
-                    cell.imageContainer?.image = image
-                    if progressPercentage == 100 {
-                        cell.nicoProgressBar?.transition(to: .indeterminate)
-                    } else {
-                        cell.nicoProgressBar?.transition(to: .determinate(percentage: CGFloat(progressPercentage/100)))
-                    }
-                    cell.retryButton?.isHidden = true
+                    cell.nicoProgressBar?.transition(to: .indeterminate)
+                    cell.retryButton?.isHidden = false
                     cell.uploadView?.isHidden = true
                     cell.progressView?.isHidden = false
-                    cell.progressButton?.isHidden = false
                 }
-
-            } } else {
-            if let cell = chatTableView.cellForRow(at: index) as? ReceiverImageCell {
+            }
+        } else if let cell = chatTableView.cellForRow(at: index) as? ReceiverImageCell {
                 cell.downloadView.isHidden = true
                 if let thumbImage = message.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                var image =  converter.base64ToImage(thumbImage)
-                image = image?.sd_blurredImage(withRadius: 5.0)
-                    cell.imageContainer.image = image
+                    ChatUtils.setThumbnail(imageContainer: cell.imageContainer ?? UIImageView(), base64String: thumbImage)
                 }
-                if progressPercentage == 100 {
-                    cell.progressBar?.transition(to: .indeterminate)
-                } else {
-                    cell.progressBar?.transition(to: .determinate(percentage: CGFloat(progressPercentage/100)))
-                }
+                //cell.progressBar?.transition(to: .indeterminate)
                 cell.progressBar?.isHidden = false
                 cell.progressView.isHidden = false
                 cell.downloadView?.isHidden = true
@@ -3072,7 +2886,6 @@ extension ChatViewParentController : MessageEventsDelegate {
                 cell.close.isHidden = false
             }
        }
- }
     
     func updateForAudioProgress(message: ChatMessage, progressPercentage: Float, index: IndexPath) {
         print("progressPercentage", progressPercentage)
@@ -3082,7 +2895,7 @@ extension ChatViewParentController : MessageEventsDelegate {
                 cell.uploadCancel?.isHidden = false
                 cell.updateCancelButton?.isHidden = false
                 cell.nicoProgressBar?.isHidden = false
-                if progressPercentage == 100 {
+                if progressPercentage == 100 || progressPercentage < 1 {
                     cell.nicoProgressBar?.transition(to: .indeterminate)
                 } else {
                     cell.nicoProgressBar?.transition(to: .determinate(percentage: CGFloat((progressPercentage/100))))
@@ -3094,9 +2907,9 @@ extension ChatViewParentController : MessageEventsDelegate {
                 cell.nicoProgressBar?.isHidden = false
                 cell.download?.isHidden = false
                 cell.playImage?.isHidden = true
-                cell.playBtn?.isHidden = false
-                cell.downloadButton?.isHidden = true
-                if progressPercentage == 100 {
+                cell.playBtn?.isHidden = true
+                cell.downloadButton?.isHidden = false
+                if progressPercentage == 100 || progressPercentage < 1 {
                     cell.nicoProgressBar?.transition(to: .indeterminate)
                 } else {
                     cell.nicoProgressBar?.transition(to: .determinate(percentage: CGFloat((progressPercentage/100))))
@@ -3176,8 +2989,10 @@ extension ChatViewParentController {
                     self?.replyMessageId = ""
                     self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
                     self?.handleSendButton()
-                    self?.replyMessageObj = nil
-                    self?.isReplyViewOpen = false
+                        if self?.replyJid == self?.getProfileDetails.jid {
+                            self?.replyMessageObj = nil
+                            self?.isReplyViewOpen = false
+                        }
                     }
                 }
                 self?.chatTableView.reloadData()
@@ -3218,8 +3033,10 @@ extension ChatViewParentController: ContactDelegate {
                     self?.messageTextView?.text = ""
                     self?.replyMessageId = ""
                     self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
-                    self?.replyMessageObj = nil
-                    self?.isReplyViewOpen = false
+                    if self?.replyJid == self?.getProfileDetails.jid {
+                        self?.replyMessageObj = nil
+                        self?.isReplyViewOpen = false
+                    }
                 }
             }
         }
@@ -3249,8 +3066,10 @@ extension ChatViewParentController: LocationDelegate {
                     self?.messageTextView?.text = ""
                     self?.replyMessageId = ""
                     self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
-                    self?.replyMessageObj = nil
-                    self?.isReplyViewOpen = false
+                    if self?.replyJid == self?.getProfileDetails.jid {
+                        self?.replyMessageObj = nil
+                        self?.isReplyViewOpen = false
+                    }
                 }
             }
         }
@@ -3259,27 +3078,28 @@ extension ChatViewParentController: LocationDelegate {
 
 extension ChatViewParentController : ConnectionEventDelegate {
     func onConnected() {
-        
+        self.getLastSeen()
+        print("ChatViewParentController ConnectionEventDelegate onConnected")
     }
     func onDisconnected() {
-        
+        print("ChatViewParentController ConnectionEventDelegate onDisconnected")
     }
     
     func onConnectionNotAuthorized() {
-        
+        print("ChatViewParentController ConnectionEventDelegate onConnectionNotAuthorized")
     }
 }
 
 extension ChatViewParentController : ProfileEventsDelegate {
     func userCameOnline(for jid: String) {
-        print("ProfileEventsDelegate userCameOnline \(jid)")
+        print("ChatViewParentController ProfileEventsDelegate userCameOnline \(jid)")
         if jid ==  getProfileDetails.jid {
             lastSeenLabel.text = online.localized
         }
     }
     
     func userWentOffline(for jid: String) {
-        print("ProfileEventsDelegate userWentOffline \(jid)")
+        print("ChatViewParentController ProfileEventsDelegate userWentOffline \(jid)")
         if jid ==  getProfileDetails.jid {
            setLastSeen(lastSeenTime: "0")
         }
@@ -3315,6 +3135,8 @@ extension ChatViewParentController : ProfileEventsDelegate {
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         print("userUpdatedTheirProfile \(jid)")
+        let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+        NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil, userInfo: profile as [AnyHashable : Any])
         if jid ==  getProfileDetails.jid {
             getProfileDetails = profileDetails
             setProfile()
@@ -3454,7 +3276,7 @@ extension ChatViewParentController {
 //MARK: Video
 extension ChatViewParentController {
     
-    func sendVideoMessage (videoDetail: ImageData,jid: String?,sendMessageListener : @escaping (_ isSuccess: Bool?)-> Void) {
+    func sendVideoMessage (videoDetail: ImageData,jid: String?) {
         selectedIndexs.removeAll()
         loadVideoData(phAsset: videoDetail.videoUrl!, slowMotionVideoUrl: videoDetail.slowMotionVideoUrl) { [weak self] videoData in
             
@@ -3463,46 +3285,40 @@ extension ChatViewParentController {
             }
             let videoName  = FlyConstants.video + FlyUtils.generateUniqueId() + MessageExtension.video.rawValue
             if let videoLocalPath  = FlyUtils.saveInDirectory(with: videoData , fileName: videoName, messageType: .video) {
-                let videoUrl = URL(fileURLWithPath: videoLocalPath)
-                let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".m4v")
-                AppUtils.shared.compressVideo(inputURL: videoUrl, outputURL: compressedURL) { exportSession in
-                    var videoPathUrl = videoUrl
-                    if exportSession != nil {
-                        videoPathUrl = exportSession?.outputURL ?? videoUrl
-                    }
-                    let thumbail = AppUtils.shared.generateThumbnail(path: videoPathUrl) ?? nil
-                    let base64 = ImageConverter.shared.convertImageToBase64(img: thumbail ?? UIImage())
-                    FlyMessenger.sendVideoMessage(toJid: self?.getProfileDetails.jid ?? "", videoFileName: videoName, videoFileUrl: videoLocalPath, thumbImageBase64: base64, localFilePath: videoLocalPath, videoCaption: videoDetail.caption, replyMessageId: self?.replyMessageId){ isSuccess,error,message in
-                        if let chatMessage = message {
-                            chatMessage.mediaChatMessage?.mediaThumbImage = base64
-                            chatMessage.mediaChatMessage?.mediaUploadStatus = .not_uploaded
-                            chatMessage.mediaChatMessage?.mediaCaptionText = videoDetail.caption ?? ""
-                            self?.sendMediaMessages?.append(chatMessage)
-                            DispatchQueue.main.async {  [weak self] in
-                                if let chatMsg = self?.chatMessages {
-                                    if chatMsg.count > 0 {
-                                        self?.chatMessages[0].insert(chatMessage, at: 0)
-                                    }
-                                    else {
-                                        var chatArray = [ChatMessage]()
-                                        chatArray.append(chatMessage)
-                                        self?.chatMessages.append(chatArray)
-                                    }
+                FlyMessenger.sendVideoMessage(toJid: self?.getProfileDetails.jid ?? "", videoFileName: videoName, videoFileUrl: videoLocalPath, localFilePath: videoLocalPath, videoCaption: videoDetail.caption, replyMessageId: self?.replyMessageId){ isSuccess,error,message in
+                    if let chatMessage = message {
+                        chatMessage.mediaChatMessage?.mediaUploadStatus = .not_uploaded
+                        chatMessage.mediaChatMessage?.mediaCaptionText = videoDetail.caption ?? ""
+                        if NetworkReachability.shared.isConnected {
+                            if self?.sendMediaMessages?.filter({$0.messageId == chatMessage.messageId}).count == 0 {
+                                self?.sendMediaMessages?.append(chatMessage)
+                            }
+                        }
+                        DispatchQueue.main.async {  [weak self] in
+                            if let chatMsg = self?.chatMessages {
+                                if chatMsg.count > 0 {
+                                    self?.chatMessages[0].insert(chatMessage, at: 0)
                                 }
-                                self?.chatTableView.reloadData()
-                                self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
-                                if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == chatMessage.messageId}) {
-                                    if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ChatViewVideoOutgoingCell {
-                                        cell.uploadView.isHidden = true
-                                        cell.progressView.isHidden = false
-                                        cell.progressLoader.transition(to: .indeterminate)
-                                    }
+                                else {
+                                    var chatArray = [ChatMessage]()
+                                    chatArray.append(chatMessage)
+                                    self?.chatMessages.append(chatArray)
                                 }
                             }
-                            self?.replyMessageObj = nil
-                            self?.isReplyViewOpen = false
-                            sendMessageListener(true)
+                            self?.chatTableView.reloadData()
+                            self?.tableViewBottomConstraint.constant = CGFloat(chatBottomConstant)
+                            if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == chatMessage.messageId}) {
+                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ChatViewVideoOutgoingCell {
+                                    cell.uploadView.isHidden = true
+                                    cell.progressView.isHidden = false
+                                    cell.progressLoader.transition(to: .indeterminate)
+                                }
+                            }
                         }
+                    if self?.replyJid == self?.getProfileDetails.jid {
+                        self?.replyMessageObj = nil
+                        self?.isReplyViewOpen = false
+                    }
                     }
                 }
             }
@@ -3561,9 +3377,10 @@ extension ChatViewParentController {
                         cell.progressLoader?.isHidden = false
                         cell.fileSizeLabel.isHidden = false
                         cell.progressLoader?.transition(to: .determinate(percentage: 0.0))
+                        cell.progressLoader?.transition(to: .indeterminate)
                     }
                 }
-                
+                chatMessage.mediaChatMessage?.mediaDownloadStatus = .downloading
                 FlyMessenger.downloadMediaRetry(message: chatMessage) { (success, error, message) in
                     print("videoDownload \(success) \(error)")
                 }
@@ -3576,7 +3393,6 @@ extension ChatViewParentController {
     }
     
     @objc func retryVideoUpload(sender: UIButton){
-      
         let row = sender.tag % 1000
         let section = sender.tag / 1000
         let chatMessage = chatMessages[section][row]
@@ -3584,12 +3400,13 @@ extension ChatViewParentController {
         if NetworkReachability.shared.isConnected {
             if let indexPath = chatMessages.indexPath(where: {$0.messageId == chatMessage.messageId}) {
                 if let cell = chatTableView.cellForRow(at: indexPath) as? ChatViewVideoOutgoingCell {
+                    chatMessages[section][row].mediaChatMessage?.mediaUploadStatus = .uploading
                     cell.playButton.isHidden = true
                     cell.uploadView.isHidden = true
                     cell.retryButton?.isHidden = true
                     cell.progressView.isHidden = false
                     cell.progressLoader.isHidden = false
-                    cell.progressLoader.transition(to: .determinate(percentage: 0.0))
+                    cell.progressLoader.transition(to: .indeterminate)
                     FlyMessenger.uploadMediaRetry(message: chatMessage) { (success, error, message) in
                         print("retryVideoUpload \(success) \(error)")
                     }
@@ -3609,8 +3426,10 @@ extension ChatViewParentController {
         FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
             if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == message.messageId}) {
                 if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ChatViewVideoOutgoingCell {
+                    self?.chatMessages[section][row].mediaChatMessage?.mediaUploadStatus = .not_uploaded
                     cell.progressView.isHidden = true
                     cell.retryLabel.isHidden = false
+                    cell.retryButton?.isHidden = false
                     cell.uploadView.isHidden = false
                     cell.progressLoader.transition(to: .determinate(percentage: 0.0))
                 }
@@ -3632,6 +3451,7 @@ extension ChatViewParentController {
                         cell.playButton.isHidden = true
                         cell.downloadView.isHidden = false
                         cell.downloadButton.isHidden = false
+                        cell.fileSizeLabel.isHidden = false
                     }
                 }
             }
@@ -3648,6 +3468,7 @@ extension ChatViewParentController {
     }
     
     @objc func playVideoGestureAction(sender : UIButton) {
+        view.endEditing(true)
         let row = sender.tag % 1000
         let section = sender.tag / 1000
         let message = chatMessages[section][row]
@@ -3672,6 +3493,7 @@ extension ChatViewParentController {
     
     func updateVideoProgress(message: ChatMessage, progressPercentage: Float, index: IndexPath) {
         DispatchQueue.main.async { [weak self] in
+            print("uploadingProgress ABC \(progressPercentage)")
             if message.isMessageSentByMe {
                 if let cell = self?.chatTableView.cellForRow(at: index) as? ChatViewVideoOutgoingCell {
                     self?.chatMessages[index.section][index.row].mediaChatMessage?.mediaUploadStatus = .uploading
@@ -3679,13 +3501,14 @@ extension ChatViewParentController {
                         if let thumImage = message.mediaChatMessage?.mediaThumbImage {
                             ChatUtils.setThumbnail(imageContainer: cell.imageContainer, base64String: thumImage)
                         }
-                        print("progressPercentage \(progressPercentage)")
+                        print("updateVideoProgress  progressPercentage \(progressPercentage)")
+                        cell.progressLoader.isHidden = false
+                        cell.progressView.isHidden = false
                         cell.progressLoader?.transition(to: .determinate(percentage: CGFloat(progressPercentage/100)))
                         if progressPercentage == 100 {
                             cell.progressLoader.transition(to: .indeterminate)
                         }
-                        cell.progressLoader.isHidden = false
-                        cell.progressView.isHidden = false
+
                     }
                     cell.uploadView.isHidden = true
                     cell.playButton.isHidden = true
@@ -3796,6 +3619,7 @@ extension ChatViewParentController {
                     cell.progressLoader?.transition(to: .determinate(percentage: 0.0))
                     cell.downloadView.isHidden = false
                     cell.downloadButton.isHidden = false
+                    cell.fileSizeLabel.isHidden = false
                     cell.playButton.isHidden = true
                 }
             }
@@ -3808,19 +3632,22 @@ extension ChatViewParentController {
             if message.isMessageSentByMe {
                 if let cell = self?.chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
                     let localPath = message.mediaChatMessage?.mediaLocalStoragePath ?? ""
-                    if let thumImage = AppUtils.shared.generateThumbnail(path: URL(fileURLWithPath: localPath)) {
-                        cell.imageContainer?.image = thumImage.sd_blurredImage(withRadius: 5.0)
+                    if let thumImage = message.mediaChatMessage?.mediaThumbImage {
+                        ChatUtils.setThumbnail(imageContainer: cell.imageContainer ?? UIImageView(), base64String: thumImage)
                     }
-                    cell.nicoProgressBar?.transition(to: .determinate(percentage: 0.0))
                     cell.nicoProgressBar?.isHidden = true
                     cell.progressView?.isHidden = true
                     
                     cell.retryLab?.isHidden = false
                     cell.uploadView?.isHidden = false
-                    
+                    self?.sendMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                        if chatMessage.messageId == message.messageId {
+                            self?.sendMediaMessages?.remove(at: index)
+                        }
+                    })
                     self?.updateVideoMessageStatus(statusImage: cell.msgStatus ?? UIImageView(), messageStatus: message.messageStatus)
                 }
-            }else {
+            } else {
                 if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
                     if let localPath = message.mediaChatMessage?.mediaFileName {
                         let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -3831,22 +3658,35 @@ extension ChatViewParentController {
                             let image = UIImage(data: data! as Data)
                             cell.imageContainer.image = image
                         }
-                    }else {
+                    } else {
                         if let thumbImage = message.mediaChatMessage?.mediaThumbImage {
-                        let converter = ImageConverter()
-                        var image =  converter.base64ToImage(thumbImage)
-                        image = image?.sd_blurredImage(withRadius: 5.0)
-                            cell.imageContainer.image = image
+                            ChatUtils.setThumbnail(imageContainer: cell.imageContainer ?? UIImageView(), base64String: thumbImage)
                         }
                     }
+                    cell.progressBar?.isHidden = true
                     cell.progressView.isHidden = true
-                    cell.progressBar?.transition(to: .determinate(percentage: 0.0))
                     cell.downloadView.isHidden = false
                     if let fileSiz = message.mediaChatMessage?.mediaFileSize{
                         cell.filseSize.text = "\(fileSiz.byteSize)"
                     } else {
                         cell.filseSize.text = ""
                     }
+                }
+            }
+        }
+    }
+    
+    func onAudioUploadFailed(message : ChatMessage, indexPath : IndexPath) {
+        DispatchQueue.main.async { [weak self] in
+            if message.isMessageSentByMe {
+                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
+
+                    cell.stopUpload()
+                    self?.updateVideoMessageStatus(statusImage: cell.status ?? UIImageView(), messageStatus: message.messageStatus)
+                }
+            } else {
+                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
+                    cell.stopDownload()
                 }
             }
         }
@@ -3892,7 +3732,20 @@ extension ChatViewParentController {
         if sender.tag == 102 {
             callType = .Video
         }
-        RootViewController.sharedInstance.callViewController?.makeCall(usersList: [getProfileDetails.jid], callType: callType)
+        if getProfileDetails.profileChatType == .groupChat{
+            let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
+            let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.contactViewController) as! ContactViewController
+            controller.modalPresentationStyle = .fullScreen
+            controller.makeCall = true
+            controller.isMultiSelect = true
+            controller.callType = callType
+            controller.hideNavigationbar = true
+            controller.groupJid = getProfileDetails.jid
+            self.navigationController?.pushViewController(controller, animated: true)
+        }else if getProfileDetails.profileChatType == .singleChat{
+            RootViewController.sharedInstance.callViewController?.makeCall(usersList: [getProfileDetails.jid], callType: callType)
+        }
+        
         
     }
 }
@@ -3927,97 +3780,13 @@ extension ChatViewParentController : TypingStatusDelegate {
 }
 
 extension ChatViewParentController : GroupEventsDelegate {
-    func didReceiveUseraddedMessage(particiapntList: ProfileDetails, publisherList: ProfileDetails, groupInfo: GroupParticipantDetail) {
-        
-    }
-    
-    func didAddParticipantSuccessMessage(addParticipantmessage: String) {
-        
-    }
-    
-    func didAdminRemoveParticipant(message: String) {
-        
-    }
-    
-    func didAdminRemoveParticipantReceiveMessage(removeparticipantList: ParticipantDetails) {
-        
-    }
-    
-    func didGroupUserProfileFetch(for jid: String, groupInfoDetails: GroupModel?) {
-        
-    }
-    
-    func didGroupProfileFetch(groupJid: String) {
-        
-    }
-    
-    func didGroupProfileUpdated(message: String) {
-        
-    }
-    
-    func didMakeAdmin(message: String) {
-        
-    }
-    
-    func didGroupInfoUpdatedMessage(groupInfoUpdateList: ParticipantDetails) {
-        
-    }
-    
-    func didMakeAdminMessage(makeAdminList: ParticipantDetails) {
-        
-    }
-    
-    func didExitFromGroup(message: String) {
-        
-    }
-    
-    func didDeleteFromGroup(message: String) {
-        
-    }
-    
-    func didReceiveGroupDeleteMessage(groupJid: String, messageFrom: String) {
-        
-    }
-    
-    func didGroupDeleteLocally(groupJid: String) {
-        
-    }
-    
-    func didReceiveParticipantRemoved(groupJid: String) {
-        
-    }
-    
-    func didGroupInfoUpdatedWithId(groupJid: String) {
-        
-    }
-    
-    func didReceiveParticipantMessage(participantDetails: [ProfileDetails], groupDetails: GroupModel) {
-        
-    }
-    
-    func didReceiveParticipantForGroupId(groupJid: String) {
-        
-    }
-    
-    func didGroupCreate(message: String) {
-        
-    }
-    
-    func didGetGroups(groups: [ProfileDetails], message: String) {
-        
-    }
-    
-    
-    func didRemoveMemberFromAdmin(groupJid: String, removedAdminMemberJid: String, removedByMemberJid: String) {
-        
-    }
-    
     func didAddNewMemeberToGroup(groupJid: String, newMemberJid: String, addedByMemberJid: String) {
-        getGrouMember()
+        getGroupMember()
+        checkMemberOfGroup()
     }
     
     func didRemoveMemberFromGroup(groupJid: String, removedMemberJid: String, removedByMemberJid: String) {
-        
+        checkMemberOfGroup()
     }
     
     func didFetchGroupProfile(groupJid: String) {
@@ -4038,12 +3807,16 @@ extension ChatViewParentController : GroupEventsDelegate {
         
     }
     
+    func didRemoveMemberFromAdmin(groupJid: String, removedAdminMemberJid: String, removedByMemberJid: String) {
+        
+    }
+    
     func didDeleteGroupLocally(groupJid: String) {
         
     }
     
     func didLeftFromGroup(groupJid: String, leftUserJid: String) {
-        
+        checkMemberOfGroup()
     }
     
     func didCreateGroup(groupJid: String) {
@@ -4055,7 +3828,8 @@ extension ChatViewParentController : GroupEventsDelegate {
     }
     
     func didFetchGroupMembers(groupJid: String) {
-        getGrouMember()
+        getGroupMember()
+        checkMemberOfGroup()
     }
     
     func didReceiveGroupNotificationMessage(message: ChatMessage) {
@@ -4066,7 +3840,17 @@ extension ChatViewParentController : GroupEventsDelegate {
 
 //MARK : Group
 extension ChatViewParentController {
-    func getGrouMember() {
+    
+    func checkMemberOfGroup() {
+        if getProfileDetails.profileChatType == .groupChat {
+            let result = GroupManager.shared.isParticiapntExistingIn(groupJid: getProfileDetails.jid, participantJid: FlyDefaults.myJid)
+            print("ChatViewParentController Group isExist \(result.doesExist) \(result.message)")
+            chatTextViewXib?.cannotSendMessageView?.isHidden = result.doesExist ? true : false
+            GroupManager.shared.getGroupMemeberFromLocal(groupJid: getProfileDetails.jid)
+        }
+    }
+    
+    func getGroupMember() {
         print("getGrouMember")
         groupMembers = [GroupParticipantDetail]()
         groupMembers =  GroupManager.shared.getGroupMemeberFromLocal(groupJid: getProfileDetails.jid).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid})
@@ -4083,11 +3867,12 @@ extension ChatViewParentController {
             var memberString = ""
             let members = self?.groupMembers ?? [GroupParticipantDetail]()
             for (index, member) in members.enumerated() {
-                
+                let profileDetail = member.profileDetail
+                let participantName = getUserName(name: profileDetail?.name ?? "", nickName: profileDetail?.nickName ?? "")
                 if index != (members.count - 1) {
-                    memberString = memberString + (member.profileDetail?.nickName ?? "") + ", "
+                    memberString = memberString + (participantName) + ", "
                 } else {
-                    memberString = memberString + (member.profileDetail?.nickName ?? "") + " "
+                    memberString = memberString + (participantName) + " "
                 }
             }
             self?.groupMemberLable.type = .continuous
@@ -4187,13 +3972,19 @@ extension ChatViewParentController : RefreshBubbleImageViewDelegate {
 
 extension ChatViewParentController : SendSelectecUserDelegate {
     func sendSelectedUsers(selectedUsers: [Profile],completion: @escaping (() -> Void)) {
-        isShowForwardView = false
-        showHideForwardView()
         guard let messageIds = forwardMessages?.map({$0.chatMessage.messageId}) else { return  }
         let jids = selectedUsers.map({$0.jid})
-        FlyMessenger.composeForwardMessage(messageIds: messageIds, toJidList: jids)
-        chatTableView?.reloadData()
+        print("Jids:",jids)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            if jids.filter({$0 == self?.getProfileDetails.jid}).count > 0 {
+                self?.getMessages()
+            } else {
+                self?.chatTableView?.reloadData()
+            }
+        }
         forwardMessages?.removeAll()
+        isShowForwardView = false
+        showHideForwardView()
         DispatchQueue.main.async {
            completion()
         }
@@ -4215,6 +4006,336 @@ extension ChatViewParentController: ShowMailComposeDelegate {
 
         UIApplication.shared.open(url) { success in
           
+        }
+    }
+}
+
+
+// MARK Network change detecting
+extension ChatViewParentController {
+    func networkMonitor() {
+        if !NetworkReachability.shared.isConnected {
+            DispatchQueue.main.async { [weak self] in
+                self?.lastSeenLabel.text = waitingForNetwork
+            }
+        }
+        NetStatus.shared.netStatusChangeHandler = { [weak self] in
+            print("networkMonitor \(NetStatus.shared.isConnected)")
+            if !NetStatus.shared.isConnected {
+                DispatchQueue.main.async {
+                    self?.lastSeenLabel.text = waitingForNetwork
+                }
+            }
+        }
+    }
+}
+// MARK: Image cancel and upload methods
+extension ChatViewParentController {
+    @objc func cancelOrUploadImages(sender: UIButton) {
+        let row = sender.tag % 1000
+        let section = sender.tag / 1000
+        let indexPath = IndexPath(row: row, section: section)
+        let message = chatMessages[indexPath.section][indexPath.row]
+        if message.isMessageSentByMe {
+            if message.mediaChatMessage?.mediaUploadStatus == .uploading || sendMediaMessages?.filter({$0.messageId == message.messageId}).count ?? 0 > 0 {
+                message.mediaChatMessage?.mediaUploadStatus = .not_uploaded
+                chatMessages[indexPath.section][indexPath.row] = message
+                sendMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                    if chatMessage.messageId == message.messageId {
+                        if (sendMediaMessages?.count ?? 0) > index {
+                            sendMediaMessages?.remove(at: index)
+                        }
+                    }
+                })
+                if let cell = chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
+                    cell.sendMediaMessages = sendMediaMessages
+                    cell.getCellFor(message, at: indexPath, isShowForwardView: isShowForwardView)
+                }
+                FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
+                    if message.messageType == .image {
+                        DispatchQueue.main.async { [weak self] in
+                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
+                                cell.sendMediaMessages = self?.sendMediaMessages
+                                cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
+                            }
+                        }
+                    }
+                }
+            } else if message.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
+                imageUpload(sender: sender)
+            }
+        }
+    }
+    
+    private func imageUpload(sender: UIButton,completion: @escaping (Bool?)->()) {
+        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
+        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
+            let message = chatMessages[indexPath.section][indexPath.row]
+            if NetworkReachability.shared.isConnected {
+                print("sendMediaMessages",sendMediaMessages?.count)
+                if sendMediaMessages?.filter({$0.messageId == message.messageId}).count == 0 {
+                    sendMediaMessages?.append(message)
+                    if let progress = message.mediaChatMessage?.mediaUploadStatus, progress == .not_uploaded {
+                            message.mediaChatMessage?.mediaUploadStatus = .uploading
+                            FlyMessenger.uploadMediaRetry(message: message) { (success, error, message) in
+                                completion(true)
+                            }
+                        }
+                } else {
+                    sendMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                        if chatMessage.messageId == message.messageId {
+                            if (sendMediaMessages?.count ?? 0) > index {
+                                sendMediaMessages?.remove(at: index)
+                            }
+                        }
+                    })
+                }
+            } else {
+                AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            }
+        }
+    }
+    
+    @objc func imageUpload(sender: UIButton) {
+            imageUpload(sender: sender) { isSuccess in
+        }
+    }
+}
+
+// MARK: Image cancel and Download methods
+extension ChatViewParentController {
+    @objc func cancelImageDownload(sender: UIButton) {
+        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
+        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
+            let message = chatMessages[indexPath.section][indexPath.row]
+            if message.isMessageSentByMe {
+                if message.mediaChatMessage?.mediaUploadStatus == .uploading {
+                message.mediaChatMessage?.mediaUploadStatus = .not_uploaded
+                chatMessages[indexPath.section][indexPath.row] = message
+                FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
+                    if message.messageType == .image {
+                        DispatchQueue.main.async { [weak self] in
+                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
+                                cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
+                                if self?.sendMediaMessages?.count ?? 0 > 0 {
+                                    if self?.sendMediaMessages?.filter({$0.messageId == message.messageId}).count ?? 0 > 0 {
+                                        self?.sendMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                                            if chatMessage.messageId == message.messageId {
+                                                self?.sendMediaMessages?.remove(at: index)
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                } else {
+                    if message.messageType == .image {
+                        if sendMediaMessages?.count ?? 0 > 0 {
+                        if sendMediaMessages?.filter({$0.messageId == message.messageId}).count ?? 0 > 0 {
+                            sendMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                                if chatMessage.messageId == message.messageId {
+                                   sendMediaMessages?.remove(at: index)
+                                }
+                            })
+                        }
+                    }
+                        DispatchQueue.main.async { [weak self] in
+                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? SenderImageCell {
+                                cell.sendMediaMessages = self?.sendMediaMessages
+                                cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
+                            }
+                        }
+                    }
+                }
+            } else {
+                    message.mediaChatMessage?.mediaDownloadStatus = .not_downloaded
+                    FlyMessenger.cancelMediaUploadOrDownload(message: message) { [weak self] isSuccess in
+                        self?.chatMessages[indexPath.section][indexPath.row] = message
+                        if message.messageType == .image {
+                            if self?.receivedMediaMessages?.count ?? 0 > 0 {
+                                if self?.receivedMediaMessages?.filter({$0.messageId == message.messageId}).count ?? 0 > 0 {
+                                    self?.receivedMediaMessages?.enumerated().forEach({ (index,chatMessage) in
+                                    if chatMessage.messageId == message.messageId {
+                                        self?.receivedMediaMessages?.remove(at: index)
+                                    }
+                                })
+                            }
+                        }
+                        DispatchQueue.main.async {
+                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
+                                cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+    @objc func imageDownload(sender: UIButton) {
+            let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
+            if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
+                let message = chatMessages[indexPath.section][indexPath.row]
+                if NetworkReachability.shared.isConnected {
+                    if message.mediaChatMessage?.mediaDownloadStatus == .not_downloaded {
+                        if let cell = chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
+                            cell.progressBar?.transition(to: .indeterminate)
+                            cell.progressBar?.isHidden = false
+                            cell.downloadView?.isHidden = true
+                            cell.progressView.isHidden = false
+                            cell.close.isHidden = false
+                            cell.downoadButton?.isHidden = true
+                            cell.progrssButton.isHidden = false
+                        }
+                        if receivedMediaMessages?.filter({$0.messageId == message.messageId}).count == 0 {
+                            receivedMediaMessages?.append(message)
+                            FlyMessenger.downloadMediaRetry(message: message) { [weak self] (success, error, message) in
+                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ReceiverImageCell {
+                                    cell.getCellFor(message, at: indexPath, isShowForwardView: self?.isShowForwardView)
+                                }
+                            }
+                        }
+                        
+                    }
+                } else {
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }
+            }
+    }
+}
+
+
+// MARK: Audio cancel and upload methods
+extension ChatViewParentController {
+    @objc func audioUpload(sender: UIButton) {
+        audioUpload(sender: sender) { isSuccess in
+        }
+    }
+    
+    private func audioUpload(sender: UIButton,completion: @escaping (Bool?)->()) {
+        let buttonPosition = sender.convert(CGPoint.zero, to: chatTableView)
+        if let indexPath = chatTableView.indexPathForRow(at:buttonPosition) {
+            let message = chatMessages[indexPath.section][indexPath.row]
+            if NetworkReachability.shared.isConnected {
+                print("count:;",uploadingMediaObjects?.filter({$0.messageId == message.messageId}).count)
+                if uploadingMediaObjects?.filter({$0.messageId == message.messageId}).count == 0 {
+                    uploadingMediaObjects?.insert(message, at: 0)
+                    if let progress = message.mediaChatMessage?.mediaUploadStatus, progress != .uploaded {
+                        DispatchQueue.main.async {
+                            FlyMessenger.uploadMediaRetry(message: message) { (success, error, message) in
+                                completion(true)
+                            }
+                        }
+                    }
+                }
+            } else {
+                AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            }
+        }
+    }
+    
+    @objc func uploadCancelaudioAction(sender: UIButton) {
+        isShowAudioLoadingIcon = false
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.checkYourInternet)
+            return
+        }
+        let row = sender.tag % 1000
+        let section = sender.tag / 1000
+        let indexPath = IndexPath(row: row, section: section)
+        let message = chatMessages[indexPath.section][indexPath.row]
+        print("indexPath",indexPath)
+        if message.isMessageSentByMe {
+            DispatchQueue.main.async { [weak self] in
+                if message.mediaChatMessage?.mediaUploadStatus == .uploading {
+                  if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
+                      cell.isShowAudioLoadingIcon = self?.isShowAudioLoadingIcon
+                        cell.stopUpload()
+                        }
+                    self?.uploadingMediaObjects?.enumerated().forEach({ (index,chatMessage) in
+                        if chatMessage.messageId == message.messageId {
+                            if (self?.uploadingMediaObjects?.count ?? 0) > index {
+                                self?.uploadingMediaObjects?.remove(at: index)
+                            }
+                        }
+                    })
+                    message.mediaChatMessage?.mediaUploadStatus = .not_uploaded
+                    self?.chatMessages[indexPath.section][indexPath.row] = message
+                    print("cancelIndex",message.messageId)
+                    FlyMessenger.cancelMediaUploadOrDownload(message: message) { isSuccess in
+                        if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
+                            cell.isShowAudioLoadingIcon = self?.isShowAudioLoadingIcon
+                            self?.chatTableView?.reloadRows(at: [indexPath], with: .none)
+                        }
+                    }
+                } else if message.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
+                    if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
+                        cell.isShowAudioLoadingIcon = self?.isShowAudioLoadingIcon
+                        cell.startUpload()
+                    }
+                    message.mediaChatMessage?.mediaUploadStatus = .uploading
+                    self?.chatMessages[indexPath.section][indexPath.row] = message
+                    self?.audioUpload(sender: sender) { isSuccess in
+                        if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
+                            cell.isShowAudioLoadingIcon = self?.isShowAudioLoadingIcon
+                            cell.getCellFor(message, at: indexPath, isPlaying: self?.currenAudioIndexPath == indexPath ? self?.audioPlayer?.isPlaying ?? false : false, audioClosureCallBack: { (_) in
+                            }, isShowForwardView: self?.isShowForwardView)
+                        }
+                    }
+                } else {
+                    if let _ = self?.chatTableView.cellForRow(at: indexPath) as? AudioSender {
+                        self?.chatTableView.reloadRows(at: [indexPath], with: .none)
+                    }
+                }
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                if message.mediaChatMessage?.mediaDownloadStatus == .downloading {
+                    if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
+                        cell.stopDownload()
+                    }
+                    message.mediaChatMessage?.mediaDownloadStatus = .not_downloaded
+                    self?.chatMessages[indexPath.section][indexPath.row] = message
+                    FlyMessenger.cancelMediaUploadOrDownload(message: message) { isSuccess in
+                        DispatchQueue.main.async {
+                            if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
+                                cell.stopDownload()
+                            }
+                        }
+                    }
+                } else if message.mediaChatMessage?.mediaDownloadStatus == .not_downloaded {
+                    if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
+                        cell.startDownload()
+                    }
+                    message.mediaChatMessage?.mediaDownloadStatus = .downloading
+                    self?.chatMessages[indexPath.section][indexPath.row] = message
+                    FlyMessenger.downloadMediaRetry(message: message) { (success, error, chatMessage) in
+                        if let cell = self?.chatTableView.cellForRow(at: indexPath) as? AudioReceiver {
+                            cell.getCellFor(message, at: indexPath, isPlaying: self?.currenAudioIndexPath == indexPath ? self?.audioPlayer?.isPlaying ?? false : false, audioClosureCallBack: { (_) in
+                            }, isShowForwardView: self?.isShowForwardView)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension ChatViewParentController {
+    @objc func contactSyncCompleted(notification: Notification){
+        if let contactSyncState = notification.userInfo?[FlyConstants.contactSyncState] as? String {
+            switch ContactSyncState(rawValue: contactSyncState) {
+            case .inprogress:
+                break
+            case .success:
+                setProfile()
+            case .failed:
+                print("contact sync failed")
+            case .none:
+                print("contact sync failed")
+            }
         }
     }
 }

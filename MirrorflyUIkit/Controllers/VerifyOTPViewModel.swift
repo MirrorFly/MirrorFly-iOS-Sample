@@ -24,13 +24,17 @@ class VerifyOTPViewModel : NSObject
         }
     }
     
-    func validateUser(params: NSDictionary, completionHandler:  @escaping (VerifyUserModel?, Error?)-> Void)  {
-        apiService.post(withEndPoint: verifyUser, params: params as? Parameters, headers: nil).responseJSON { (response) in
+    func validateUser(params: NSDictionary, completionHandler:  @escaping (VerifyToken?, Error?)-> Void)  {
+        let Baseurl = FlyDefaults.baseURL
+        let url = Baseurl + verifyUser
+        print("verifyOTPViewModel.validateUser \(url)")
+        apiService.post(withEndPoint: url, params: params as? Parameters, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success:
                 let jsonData = response.data
+                print("verifyOTPViewModel.validateUser \(response) \(jsonData)")
                 do{
-                    let userData = try JSONDecoder().decode(VerifyUserModel.self, from: jsonData!)
+                    let userData = try JSONDecoder().decode(VerifyToken.self, from: jsonData!)
                     completionHandler(userData,nil)
                 }catch {
                     completionHandler(nil,error)
@@ -45,8 +49,10 @@ class VerifyOTPViewModel : NSObject
     }
     func registration(mobileNumber: String, completionHandler:  @escaping ([String: Any]?, String?)-> Void) {
         let deviceToken = Utility.getStringFromPreference(key: googleToken)
+        var voipToken = Utility.getStringFromPreference(key: voipToken)
         print(deviceToken, mobileNumber)
-        try! ChatManager.registerApiService(for: mobileNumber, deviceToken: deviceToken, voipDeviceToken: deviceToken, isLive: IS_LIVE) { isSuccess, flyError, flyData in
+        voipToken = voipToken.isEmpty ? deviceToken : voipToken
+        try! ChatManager.registerApiService(for: mobileNumber, deviceToken: deviceToken, voipDeviceToken: voipToken, isLive: false) { isSuccess, flyError, flyData in
             var data = flyData
             if isSuccess {
                 completionHandler(data, nil)

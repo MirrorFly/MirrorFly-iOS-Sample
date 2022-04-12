@@ -143,7 +143,7 @@ extension GroupCreationPreviewController : UITableViewDelegate, UITableViewDataS
         if searchedParticipants.count > 0 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell)!
             let profileDetail = searchedParticipants[indexPath.row]
-            cell.nameUILabel?.text = profileDetail.name
+            cell.nameUILabel?.text = getUserName(name: profileDetail.name, nickName: profileDetail.nickName)
             cell.statusUILabel?.text = profileDetail.status
             let color = ChatUtils.getColorForUser(userName: profileDetail.name)
             cell.setImage(imageURL: profileDetail.image, name: profileDetail.name, color: color )

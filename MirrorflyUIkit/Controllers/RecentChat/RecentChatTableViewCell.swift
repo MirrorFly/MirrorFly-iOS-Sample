@@ -20,6 +20,8 @@ class RecentChatTableViewCell: UITableViewCell {
     @IBOutlet weak var statusImage: UIImageView?
     @IBOutlet weak var statusView: UIView?
     @IBOutlet weak var receiverMessageTypeImageView: UIImageView?
+    
+    @IBOutlet weak var senderNameLabel: UILabel?
     @IBOutlet weak var statusImageCons: NSLayoutConstraint?
     @IBOutlet weak var receiverMessageTypeView: UIView?
     @IBOutlet weak var statusViewTralingCons: NSLayoutConstraint?
@@ -40,7 +42,7 @@ class RecentChatTableViewCell: UITableViewCell {
     }
     
     func setImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
-        let urlString = "\(Environment.sandboxImage.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
+        let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + (recentChat.profileImage ?? "") + "?mf=" + "" + FlyDefaults.authtoken)"
         let url = URL(string: urlString)
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
@@ -50,7 +52,18 @@ class RecentChatTableViewCell: UITableViewCell {
             placeHolder = getPlaceholder(name: name, color: color)
         }
         profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
+    }
     
+    func setSingleChatImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
+        var placeHolder = UIImage()
+        placeHolder = getPlaceholder(name: name, color: color)
+        if imageURL.isNotEmpty {
+            let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
+            let url = URL(string: urlString)
+            profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
+        } else {
+            profileImageView?.sd_setImage(with: URL(string: ""), placeholderImage: placeHolder)
+        }
     }
     
     func getPlaceholder(name: String , color: UIColor)->UIImage {
@@ -60,15 +73,46 @@ class RecentChatTableViewCell: UITableViewCell {
         return placeholder ?? #imageLiteral(resourceName: "ic_profile_placeholder")
     }
     
+    func imageWith(name: String?,color: UIColor) -> UIImage? {
+           let frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+           let nameLabel = UILabel(frame: frame)
+           nameLabel.textAlignment = .center
+           nameLabel.backgroundColor = color
+           nameLabel.textColor = .white
+           nameLabel.font = UIFont.boldSystemFont(ofSize: 20)
+           var initials = ""
+        if let initialsArray = name?.components(separatedBy: " ") {
+               if let firstWord = initialsArray.first {
+                   if let firstLetter = firstWord.first {
+                       initials += String(firstLetter).capitalized }
+               }
+               if initialsArray.count > 1, let lastWord = initialsArray.last {
+                   if let lastLetter = lastWord.first { initials += String(lastLetter).capitalized
+                   }
+               }
+           } else {
+               return nil
+           }
+           nameLabel.text = initials
+           UIGraphicsBeginImageContext(frame.size)
+           if let currentContext = UIGraphicsGetCurrentContext() {
+               nameLabel.layer.render(in: currentContext)
+               let nameImage = UIGraphicsGetImageFromCurrentImageContext()
+               return nameImage
+           }
+           return nil
+       }
+    
     // MARK: SetTextColor whileSearch
     func setTextColorWhileSearch(searchText: String,recentChat: RecentChat) {
-        if let range = recentChat.profileName.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
-            let convertedRange = NSRange(range, in: recentChat.profileName.capitalized)
-            let attributedString = NSMutableAttributedString(string: recentChat.profileName.capitalized)
+        let name = getUserName(name: recentChat.profileName , nickName: recentChat.nickName ?? "")
+        if let range = name.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
+            let convertedRange = NSRange(range, in: name.capitalized)
+            let attributedString = NSMutableAttributedString(string: name.capitalized)
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
             userNameLabel?.attributedText = attributedString
         } else {
-            userNameLabel?.text = recentChat.profileName.capitalized.isEmpty ? recentChat.nickName.capitalized : recentChat.profileName.capitalized
+            userNameLabel?.text = name.capitalized.isEmpty ? name.capitalized : name.capitalized
             userNameLabel?.textColor = Color.userNameTextColor
         }
     }
@@ -95,30 +139,43 @@ class RecentChatTableViewCell: UITableViewCell {
         statusImageCons?.constant = 0
         receivedMessageTrailingCons?.constant = 0
         statusViewTralingCons?.constant = 0
-        setImage(imageURL: recentChat.profileImage ?? "", name: recentChat.profileName, color: color, recentChat: recentChat)
+        setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(name: recentChat.profileName, nickName: recentChat.nickName), color: color, recentChat: recentChat)
     }
     
     // MARK: Set ChatTimeColor
-    func setChatTimeTextColor(lastMessageTime: Double) {
+    func setChatTimeTextColor(lastMessageTime: Double,unreadCount: Int?) {
         let date = DateFormatterUtility.shared.convertMillisecondsToDateTime(milliSeconds: lastMessageTime)
         let secondsAgo = Int(Date().timeIntervalSince(date))
         let minute = 60
         let hour = 60 * minute
         let day = 24 * hour
         let oneDay = 1 * day
-        if secondsAgo < oneDay  {
+        if (secondsAgo < oneDay && (unreadCount ?? 0) > 0) {
             chatTimeLabel?.textColor = Color.recentChaTimeBlueColor
         } else {
             chatTimeLabel?.textColor = Color.recentChatDateTimeColor
         }
     }
     
-    func setRecentChatMessage(recentChatMessage: RecentChat,color : UIColor,chatMessage: ChatMessage?) {
+    func setRecentChatMessage(recentChatMessage: RecentChat,color : UIColor,chatMessage: ChatMessage?,senderName: String) {
         receivedMessageTrailingCons?.constant = 5
         statusViewTralingCons?.constant = 5
         statusImageCons?.constant = 7
-        setImage(imageURL: recentChatMessage.profileImage ?? "", name: recentChatMessage.profileName, color: color, recentChat: recentChatMessage)
-        chatTimeLabel?.text = String().fetchMessageDate(for: recentChatMessage.lastMessageTime)
+        if recentChatMessage.profileType == .groupChat && senderName.isNotEmpty && (!(chatMessage?.isMessageSentByMe ?? false)) {
+            senderNameLabel?.text =  "\(senderName): "
+            senderNameLabel?.isHidden = false
+        } else {
+            senderNameLabel?.isHidden = true
+        }
+        if recentChatMessage.profileType == .groupChat {
+            setImage(imageURL: recentChatMessage.profileImage ?? "", name: recentChatMessage.profileName, color: color, recentChat: recentChatMessage)
+        } else {
+            setSingleChatImage(imageURL: recentChatMessage.profileImage ?? "", name: getUserName(name: recentChatMessage.profileName, nickName: recentChatMessage.nickName), color: color, recentChat: recentChatMessage)
+        }
+        
+        let messageTime = chatMessage?.messageChatType == .singleChat ? recentChatMessage.lastMessageTime : DateFormatterUtility.shared.getGroupMilliSeconds(milliSeconds: recentChatMessage.lastMessageTime)
+        
+        chatTimeLabel?.text = String().fetchMessageDate(for: messageTime)
         countLabel?.text = recentChatMessage.unreadMessageCount > 99 ? "99+" : String(recentChatMessage.unreadMessageCount)
         chatTimeLabel?.isHidden = false
         countView?.isHidden = (recentChatMessage.unreadMessageCount > 0) ? false : true

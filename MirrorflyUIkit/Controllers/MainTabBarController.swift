@@ -9,6 +9,7 @@ import UIKit
 import FlyCore
 import FlyDatabase
 import FlyCommon
+import Contacts
 
 class MainTabBarController: UITabBarController{
     @IBOutlet weak var chatTabBars: UITabBar?
@@ -19,17 +20,19 @@ class MainTabBarController: UITabBarController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if FlyDefaults.isContactSyncNeeded {
-            ContactSyncManager.shared.syncContacts(firstLogin: false){ isSuccess,_,_ in
-               print("#contactSync status => \(isSuccess)")
+        if FlyDefaults.isContactSyncNeeded || ContactSyncManager.shared.isContactPermissionChanged() {
+            ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
+                print("#contactSync status => \(isSuccess)")
             }
         }
+        self.delegate = self
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupUI()
+        updateSelection()
         saveMyJidAsContacts()
         ChatManager.shared.connectionDelegate = self
     }
@@ -49,6 +52,9 @@ class MainTabBarController: UITabBarController{
         items[2].title = call
         items[3].title = profile
         items[4].title = setting
+        //Mark:- You can also set any custom fonts in the code
+        let fontAttributes = [NSAttributedString.Key.font: UIFont.font12px_appLight()]
+        UITabBarItem.appearance().setTitleTextAttributes(fontAttributes, for: .normal)
     }
     
 //    func getGroups() {
@@ -82,7 +88,11 @@ class MainTabBarController: UITabBarController{
 
 extension MainTabBarController : ConnectionEventDelegate {
     func onConnected() {
-
+        if FlyDefaults.isFriendsListSyncPending {
+            ContactManager.shared.getFriendsList(fromServer: true){isSuccess,_,_ in
+                FlyDefaults.isFriendsListSyncPending = !isSuccess
+            }
+        }
     }
     
     func onDisconnected() {
@@ -92,6 +102,22 @@ extension MainTabBarController : ConnectionEventDelegate {
     func onConnectionNotAuthorized() {
         
     }
-    
-    
 }
+
+extension MainTabBarController : UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        updateSelection()
+      }
+
+      func updateSelection() {
+        let normalFont = UIFont.font12px_appLight()
+        let selectedFont = UIFont.font12px_appMedium()
+        viewControllers?.forEach {
+          let selected = $0 == self.selectedViewController
+          $0.tabBarItem.setTitleTextAttributes([.font: selected ? selectedFont : normalFont], for: .normal)
+        }
+      }
+
+}
+
+

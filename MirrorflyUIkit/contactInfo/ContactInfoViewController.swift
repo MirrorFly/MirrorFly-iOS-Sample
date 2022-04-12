@@ -18,7 +18,6 @@ class ContactInfoViewController: ViewController {
     var profileDetails : ProfileDetails?
     
     let contactInfoViewModel = ContactInfoViewModel()
-    
     let contactInfoTitle = [email, mobileNumber, status]
     let contactInfoIcon = [ImageConstant.ic_info_email, ImageConstant.ic_info_phone, ImageConstant.ic_info_status]
     
@@ -27,6 +26,18 @@ class ContactInfoViewController: ViewController {
         setConfiguration()
         setUpUI()
         getLastSeen()
+        networkMonitor()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
+        ContactManager.shared.profileDelegate = nil
     }
     
     private func setConfiguration(){
@@ -95,12 +106,30 @@ class ContactInfoViewController: ViewController {
             viewUserImageVC.profileDetails = profileDetails
         }
     }
+    
+    func networkMonitor() {
+        if !NetworkReachability.shared.isConnected {
+            DispatchQueue.main.async { [weak self] in
+                self?.setLastSeen(lastSeen: waitingForNetwork)
+            }
+        }
+        NetStatus.shared.netStatusChangeHandler = { [weak self] in
+            print("networkMonitor \(NetStatus.shared.isConnected)")
+            DispatchQueue.main.async {
+                if NetStatus.shared.isConnected {
+                    self?.getLastSeen()
+                } else {
+                    self?.setLastSeen(lastSeen: waitingForNetwork)
+                }
+            }
+        }
+    }
 
 }
 
 extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 2 {
+        if section == 1 {
             return 3
         } else {
             return 1
@@ -113,24 +142,26 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             
             cell.backButton?.addTarget(self, action: #selector(didTapBack(sender:)), for: .touchUpInside)
             let name = (profileDetails?.name.isEmpty ?? false) ? profileDetails?.nickName : profileDetails?.name
-            cell.userNameLabel?.text = name
+            cell.userNameLabel?.text = getUserName(name: profileDetails?.name ?? "", nickName: profileDetails?.nickName ?? "")
             let imageUrl = profileDetails?.image  ?? ""
             
-            let placeholder = ChatUtils.getPlaceholder(name: profileDetails?.name ?? "", userColor: ChatUtils.getColorForUser(userName: name), userImage: cell.userImage ?? UIImageView())
+            let placeholder = ChatUtils.getPlaceholder(name: getUserName(name: profileDetails?.name ?? "", nickName: profileDetails?.nickName ?? ""), userColor: ChatUtils.getColorForUser(userName: name), userImage: cell.userImage ?? UIImageView())
             cell.userImage?.backgroundColor = ChatUtils.getColorForUser(userName: name)
             cell.userImage?.sd_setImage(with: ChatUtils.getUserImaeUrl(imageUrl: imageUrl), placeholderImage: placeholder)
             
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapImage(sender:)))
             cell.userImage?.isUserInteractionEnabled = true
             cell.userImage?.addGestureRecognizer(gestureRecognizer)
+            cell.editButton?.isHidden = true
+            cell.editProfileButton?.isHidden = true
             
             return cell
-        } else if indexPath.section == 1 {
-            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
-            cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
-            cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
-            return cell
-        } else if indexPath.section == 2 {
+//        } else if indexPath.section == 1 {
+//            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
+//            cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
+//            cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
+//            return cell
+          } else if indexPath.section == 1 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.contactInfoCell, for: indexPath) as? ContactInfoCell)!
             
             cell.titleLabel?.text = contactInfoTitle[indexPath.row]
@@ -155,7 +186,7 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 2
     }
     
 }
@@ -204,6 +235,8 @@ extension ContactInfoViewController : ProfileEventsDelegate {
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         if jid ==  contactJid {
+            let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+            NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil, userInfo: profile as [AnyHashable : Any])
             self.profileDetails = profileDetails
             refreshData()
         }
@@ -225,4 +258,21 @@ extension ContactInfoViewController : ProfileEventsDelegate {
         
     }
     
+}
+
+extension ContactInfoViewController {
+    @objc func contactSyncCompleted(notification: Notification){
+        if let contactSyncState = notification.userInfo?[FlyConstants.contactSyncState] as? String {
+            switch ContactSyncState(rawValue: contactSyncState) {
+            case .inprogress:
+                break
+            case .success:
+               setConfiguration()
+            case .failed:
+                print("contact sync failed")
+            case .none:
+                print("contact sync failed")
+            }
+        }
+    }
 }

@@ -21,7 +21,6 @@ class NewGroupViewController: UIViewController, UITextFieldDelegate {
     
     var groupCreationDeletgate : GroupCreationDelegate?
     
-    @IBOutlet weak var c: UIImageView!
     @IBOutlet weak var cameraImageView: UIImageView!
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var groupImageView: UIImageView!
@@ -283,7 +282,7 @@ extension NewGroupViewController: TatsiPickerViewControllerDelegate {
         options.isNetworkAccessAllowed = false //for icloud backup assets
         let asset : PHAsset = assets .first!
         asset.requestContentEditingInput(with: options) { [weak self] (contentEditingInput, info) in
-            if let uniformTypeIdentifier = contentEditingInput?.uniformTypeIdentifier {
+            if (contentEditingInput?.uniformTypeIdentifier) != nil {
                 self?.isImagePicked = true
                 
                 guard let assetToImage = self?.getUIImage(asset: asset) else {

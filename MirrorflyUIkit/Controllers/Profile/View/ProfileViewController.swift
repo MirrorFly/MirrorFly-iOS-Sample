@@ -4,7 +4,6 @@
 //
 //  Created by User on 17/08/21.
 //
-
 import UIKit
 import AVFoundation
 import FlyCore
@@ -42,6 +41,7 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
     var getUserMobileNumber:String = ""
     var profileDetails: ProfileDetails? = nil
     let defaults = UserDefaults.standard
+    var isSaveButtonTapped: Bool? = false
     // The last collection the user has selected. Set from the picker's delegate method.
     // It is not recommended to PHAssetCollection in persitant storage. If you do, check if the album is still available before showing the picker.
     var lastSelectedCollection: PHAssetCollection?
@@ -69,6 +69,7 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
     }
     
     func setupUI() {
+        stopLoading()
         nameTextField.textInputMode?.primaryLanguage == "emoji"
         nameTextField.keyboardType = .default
         nameTextField.adjustsFontSizeToFitWidth = false
@@ -83,7 +84,7 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
            self.getProfile()
         }
-        handleBackgroundAndForground()
+        isSaveButtonTapped = false
     }
     
     @objc override func didMoveToBackground() {
@@ -104,28 +105,38 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
                 self?.startLoading(withText: pleaseWait)
             }
            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            DispatchQueue.main.async {
                self.getProfile()
             }
         } else {
-            print("ProfileViewController ABCXYZ willCometoForeground else ")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-                self?.stopLoading()
-            }
-            let tempName = nameTextField.text ?? ""
-            let tempEmail = emailTextField.text ?? ""
-            if tempName.isEmpty {
-                nameTextField.text = FlyDefaults.myName
-            }
-            
-            if tempEmail.isEmpty {
-                emailTextField.text = FlyDefaults.myEmail
-            }
-            
-            if FlyDefaults.myImageUrl.isNotEmpty {
-                setImage(imageURL: FlyDefaults.myImageUrl)
-            } else if let profileImage = profileDetails?.image, profileImage.isNotEmpty {
-                setImage(imageURL: profileImage)
+            DispatchQueue.main.async { [weak self] in
+                if let localPath = (self?.profileDetails?.image.isEmpty ?? false || self?.profileDetails?.image == nil) ? FlyDefaults.myProfileImageUrl : self?.profileDetails?.image {
+                    print("image",FlyDefaults.myProfileImageUrl)
+                    print("profileImage",self?.profileDetails?.image)
+                    if FileManager.default.fileExists(atPath: localPath) {
+                        let url = URL.init(fileURLWithPath: localPath)
+                        let data = NSData(contentsOf: url as URL)
+                        let image = UIImage(data: data! as Data)
+                        self?.profileImage.image = image
+                    } else {
+                        self?.profileImage?.sd_imageIndicator = SDWebImageActivityIndicator.white
+                        self?.setImage(imageURL: localPath, completionHandler: { [weak self] _ in
+                            DispatchQueue.main.async {
+                                self?.stopLoading()
+                            }
+                        })
+                    }
+                }
+                let tempName = self?.nameTextField.text ?? ""
+                let tempEmail = self?.emailTextField.text ?? ""
+                if tempName.isEmpty {
+                    self?.nameTextField.text = FlyDefaults.myName
+                }
+                
+                if tempEmail.isEmpty {
+                    self?.emailTextField.text = FlyDefaults.myEmail
+                }
+                self?.mobileNumberLabel.text = self?.mobileNumberLabel.text?.isEmpty ?? false ? FlyDefaults.myMobileNumber : self?.mobileNumberLabel.text
             }
         }
     }
@@ -135,6 +146,7 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
         super.viewWillAppear(animated)
         print("ProfileViewController ABCXYZ viewWillAppear")
          navigationController?.setNavigationBarHidden(true, animated: animated)
+        handleBackgroundAndForground()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -157,13 +169,14 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
 // MARK: Get ,update Profile and remove profile image
 
 extension ProfileViewController {
-   
+    
     func getProfile() {
         print( FlyDefaults.myXmppUsername)
         if(FlyDefaults.isProfileUpdated) {
             do {
                 let JID = FlyDefaults.myXmppUsername + "@" + FlyDefaults.xmppDomain
                 
+            
                 try ContactManager.shared.getUserProfile(for:  JID, fetchFromServer: true, saveAsFriend: true) { [weak self] isSuccess, flyError, flyData in
                     var data  = flyData
                     if(isSuccess) {
@@ -171,24 +184,32 @@ extension ProfileViewController {
                             print(data.getData() as! ProfileDetails)
                             self?.profileDetails = data.getData() as? ProfileDetails
                             if(self?.profileDetails?.image != "") {
-                                self?.setImage(imageURL: self?.profileDetails?.image ?? "")
+                                self?.setImage(imageURL: self?.profileDetails?.image ?? "", completionHandler: { _ in
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        self?.stopLoading()
+                                    }
+                                })
                                 self?.isImagePicked = true
+                                print("profileDetails.image")
+                                print(self?.profileDetails?.image)
                             }
                             else {
                                 self?.getUserNameInitial()
                             }
-                            print("profileDetails.image")
-                            print(self?.profileDetails?.image)
+                            print("profileDetails")
                             self?.nameTextField.text = self?.profileDetails?.name
                             self?.emailTextField.text = self?.profileDetails?.email
                             self?.getUserMobileNumber = self?.profileDetails!.mobileNumber ?? ""
                             let mobileNumberWithoutCountryCode = self?.mobileNumberParse(phoneNo: (self?.profileDetails!.mobileNumber)!)
                             self?.mobileNumberLabel.text = "+91 " +  mobileNumberWithoutCountryCode!
                             self?.statusLabel.text = self?.profileDetails?.status
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            DispatchQueue.main.async { [weak self] in
                                 self?.stopLoading()
                             }
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            self?.stopLoading()
                         }
                     }
                 }
@@ -204,21 +225,33 @@ extension ProfileViewController {
     func mobileNumberParse(phoneNo:String) -> String {
         var splittedMobileNumber:String = ""
         let phoneNumberKit = PhoneNumberKit()
-          do {
+        do {
             let phoneNumber = try phoneNumberKit.parse(phoneNo)
             splittedMobileNumber  = String(describing:phoneNumber.nationalNumber)
-          }
-          catch {
-          }
+        }
+        catch {
+        }
         return splittedMobileNumber
     }
-
-    func setImage(imageURL: String) {
-        let urlString = "\(Environment.sandboxImage.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
+    
+    func setImage(imageURL: String,completionHandler:  @escaping (Bool?)-> Void) {
+        profileImage.sd_imageIndicator = SDWebImageActivityIndicator.white
+        let urlString = "\(FlyDefaults.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
         let url = URL(string: urlString)
-        profileImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"))
+        profileImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"), completed: { [weak self]image,error,_,imageUrl in
+            self?.profileImage.stopAnimating()
+            completionHandler(true)
+        })
     }
-
+    
+    private func saveMyProfileDataToUserDefaults(profile : FlyProfile){
+        FlyDefaults.myName = profile.name
+        FlyDefaults.myImageUrl = profile.image
+        FlyDefaults.myMobileNumber = profile.mobileNumber
+        FlyDefaults.myStatus = profile.status
+        FlyDefaults.myEmail = profile.email
+    }
+    
     // MARK: Update Profile
     func updateMyProfile() {
         
@@ -226,7 +259,9 @@ extension ProfileViewController {
         
         if NetworkReachability.shared.isConnected {
             let JID = FlyDefaults.myXmppUsername + "@" + FlyDefaults.xmppDomain
-            startLoading(withText: pleaseWait)
+            if isSaveButtonTapped == true {
+                startLoading(withText: pleaseWait)
+            }
             var myProfile = FlyProfile(jid: JID)
             guard let email = emailTextField.text else {
                 return
@@ -254,35 +289,39 @@ extension ProfileViewController {
                     isImagePicked = false
                 }
             }
-            ContactManager.shared.updateMyProfile(for: myProfile, isFromLocal: isImagePicked) { isSuccess, flyError, flyData in
-                self.stopLoading()
+            ContactManager.shared.updateMyProfile(for: myProfile, isFromLocal: isImagePicked) { [weak self] isSuccess, flyError, flyData in
+                self?.stopLoading()
                 var data  = flyData
                 if isSuccess {
-                    AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
                     Utility.saveInPreference(key: isProfileSaved, value: true)
                     Utility.saveInPreference(key: isLoginContactSyncDone, value: false)
-                    if false {
-                        let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
-                        let contactSyncController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
-                        self.navigationController?.pushViewController(contactSyncController, animated: true)
-                        self.navigationController?.viewControllers.removeAll(where: { (vc) -> Bool in
-                            if vc.isKind(of: ContactSyncController.self){
-                                return false
-                            } else {
-                                return true
-                            }
-                        })
+                    if IS_LIVE {
+                        if self?.isSaveButtonTapped == true {
+                            AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
+                            let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
+                            let contactSyncController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
+                            self?.navigationController?.pushViewController(contactSyncController, animated: true)
+                            self?.navigationController?.viewControllers.removeAll(where: { (vc) -> Bool in
+                                if vc.isKind(of: ContactSyncController.self){
+                                    return false
+                                } else {
+                                    return true
+                                }
+                            })
+                        }
                     }else{
-                        self.moveToDashboard()
+                        self?.saveMyProfileDataToUserDefaults(profile: myProfile)
+                        if self?.isSaveButtonTapped == true {
+                            AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
+                            self?.moveToDashboard()
+                        }
                     }
-                } else {
+                }else {
                     print(data.getMessage() as! String)
                     AppAlert.shared.showToast(message: "Please try again later")
                 }
             }
-        }
-        
-        else {
+        }else {
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
     }
@@ -292,14 +331,14 @@ extension ProfileViewController {
         if NetworkReachability.shared.isConnected {
             AppAlert.shared.showToast(message: profilePictureRemoved.localized)
             ContactManager.shared.removeProfileImage( completionHandler: { isSuccess, flyError, flyData in
-            var data  = flyData
-              
-            if isSuccess {
-                print(data.getMessage() as! String )
-            } else{
-                print(data.getMessage() as! String )
-            }
-        })
+                var data  = flyData
+                if isSuccess {
+                    print(data.getMessage() as! String)
+                    FlyDefaults.myProfileImageUrl = ""
+                } else{
+                    print(data.getMessage() as! String)
+                }
+            })
         }
         else {
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
@@ -318,6 +357,7 @@ extension ProfileViewController {
     }
     
     @IBAction func onSaveButton(_ sender: Any) {
+        isSaveButtonTapped = true
         guard let userName = nameTextField.text else {return}
         guard let email = emailTextField.text else {return}
         guard let mobileNumber = mobileNumberLabel.text else {return}
@@ -333,18 +373,12 @@ extension ProfileViewController {
     
     func moveToDashboard() {
         RootViewController.sharedInstance.initCallSDK()
-        let ProfileData = ProfileViewModel()
-        ProfileData.contactSync()
+        if FlyDefaults.isTrialLicense{
+            ProfileViewModel().contactSync()
+        }
         let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
         let mainTabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
          navigationController?.pushViewController(mainTabBarController, animated: true)
-        navigationController?.viewControllers.removeAll(where: { (vc) -> Bool in
-            if vc.isKind(of: MainTabBarController.self){
-                return false
-            } else {
-                return true
-            }
-        })
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -385,9 +419,20 @@ extension ProfileViewController: UITextFieldDelegate{
             let ipimage = IPImage(text: trimmedName, radius: Double(profileImage.frame.size.height), font: UIFont.font84px_appBold(), textColor: nil, randomBackgroundColor:  false)
             profileImage.image = ipimage.generateImage()
         }
-         else {
-            profileImage.image = UIImage.init(named: ImageConstant.ic_profile_placeholder)
-         }
+        else {
+            if FileManager.default.fileExists(atPath: FlyDefaults.myProfileImageUrl) {
+                let url = URL.init(fileURLWithPath: FlyDefaults.myProfileImageUrl)
+                let data = NSData(contentsOf: url as URL)
+                let image = UIImage(data: data! as Data)
+                profileImage.image = image
+            } else {
+                setImage(imageURL: FlyDefaults.myProfileImageUrl, completionHandler: { [weak self] _ in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        self?.stopLoading()
+                    }
+                })
+            }
+        }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -642,7 +687,7 @@ extension ProfileViewController: StatusDelegate {
 extension ProfileViewController: CropperViewControllerDelegate {
     func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?) {
         cropper.dismiss(animated: true, completion: nil)
-
+        isSaveButtonTapped = false
         if let state = state,
             let image = cropper.originalImage.cropped(withCropperState: state) {
             
@@ -655,9 +700,13 @@ extension ProfileViewController: CropperViewControllerDelegate {
             
             let str = AppUtils.shared.getRandomString(length: 15)
             let fileName = str ?? ""
-            profileImageLocalPath = AppUtils.shared.saveInDirectory(with:     profileImage.image?.jpegData(compressionQuality: 1.0), fileName: fileName + jpg) ?? ""
-            
+            profileImageLocalPath = AppUtils.shared.saveInDirectory(with: profileImage.image?.jpegData(compressionQuality: 1.0), fileName: fileName + jpg) ?? ""
+            FlyDefaults.myProfileImageUrl = profileImageLocalPath
+            print("fileName--\( FlyDefaults.myProfileImageUrl)")
             print("localPath--\( profileImageLocalPath)")
+            DispatchQueue.main.async { [weak self] in
+                self?.updateMyProfile()
+            }
         }
     }
 }
