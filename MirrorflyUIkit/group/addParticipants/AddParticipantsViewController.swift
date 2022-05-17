@@ -47,6 +47,14 @@ class AddParticipantsViewController: UIViewController {
         participantTableView.reloadData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        ChatManager.shared.adminBlockDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        ChatManager.shared.adminBlockDelegate = nil
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
@@ -78,9 +86,7 @@ class AddParticipantsViewController: UIViewController {
     
     
     @IBAction func didBackTap(_ sender: Any) {
-        if isFromGroupInfo {
-            groupCreationViewModel.initializeGroupCreationData()
-        }
+        groupCreationViewModel.initializeGroupCreationData()
         navigationController?.popViewController(animated: true)
     }
     
@@ -88,6 +94,10 @@ class AddParticipantsViewController: UIViewController {
     @IBAction func didNextTap(_ sender: Any) {
         
         if isFromGroupInfo == true {
+            if GroupCreationData.participants.count == 0 {
+                AppAlert.shared.showToast(message: "Please select minimum one Participant")
+                return
+            }
             groupCreationViewModel.addNewParticipantToGroup(groupID: groupID) { [weak self] success in
                 if success {
                     self?.groupCreationViewModel.initializeGroupCreationData()
@@ -137,9 +147,14 @@ class AddParticipantsViewController: UIViewController {
             groupCreationPreviewController.groupCreationDeletgate = groupCreationDeletgate
         }
     }
-        
+    
     func checkExistingGroup() {
         if isFromGroupInfo {
+            if participants.isEmpty {
+                nextButton.alpha = 0.5
+            } else {
+                nextButton.alpha = 1.0
+            }
             nextButton.setTitle("Add", for: .normal)
         } else {
             nextButton.setTitle("Next", for: .normal)
@@ -163,14 +178,14 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
         if searchedParticipants.count > 0 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell)!
             let profileDetail = searchedParticipants[indexPath.row]
-            let name = getUserName(name: profileDetail.name, nickName: profileDetail.nickName)
+            let name = getUserName(jid: profileDetail.jid,name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType)
             cell.nameUILabel?.text = name
             cell.statusUILabel?.text = profileDetail.status
             let hashcode = profileDetail.name.hashValue
             let color = getColor(userName: name)
             cell.removeButton?.isHidden = true
             cell.removeIcon?.isHidden = true
-            cell.setImage(imageURL: profileDetail.image, name: name, color: color ?? .gray)
+            cell.setImage(imageURL: profileDetail.image, name: name, color: color ?? .gray, chatType: profileDetail.profileChatType)
             cell.checkBoxImageView?.image = GroupCreationData.participants.contains(where: {$0.jid == profileDetail.jid}) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
             cell.setTextColorWhileSearch(searchText: searchBar.text ?? "", profileDetail: profileDetail)
             cell.emptyView?.isHidden = true
@@ -179,19 +194,21 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.noResultFound, for: indexPath) as? NoResultFoundCell)!
             return cell
         }
-       
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let profileDetail = searchedParticipants[indexPath.row]
-        let cell = tableView.cellForRow(at: indexPath) as! ParticipantCell
-        let jid = profileDetail.jid ?? ""
-        if GroupCreationData.participants.contains(where: {$0.jid == jid}) {
-            cell.checkBoxImageView?.image = UIImage(named: ImageConstant.ic_check_box)
-            GroupCreationData.participants = groupCreationViewModel.removeSelectedParticipantJid(selectedParticipants: GroupCreationData.participants, participant: profileDetail)
-        } else {
-            cell.checkBoxImageView?.image = UIImage(named: ImageConstant.ic_checked)
-            GroupCreationData.participants.append(profileDetail)
+        if searchedParticipants.count > indexPath.row {
+            let profileDetail = searchedParticipants[indexPath.row]
+            let cell = tableView.cellForRow(at: indexPath) as! ParticipantCell
+            let jid = profileDetail.jid ?? ""
+            if GroupCreationData.participants.contains(where: {$0.jid == jid}) {
+                cell.checkBoxImageView?.image = UIImage(named: ImageConstant.ic_check_box)
+                GroupCreationData.participants = groupCreationViewModel.removeSelectedParticipantJid(selectedParticipants: GroupCreationData.participants, participant: profileDetail)
+            } else {
+                cell.checkBoxImageView?.image = UIImage(named: ImageConstant.ic_checked)
+                GroupCreationData.participants.append(profileDetail)
+            }
         }
     }
     
@@ -243,4 +260,43 @@ extension AddParticipantsViewController {
             }
         }
     }
+}
+
+extension AddParticipantsViewController : AdminBlockDelegate {
+    func didBlockOrUnblockContact(userJid: String, isBlocked: Bool) {
+        checkingUserForBlocking(jid: userJid, isBlocked: isBlocked)
+    }
+    
+    func didBlockOrUnblockSelf(userJid: String, isBlocked: Bool) {
+       
+    }
+    
+    func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
+        if isFromGroupInfo && groupID == groupJid && isBlocked {
+            self.navigationController?.navigationBar.isHidden = false
+            self.navigationController?.popToRootViewController(animated: true)
+            executeOnMainThread {
+                AppAlert.shared.showToast(message: groupNoLongerAvailable)
+            }
+        }
+    }
+    
+}
+// To handle user blocking by admin
+extension AddParticipantsViewController {
+    
+    func checkingUserForBlocking(jid : String, isBlocked : Bool) {
+        if isBlocked {
+            participants = removeAdminBlockedContact(profileList: participants, jid: jid, isBlockedByAdmin: isBlocked)
+            searchedParticipants = removeAdminBlockedContact(profileList: searchedParticipants, jid: jid, isBlockedByAdmin: isBlocked)
+            GroupCreationData.participants = removeAdminBlockedContact(profileList: GroupCreationData.participants, jid: jid, isBlockedByAdmin: isBlocked)
+        } else {
+            participants = addUnBlockedContact(profileList: participants, jid: jid, isBlockedByAdmin: isBlocked)
+            searchedParticipants = addUnBlockedContact(profileList: searchedParticipants, jid: jid, isBlockedByAdmin: isBlocked)
+        }
+        executeOnMainThread { [weak self] in
+            self?.participantTableView.reloadData()
+        }
+    }
+    
 }

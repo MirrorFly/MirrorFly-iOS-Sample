@@ -49,6 +49,10 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     @IBOutlet weak var replyView: UIView?
     @IBOutlet weak var bubbleImageView: UIImageView?
     
+    @IBOutlet weak var replyWithMediaCons: NSLayoutConstraint?
+
+    @IBOutlet weak var replyWithoutMediaCOns: NSLayoutConstraint?
+    
     // Forward Outlet
     @IBOutlet weak var forwardImageView: UIImageView?
     @IBOutlet weak var quickForwardView: UIView?
@@ -58,7 +62,13 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     
     @IBOutlet weak var emptyView: UIView!
     @IBOutlet weak var emptyViewHeight: NSLayoutConstraint!
-    @IBOutlet weak var captionView: UIView?
+
+    @IBOutlet weak var captionView: UIView!
+    
+    //Translated Outlet
+    @IBOutlet weak var translatedCaptionLabel: UILabel!
+
+    
     var videoGesture: UITapGestureRecognizer!
     var message : ChatMessage?
     var selectedForwardMessage: [SelectedForwardMessage]? = []
@@ -104,6 +114,10 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?) -> ChatViewVideoIncomingCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
+        replyTextLabel?.text = ""
+        replyUserLabel?.text = ""
+        translatedCaptionLabel?.text = ""
+        captionViewHolder?.spacing = FlyDefaults.isTranlationEnabled && message?.isMessageTranslated ?? false ? 10 : 0
         
         // Forward view elements and its data
         forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) ? false : true
@@ -125,9 +139,11 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded ||  message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
             quickForwardView?.isHidden = true
             quickForwardButton?.isHidden = true
+            isAllowSwipe = true
         } else {
             quickForwardView?.isHidden = false
             quickForwardButton?.isHidden = false
+            isAllowSwipe = true
         }
         
         // Reply view elements and its data
@@ -151,10 +167,14 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
                    }
+                   replyWithoutMediaCOns?.isActive = false
+                   replyWithMediaCons?.isActive = true
                case .audio:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
+                   replyWithoutMediaCOns?.isActive = false
+                   replyWithMediaCons?.isActive = true
                case .video:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
                    if let thumImage = replyMessage?.mediaChatMessage?.mediaThumbImage {
@@ -164,13 +184,18 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyWithoutMediaCOns?.isActive = false
+                   replyWithMediaCons?.isActive = true
                default:
                    messageIconView?.isHidden = true
+                   replyWithoutMediaCOns?.isActive = true
+                   replyWithMediaCons?.isActive = false
                }
                
            } else if replyMessage?.locationChatMessage != nil {
                mapView?.isHidden = false
                replyTextLabel?.text = "Location"
+               mapView?.isUserInteractionEnabled = false
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
                guard let latitude = replyMessage?.locationChatMessage?.latitude else {
                    return nil
@@ -188,13 +213,19 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                    var marker = GMSMarker(position: position)
                    marker.map = mapView
                }
+               replyWithoutMediaCOns?.isActive = false
+               replyWithMediaCons?.isActive = true
                messageIconView?.isHidden = false
            } else if replyMessage?.contactChatMessage != nil {
-               replyTextLabel?.text = "Contact"
+                   replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: replyMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                messageIconView?.isHidden = false
+               replyWithoutMediaCOns?.isActive = true
+               replyWithMediaCons?.isActive = false
            } else {
                mediaImageView?.isHidden = true
+               replyWithoutMediaCOns?.isActive = true
+               replyWithMediaCons?.isActive = false
            }
         if(replyMessage!.isMessageSentByMe) {
             replyUserLabel?.text = you.localized
@@ -254,6 +285,15 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         self.reecivedTime.text = receivedTime
         self.captionTime?.text = receivedTime
         
+        //MARK: - Populating the Incoming Cell with the translated message
+        
+        if (message!.isMessageTranslated && FlyDefaults.isTranlationEnabled) {
+            guard let chatMessage = message else {return self }
+            print(chatMessage.mediaChatMessage?.mediaCaptionText)
+            print(chatMessage.translatedMessageTextContent)
+            caption!.text = chatMessage.mediaChatMessage?.mediaCaptionText ?? ""
+            translatedCaptionLabel!.text = chatMessage.translatedMessageTextContent
+        }
         return self
     }
     

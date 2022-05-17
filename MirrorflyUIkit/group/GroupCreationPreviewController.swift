@@ -25,6 +25,14 @@ class GroupCreationPreviewController: UIViewController {
         configure()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        ChatManager.shared.adminBlockDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        ChatManager.shared.adminBlockDelegate = nil
+    }
+    
     func setUpUI() {
         setUpStatusBar()
         participantTableView.delegate = self
@@ -143,10 +151,10 @@ extension GroupCreationPreviewController : UITableViewDelegate, UITableViewDataS
         if searchedParticipants.count > 0 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell)!
             let profileDetail = searchedParticipants[indexPath.row]
-            cell.nameUILabel?.text = getUserName(name: profileDetail.name, nickName: profileDetail.nickName)
+            cell.nameUILabel?.text = getUserName(jid : profileDetail.jid,name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType)
             cell.statusUILabel?.text = profileDetail.status
             let color = ChatUtils.getColorForUser(userName: profileDetail.name)
-            cell.setImage(imageURL: profileDetail.image, name: profileDetail.name, color: color )
+            cell.setImage(imageURL: profileDetail.image, name: getUserName(jid: profileDetail.jid, name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType), color: color, chatType: profileDetail.profileChatType)
             cell.checkBoxImageView?.isHidden = true
             cell.removeButton?.isUserInteractionEnabled = true
             cell.removeButton?.isHidden = true
@@ -173,6 +181,33 @@ extension GroupCreationPreviewController : UITableViewDelegate, UITableViewDataS
         GroupCreationData.participants = searchedParticipants
         contactNameTextField.text = ""
         participantTableView.reloadData()
+    }
+    
+}
+
+extension GroupCreationPreviewController : AdminBlockDelegate {
+    func didBlockOrUnblockContact(userJid: String, isBlocked: Bool) {
+        checkingUserForBlocking(jid: userJid, isBlocked: isBlocked)
+    }
+    
+    func didBlockOrUnblockSelf(userJid: String, isBlocked: Bool) {
+        
+    }
+    
+    func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
+        
+    }
+}
+
+// To handle user blocking by admin
+extension GroupCreationPreviewController {
+    
+    func checkingUserForBlocking(jid : String, isBlocked : Bool) {
+        searchedParticipants = removeAdminBlockedContact(profileList: searchedParticipants, jid: jid, isBlockedByAdmin: isBlocked)
+        GroupCreationData.participants = removeAdminBlockedContact(profileList: GroupCreationData.participants, jid: jid, isBlockedByAdmin: isBlocked)
+        executeOnMainThread { [weak self] in
+            self?.participantTableView.reloadData()
+        }
     }
     
 }

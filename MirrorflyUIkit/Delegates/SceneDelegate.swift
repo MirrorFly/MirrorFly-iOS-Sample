@@ -8,6 +8,7 @@
 import UIKit
 import FlyCore
 import FlyCommon
+import FlyCall
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -19,12 +20,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        if Utility.getBoolFromPreference(key: isProfileSaved) {
-            var navigationController : UINavigationController
+        if FlyDefaults.isBlockedByAdmin {
+            if CallManager.isOngoingCall() {
+                CallManager.disconnectCall()
+            }
+            let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+            let initialViewController = storyboard.instantiateViewController(withIdentifier: "BlockedByAdminViewController") as! BlockedByAdminViewController
+            self.window?.rootViewController =  UINavigationController(rootViewController: initialViewController)
+            self.window?.makeKeyAndVisible()
+        } else if Utility.getBoolFromPreference(key: isProfileSaved) {
+            let navigationController : UINavigationController
             if IS_LIVE {
-                let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
-                navigationController =  UINavigationController(rootViewController: initialViewController)
                 if !Utility.getBoolFromPreference(key: isLoginContactSyncDone){
                     let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
                     let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
@@ -49,6 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = .light
             guard let _ = (scene as? UIWindowScene) else { return }
             
         } else {
@@ -77,8 +84,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneDidBecomeActive(_ scene: UIScene) {
         print("#scene sceneDidBecomeActive \(FlyDefaults.isLoggedIn)")
-        if (FlyDefaults.isLoggedIn) {
+        if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
+            NSLog("#sync request from  applicationDidBecomeActive")
+            if FlyDefaults.isContactSyncNeeded || ContactSyncManager.shared.isContactPermissionChanged() {
+                ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
+                    print("#sync #contactSync status => \(isSuccess)")
+                }
+            }
         }
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
@@ -102,7 +115,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneDidEnterBackground(_ scene: UIScene) {
         print("#scene sceneDidEnterBackground")
-        ChatManager.disconnectXMPPConnection()
+        if Utility.getBoolFromPreference(key: isLoggedIn){
+            ChatManager.disconnectXMPPConnection()
+        }
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.

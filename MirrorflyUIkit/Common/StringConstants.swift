@@ -22,10 +22,11 @@ let arabic = "Arabic"
 
 //MARK: - Profile
 //MARK: - Profile - Field Validation
-let userNameMaxLength = 30
+let userNameMaxLength = 100
 let userNameMinLength = 3
 let emptyUserName = "Please enter your username"
 let userNameValidation = "Maximum of 30 characters"
+let userMobileNumber = "Maximum of 17 characters"
 let userNameMinValidation = "Username is too short"
 let emptyEmail = "Email should not be empty"
 let emailValidation = "emailid is not valid"
@@ -33,6 +34,7 @@ let updateAndContinue = "Update & Continue"
 let save = "Save"
 let deleteText = "Delete"
 let emoji = "emoji"
+let userBlocked = "USER_#_BLOCKED"
 
 //MARK: - Profile Picture
 let takePhoto = "Take Photo"
@@ -108,6 +110,35 @@ let cancelUpperCase = "CANCEL"
 let deleteForMe = "DELETE FOR ME"
 let deleteAlert = "Are you sure you want to delete selected Message?"
 
+/// Group Info Alert
+
+
+let startChat = "Start Chat"
+let viewInfo = "View Info"
+let removeFromGroup = "Remove from Group"
+let makeAdminStatus = "Make admin successfully"
+let removeUserStatus = "Removed user successfully"
+let adminAccess = "Only admin can perform this action"
+let exitGroup = "Exit Group"
+let exitGroupMessage = "Are you sure you want to exit from group?"
+let exitButton = "Exit"
+let leftFromgroup = "You left from group"
+let addParticipants = "Add Participants"
+let leavegroup = "Leave Group"
+let deleteGroup = "Delete Group"
+let deleteGroupDescription = "Are you sure want to delete group?"
+let makeAdminText = "Make Admin"
+let makeAdminDescription = "Are you sure you want make admin?"
+let adminText = "Admin"
+let removeTitle = "Remove"
+let removeDescription = "Are you sure you want remove?"
+let deleteGroupMessage = "Group deleted successfully"
+
+/// Contact access permission
+let contactAccessTitle = "Allow Contact Access"
+let contactAccessMessage = "Allow Contact access in your device settings"
+
+
 let cancel = NSLocalizedString("cancel", comment: "")
 let warning = NSLocalizedString("warning", comment: "")
 let alert = NSLocalizedString("alert", comment: "")
@@ -173,6 +204,7 @@ let notAcknowledged = "Not Acknowledged"
 let typing = "typing..."
 let processingVideo = "Processsing Video..."
 let waitingForNetwork = "Waiting for Network"
+let adminEmail = "mirrorflyadminsupport@gmail.com"
 
 //MARK: Group
 let groupNameRequired = "Please provide group name"
@@ -183,6 +215,9 @@ let maximumGroupUsers = "250 contacts are allowed"
 let groupCreatedSuccess = "Group created successfully"
 let groupCreatedFailure = "Group creation failure"
 let isText = "is"
+let groupNoLongerAvailable = "This group is no longer available"
+let youCantSendMessagesToThiGroup = "You can't send messages to this group because you're no longer a participant."
+let thisUerIsNoLonger = "This user is no longer available"
 
 //MARK: QRCodeScanner
 let qrCodeErrorMessage = "Scanning Failed. Please try again"
@@ -245,4 +280,10 @@ enum ImagePickingOptions : String, CaseIterable {
     case chooseFromGallery = "Choose from Gallery"
     case takePhoto = "Take Photo"
     case removePhoto = "Remove Photo"
+}
+
+public struct TermsAndConditionsUrl {
+    public static let aboutUs = "https://www.contus.com/overview.php"
+    public static let termsAndConditions = "https://www.mirrorfly.com/terms-and-conditions.php"
+    public static let privacyPolicy = "https://www.mirrorfly.com/privacy-policy.php"
 }

@@ -59,11 +59,19 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     @IBOutlet weak var replyTextWithImageTrailingCons: NSLayoutConstraint?
     @IBOutlet weak var replyTextLabelTrailingCons: NSLayoutConstraint?
     @IBOutlet weak var replyViewHeightCons: NSLayoutConstraint?
+    @IBOutlet weak var replyVIewWithMediaCons: NSLayoutConstraint?
+    @IBOutlet weak var replyViewWithoutMediaCons: NSLayoutConstraint?
     
     //MARK -  Incoming cell
     @IBOutlet weak var seperatorLine: UIView?
     @IBOutlet weak var senderNameLabel: UILabel?
     @IBOutlet weak var replyTitleLabel: UILabel?
+    @IBOutlet weak var translatedTextLabel: UILabel?
+    @IBOutlet weak var stackViewTranslate: UIStackView?
+    //@IBOutlet weak var stackViewTimeStamp: UIStackView?
+    @IBOutlet weak var stackViewTimeStampTopCons: NSLayoutConstraint?
+    @IBOutlet weak var translatedView: UIView?
+    @IBOutlet weak var stackViewTranslateTrailingCons: NSLayoutConstraint?
     
     //MARK: Forward
     @IBOutlet weak var forwardImageView: UIImageView?
@@ -76,12 +84,11 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     var selectedForwardMessage: [SelectedForwardMessage]? = []
-    
+       
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
@@ -94,8 +101,15 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         currentIndexPath = nil
         currentIndexPath = indexPath
         replyViewHeightCons?.isActive = true
+        replyTextLabel?.text = ""
+        replyUserLabel?.text = ""
+        translatedTextLabel?.text = ""
+
         // Forward view elements and its data
         bubbleImageLeadingCons?.constant = (isShowForwardView == true) ? 10 : 0
+        stackViewTimeStampTopCons?.constant = FlyDefaults.isTranlationEnabled && message?.isMessageTranslated ?? false ? 5 : -2
+       // stackViewTimeStampTopCons?.constant = message!.isMessageTranslated ? 5 : 0
+        stackViewTranslateTrailingCons?.constant = FlyDefaults.isTranlationEnabled && message!.isMessageTranslated ? 0 : 20
         
         if selectedForwardMessage?.filter({$0.chatMessage.messageId == message?.messageId}).first?.isSelected == true {
             forwardImageView?.image = UIImage(named: "forwardSelected")
@@ -110,9 +124,11 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         if (message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
             quickForwardView?.isHidden = true
             quickForwardButton?.isHidden = true
+            isAllowSwipe = false
         } else {
-                quickForwardView?.isHidden = false
+            quickForwardView?.isHidden = false
             quickForwardButton?.isHidden = false
+            isAllowSwipe = true
         }
         
         if !(isShowForwardView ?? false) {
@@ -140,6 +156,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         // Reply view elements and its data
        if(message!.isReplyMessage) {
             replyView?.isHidden = false
+           
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
             let getReplymessage =  replyMessage?.messageTextContent
            replyViewHeightCons?.isActive = (getReplymessage?.count ?? 0 > 20) ? false : true
@@ -161,12 +178,16 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                        messageIconView?.isHidden = false
                        replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
                    }
+                   replyVIewWithMediaCons?.isActive = true
+                   replyViewWithoutMediaCons?.isActive = false
                case .audio:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
                    mediaImageView?.isHidden = true
                    messageIconView?.isHidden = false
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
+                   replyVIewWithMediaCons?.isActive = false
+                   replyViewWithoutMediaCons?.isActive = true
                case .video:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
                    if let thumImage = replyMessage?.mediaChatMessage?.mediaThumbImage {
@@ -177,6 +198,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                        messageIconView?.isHidden = false
                        replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyVIewWithMediaCons?.isActive = true
+                   replyViewWithoutMediaCons?.isActive = false
                default:
                    messageIconView?.isHidden = true
                    mediaImageViewWidthCons?.constant = 0
@@ -185,13 +208,15 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                    mediaImageView?.isHidden = true
                    replyTextWithImageTrailingCons?.isActive = false
                    replyTextLabelTrailingCons?.isActive = true
+                   replyVIewWithMediaCons?.isActive = false
+                   replyViewWithoutMediaCons?.isActive = true
                }
            } else if replyMessage?.locationChatMessage != nil {
                mediaImageView?.isHidden = true
                mediaLocationMapView?.isHidden = false
                replyTextLabel?.text = "Location"
                mediaLocationMapView?.camera = GMSCameraPosition.camera(withLatitude: replyMessage?.locationChatMessage?.latitude ?? 0.0, longitude: replyMessage?.locationChatMessage?.longitude ?? 0.0, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
-      
+               mediaLocationMapView?.isUserInteractionEnabled = false
                DispatchQueue.main.async
                { [self] in
                    // 2. Perform UI Operations.
@@ -199,6 +224,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                    let marker = GMSMarker(position: position)
                    marker.map = mediaLocationMapView
                }
+               replyVIewWithMediaCons?.isActive = true
+               replyViewWithoutMediaCons?.isActive = false
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
                messageIconView?.isHidden = false
                mediaImageViewWidthCons?.constant = 50
@@ -208,7 +235,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                replyTextLabelTrailingCons?.isActive = false
            } else if replyMessage?.contactChatMessage != nil {
                mediaImageView?.isHidden = true
-               replyTextLabel?.text = "Contact"
+               replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: replyMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                messageIconView?.isHidden = false
                mediaImageViewWidthCons?.constant = 0
@@ -216,6 +243,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                replyMessageIconHeightCons?.isActive = true
                replyTextWithImageTrailingCons?.isActive = false
                replyTextLabelTrailingCons?.isActive = true
+               replyVIewWithMediaCons?.isActive = false
+               replyViewWithoutMediaCons?.isActive = true
            } else {
                mediaImageView?.isHidden = true
                messageIconView?.isHidden = true
@@ -223,16 +252,26 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                replyMessageIconWidthCons?.constant = 0
                replyMessageIconHeightCons?.isActive = false
                replyTextWithImageTrailingCons?.isActive = false
-               replyTextLabelTrailingCons?.isActive = true
+               replyTextLabelTrailingCons?.isActive = true              
+               replyVIewWithMediaCons?.isActive = false
+               replyViewWithoutMediaCons?.isActive = true
+
+               
            }
         if(replyMessage?.isMessageSentByMe ?? false) {
             replyUserLabel?.text = you.localized
         }
         else {
-            replyUserLabel?.text = replyMessage?.senderUserName
+            let name =   getUserName(jid: replyMessage?.senderUserJid ?? "", name: replyMessage?.senderUserName ?? "", nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
+            replyUserLabel?.text = name
         }
     }
         else {
+            mediaImageViewWidthCons?.constant = 0
+            replyMessageIconWidthCons?.constant = 0
+            replyMessageIconHeightCons?.isActive = false
+            replyTextWithImageTrailingCons?.isActive = false
+            replyTextLabelTrailingCons?.isActive = true
             replyView?.isHidden = true
         }
         
@@ -310,6 +349,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         case .text:
             if let label = messageLabel {
             messageLabel?.attributedText = processTextMessage(message: message?.messageTextContent ?? "", uiLabel: label)
+                print("message label width = \(messageLabel?.frame.size.width)")
             }
         case .location:
             
@@ -340,6 +380,13 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             
         }
         
+        //MARK: - Populating the Incoming Cell with the translated message
+        
+        if (message!.isMessageTranslated && FlyDefaults.isTranlationEnabled) {
+            guard let chatMessage = message,let messageLabeltemp = messageLabel, let translatedTextLabeltemp = translatedTextLabel else {return self }
+            messageLabel?.attributedText = processTextMessage(message: chatMessage.messageTextContent , uiLabel: messageLabeltemp)
+            translatedTextLabel?.attributedText = processTextMessage(message: chatMessage.translatedMessageTextContent , uiLabel: translatedTextLabeltemp)
+        }
         return self
     }
     
@@ -388,7 +435,6 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     
     func processTextMessage(message : String, uiLabel : UILabel) -> NSMutableAttributedString? {
         var attributedString : NSMutableAttributedString?
-        
         if !message.isEmpty {
             attributedString = NSMutableAttributedString(string: message)
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapTextLabel(sender:)))
@@ -410,27 +456,11 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                      let urlRange = (message as NSString).range(of: text )
                      attributedString?.addAttribute(NSAttributedString.Key.underlineStyle,value: NSUnderlineStyle.single.rawValue, range: urlRange)
                      uiLabel.addGestureRecognizer(gestureRecognizer)
-                 } 
+                 }
                  
                  print("processTextMessage After else \(tempText)")
 
             }
-            
-//            for tempText in textArray {
-//                let text = String(tempText)
-//                if text.isNumber && text.count >= 6 && text.count <= 13 {
-//                    let numberRange = (message as NSString).range(of: text)
-//                    attributedString?.addAttribute(NSAttributedString.Key.underlineStyle,value: NSUnderlineStyle.single.rawValue, range: numberRange)
-//                    let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapTextLabel(sender:)))
-//                    uiLabel.addGestureRecognizer(gestureRecognizer)
-//                } else if text.verifyisUrl(urlString: text) {
-//                    if text.isURL {
-//                    let urlRange = (message as NSString).range(of: text)
-//                    attributedString?.addAttribute(NSAttributedString.Key.underlineStyle,value: NSUnderlineStyle.single.rawValue, range: urlRange)
-//                    uiLabel.addGestureRecognizer(gestureRecognizer)
-//                    }
-//                }
-//            }
         } else {
             attributedString = NSMutableAttributedString(string: message)
         }
@@ -469,3 +499,4 @@ extension UITapGestureRecognizer {
             return NSLocationInRange(indexOfCharacter, targetRange)
     }
 }
+

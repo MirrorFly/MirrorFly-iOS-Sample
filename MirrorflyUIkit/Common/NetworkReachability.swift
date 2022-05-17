@@ -73,11 +73,15 @@ public final class NetworkReachability {
         monitor?.start(queue: queue)
         
         monitor?.pathUpdateHandler = { _ in
-            self.netStatusChangeHandler?()
+            executeOnMainThread {
+                self.netStatusChangeHandler?()
+            }
         }
         
         isMonitoring = true
-        didStartMonitoringHandler?()
+        executeOnMainThread {
+            self.didStartMonitoringHandler?()
+        }
     }
     
     
@@ -86,7 +90,9 @@ public final class NetworkReachability {
         monitor.cancel()
         self.monitor = nil
         isMonitoring = false
-        didStopMonitoringHandler?()
+        executeOnMainThread {
+            self.didStopMonitoringHandler?()
+        }
     }
     
 }

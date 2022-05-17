@@ -83,4 +83,26 @@ class AppAlert: NSObject {
             view.present(alert, animated: true, completion: nil)
         }
     }
+    
+    /// Contact access permission if user disabeld in device Settings
+    
+    func contactAccess(view: UIViewController, title: String, message: String, settingstitle: String, cancelTitle: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+        
+        alert.addAction(UIAlertAction(title: settingstitle, style: UIAlertAction.Style.default, handler: { action in
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                })
+            }
+        }))
+        
+        alert.addAction(UIAlertAction(title: cancelTitle, style: UIAlertAction.Style.default, handler: nil))
+        
+        DispatchQueue.main.async {
+            view.present(alert, animated: true, completion: nil)
+        }
+    }
 }

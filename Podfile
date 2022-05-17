@@ -27,7 +27,7 @@ def uikit_pods
  # pod 'libPhoneNumber-iOS', '~> 0.8'
   # Pods for FlyCall
   pod 'SocketRocket'
-  pod 'Socket.IO-Client-Swift'#, '~> 15.2.0' # To communicte Socket I/O server
+  pod 'Socket.IO-Client-Swift', '~> 15.2.0' # To communicte Socket I/O server
   pod 'GoogleWebRTC' # WebRTC for Calls
   pod 'Floaty', '~> 4.2.0'
   pod "PulsingHalo"
@@ -46,11 +46,9 @@ def notification_pods
   pod 'Alamofire' #, '~> 5.3'
   # Pods for FlyCall
   pod 'SocketRocket'
-  pod 'Socket.IO-Client-Swift' #, '~> 15.2.0' # To communicte Socket I/O server
+  pod 'Socket.IO-Client-Swift' , '~> 15.2.0' # To communicte Socket I/O server
   pod 'GoogleWebRTC' # WebRTC for Calls
-  pod 'XMPPFramework/Swift'
   pod 'RealmSwift', '10.20.1'
-
 end
 
 target 'UiKitQa' do

@@ -39,7 +39,6 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
         super.viewDidLoad()
         bottomView.addTopShadow(shadowColor: UIColor.lightGray)
         handleBackgroundAndForground()
-        googleMapView.addBottomShawdow()
         sendButton.layer.shadowColor = Color.senderBubbleColor?.cgColor
         sendButton.layer.shadowOffset = CGSize(width: 0, height: 15.0)
         sendButton.layer.shadowOpacity = 25.0
@@ -47,8 +46,8 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         setUpStatusBar()
-        setUpNavigationBar()
         initializeLocationManager()
         hideSendButton(hide: false)
         setForView()
@@ -83,21 +82,6 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
              default:
                 locationManager.stopUpdatingLocation()
         }
-    }
-    
-    func setLocation() {
-        
-    }
-    
-    func setUpNavigationBar() {
-         if let navBar =  navigationController?.navigationBar {
-              navBar.addSubview(navigationView)
-              navigationView.translatesAutoresizingMaskIntoConstraints = false
-              navigationView.leadingAnchor.constraint(equalTo: navBar.leadingAnchor, constant: 0).isActive = true
-              navigationView.trailingAnchor.constraint(equalTo: navBar.trailingAnchor, constant: 0).isActive = true
-              navigationView.topAnchor.constraint(equalTo: navBar.topAnchor, constant: 0).isActive = true
-              navigationView.heightAnchor.constraint(equalToConstant: CGFloat(chatHeader)).isActive = true
-          }
     }
     
     func initializeLocationManager() {

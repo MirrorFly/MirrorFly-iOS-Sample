@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>CFBundleExecutable</key>
+    <string>Runner</string>
 	<key>BaseURL</key>
 	<string>$(BaseURL)</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -48,15 +50,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This lets you take photos and videos right from within Mirrorfly</string>
+	<string>MirrorFly uses your camera to take photos and for video calls.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>MirrorFly wants to access your contact</string>
+	<string>MirrorFly uses your contacts to find users you know. we do not store your contacts on the server.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Application needs your loaction</string>
+	<string>MirrorFly needs access to your location in order to share your current loction.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Application needs your loaction</string>
+	<string>MirrorFly needs access to your location in order to share your current loction.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Application needs your loaction</string>
+	<string>MirrorFly needs access to your location in order to share your current loction.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Mirrorfly needs microphone access for uploading audios and videos</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -91,6 +93,7 @@
 		<string>audio</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
+		<string>voip</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -115,5 +118,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>

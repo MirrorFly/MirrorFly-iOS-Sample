@@ -33,10 +33,10 @@ class CustomPhotoAlbum {
 
         PHPhotoLibrary.shared().performChanges({
             PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: currentFolder ?? "")
-        }) { [weak self] success, _ in
+        }) { success, _ in
             if success {
-                self?.assetCollection = self?.fetchAssetCollectionForAlbum(currentFolderName: currentFolder)
-                self?.saveImage(image: image, currentFolder: currentFolder, assetsCollection: self?.assetCollection)
+                self.assetCollection = self.fetchAssetCollectionForAlbum(currentFolderName: currentFolder)
+                self.saveImage(image: image, currentFolder: currentFolder, assetsCollection: self.assetCollection)
             }
         }
         return PHAssetCollection()
@@ -47,11 +47,11 @@ class CustomPhotoAlbum {
             return   // If there was an error upstream, skip the save.
         }
         assetCollection = assetsCollection
-        PHPhotoLibrary.shared().performChanges({ [weak self] in
+        PHPhotoLibrary.shared().performChanges({
           
             let assetChangeRequest = PHAssetChangeRequest.creationRequestForAsset(from: image ?? UIImage())
             let assetPlaceholder = assetChangeRequest.placeholderForCreatedAsset
-            if let assetCollection = self?.assetCollection {
+            if let assetCollection = self.assetCollection {
                 let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection)
                 albumChangeRequest?.addAssets([assetPlaceholder] as NSFastEnumeration)
            }

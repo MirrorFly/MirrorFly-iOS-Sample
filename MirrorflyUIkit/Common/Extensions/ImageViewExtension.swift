@@ -56,4 +56,17 @@ extension UIImage {
     func jpeg(_ jpegQuality: JPEGQuality) -> Data? {
         return jpegData(compressionQuality: jpegQuality.rawValue)
     }
+    
+    func compressImage(image: UIImage) -> Data? {
+
+            let oldImage = image
+        var imageData =  Data(oldImage.pngData()!)
+            print("***** Uncompressed Size \(imageData.description) **** ")
+
+       imageData = oldImage.jpegData(compressionQuality: 0.025)!
+            print("***** Compressed Size \(imageData.description) **** ")
+
+        _ = UIImage(data: imageData)
+        return imageData
+        }
 }

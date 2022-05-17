@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+import FlyCommon
+import FlyCore
 
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
@@ -52,5 +54,71 @@ extension UIViewController {
     
     @objc func willCometoForeground() {
         print("UIViewController appComestoForeground")
+    }
+    
+    func exitApp() {
+        executeOnMainThread {
+            exit(0)
+        }
+    }
+    
+    func removeAdminBlockedContact(profileList : [ProfileDetails], jid : String, isBlockedByAdmin : Bool) -> [ProfileDetails]{
+        var tempProfileList = profileList
+        if tempProfileList.isEmpty {
+            return tempProfileList
+        }
+        
+        tempProfileList.filter({$0.jid == jid}).first?.isBlockedByAdmin = isBlockedByAdmin
+        tempProfileList = tempProfileList.filter({!$0.isBlockedByAdmin})
+        
+        return tempProfileList
+    }
+    
+    func addUnBlockedContact(profileList:  [ProfileDetails], jid: String, isBlockedByAdmin : Bool) -> [ProfileDetails]{
+        var tempProfileList = profileList
+        if tempProfileList.isEmpty {
+            return tempProfileList
+        }
+        
+        if let _ = tempProfileList.filter({$0.jid == jid}).first {
+            return tempProfileList
+        }
+        
+        if let profile = ChatManager.profileDetaisFor(jid: jid) {
+            tempProfileList.append(profile)
+        }
+        
+        tempProfileList = tempProfileList.sorted { getUserName(jid: $0.jid, name: $0.name, nickName: $0.nickName, contactType: $0.contactType).capitalized < getUserName(jid: $1.jid, name: $1.name, nickName: $1.nickName, contactType: $1.contactType).capitalized }
+        
+        return tempProfileList
+    }
+    
+    func checkAndAddRecentChat(recentChatList : [RecentChat], jid : String, isBlockedByAdmin : Bool) -> [RecentChat] {
+        var tempRecent = recentChatList
+        if tempRecent.isEmpty {
+            return tempRecent
+        }
+        
+        if let _ = tempRecent.filter({$0.jid == jid}).first {
+            return tempRecent
+        }
+        
+        if let recent = ChatManager.getRechtChat(jid: jid) {
+            tempRecent.append(recent)
+        }
+        
+        return tempRecent
+    }
+    
+    func removeAdminBlockedRecentChat(recentChatList : [RecentChat], jid : String, isBlockedByAdmin : Bool) -> [RecentChat] {
+        var tempRecent = recentChatList
+        if tempRecent.isEmpty {
+            return tempRecent
+        }
+        
+        tempRecent.filter({$0.jid == jid}).first?.isBlockedByAdmin = isBlockedByAdmin
+        tempRecent = tempRecent.filter({!$0.isBlockedByAdmin})
+        
+        return tempRecent
     }
 }

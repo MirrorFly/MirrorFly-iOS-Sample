@@ -10,7 +10,7 @@ import UIKit
 extension UITableView {
     func scrollToBottomRow() {
         DispatchQueue.main.async { [weak self] in
-        guard let this = self else { return }
+            guard let this = self else { return }
             guard this.numberOfSections > 0 else { return }
             
             // Make an attempt to use the bottom-most section with at least one row
@@ -61,7 +61,7 @@ extension UITableView {
     }
     
     func restore() {
-         backgroundView = nil
+        backgroundView = nil
     }
 }
 
@@ -102,5 +102,18 @@ extension Dictionary {
 extension UITableView {
     func indexPath(for view: UIView) -> IndexPath? {
         self.indexPathForRow(at: view.convert(.zero, to: self))
+    }
+}
+
+extension UITableView {
+    func reloadDataWithoutScroll() {
+        DispatchQueue.main.async {
+            let lastScrollOffset = self.contentOffset
+            self.beginUpdates()
+            self.reloadData()
+            self.endUpdates()
+            self.layer.removeAllAnimations()
+            self.setContentOffset(lastScrollOffset, animated: false)
+        }
     }
 }

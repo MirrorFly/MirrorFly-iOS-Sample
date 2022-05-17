@@ -34,6 +34,9 @@ class GroupCallViewController: UIViewController {
     @IBOutlet weak var imgFour: UIImageView!
     @IBOutlet weak var plusCountLbl: UILabel!
     var contactJidArr = NSMutableArray()
+    var isGroup = false
+    @IBOutlet weak var imgeOneHeight: NSLayoutConstraint!
+    @IBOutlet weak var imgOneWidth: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         print(callLog)
@@ -61,7 +64,21 @@ class GroupCallViewController: UIViewController {
         imgFour.layer.cornerRadius = imgFour.frame.size.height / 2
         imgFour.layer.masksToBounds = true
         
-        if contactJidArr.count == 2{
+        
+        if isGroup{
+            imgOneWidth.constant = 60
+            imgeOneHeight.constant = 60
+            imgOne.layer.cornerRadius = 30
+            imgOne.layer.masksToBounds = true
+            imgTwo.isHidden = true
+            imgThree.isHidden = true
+            imgFour.isHidden = true
+            plusCountLbl.isHidden = true
+            if let contact = rosterManager.getContact(jid: callLog.groupId!){
+                imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+            }
+            
+        }else if contactJidArr.count == 2{
             imgTwo.isHidden = true
             imgOneLeading.constant = 10
             imgThree.isHidden = true
@@ -70,10 +87,10 @@ class GroupCallViewController: UIViewController {
             for i in 0...contactJidArr.count - 1{
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                     if i == 1{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                 }
             }
@@ -82,20 +99,13 @@ class GroupCallViewController: UIViewController {
             for i in 0...contactJidArr.count - 1{
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
-                        
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
+                        imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                     if i == 1{
-                        
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
+                        imgThree.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
-                    
                     if i == 2{
-                        
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                 }
             }
@@ -109,23 +119,16 @@ class GroupCallViewController: UIViewController {
             for i in 0...contactJidArr.count - 1{
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
-                        
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
+                        imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                     if i == 1{
-                        
-                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
+                        imgTwo.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
-                    
                     if i == 2{
-                        
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
+                        imgThree.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                     if i == 3{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                 }
             }
@@ -144,17 +147,16 @@ class GroupCallViewController: UIViewController {
             for i in 0...contactJidArr.count - 1{
                 if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                     if i == 0{
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                     if i == 1{
-                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgTwo.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
-                    
                     if i == 2{
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgThree.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                     if i == 3{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
                 }
             }
@@ -244,10 +246,8 @@ extension GroupCallViewController : UITableViewDataSource, UITableViewDelegate {
         let contact = callUserProfiles[indexPath.row]
         memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
         memberCell?.userImageView.layer.masksToBounds = true
-        
-        Utility.download(token: contact.image, profileImage: (memberCell?.userImageView)!, uniqueId: contact.jid,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-        
-        memberCell?.contactNamelabel.text = getUserName(name: contact.name, nickName: contact.nickName)
+        memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+        memberCell?.contactNamelabel.text = getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
         return memberCell!
     }
     

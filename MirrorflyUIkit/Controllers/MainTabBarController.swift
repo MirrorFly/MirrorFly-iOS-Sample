@@ -20,11 +20,6 @@ class MainTabBarController: UITabBarController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if FlyDefaults.isContactSyncNeeded || ContactSyncManager.shared.isContactPermissionChanged() {
-            ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
-                print("#contactSync status => \(isSuccess)")
-            }
-        }
         self.delegate = self
         // Do any additional setup after loading the view.
     }
@@ -45,6 +40,7 @@ class MainTabBarController: UITabBarController{
     
     // MARK: - Functions
     func setupUI() {
+        self.chatTabBars?.backgroundColor = Color.navigationColor
         navigationController?.setNavigationBarHidden(true, animated: true)
         guard let items = tabBar.items else { return }
         items[0].title = chat
@@ -55,22 +51,8 @@ class MainTabBarController: UITabBarController{
         //Mark:- You can also set any custom fonts in the code
         let fontAttributes = [NSAttributedString.Key.font: UIFont.font12px_appLight()]
         UITabBarItem.appearance().setTitleTextAttributes(fontAttributes, for: .normal)
+        self.chatTabBars?.backgroundColor = Color.navigationColor
     }
-    
-//    func getGroups() {
-//        if !MainTabBarController.isConnected {
-//            GroupManager.shared.getGroups(fetchFromServer: true) { isSuccess, flyError, flyData in
-//                var data  = flyData
-//                if isSuccess {
-//                    print("MainTabBarController \(data.getMessage() as! String )")
-//                    MainTabBarController.isConnected = true
-//                } else{
-//                    print("MainTabBarController \(data.getMessage() as! String )")
-//                    MainTabBarController.isConnected = false
-//                }
-//           }
-//        }
-//    }
     
     func saveMyJidAsContacts() {
         let profileData = ProfileDetails(jid: FlyDefaults.myJid)

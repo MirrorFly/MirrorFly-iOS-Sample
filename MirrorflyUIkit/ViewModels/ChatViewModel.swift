@@ -42,6 +42,14 @@ RecentChatViewModel  {
             completionHandler(false)
         }
     }
+    
+    func getGroupDetails(groupJid : String) -> ProfileDetails? {
+        return GroupManager.shared.getAGroupFromLocal(groupJid: groupJid)
+    }
+    
+    func getRecentChat(jid : String)-> RecentChat?{
+        return ChatManager.getRechtChat(jid: jid)
+    }
 }
 
 struct SelectedForwardMessage {

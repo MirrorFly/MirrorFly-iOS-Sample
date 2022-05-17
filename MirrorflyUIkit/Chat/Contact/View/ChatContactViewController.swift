@@ -101,7 +101,9 @@ extension ChatContactViewController : UITableViewDataSource ,UITableViewDelegate
         }else{
             cell.selectButton.setImage(UIImage.init(named: ImageConstant.ic_check_box), for: .normal)
         }
-        cell.contactLabel.text = getContactDetails?[indexPath.section].contactLabel[indexPath.row]
+        let contactlabel = getContactDetails?[indexPath.section].contactLabel[indexPath.row]
+        cell.contactLabel.text = contactlabel
+        cell.contactLabel.isHidden = (contactlabel?.isNotEmpty ?? false) ? false : true
         cell.selectButton.addTarget(self, action: #selector(onContactSelectButton(_:)), for: .touchUpInside)
         cell.selectButton.tag = indexPath.row
         return cell

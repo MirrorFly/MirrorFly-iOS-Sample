@@ -11,6 +11,7 @@ import UIKit
 class BaseTableViewCell: UITableViewCell {
     var delegate: TableViewCellDelegate?
     var currentIndexPath: IndexPath?
+    var isAllowSwipe: Bool? = false
     var swiperight : UISwipeGestureRecognizer?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,14 +35,16 @@ class BaseTableViewCell: UITableViewCell {
     }
 
     @objc func handleRightSwipe(_ recognizer: UISwipeGestureRecognizer) {
-        DispatchQueue.main.async { [weak self] in
-            UIView.animate(withDuration: 0.5) {
-                self?.contentView.transform = CGAffineTransform(translationX: -(200) , y: 0)
+        if isAllowSwipe == true {
+            DispatchQueue.main.async { [weak self] in
+                UIView.animate(withDuration: 0.5) {
+                    self?.contentView.transform = CGAffineTransform(translationX: -(200) , y: 0)
+                }
             }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { [weak self] in
-            self?.delegate?.openBottomView(indexPath: self?.currentIndexPath ?? IndexPath())
-            self?.contentView.transform = CGAffineTransform(translationX: 0 , y: 0)
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) { [weak self] in
+                self?.delegate?.openBottomView(indexPath: self?.currentIndexPath ?? IndexPath())
+                self?.contentView.transform = CGAffineTransform(translationX: 0 , y: 0)
+            }
         }
     }
 }

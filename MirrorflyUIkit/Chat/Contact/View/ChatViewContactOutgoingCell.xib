@@ -20,7 +20,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatViewContactOutgoingCell" rowHeight="142" id="7dj-Z9-ZBR" customClass="ChatViewParentMessageCell" customModule="MirrorflyUIkit" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatViewContactOutgoingCell" rowHeight="142" id="7dj-Z9-ZBR" customClass="ChatViewParentMessageCell" customModule="Mirrorfly" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="351" height="139"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7dj-Z9-ZBR" id="AJ3-Ra-ujf">
@@ -92,7 +92,7 @@
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+918015201072" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dDA-d1-qNj">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dDA-d1-qNj">
                                                 <rect key="frame" x="10" y="8" width="169.5" height="17"/>
                                                 <fontDescription key="fontDescription" name="SFUIDisplay-Semibold" family="SF UI Display" pointSize="14"/>
                                                 <nil key="highlightedColor"/>
@@ -121,7 +121,7 @@
                                                             <constraint firstAttribute="trailing" secondItem="byW-Dz-KyX" secondAttribute="trailing" id="vxq-gf-wfU"/>
                                                         </constraints>
                                                     </view>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9047302745" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfZ-p1-46t">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfZ-p1-46t">
                                                         <rect key="frame" x="15" y="0.0" width="160.5" height="18"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="13"/>
                                                         <color key="textColor" red="0.4549019608" green="0.4549019608" blue="0.4549019608" alpha="1" colorSpace="calibratedRGB"/>
@@ -154,6 +154,7 @@
                                             <constraint firstItem="M7N-3p-mwn" firstAttribute="leading" secondItem="njF-EK-lCA" secondAttribute="leading" id="Mn3-Y9-4dq"/>
                                             <constraint firstItem="M7N-3p-mwn" firstAttribute="bottom" secondItem="njF-EK-lCA" secondAttribute="bottom" id="OaZ-xw-HKV"/>
                                             <constraint firstAttribute="bottom" secondItem="njF-EK-lCA" secondAttribute="bottom" id="Qev-ms-ywP"/>
+                                            <constraint firstAttribute="trailing" secondItem="8TG-fU-Pkx" secondAttribute="trailing" constant="4" id="ROa-iD-CxR"/>
                                             <constraint firstItem="njF-EK-lCA" firstAttribute="top" secondItem="VXK-N2-hOa" secondAttribute="top" id="aYP-nH-gWD"/>
                                             <constraint firstItem="FRi-An-Bfa" firstAttribute="top" secondItem="VXK-N2-hOa" secondAttribute="top" id="crg-oU-KA3"/>
                                             <constraint firstAttribute="trailing" secondItem="njF-EK-lCA" secondAttribute="trailing" id="eMb-Ls-0GP"/>
@@ -161,6 +162,7 @@
                                             <constraint firstItem="dDA-d1-qNj" firstAttribute="top" secondItem="VXK-N2-hOa" secondAttribute="top" constant="8" id="fxh-Sp-Vt8"/>
                                             <constraint firstItem="njF-EK-lCA" firstAttribute="leading" secondItem="8TG-fU-Pkx" secondAttribute="trailing" constant="4" id="lDD-EA-caz"/>
                                             <constraint firstItem="dDA-d1-qNj" firstAttribute="leading" secondItem="VXK-N2-hOa" secondAttribute="leading" constant="10" id="maa-JV-M7o"/>
+                                            <constraint firstAttribute="trailing" secondItem="8TG-fU-Pkx" secondAttribute="trailing" constant="4" id="miB-xS-cUf"/>
                                             <constraint firstItem="M7N-3p-mwn" firstAttribute="top" secondItem="njF-EK-lCA" secondAttribute="top" id="rbx-7E-0FH"/>
                                             <constraint firstAttribute="height" constant="50" id="xwp-1j-imh"/>
                                             <constraint firstAttribute="trailing" secondItem="FRi-An-Bfa" secondAttribute="trailing" id="yIe-12-7I8"/>
@@ -173,6 +175,7 @@
                                         </userDefinedRuntimeAttributes>
                                         <variation key="default">
                                             <mask key="constraints">
+                                                <exclude reference="miB-xS-cUf"/>
                                                 <exclude reference="Qev-ms-ywP"/>
                                             </mask>
                                         </variation>
@@ -187,14 +190,14 @@
                                                     <constraint firstAttribute="width" constant="30" id="vsw-Q1-a2E"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IRI-D9-uVR">
+                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IRI-D9-uVR">
                                                 <rect key="frame" x="48" y="22.5" width="181.5" height="25"/>
                                                 <accessibility key="accessibilityConfiguration">
                                                     <accessibilityTraits key="traits" none="YES"/>
                                                     <bool key="isElement" value="NO"/>
                                                 </accessibility>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="cZL-XF-zgN"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="180" id="cZL-XF-zgN"/>
                                                     <constraint firstAttribute="height" constant="25" id="k19-pW-XgB"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="SFUIDisplay-Semibold" family="SF UI Display" pointSize="14"/>
@@ -287,7 +290,6 @@
                     <constraint firstItem="fwc-JO-hh9" firstAttribute="leading" secondItem="Uqz-u3-I2o" secondAttribute="trailing" constant="23" id="8en-OH-c8b"/>
                     <constraint firstItem="lyN-BT-yAP" firstAttribute="top" secondItem="AJ3-Ra-ujf" secondAttribute="top" id="GrX-1i-bhU"/>
                     <constraint firstItem="lyN-BT-yAP" firstAttribute="leading" secondItem="AJ3-Ra-ujf" secondAttribute="leading" id="LJp-W7-hEt"/>
-                    <constraint firstItem="fwc-JO-hh9" firstAttribute="width" secondItem="AJ3-Ra-ujf" secondAttribute="width" multiplier="0.7" id="OvS-2L-EYk"/>
                     <constraint firstItem="kpK-eC-tiP" firstAttribute="centerY" secondItem="AJ3-Ra-ujf" secondAttribute="centerY" id="Rt4-h4-lgl"/>
                     <constraint firstAttribute="bottom" secondItem="fwc-JO-hh9" secondAttribute="bottom" constant="3" id="Sdo-5N-FcF"/>
                     <constraint firstAttribute="bottom" secondItem="lyN-BT-yAP" secondAttribute="bottom" id="W53-mJ-QqP"/>
@@ -319,7 +321,9 @@
                 <outlet property="quickForwardView" destination="Uqz-u3-I2o" id="0uV-8B-Hmg"/>
                 <outlet property="replyTextLabel" destination="yfZ-p1-46t" id="Qdo-UT-PuM"/>
                 <outlet property="replyUserLabel" destination="dDA-d1-qNj" id="1Oh-JA-o2z"/>
+                <outlet property="replyVIewWithMediaCons" destination="lDD-EA-caz" id="6Q9-iy-Rd8"/>
                 <outlet property="replyView" destination="VXK-N2-hOa" id="FUN-TR-Bv2"/>
+                <outlet property="replyViewWithoutMediaCons" destination="ROa-iD-CxR" id="qY2-5g-5C7"/>
                 <outlet property="textMessageTimeLabel" destination="K6y-Og-PJW" id="H4b-fL-gVm"/>
             </connections>
             <point key="canvasLocation" x="-99.275362318840592" y="9.7098214285714288"/>

@@ -26,6 +26,7 @@ class QRCodeScanner: UIViewController {
 
     var qrCodeScannerModel : QRCodeScannerViewModel?
     @IBOutlet weak var blackView: UIView!
+    @IBOutlet weak var linkLabel: UILabel!
     
     @IBOutlet weak var headerTitle: UILabel!
     @IBOutlet weak var addDeviceButton: UIButton!
@@ -71,7 +72,7 @@ class QRCodeScanner: UIViewController {
     }
     
     func checkForLogin() {
-        let webLogingsInfo = qrCodeScannerModel?.getWebLogins()
+        let webLogingsInfo = qrCodeScannerModel?.getRecentWebLogin()
         let isEmpty = webLogingsInfo?.isEmpty ?? false
         if isEmpty {
             showScannerView(show: true)
@@ -94,7 +95,6 @@ class QRCodeScanner: UIViewController {
         resetTable()
         if webLoginList.isEmpty {
             navigateBack()
-           // checkForLogin()
         }
     }
     
@@ -113,10 +113,6 @@ class QRCodeScanner: UIViewController {
     @IBAction func didTapBackButton(_ sender: Any) {
         navigateBack()
     }
-    
-//    private func resetScanner() {
-//        scannerView.isRunning ? scannerView.stopScanning() : scannerView.startScanning()
-//    }
     
     private func hanldeBlackView(showScanner : Bool){
         if showScanner {

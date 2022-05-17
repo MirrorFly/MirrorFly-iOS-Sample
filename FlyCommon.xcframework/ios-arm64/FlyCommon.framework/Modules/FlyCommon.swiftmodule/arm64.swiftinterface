@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
+// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
 // swift-module-flags: -target arm64-apple-ios12.1 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCommon
 import AVFoundation
 import CommonCrypto
@@ -36,6 +36,7 @@ import _Concurrency
   @objc public var isItSavedContact: Swift.Bool
   @objc public var isGroupInOfflineMode: Swift.Bool
   @objc public var isConversationUnRead: Swift.Bool
+  @objc public var isBlockedByAdmin: Swift.Bool
   @objc override dynamic public init()
   @objc deinit
 }
@@ -64,6 +65,7 @@ public enum OfflineActionType : Swift.String, Swift.CustomStringConvertible {
   case favouriteMessage
   case updateFavouriteMessage
   case clearAllFav
+  case contactPermissionRevoked
   public var description: Swift.String {
     get
   }
@@ -75,6 +77,7 @@ public enum OfflineActionType : Swift.String, Swift.CustomStringConvertible {
 }
 public func emptyString() -> Swift.String
 public func executeOnMainThread(codeBlock: @escaping () -> Swift.Void)
+public func encryptDecryptData(key: Swift.String, data: Swift.String, encrypt: Swift.Bool, iv: Swift.String = FlyDefaults.profileIV) -> Swift.String
 extension FlyCommon.MessageType {
   public func isMediaMessage() -> Swift.Bool
   public func isLocationMessage() -> Swift.Bool
@@ -118,8 +121,26 @@ public struct OfflineActionModel : Swift.Codable {
   @objc override dynamic public init()
   @objc deinit
 }
+public struct AdminBlock {
+  public init()
+  public var blockedStatus: Swift.String?
+  public var blockedJid: Swift.String?
+  public var chatType: Swift.String?
+  public init(blockedStatus: Swift.String, blockedJid: Swift.String, chatType: Swift.String)
+}
+public struct MessageReceipt {
+  public var messageId: Swift.String
+  public var time: Swift.Double
+  public var profileDetails: FlyCommon.ProfileDetails?
+  public init()
+}
 @_hasMissingDesignatedInitializers public class FlyDefaults {
   @FlyCommon.SDKDefaults public static var isLoggedIn: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isGroupsFetched: Swift.Bool {
     get
     set
     _modify
@@ -150,6 +171,11 @@ public struct OfflineActionModel : Swift.Codable {
     _modify
   }
   @FlyCommon.SDKDefaults public static var myImageUrl: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var myProfileImageUrl: Swift.String {
     get
     set
     _modify
@@ -224,6 +250,11 @@ public struct OfflineActionModel : Swift.Codable {
     set
     _modify
   }
+  @FlyCommon.SDKDefaults public static var isBlockedByAdmin: Swift.Bool {
+    get
+    set
+    _modify
+  }
   @FlyCommon.SDKDefaults public static var isProfileUpdated: Swift.Bool {
     get
     set
@@ -249,7 +280,7 @@ public struct OfflineActionModel : Swift.Codable {
     set
     _modify
   }
-  @FlyCommon.SDKDefaults public static var mobileNumberLogin: Swift.Bool {
+  @FlyCommon.SDKDefaults public static var enableContactSync: Swift.Bool {
     get
     set
     _modify
@@ -290,6 +321,66 @@ public struct OfflineActionModel : Swift.Codable {
     _modify
   }
   @FlyCommon.SDKDefaults public static var isTrialLicense: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isContactPermissionDenied: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isContactPermissionChanged: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isContactPermissionSkipped: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isFriendsListSyncPending: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var signalServerUrl: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var offlineParam: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var lastMessageTime: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isTranlationEnabled: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var targetLanguageCode: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var selectedLanguage: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var profileIV: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var isMobileNumberLogin: Swift.Bool {
     get
     set
     _modify
@@ -423,6 +514,8 @@ public struct CountryInfo : Swift.Codable {
   @objc public var nick: Swift.String!
   @objc public var itemId: Swift.String!
   @objc public var affiliation: Swift.String?
+  @objc public var isSyncNeeded: Swift.Bool
+  @objc public var isBlockedByAdmin: Swift.Bool
   public var contactType: FlyCommon.ContactType
   @objc public init(jid: Swift.String)
   @objc deinit
@@ -431,6 +524,8 @@ public struct FlyUtils {
   public static let replyMessageId: Swift.String
   public static let downloadedVideoAlbum: Swift.String
   public static let uploadedVideoAlbum: Swift.String
+  public static let downloadImage: Swift.String
+  public static let uploadImage: Swift.String
   public static func getJid(from uniqueId: Swift.String) throws -> Swift.String
   public static func getIdFromJid(jid: Swift.String) throws -> Swift.String
   public static func getMyJid() throws -> Swift.String
@@ -481,7 +576,10 @@ public struct FlyUtils {
   public static func profileDocumentDirectory() -> Foundation.URL
   public static func convertStringToDate(dateString: Swift.String, dateFormat: Swift.String) -> Swift.Double
   public static func saveVideo(customFolder: Swift.String, videoFileUrl: Foundation.URL, completion: @escaping (Swift.Bool) -> Swift.Void)
+  public static func saveImage(customFolder: Swift.String, image: UIKit.UIImage, completion: @escaping (Swift.Bool) -> Swift.Void)
   public static func fetchAssetCollectionForAlbum(currentFolderName: Swift.String?) -> Photos.PHAssetCollection!
+  public static func generateThumbnail(path: Foundation.URL) -> UIKit.UIImage?
+  public static func convertImageToBase64(img: UIKit.UIImage) -> Swift.String
 }
 @_hasMissingDesignatedInitializers public class FlyDateFormates {
   public static let YYYY_MM_dd_HH_mm_ss: Swift.String
@@ -490,6 +588,9 @@ public struct FlyUtils {
 extension FlyCommon.FlyUtils {
   public static func getGroupContainerIDPath() -> Foundation.URL?
   public static func getDBFilePath() -> Foundation.URL?
+  public static func printTime()
+  public static func getUserName(jid: Swift.String, name: Swift.String, nickName: Swift.String, contactType: FlyCommon.ContactType) -> Swift.String
+  public static func getUserName(name: Swift.String, nickName: Swift.String) -> Swift.String
 }
 public enum ChatType : Swift.String, Swift.CustomStringConvertible {
   case singleChat
@@ -563,13 +664,12 @@ public protocol FlyCommonControllerDelegate : ObjectiveC.NSObjectProtocol {
 }
 @_hasMissingDesignatedInitializers final public class NetStatus {
   public static let shared: FlyCommon.NetStatus
+  public static let networkNotificationObserver: Swift.String
+  public static let isNetworkAvailable: Swift.String
   final public var didStartMonitoringHandler: (() -> Swift.Void)?
   final public var didStopMonitoringHandler: (() -> Swift.Void)?
   final public var netStatusChangeHandler: (() -> Swift.Void)?
   final public var isConnected: Swift.Bool {
-    get
-  }
-  final public var interfaceType: Network.NWInterface.InterfaceType? {
     get
   }
   @objc deinit
@@ -666,6 +766,7 @@ public struct FlyProfile {
   @objc public var mediaChatMessage: FlyCommon.MediaChatMessage?
   @objc public var replyParentChatMessage: FlyCommon.ReplyParentChatMessage?
   public var audioTrackTime: Swift.Float?
+  public var isRetryButtonDisabled: Swift.Bool?
   @objc override dynamic public init()
   @objc deinit
 }
@@ -928,6 +1029,9 @@ public struct Media : Swift.Codable {
 public struct FlyConstants {
   public static var suiteName: Swift.String
   public static var isTrialLicense: Swift.String
+  public static var isContactPermissionDenied: Swift.String
+  public static var isContactPermissionChanged: Swift.String
+  public static var isFriendsListSyncPending: Swift.String
   public static let message: Swift.String
   public static let messageID: Swift.String
   public static let data: Swift.String
@@ -969,6 +1073,7 @@ public struct FlyConstants {
   public static let deleteMultipleConversation: Swift.String
   public static let applicationJsonType: Swift.String
   public static let chat: Swift.String
+  public static let groupchat: Swift.String
   public static let contactSyncState: Swift.String
   public static let isContactSyncSuccess: Swift.String
   public static let kImageExtension: Swift.String
@@ -982,6 +1087,16 @@ public struct FlyConstants {
   public static let document: Swift.String
   public static let profileImage: Swift.String
   public static let oneMBInBytes: Swift.Int
+  public static let signalServer: Swift.String
+  public static let offlineParam: Swift.String
+  public static let lastMessageTime: Swift.String
+  public static let isTranlationEnabled: Swift.String
+  public static let targetLanguageCode: Swift.String
+  public static let selectedLanguage: Swift.String
+  public static let isBlockedByAdmin: Swift.String
+  public static let isContactPermissionSkipped: Swift.String
+  public static let profileIV: Swift.String
+  public static let isMobileNumberLogin: Swift.String
   public struct ErrorMessage {
     public static let internetNotAvailable: Swift.String
     public static let invalidJid: Swift.String
@@ -1014,6 +1129,8 @@ public struct FlyConstants {
     public static let leaveThenDelete: Swift.String
     public static let emptyFileUrl: Swift.String
     public static let invalidMessageId: Swift.String
+    public static let groupNoLongerAvailable: Swift.String
+    public static let thisUerIsNoLonger: Swift.String
   }
   public struct SuccessMessage {
     public static let profileFetch: Swift.String

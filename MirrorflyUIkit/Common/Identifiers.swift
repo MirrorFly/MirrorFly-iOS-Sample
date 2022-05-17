@@ -101,6 +101,11 @@ enum Identifiers {
     static let updateGroupInfoViewController = "UpdateGroupInfoViewController"
     static let groupInfoOptionsViewController = "GroupInfoOptionsViewController"
     static let groupInfoOptionsTableViewCell = "GroupInfoOptionsTableViewCell"
+    
+    //MARK: ChatSettings
+    static let ChatSettingsTableViewCell = "ChatSettingsTableViewCell"
+    static let LanguageSelectionTableViewCell = "LanguageSelectionTableViewCell"
+    static let LanguageSelectionViewController = "LanguageSelectionViewController"
 }
 
 //MARK: - Storyboards

@@ -25,6 +25,7 @@ class ChatTextView: UIView, UITextViewDelegate {
     @IBOutlet weak var mapView: GMSMapView?
     @IBOutlet weak var contactNameLabel: UILabel?
     @IBOutlet weak var cannotSendMessageView: UIView?
+    @IBOutlet weak var blockedMessageLabel: UILabel!
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -44,7 +45,7 @@ class ChatTextView: UIView, UITextViewDelegate {
     func setSenderReceiverMessage(message: ChatMessage) {
         mapView?.isHidden = true
         contactNameLabel?.isHidden = true
-        titleLabel?.text = message.isMessageSentByMe ? "You" : message.senderUserName
+        titleLabel?.text = message.isMessageSentByMe ? "You" : getUserName(jid: message.senderUserJid, name: message.senderUserName, nickName: message.senderNickName, contactType: message.isSavedContact ? .live : .unknown)
         messageTypeImage?.isHidden = message.messageType == .text ? true : false
         if message.messageType != .text {
         let thumbImage = message.mediaChatMessage?.mediaThumbImage ?? ""

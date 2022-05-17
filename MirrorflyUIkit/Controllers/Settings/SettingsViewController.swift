@@ -8,13 +8,35 @@
 import Foundation
 import UIKit
 import FlyCore
-import FlyDatabase
 import FlyCommon
 
 
 class SettingsViewController : UIViewController {
+    @IBOutlet weak var tblSettings : UITableView!
+    @IBOutlet weak var lblVersion: UILabel!
+    //@IBOutlet weak var lblLatestRelease: UILabel!
     
-    @IBAction func onLogout(_ sender: Any) {
+    //private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","Archived Chats","About and Help","App Lock","Connection Label", "Logout"]
+    
+
+    private var settingsArr = ["Chats","About and Help", "Contact Us" ,"Logout"]
+
+    override func viewDidLoad() {
+        let info = Bundle.main.infoDictionary
+        let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        let appBuild = info?[kCFBundleVersionKey as String] as? String ?? "Unknown"
+        
+        let appVersionString = "Version \(appVersion)(\(appBuild))"
+        self.lblVersion.text = appVersionString
+        //   self.lblLatestRelease.isHidden = true
+        self.tblSettings.register(UINib(nibName: "SettingsTableViewCell", bundle: nil), forCellReuseIdentifier: "SettingsTableViewCell")
+        self.tblSettings.delegate = self
+        self.tblSettings.dataSource = self
+    }
+    
+    
+    
+ func onLogout() {
         let appAlert = AppAlert.shared
         appAlert.showAlert(view: self, title: nil, message: "Are you sure you want to logout?", buttonOneTitle: "YES", buttonTwoTitle: "NO")
         AppAlert.shared.onAlertAction = { [weak self] (result) ->
@@ -23,13 +45,13 @@ class SettingsViewController : UIViewController {
                 self?.requestLogout()
             }
         }
-
+        
     }
     
     func requestLogout() {
         startLoading(withText: pleaseWait)
-       
-         ChatManager.logoutApi { [weak self] isSuccess, flyError, flyData in
+        
+        ChatManager.logoutApi { [weak self] isSuccess, flyError, flyData in
             
             if isSuccess {
                 self?.stopLoading()
@@ -59,5 +81,59 @@ class SettingsViewController : UIViewController {
             }
         }
     }
+    
+}
+
+
+extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell : SettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell", for: indexPath) as! SettingsTableViewCell
+        cell.lblTitle.text = self.settingsArr[indexPath.row]
+        cell.imgicon.image = UIImage(named: self.settingsArr[indexPath.row])
+        return cell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.settingsArr.count
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        switch self.settingsArr[indexPath.row] {
+            
+        case "Chats":
+            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ChatSettingsViewController") as? ChatSettingsViewController {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            break
+
+        case "Contact Us":
+            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactUsController") as? ContactUsController {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            break
+            
+        case "About and Help":
+            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutandHelpViewController") as? AboutandHelpViewController {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            
+            break
+
+        case "Logout":
+            self.onLogout()
+            break
+        default :
+            break
+        }
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
+    }
+    
     
 }

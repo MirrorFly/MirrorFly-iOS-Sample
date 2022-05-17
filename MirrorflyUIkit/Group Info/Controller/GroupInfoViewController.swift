@@ -9,6 +9,10 @@ import UIKit
 import Foundation
 import AVFoundation
 import FlyCommon
+import FlyCore
+import FlyCommon
+import FlyNetwork
+import FlyCall
 import SDWebImage
 import FlyCore
 import Toaster
@@ -17,6 +21,7 @@ import Photos
 import Toaster
 import Tatsi
 import QCropper
+import Contacts
 
 class GroupInfoViewController: UIViewController {
     
@@ -28,7 +33,7 @@ class GroupInfoViewController: UIViewController {
     
     var profileDetails : ProfileDetails?
     var groupID = ""
-    var updatedGroupName = ""
+    var currentGroupName = ""
     var groupMembers = [GroupParticipantDetail]()
     let contactInfoViewModel = ContactInfoViewModel()
     var getProfileDetails: ProfileDetails!
@@ -39,6 +44,8 @@ class GroupInfoViewController: UIViewController {
     var profileImage: UIImageView?
     var profileImageLocalPath = String()
     var lastSelectedCollection: PHAssetCollection?
+    var isAdminMember: Bool = false
+    var isExistMember: Bool = false
     
     var firstView: TatsiConfig.StartView {
         if let lastCollection = self.lastSelectedCollection {
@@ -48,14 +55,40 @@ class GroupInfoViewController: UIViewController {
         }
     }
     
+    var optionsController : GroupInfoOptionsViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setUpUI()
         setupConfiguration()
         getGroupMembers()
         getParticipants()
-        print(groupID, "groupID")
+        checkMemberExist()
+        isAdminMemberGroup()
+        refreshData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        refreshData()
+        getGroupMembers()
+        if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
+            navigateOnGroupBlock()
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        GroupManager.shared.groupDelegate = self
+        ContactManager.shared.profileDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        GroupManager.shared.groupDelegate = nil
+        ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.adminBlockDelegate = nil
     }
     
     private func setUpUI() {
@@ -77,7 +110,6 @@ class GroupInfoViewController: UIViewController {
     }
     
     private func setupConfiguration() {
-        ContactManager.shared.profileDelegate = self
         if groupID.isNotEmpty {
             profileDetails = groupInfoViewModel.getContactInfo(jid: groupID)
         }
@@ -120,17 +152,12 @@ class GroupInfoViewController: UIViewController {
     
     @objc
     func updateGroupProfileAction(sender: Any) {
+        if self.profileDetails?.image == "" {
+            isImagePicked = false
+        } else {
+            isImagePicked = true
+        }
         showActionSheet()
-    }
-    
-    @objc
-    func updateGroupNameAction(sender: Any) {
-        let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
-        let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.updateGroupInfoViewController) as! UpdateGroupInfoViewController
-        controller.groupName = getUserName(name: profileDetails?.name ?? "",
-                                           nickName: profileDetails?.nickName ?? "")
-        controller.delegate = self
-        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -144,8 +171,10 @@ class GroupInfoViewController: UIViewController {
     
     func getGroupMembers() {
         groupMembers = [GroupParticipantDetail]()
-        groupMembers = GroupManager.shared.getGroupMemeberFromLocal(groupJid:  groupID).participantDetailArray
-        print("getGrouMember \(groupMembers.count)")
+        groupMembers = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid})
+        
+        let myJid = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid == FlyDefaults.myJid})
+        groupMembers.insert(contentsOf: myJid, at: 0)
         refreshData()
     }
     
@@ -153,9 +182,29 @@ class GroupInfoViewController: UIViewController {
         GroupManager.shared.getParticipants(groupJID: groupID)
     }
     
-    //MARK: Remove Profile Image
+    func checkMemberExist() {
+        let isExistMember = self.groupInfoViewModel.isParticiapntExistingIn(groupJid: groupID,
+                                                                            participantJid: FlyDefaults.myJid)
+        self.isExistMember = isExistMember.doesExist
+    }
+    
+    func isAdminMemberGroup() {
+        
+        let isAdminMember = self.groupInfoViewModel.isGroupAdminMember(participantJid: FlyDefaults.myJid,
+                                                                       groupJid: groupID)
+        
+        self.isAdminMember = isAdminMember.isAdmin
+        
+    }
+    
+    // MARK: Remove Profile Image
     
     func removeProfileImage(fileUrl : String){
+        
+        if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
+            return
+        }
+        
         if NetworkReachability.shared.isConnected {
             AppAlert.shared.showToast(message: profilePictureRemoved.localized)
             ContactManager.shared.removeProfileImage( completionHandler: { isSuccess, flyError, flyData in
@@ -171,12 +220,35 @@ class GroupInfoViewController: UIViewController {
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
     }
+    
+    func removeGroupProfileImage(fileUrl : String) {
+        
+        if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
+            return
+        }
+        
+        if NetworkReachability.shared.isConnected {
+            groupInfoViewModel.removeGroupProfileImage(groupID: groupID) {  [weak self] success, error, result in
+                if success {
+                    AppAlert.shared.showToast(message: "Group profile image removed successfully")
+                    self?.isImagePicked = false
+                    self?.profileDetails?.image = ""
+                    self?.refreshData()
+                } else {
+                    AppAlert.shared.showToast(message: (result["message"] as? String)!)
+                    self?.refreshData()
+                }
+            }
+        } else {
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+        }
+    }
 }
 
 extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -187,6 +259,18 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if indexPath.section == 1 {
+            if isExistMember == false {
+                return 0
+            } else {
+                return UITableView.automaticDimension
+            }
+        }
+        return UITableView.automaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.section == 0 {
@@ -195,8 +279,12 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             
             _ = (profileDetails?.name.isEmpty ?? false) ?
             profileDetails?.nickName : profileDetails?.name
-            cell.userNameLabel?.text = getUserName(name: profileDetails?.name ?? "",
-                                                   nickName: profileDetails?.nickName ?? "")
+            cell.userNameLabel?.isHidden = true
+            cell.editTextField.font = AppFont.Medium.size(18)
+            cell.editTextField.text = getUserName(jid: profileDetails?.jid ?? "" ,name: profileDetails?.name ?? "",
+                                                  nickName: profileDetails?.nickName ?? "", contactType: profileDetails?.contactType ?? .unknown)
+            cell.onlineStatus?.text = ("\(groupMembers.count) Participants")
+            cell.onlineStatus?.font = AppFont.Light.size(12)
             let imageUrl = profileDetails?.image ?? ""
             cell.userImage?.sd_setImage(with: ChatUtils.getUserImaeUrl(imageUrl: imageUrl),
                                         placeholderImage: UIImage(named: "ic_groupPlaceHolder"))
@@ -205,31 +293,27 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                                                            action: #selector(didTapImage(sender:)))
             cell.userImage?.isUserInteractionEnabled = true
             cell.userImage?.addGestureRecognizer(gestureRecognizer)
-            cell.editButton?.isHidden = false
+            cell.editButton?.isHidden = true
             cell.editProfileButton?.isHidden = false
+            cell.delegate = self
             
             cell.backButton?.addTarget(self, action: #selector(didTapBack(sender:)),
                                        for: .touchUpInside)
             cell.editProfileButton?.addTarget(self,
                                               action: #selector(updateGroupProfileAction(sender:)),
                                               for: .touchUpInside)
-            cell.editButton?.addTarget(self,
-                                       action: #selector(updateGroupNameAction(sender:)),
-                                       for: .touchUpInside)
+            
+            if isExistMember == false {
+                cell.editProfileButton?.isHidden = true
+                cell.editTextField.isUserInteractionEnabled = false
+            }
             return cell
             
-//        } else if indexPath.section == 1 {
-//            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell,
-//                                                      for: indexPath) as? MuteNotificationCell)!
-//            cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
-//            cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
-//            return cell
-//
         } else if indexPath.section == 1 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             cell.optionImageview.image = UIImage(named: "add_user")
             cell.optionLabel.textColor = Color.userNameTextColor
-            cell.optionLabel.text = "Add Participants"
+            cell.optionLabel.text = addParticipants
             return cell
             
         } else if indexPath.section == 2 {
@@ -237,49 +321,137 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupMembersTableViewCell, for: indexPath) as? GroupMembersTableViewCell)!
             cell.getGroupInfo(groupInfo: groupMembers)
             return cell
+            
         } else if indexPath.section == 3 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
-            cell.optionImageview.image = UIImage(named: "leave_group")
-            cell.optionLabel.textColor = Color.leaveGroupTextColor
-            cell.optionLabel.text = "Leave Group"
+            if isExistMember == true {
+                cell.optionImageview.image = UIImage(named: "leave_group")
+                cell.optionLabel.textColor = Color.leaveGroupTextColor
+                cell.optionLabel.text = leavegroup
+            } else {
+                cell.optionImageview.image = UIImage(named: "ic_deletegroup")
+                cell.optionLabel.textColor = Color.leaveGroupTextColor
+                cell.optionLabel.text = deleteGroup
+            }
             return cell
-            
         }
         return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         if indexPath.section == 1 {
-            let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
-            let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.addParticipants) as! AddParticipantsViewController
-            controller.isFromGroupInfo = true
-            controller.groupID = groupID
-            controller.delegate = self
-            self.navigationController?.pushViewController(controller, animated: true)
+            if self.isAdminMember == true {
+                let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+                if contactPermissionStatus == .denied {
+                    AppAlert.shared.contactAccess(view: self,
+                                                  title: contactAccessTitle,
+                                                  message: contactAccessMessage,
+                                                  settingstitle: settings,
+                                                  cancelTitle: cancelUppercase)
+                    FlyDefaults.isContactPermissionSkipped = false
+                } else {
+                    let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
+                    let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.addParticipants) as! AddParticipantsViewController
+                    controller.isFromGroupInfo = true
+                    controller.groupID = groupID
+                    controller.delegate = self
+                    self.navigationController?.pushViewController(controller, animated: true)
+                }
+            } else {
+                AppAlert.shared.showToast(message: adminAccess)
+            }
+        } else if indexPath.section == 2 {
+            let groupMembers = groupMembers[indexPath.row]
+            if groupMembers.memberJid != FlyDefaults.myJid {
+                let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
+                optionsController = storyboard.instantiateViewController(withIdentifier: Identifiers.groupInfoOptionsViewController) as! GroupInfoOptionsViewController
+                if let optionsController = optionsController {
+                    optionsController.modalPresentationStyle = .overCurrentContext
+                    optionsController.modalTransitionStyle = .crossDissolve
+                    optionsController.groupInfoViewController = self
+                    optionsController.delegate = self
+                    optionsController.groupID = groupID
+                    optionsController.userJid = groupMembers.memberJid
+                    optionsController.userName = getUserName(jid: groupMembers.profileDetail?.jid ?? "", name: groupMembers.profileDetail?.name ?? "", nickName: groupMembers.profileDetail?.nickName ?? "", contactType: groupMembers.profileDetail?.contactType ?? .unknown)
+                    optionsController.isAdminMember = self.isAdminMember
+                    self.present(optionsController, animated: true, completion: nil)
+                }
+            }
         } else if indexPath.section == 3 {
-            let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
-            let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.groupInfoOptionsViewController) as! GroupInfoOptionsViewController
-            controller.modalPresentationStyle = .overCurrentContext
-            controller.modalTransitionStyle = .crossDissolve
-            controller.delegate = self
-            controller.groupID = groupID
-            controller.userJid = groupMembers[indexPath.row].memberJid
-            self.present(controller, animated: true, completion: nil)
+            if isExistMember == true {
+                AppAlert.shared.showAlert(view: self,
+                                          title: exitGroup,
+                                          message: exitGroupMessage,
+                                          buttonOneTitle: exitButton,
+                                          buttonTwoTitle: noButton)
+                AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+                    
+                    let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                    
+                    if result == 0 && !isBlocked{
+                        let groupMembers = self?.groupMembers[indexPath.row]
+                        self?.groupInfoViewModel.leaveFromGroup(groupID: self?.groupID ?? "",
+                                                                userJid: groupMembers?.memberJid ?? "") {
+                            [weak self] success in
+                            if success {
+                                AppAlert.shared.showToast(message: leftFromgroup)
+                                self?.navigationController?.navigationBar.isHidden = false
+                                self?.navigationController?.popViewController(animated: true)
+                            }
+                        }
+                    }
+                }
+            } else {
+                AppAlert.shared.showAlert(view: self,
+                                          title: deleteGroup,
+                                          message: deleteGroupDescription,
+                                          buttonOneTitle: deleteText,
+                                          buttonTwoTitle: cancelUppercase)
+                AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+                    
+                    let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                    
+                    if result == 0 && !isBlocked{
+                        
+                        self?.groupInfoViewModel.deleteGroup(groupID: self?.groupID ?? "") {
+                            [weak self] success, error, result  in
+                            if success {
+                                AppAlert.shared.showToast(message: deleteGroupMessage)
+                                self?.navigationController?.navigationBar.isHidden = false
+                                self?.navigationController?.popToRootViewController(animated: true)
+                            } else {
+                                AppAlert.shared.showToast(message: (result["message"] as? String)!)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-extension GroupInfoViewController: UpdateGroupNameDelegate {
+extension GroupInfoViewController: ContactImageCellDelegate {
+    
     func updatedGroupName(groupName: String) {
-        startLoading(withText: pleaseWait)
-        try! GroupManager.shared.updateGroupName(groupJid: groupID, groupName: groupName) { [weak self] isSuccess,error,data in
-            if isSuccess {
-                self?.setupConfiguration()
-                self?.refreshData()
+        
+        if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
+            return
+        }
+        
+        if groupName.trim().count == 0 {
+            AppAlert.shared.showAlert(view: self, title: "Alert",
+                                      message: "Kindly enter valid group name", buttonTitle: "OK")
+        } else if groupName != currentGroupName {
+            groupInfoViewModel.updateGroupName(groupID: groupID, groupName: groupName) {
+                [weak self] success, error, result  in
+                if success {
+                    self?.setupConfiguration()
+                    self?.refreshData()
+                } else {
+                    AppAlert.shared.showToast(message: "Please try again later")
+                }
+                self?.stopLoading()
             }
-            self?.stopLoading()
-            print("groupName", groupName)
         }
     }
 }
@@ -292,9 +464,92 @@ extension GroupInfoViewController: AddParticipantsDelegate {
 }
 
 extension GroupInfoViewController: GroupInfoOptionsDelegate {
-    func makeGroupAdmin() {
-        getGroupMembers()
-        refreshData()
+    
+    func makeGroupAdmin(groupID: String, userJid: String, userName: String) {
+        
+        AppAlert.shared.showAlert(view: self,
+                                  title: makeAdminText,
+                                  message: ("\(makeAdminDescription) \(userName)"),
+                                  buttonOneTitle: adminText,
+                                  buttonTwoTitle: cancelUppercase)
+        AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+            
+            let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+            
+            if result == 0 && !isBlocked{
+                executeOnMainThread {
+                    self?.startLoading(withText: pleaseWait)
+                }
+                
+                self?.groupInfoViewModel.makeGroupAdmin(groupID: groupID, userJid: userJid) {
+                    [weak self] success, error, result in
+                    if self?.isAdminMember == true {
+                        if success {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                                self?.getGroupMembers()
+                                self?.refreshData()
+                                AppAlert.shared.showToast(message: makeAdminStatus)
+                            }
+                        } else {
+                            AppAlert.shared.showToast(message: (result["message"] as? String)!)
+                        }
+                    } else {
+                        self?.getGroupMembers()
+                        self?.refreshData()
+                        AppAlert.shared.showToast(message: adminAccess)
+                    }
+                    executeOnMainThread {
+                        self?.stopLoading()
+                    }
+                }
+            }
+        }
+    }
+    
+    func removeParticipant(groupID: String, removeGroupMemberJid: String, userName: String) {
+        AppAlert.shared.showAlert(view: self, title: removeTitle,
+                                  message: ("\(removeDescription) \(userName)"),
+                                  buttonOneTitle: removeTitle, buttonTwoTitle: cancelUppercase)
+        AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+            let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+            if result == 0 && !isBlocked {
+                self?.groupInfoViewModel.removeParticipantFromGroup(groupID: groupID, removeGroupMemberJid: removeGroupMemberJid) { [weak self] success in
+                    if self?.isAdminMember == true {
+                        if success {
+                            self?.getGroupMembers()
+                            self?.refreshData()
+                            AppAlert.shared.showToast(message: removeUserStatus)
+                        }
+                    } else {
+                        self?.getGroupMembers()
+                        self?.refreshData()
+                        AppAlert.shared.showToast(message: adminAccess)
+                    }
+                }
+            }
+        }
+    }
+    
+    func navigateToUserProfile(userJid: String) {
+        let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.contactInfoViewController) as! ContactInfoViewController
+        controller.contactJid = userJid
+        controller.isFromGroupInfo = true
+        controller.groupId = groupID
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    func navigateToChat(userJid: String) {
+        if let profile = groupMembers.filter({$0.memberJid == userJid}).first {
+            let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
+            let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as! ChatViewParentController
+            controller.getProfileDetails = profile.profileDetail
+            controller.isFromGroupInfo = true
+            let color = getColor(userName: profile.profileDetail?.name ?? "")
+            controller.contactColor = color
+            navigationController?.modalPresentationStyle = .fullScreen
+            navigationController?.pushViewController(controller, animated: true)
+        }
     }
 }
 
@@ -360,6 +615,57 @@ extension GroupInfoViewController: ProfileEventsDelegate {
     }
 }
 
+extension GroupInfoViewController : GroupEventsDelegate {
+    
+    func didAddNewMemeberToGroup(groupJid: String, newMemberJid: String, addedByMemberJid: String) {
+        
+    }
+    
+    func didRemoveMemberFromGroup(groupJid: String, removedMemberJid: String, removedByMemberJid: String) {
+        
+    }
+    
+    func didFetchGroupProfile(groupJid: String) {
+        
+    }
+    
+    func didUpdateGroupProfile(groupJid: String) {
+        
+    }
+    
+    func didMakeMemberAsAdmin(groupJid: String, newAdminMemberJid: String, madeByMemberJid: String) {
+        
+    }
+    
+    func didRemoveMemberFromAdmin(groupJid: String, removedAdminMemberJid: String, removedByMemberJid: String) {
+        
+    }
+    
+    func didDeleteGroupLocally(groupJid: String) {
+        
+    }
+    
+    func didLeftFromGroup(groupJid: String, leftUserJid: String) {
+        
+    }
+    
+    func didCreateGroup(groupJid: String) {
+        
+    }
+    
+    func didFetchGroups(groups: [ProfileDetails]) {
+        
+    }
+    
+    func didFetchGroupMembers(groupJid: String) {
+        
+    }
+    
+    func didReceiveGroupNotificationMessage(message: ChatMessage) {
+        
+    }
+}
+
 extension GroupInfoViewController {
     
     func showActionSheet() {
@@ -394,7 +700,8 @@ extension GroupInfoViewController {
                     return
                 }
                 if NetworkReachability.shared.isConnected {
-                    AppAlert.shared.showAlert(view: self, title: alert,
+                    AppAlert.shared.showAlert(view: self,
+                                              title: alert,
                                               message: removePhotoAlert,
                                               buttonOneTitle: cancel,
                                               buttonTwoTitle: removeButton)
@@ -403,9 +710,7 @@ extension GroupInfoViewController {
                         if result == 1 {
                             self?.isImagePicked = false
                             self?.profileDetails?.image = ""
-                            self?.removeProfileImage(fileUrl:  self!.profileImageLocalPath)
-                        } else {
-                            
+                            self?.removeGroupProfileImage(fileUrl: self!.profileImageLocalPath)
                         }
                     }
                 } else {
@@ -476,7 +781,6 @@ extension GroupInfoViewController {
         
         let pickerViewController = TatsiPickerViewController(config: config)
         pickerViewController.pickerDelegate = self
-        pickerViewController.isEditing = true
         self.present(pickerViewController, animated: true, completion: nil)
     }
     
@@ -542,6 +846,10 @@ extension GroupInfoViewController: CropperViewControllerDelegate {
     func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?) {
         cropper.dismiss(animated: true, completion: nil)
         
+        if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
+            return
+        }
+        
         if let state = state,
            let image = cropper.originalImage.cropped(withCropperState: state) {
             
@@ -554,15 +862,17 @@ extension GroupInfoViewController: CropperViewControllerDelegate {
             
             print("localPath-- \( profileImageLocalPath)")
             startLoading(withText: pleaseWait)
-            try! GroupManager.shared.updateGroupProfileImage(groupJid: groupID, groupProfileImageUrl: profileImageLocalPath){ [weak self] isSuccess,error,data in
-                if isSuccess {
+            
+            groupInfoViewModel.updateGroupProfileImage(groupID: groupID,
+                                                       groupProfileImageUrl: profileImageLocalPath) {
+                [weak self] success in
+                if success {
                     self?.setupConfiguration()
                     self?.refreshData()
                     AppAlert.shared.showToast(message: groupImageUpdateSuccess)
                 }
                 self?.stopLoading()
             }
-
         }
     }
 }
@@ -610,3 +920,37 @@ extension GroupInfoViewController: TatsiPickerViewControllerDelegate {
         self.profileImage?.image = croppedImage
     }
 }
+
+// To handle if group is being blocked by user
+
+extension GroupInfoViewController : AdminBlockDelegate {
+    func didBlockOrUnblockContact(userJid: String, isBlocked: Bool) {
+        
+    }
+    
+    func didBlockOrUnblockSelf(userJid: String, isBlocked: Bool) {
+        
+    }
+    
+    func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
+        if isBlocked && groupID == groupJid {
+           navigateOnGroupBlock()
+        }
+    }
+    
+}
+
+extension GroupInfoViewController {
+    func navigateOnGroupBlock() {
+        optionsController?.dismissView()
+        self.dismiss(animated: true, completion: nil)
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.popToRootViewController(animated: true)
+        executeOnMainThread {
+            self.stopLoading()
+            AppAlert.shared.showToast(message: groupNoLongerAvailable)
+        }
+    }
+}
+
+

@@ -268,6 +268,15 @@ class Utility: NSObject{
         return UUID.init().uuidString.replacingOccurrences(of: "-", with: "").lowercased()
     }
     
+    
+    class func clearUserDefaults(){
+        let defaults = UserDefaults.standard
+        let dictionary =  defaults.dictionaryRepresentation()
+        dictionary.keys.forEach { key in
+            defaults.removeObject(forKey: key)
+        }
+    }
+    
 }
 extension TimeInterval {
     var minuteSecondMS: String {

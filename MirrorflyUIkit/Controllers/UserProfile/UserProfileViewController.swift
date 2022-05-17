@@ -267,10 +267,11 @@ extension UserProfileViewController {
                 } else {
                     print(data.getMessage() as! String)
                     AppAlert.shared.showToast(message: "Please try again later")
+                    self?.stopLoading()
                 }
             }
-        }
-        else {
+        } else {
+            stopLoading()
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
     }
@@ -550,7 +551,6 @@ extension UserProfileViewController {
         
         let pickerViewController = TatsiPickerViewController(config: config)
         pickerViewController.pickerDelegate = self
-        pickerViewController.isEditing = true
         self.present(pickerViewController, animated: true, completion: nil)
     }
     

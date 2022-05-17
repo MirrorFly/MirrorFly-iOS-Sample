@@ -16,6 +16,8 @@ class ApiService
         manager.session.configuration.timeoutIntervalForRequest = 300
     }
     
+    public static let shared : ApiService = ApiService()
+    
     func get(withEndPoint endpoint: String, params: Parameters? = nil) -> DataRequest {
         // Get base url and combine with end points
         let Baseurl = Bundle.main.object(forInfoDictionaryKey: BaseURL) as! String

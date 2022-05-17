@@ -10,6 +10,7 @@ import FirebaseAuth
 import FlyCore
 import FlyCommon
 import PhoneNumberKit
+import SafariServices
 
 class OTPViewController: UIViewController {
     
@@ -20,6 +21,8 @@ class OTPViewController: UIViewController {
     @IBOutlet weak var countryCode: UILabel!
     @IBOutlet weak var getOtpBtn: UIButton!
     public var countryArray = [Country]()
+    @IBOutlet weak var termsAndConditionLabel: UILabel!
+    @IBOutlet weak var privacyPolicyLabel: UILabel!
     private var otpViewModel : OTPViewModel!
     let chatmanager = ChatManager.shared
     var countryRegion = ""
@@ -28,6 +31,10 @@ class OTPViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        termsAndConditionLabel.attributedText = NSAttributedString(string: "Terms and Conditions,", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+        privacyPolicyLabel.attributedText = NSAttributedString(string: "Privacy Policy.", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+        termsAndConditionLabel.textColor = UIColor(named: "buttonColor")
+        privacyPolicyLabel.textColor = UIColor(named: "buttonColor")
         setupUI()
         configureDefaults()
     }
@@ -39,6 +46,14 @@ class OTPViewController: UIViewController {
         mobileNumber.font = UIFont.font15px_appMedium()
         countryCode.font = UIFont.font15px_appRegular()
         getOtpBtn.titleLabel?.font = UIFont.font16px_appSemibold()
+        
+        let tncTap = UITapGestureRecognizer(target: self, action: #selector(goToTermsAndConditionsWebPage))
+        termsAndConditionLabel.isUserInteractionEnabled = true
+        termsAndConditionLabel.addGestureRecognizer(tncTap)
+        
+        let privacyTap = UITapGestureRecognizer(target: self, action: #selector(goToPrivacyPolicyWebPage))
+        privacyPolicyLabel.isUserInteractionEnabled = true
+        privacyPolicyLabel.addGestureRecognizer(privacyTap)
     }
     
     override func viewDidLayoutSubviews() {
@@ -146,6 +161,22 @@ class OTPViewController: UIViewController {
     
     func closeKeyboard() {
         self.view.endEditing(true)
+    }
+    
+    @objc func goToTermsAndConditionsWebPage(sender:UITapGestureRecognizer){
+        let config = SFSafariViewController.Configuration()
+        config.entersReaderIfAvailable = true
+        let url = URL(string: "https://www.mirrorfly.com/terms-and-conditions.php")
+        let vc = SFSafariViewController(url: url!, configuration: config)
+        present(vc, animated: true)
+    }
+    
+    @objc func goToPrivacyPolicyWebPage(sender:UITapGestureRecognizer){
+        let config = SFSafariViewController.Configuration()
+        config.entersReaderIfAvailable = true
+        let url = URL(string: "https://www.mirrorfly.com/privacy-policy.php")
+        let vc = SFSafariViewController(url: url!, configuration: config)
+        present(vc, animated: true)
     }
    
 }

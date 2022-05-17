@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="a6v-qf-Ud1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="a6v-qf-Ud1">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -30,7 +30,7 @@
         <!--Chat View Parent Controller-->
         <scene sceneID="vs6-El-iH6">
             <objects>
-                <viewController storyboardIdentifier="ChatViewParentController" id="U3O-Rv-gdd" customClass="ChatViewParentController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChatViewParentController" id="U3O-Rv-gdd" customClass="ChatViewParentController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="ful-Hf-t8u">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
@@ -244,52 +244,50 @@
                                     <constraint firstItem="bFE-1q-zzM" firstAttribute="centerY" secondItem="RJu-Nd-zCH" secondAttribute="centerY" id="dwa-oW-8Ut"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="0tK-r4-DZY">
-                                <rect key="frame" x="0.0" y="44" width="414" height="768"/>
-                                <color key="backgroundColor" name="BackgroungColor"/>
-                                <gestureRecognizers/>
-                                <connections>
-                                    <outlet property="dataSource" destination="U3O-Rv-gdd" id="YEz-k4-uZt"/>
-                                    <outlet property="delegate" destination="U3O-Rv-gdd" id="IyC-dy-5Jr"/>
-                                </connections>
-                            </tableView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dwQ-E6-hy4">
-                                <rect key="frame" x="367" y="761" width="31" height="31"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ooK-05-PDO">
+                                <rect key="frame" x="0.0" y="104" width="414" height="758"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="MTb-T2-gch">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="708"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="31" id="Klk-Jq-9px"/>
-                                    <constraint firstAttribute="width" secondItem="dwQ-E6-hy4" secondAttribute="height" multiplier="1:1" id="nIh-Ev-bhm"/>
+                                    <constraint firstItem="MTb-T2-gch" firstAttribute="top" secondItem="ooK-05-PDO" secondAttribute="top" id="Frm-pp-X34"/>
+                                    <constraint firstAttribute="bottom" secondItem="MTb-T2-gch" secondAttribute="bottom" constant="50" id="LmH-9A-xE9"/>
+                                    <constraint firstItem="MTb-T2-gch" firstAttribute="leading" secondItem="ooK-05-PDO" secondAttribute="leading" id="mgU-Na-x9v"/>
+                                    <constraint firstAttribute="trailing" secondItem="MTb-T2-gch" secondAttribute="trailing" id="r6y-Ur-ABm"/>
                                 </constraints>
-                                <state key="normal" title="Button" image="ic_moveToBottom"/>
-                            </button>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="t8I-hg-Oof"/>
                         <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="tYR-ZY-lng" firstAttribute="leading" secondItem="t8I-hg-Oof" secondAttribute="leading" id="4DT-IL-3Or"/>
+                            <constraint firstItem="ooK-05-PDO" firstAttribute="leading" secondItem="t8I-hg-Oof" secondAttribute="leading" id="55C-Kl-WUY"/>
                             <constraint firstItem="RJu-Nd-zCH" firstAttribute="top" secondItem="t8I-hg-Oof" secondAttribute="top" id="6Om-Xh-6md"/>
+                            <constraint firstItem="t8I-hg-Oof" firstAttribute="trailing" secondItem="ooK-05-PDO" secondAttribute="trailing" id="6Ze-D5-HoR"/>
                             <constraint firstItem="t8I-hg-Oof" firstAttribute="top" secondItem="tYR-ZY-lng" secondAttribute="top" id="8ga-vJ-hrH"/>
-                            <constraint firstItem="0tK-r4-DZY" firstAttribute="width" secondItem="ful-Hf-t8u" secondAttribute="width" id="9dx-jw-W9U"/>
                             <constraint firstItem="t8I-hg-Oof" firstAttribute="trailing" secondItem="tYR-ZY-lng" secondAttribute="trailing" id="AR9-Bf-PVE"/>
                             <constraint firstItem="t8I-hg-Oof" firstAttribute="trailing" secondItem="wG0-oh-ucO" secondAttribute="trailing" constant="10" id="AZn-hE-eAS"/>
-                            <constraint firstItem="t8I-hg-Oof" firstAttribute="trailing" secondItem="dwQ-E6-hy4" secondAttribute="trailing" constant="16" id="HA4-XD-20z"/>
-                            <constraint firstItem="0tK-r4-DZY" firstAttribute="top" secondItem="t8I-hg-Oof" secondAttribute="top" id="Inw-4j-UDV"/>
                             <constraint firstItem="t8I-hg-Oof" firstAttribute="trailing" secondItem="GL1-9R-WMd" secondAttribute="trailing" id="LI8-y9-WHm"/>
-                            <constraint firstItem="t8I-hg-Oof" firstAttribute="bottom" secondItem="0tK-r4-DZY" secondAttribute="bottom" constant="50" id="LTY-jK-sqT"/>
-                            <constraint firstItem="0tK-r4-DZY" firstAttribute="leading" secondItem="ful-Hf-t8u" secondAttribute="leading" id="Ppx-zs-PU7"/>
-                            <constraint firstAttribute="trailing" secondItem="0tK-r4-DZY" secondAttribute="trailing" id="ZqH-LZ-57J"/>
+                            <constraint firstItem="t8I-hg-Oof" firstAttribute="bottom" secondItem="ooK-05-PDO" secondAttribute="bottom" id="NiW-tz-jaT"/>
+                            <constraint firstItem="ooK-05-PDO" firstAttribute="top" secondItem="RJu-Nd-zCH" secondAttribute="bottom" constant="10" id="aFs-4I-5F9"/>
                             <constraint firstItem="t8I-hg-Oof" firstAttribute="top" secondItem="GL1-9R-WMd" secondAttribute="top" constant="44" id="f8h-dk-8p0"/>
                             <constraint firstItem="GL1-9R-WMd" firstAttribute="leading" secondItem="t8I-hg-Oof" secondAttribute="leading" id="fae-RU-jhM"/>
                             <constraint firstItem="RJu-Nd-zCH" firstAttribute="leading" secondItem="t8I-hg-Oof" secondAttribute="leading" id="lWi-gx-moh"/>
-                            <constraint firstItem="0tK-r4-DZY" firstAttribute="width" secondItem="ful-Hf-t8u" secondAttribute="width" id="qdl-et-wKR"/>
-                            <constraint firstItem="dwQ-E6-hy4" firstAttribute="bottom" secondItem="0tK-r4-DZY" secondAttribute="bottom" constant="-20" id="sle-5d-Pha"/>
+                            <constraint firstItem="ooK-05-PDO" firstAttribute="top" secondItem="tYR-ZY-lng" secondAttribute="bottom" id="nKO-cw-dcR"/>
                             <constraint firstItem="t8I-hg-Oof" firstAttribute="trailing" secondItem="RJu-Nd-zCH" secondAttribute="trailing" id="ula-wJ-flq"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="5lO-Pk-npQ"/>
                     <connections>
                         <outlet property="audioButton" destination="Kfk-A9-n4z" id="kEf-t5-TVN"/>
-                        <outlet property="chatTableView" destination="0tK-r4-DZY" id="Jaa-h9-KM5"/>
+                        <outlet property="chatTableView" destination="MTb-T2-gch" id="xLC-S0-W9d"/>
+                        <outlet property="containerBottomConstraint" destination="NiW-tz-jaT" id="HLY-eK-frC"/>
+                        <outlet property="containerView" destination="ooK-05-PDO" id="Y0g-Zo-4eO"/>
                         <outlet property="copyButton" destination="ZZN-zj-qzJ" id="EDL-Xc-Iih"/>
                         <outlet property="deleteButton" destination="ovK-6c-rBe" id="xCt-9x-x2y"/>
                         <outlet property="groupMemberLable" destination="C6I-tW-scf" id="Tvx-j9-zEq"/>
@@ -299,7 +297,7 @@
                         <outlet property="menuButton" destination="Grz-AT-BAL" id="IBE-TL-Q8z"/>
                         <outlet property="multiSelectionView" destination="RJu-Nd-zCH" id="iPu-Pc-ir0"/>
                         <outlet property="replyButton" destination="a6k-9A-SgI" id="gaU-iX-L4r"/>
-                        <outlet property="tableViewBottomConstraint" destination="LTY-jK-sqT" id="amP-Aa-RlN"/>
+                        <outlet property="tableViewBottomConstraint" destination="LmH-9A-xE9" id="2Yy-ia-Y3x"/>
                         <outlet property="userImage" destination="ZfW-dr-kdl" id="hj6-F2-dJN"/>
                         <outlet property="userInfoStack" destination="L7p-IE-elR" id="YW5-gW-OVn"/>
                         <outlet property="userNameLabel" destination="Saq-0X-it7" id="2FR-K5-yNt"/>
@@ -312,12 +310,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="svE-jh-3TX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="135" y="-206"/>
+            <point key="canvasLocation" x="134.78260869565219" y="-206.25"/>
         </scene>
         <!--Update Group Info View Controller-->
         <scene sceneID="Y79-ds-fqK">
             <objects>
-                <viewController storyboardIdentifier="UpdateGroupInfoViewController" id="RYw-oI-ztD" customClass="UpdateGroupInfoViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UpdateGroupInfoViewController" id="RYw-oI-ztD" customClass="UpdateGroupInfoViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lBi-SQ-dR4">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -458,7 +456,7 @@
         <!--Group Info Options View Controller-->
         <scene sceneID="OL8-PY-GF5">
             <objects>
-                <viewController storyboardIdentifier="GroupInfoOptionsViewController" id="Sqt-Wi-Ts5" customClass="GroupInfoOptionsViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GroupInfoOptionsViewController" id="Sqt-Wi-Ts5" customClass="GroupInfoOptionsViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uZj-QO-3ID">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -470,7 +468,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aqX-QU-jFg">
                                 <rect key="frame" x="23" y="358" width="368" height="180"/>
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eIQ-oq-GYI">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eIQ-oq-GYI">
                                         <rect key="frame" x="0.0" y="0.0" width="368" height="180"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </tableView>
@@ -500,6 +498,7 @@
                     </view>
                     <connections>
                         <outlet property="baseView" destination="aqX-QU-jFg" id="tYR-hS-H2Z"/>
+                        <outlet property="baseViewHeightConstraint" destination="VUF-92-m6X" id="Pjk-XI-yXf"/>
                         <outlet property="tableView" destination="eIQ-oq-GYI" id="A4K-Jn-Ome"/>
                     </connections>
                 </viewController>
@@ -528,7 +527,7 @@
         <!--Location View Controller-->
         <scene sceneID="Clb-Oh-zej">
             <objects>
-                <viewController storyboardIdentifier="CCFMapViewController" id="fOx-Bf-IYX" customClass="LocationViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CCFMapViewController" id="fOx-Bf-IYX" customClass="LocationViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MYk-o2-1fs">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -581,7 +580,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YjC-07-9YX" customClass="GMSMapView">
-                                <rect key="frame" x="0.0" y="44" width="414" height="752"/>
+                                <rect key="frame" x="0.0" y="94" width="414" height="702"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tVC-5G-yyV">
@@ -646,7 +645,7 @@
                         <constraints>
                             <constraint firstItem="ucs-7G-AuU" firstAttribute="trailing" secondItem="TJE-oY-ibn" secondAttribute="trailing" id="6ye-LJ-Vrp"/>
                             <constraint firstItem="EZw-7C-7Fw" firstAttribute="trailing" secondItem="YjC-07-9YX" secondAttribute="trailing" id="7PG-GH-mfR"/>
-                            <constraint firstItem="YjC-07-9YX" firstAttribute="top" secondItem="EZw-7C-7Fw" secondAttribute="top" id="EVr-pA-mgx"/>
+                            <constraint firstItem="YjC-07-9YX" firstAttribute="top" secondItem="EZw-7C-7Fw" secondAttribute="top" constant="50" id="EVr-pA-mgx"/>
                             <constraint firstAttribute="leading" secondItem="tVC-5G-yyV" secondAttribute="leading" id="K3g-le-b1U"/>
                             <constraint firstItem="TJE-oY-ibn" firstAttribute="leading" secondItem="EZw-7C-7Fw" secondAttribute="leading" id="NSr-Ee-Uql"/>
                             <constraint firstItem="ucs-7G-AuU" firstAttribute="leading" secondItem="TJE-oY-ibn" secondAttribute="leading" id="Otp-r1-pwG"/>
@@ -678,7 +677,7 @@
         <!--Contact Info View Controller-->
         <scene sceneID="kg4-Xi-PgD">
             <objects>
-                <viewController storyboardIdentifier="ContactInfoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1f9-pt-Jc4" customClass="ContactInfoViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContactInfoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1f9-pt-Jc4" customClass="ContactInfoViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Dl0-z9-xCO">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -709,7 +708,7 @@
         <!--Group Info View Controller-->
         <scene sceneID="YpJ-TX-3li">
             <objects>
-                <viewController id="fHd-BT-aN9" customClass="GroupInfoViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="fHd-BT-aN9" customClass="GroupInfoViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qDO-jP-Owt">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -741,7 +740,7 @@
         <!--View User Image Controller-->
         <scene sceneID="hI9-9U-5Ud">
             <objects>
-                <viewController id="GFG-CH-EPd" customClass="ViewUserImageController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="GFG-CH-EPd" customClass="ViewUserImageController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5U4-Cq-fqf">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -829,7 +828,7 @@
         <!--Chat Contact View Controller-->
         <scene sceneID="k4L-QI-Hae">
             <objects>
-                <viewController id="Pto-9t-rvq" customClass="ChatContactViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Pto-9t-rvq" customClass="ChatContactViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cU1-ry-Y4x">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -921,7 +920,7 @@
                                         <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="sectionIndexTrackingBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatContactCell" rowHeight="50" id="bvn-fr-4Vt" customClass="ChatContactCell" customModule="MirrorflyUIkit" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatContactCell" rowHeight="50" id="bvn-fr-4Vt" customClass="ChatContactCell" customModule="Mirrorfly" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="44.5" width="414" height="50"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bvn-fr-4Vt" id="DkX-ZW-OyM">
@@ -1072,11 +1071,11 @@
     </scenes>
     <designables>
         <designable name="C6I-tW-scf">
-            <size key="intrinsicContentSize" width="24" height="12"/>
+            <size key="intrinsicContentSize" width="24.5" height="12"/>
         </designable>
     </designables>
     <inferredMetricsTieBreakers>
-        <segue reference="ee3-RP-eKe"/>
+        <segue reference="6l1-Wa-z5C"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="check_box" width="16" height="16"/>
@@ -1090,7 +1089,6 @@
         <image name="ic_forward" width="20" height="20"/>
         <image name="ic_locationSend" width="44" height="44"/>
         <image name="ic_menu" width="4" height="16.5"/>
-        <image name="ic_moveToBottom" width="31" height="31"/>
         <image name="ic_profile_placeholder" width="139" height="139"/>
         <image name="ic_reply" width="20" height="20"/>
         <image name="ic_selected" width="17" height="17"/>
@@ -1101,9 +1099,6 @@
         <image name="phone_call" width="14" height="14"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="BackgroungColor">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="NavigationColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

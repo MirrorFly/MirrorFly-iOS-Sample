@@ -6,6 +6,10 @@
 //
 
 import UIKit
+import FlyCore
+import FlyCommon
+import FlyNetwork
+import FlyCall
 
 class GroupInfoOptions {
     
@@ -17,7 +21,10 @@ class GroupInfoOptions {
 }
 
 protocol GroupInfoOptionsDelegate: class {
-    func makeGroupAdmin()
+    func makeGroupAdmin(groupID: String, userJid: String, userName: String)
+    func removeParticipant(groupID: String, removeGroupMemberJid: String, userName: String)
+    func navigateToUserProfile(userJid: String)
+    func navigateToChat(userJid: String)
 }
 
 class GroupInfoOptionsViewController: UIViewController {
@@ -26,21 +33,30 @@ class GroupInfoOptionsViewController: UIViewController {
     
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var baseViewHeightConstraint: NSLayoutConstraint!
+    
+    var groupInfoViewController: GroupInfoViewController!
     
     let groupInfoViewModel = GroupInfoViewModel()
+    var groupMembers = [GroupParticipantDetail]()
+    var profileDetails : ProfileDetails?
     weak var delegate: GroupInfoOptionsDelegate? = nil
     
     var groupID = ""
     var userJid = ""
+    var userName = ""
+    var isAdminMember: Bool = false
+    var participantIsAdminMember: Bool = false
     
-    var groupInfoOptionsArray = [GroupInfoOptions(title: "Start Chat"),
-                                 GroupInfoOptions(title: "View Info"),
-                                 GroupInfoOptions(title: "Remove from Group"),
-                                 GroupInfoOptions(title: "Make Admin")]
+    var groupInfoOptionsArray = [GroupInfoOptions(title: startChat),
+                                 GroupInfoOptions(title: viewInfo),
+                                 GroupInfoOptions(title: removeFromGroup),
+                                 GroupInfoOptions(title: makeAdminText)]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        isAdminMemberGroup()
         setUpUI()
         hideViewWhenTappedAround()
     }
@@ -53,9 +69,18 @@ class GroupInfoOptionsViewController: UIViewController {
         baseView.clipsToBounds = true
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.isScrollEnabled = false
         
         tableView?.register(UINib(nibName: Identifiers.groupInfoOptionsTableViewCell, bundle: .main),
                             forCellReuseIdentifier: Identifiers.groupInfoOptionsTableViewCell)
+        
+        if isAdminMember == true && participantIsAdminMember == true {
+            baseViewHeightConstraint.constant = 140
+        } else if isAdminMember == true {
+            baseViewHeightConstraint.constant = 180
+        } else {
+            baseViewHeightConstraint.constant = 100
+        }
     }
     
     // MARK: - User Interactions
@@ -79,17 +104,13 @@ class GroupInfoOptionsViewController: UIViewController {
         tableView?.reloadData()
     }
     
-    func makeGroupAdmin() {
-        groupInfoViewModel.makeGroupAdmin(groupID: groupID, userJid: userJid) {
-            [weak self] success in
-            
-            if success {
-                self?.delegate?.makeGroupAdmin()
-                AppAlert.shared.showToast(message: "Make admin successfully")
-            }
-        }
-        hideViewWhenTappedAround()
-        refreshData()
+    func isAdminMemberGroup() {
+        
+        let isAdminMember = self.groupInfoViewModel.isGroupAdminMember(participantJid: userJid,
+                                                                       groupJid: groupID)
+        
+        self.participantIsAdminMember = isAdminMember.isAdmin
+        
     }
 }
 
@@ -111,7 +132,24 @@ extension GroupInfoOptionsViewController: UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        groupInfoOptionsArray[indexPath.row].title
-        makeGroupAdmin()
+        if userJid != FlyDefaults.myJid {
+            if indexPath.row == 0 {
+                self.delegate?.navigateToChat(userJid: userJid)
+                dismiss(animated: true, completion: nil)
+                
+            } else if indexPath.row == 1 {
+                self.delegate?.navigateToUserProfile(userJid: userJid)
+                dismiss(animated: true, completion: nil)
+                
+            } else if indexPath.row == 2 {
+                self.delegate?.removeParticipant(groupID: groupID,
+                                                 removeGroupMemberJid: userJid,
+                                                 userName: userName )
+
+                
+            } else if indexPath.row == 3 {
+                self.delegate?.makeGroupAdmin(groupID: groupID, userJid: userJid, userName: userName)
+            }
+        }
     }
 }

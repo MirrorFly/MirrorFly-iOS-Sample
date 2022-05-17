@@ -46,9 +46,8 @@ class RecentChatTableViewCell: UITableViewCell {
         let url = URL(string: urlString)
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
-            placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder)!
-            
-        }else {
+            placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
+        } else {
             placeHolder = getPlaceholder(name: name, color: color)
         }
         profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
@@ -105,7 +104,7 @@ class RecentChatTableViewCell: UITableViewCell {
     
     // MARK: SetTextColor whileSearch
     func setTextColorWhileSearch(searchText: String,recentChat: RecentChat) {
-        let name = getUserName(name: recentChat.profileName , nickName: recentChat.nickName ?? "")
+        let name = getUserName(jid: recentChat.jid,name: recentChat.profileName , nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
         if let range = name.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
             let convertedRange = NSRange(range, in: name.capitalized)
             let attributedString = NSMutableAttributedString(string: name.capitalized)
@@ -139,7 +138,7 @@ class RecentChatTableViewCell: UITableViewCell {
         statusImageCons?.constant = 0
         receivedMessageTrailingCons?.constant = 0
         statusViewTralingCons?.constant = 0
-        setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(name: recentChat.profileName, nickName: recentChat.nickName), color: color, recentChat: recentChat)
+        setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(jid : recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown), color: color, recentChat: recentChat)
     }
     
     // MARK: Set ChatTimeColor
@@ -161,7 +160,8 @@ class RecentChatTableViewCell: UITableViewCell {
         receivedMessageTrailingCons?.constant = 5
         statusViewTralingCons?.constant = 5
         statusImageCons?.constant = 7
-        if recentChatMessage.profileType == .groupChat && senderName.isNotEmpty && (!(chatMessage?.isMessageSentByMe ?? false)) {
+        senderNameLabel?.textColor = Color.primaryTextColor
+        if recentChatMessage.profileType == .groupChat && senderName.isNotEmpty && (!(chatMessage?.isMessageSentByMe ?? false)) && recentChatMessage.lastMessageType != .notification {
             senderNameLabel?.text =  "\(senderName): "
             senderNameLabel?.isHidden = false
         } else {
@@ -170,7 +170,7 @@ class RecentChatTableViewCell: UITableViewCell {
         if recentChatMessage.profileType == .groupChat {
             setImage(imageURL: recentChatMessage.profileImage ?? "", name: recentChatMessage.profileName, color: color, recentChat: recentChatMessage)
         } else {
-            setSingleChatImage(imageURL: recentChatMessage.profileImage ?? "", name: getUserName(name: recentChatMessage.profileName, nickName: recentChatMessage.nickName), color: color, recentChat: recentChatMessage)
+            setSingleChatImage(imageURL: recentChatMessage.profileImage ?? "", name: getUserName(jid: recentChatMessage.jid,name: recentChatMessage.profileName, nickName: recentChatMessage.nickName, contactType: recentChatMessage.isItSavedContact ? .live : .unknown), color: color, recentChat: recentChatMessage)
         }
         
         let messageTime = chatMessage?.messageChatType == .singleChat ? recentChatMessage.lastMessageTime : DateFormatterUtility.shared.getGroupMilliSeconds(milliSeconds: recentChatMessage.lastMessageTime)
