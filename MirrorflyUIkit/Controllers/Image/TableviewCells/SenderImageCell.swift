@@ -36,6 +36,8 @@ class SenderImageCell: BaseTableViewCell {
     @IBOutlet weak var caption: UILabel?
     @IBOutlet weak var captionBottomCons: NSLayoutConstraint?
     
+    @IBOutlet weak var downloadButton: UIButton?
+    @IBOutlet weak var downloadView: UIView?
     // Reply View
     @IBOutlet weak var bubbleImageView: UIImageView?
     @IBOutlet weak var replyTextLabel: UILabel?
@@ -46,6 +48,8 @@ class SenderImageCell: BaseTableViewCell {
     @IBOutlet weak var replyVuew: UIView?
     @IBOutlet weak var imageContainerTopCons: NSLayoutConstraint?
     @IBOutlet weak var chatLocationMapView: GMSMapView?
+    @IBOutlet weak var replyWithMediaCons: NSLayoutConstraint?
+    @IBOutlet weak var replyWithoutMediaCons: NSLayoutConstraint?
     
     // Forward Outlet
     @IBOutlet weak var forwardImageView: UIImageView?
@@ -120,18 +124,31 @@ class SenderImageCell: BaseTableViewCell {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+           // forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardButton?.isSelected = !(forwardButton?.isSelected ?? false)
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
-        
-        if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded  || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
-            fwdView?.isHidden = true
-            fwdButton?.isHidden = true
+        if message?.isCarbonMessage == true {
+            if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded  || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
+                fwdView?.isHidden = true
+                fwdButton?.isHidden = true
+                isAllowSwipe = false
+            } else {
+                fwdView?.isHidden = false
+                fwdButton?.isHidden = false
+                isAllowSwipe = true
+            }
         } else {
-            fwdView?.isHidden = false
-            fwdButton?.isHidden = false
+            if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded  || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
+                fwdView?.isHidden = true
+                fwdButton?.isHidden = true
+                isAllowSwipe = false
+            } else {
+                fwdView?.isHidden = false
+                fwdButton?.isHidden = false
+                isAllowSwipe = true
+            }
         }
         
         // Reply view elements and its data
@@ -141,6 +158,7 @@ class SenderImageCell: BaseTableViewCell {
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
            imageContainerTopCons?.constant = 3
            messageTypeView?.isHidden = true
+           chatLocationMapView?.isHidden = true
            replyTextLabel?.text = getReplymessage
            if replyMessage?.mediaChatMessage != nil {
                messageTypeView?.isHidden = false
@@ -154,10 +172,15 @@ class SenderImageCell: BaseTableViewCell {
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
                    }
+                   replyWithMediaCons?.isActive = true
+                   replyWithoutMediaCons?.isActive = false
                case .audio:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
+                   mediaImageView?.isHidden = true
+                   replyWithMediaCons?.isActive = false
+                   replyWithoutMediaCons?.isActive = true
                case .video:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
                    if let thumImage = replyMessage?.mediaChatMessage?.mediaThumbImage {
@@ -167,8 +190,12 @@ class SenderImageCell: BaseTableViewCell {
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyWithMediaCons?.isActive = true
+                   replyWithoutMediaCons?.isActive = false
                default:
                    messageTypeView?.isHidden = true
+                   replyWithMediaCons?.isActive = false
+                   replyWithoutMediaCons?.isActive = true
                }
                
            } else if replyMessage?.locationChatMessage != nil {
@@ -181,7 +208,9 @@ class SenderImageCell: BaseTableViewCell {
                guard let longitude = replyMessage?.locationChatMessage?.longitude  else {
                    return nil
                }
-               
+               replyWithMediaCons?.isActive = true
+               replyWithoutMediaCons?.isActive = false
+               chatLocationMapView?.isUserInteractionEnabled = false
                chatLocationMapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
       
                DispatchQueue.main.async
@@ -193,17 +222,22 @@ class SenderImageCell: BaseTableViewCell {
                }
                messageTypeView?.isHidden = false
            } else if replyMessage?.contactChatMessage != nil {
-               replyTextLabel?.text = "Contact"
+                   replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: replyMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                messageTypeView?.isHidden = false
+               replyWithMediaCons?.isActive = false
+               replyWithoutMediaCons?.isActive = true
            } else {
                mediaImageView?.isHidden = true
+               replyWithMediaCons?.isActive = false
+               replyWithoutMediaCons?.isActive = true
            }
         if(replyMessage!.isMessageSentByMe) {
             userLabel?.text = you.localized
         }
         else {
-            userLabel?.text = replyMessage?.senderUserName
+            userLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
+                                          nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     }
         else {
@@ -214,62 +248,133 @@ class SenderImageCell: BaseTableViewCell {
         ChatUtils.setSenderBubbleBackground(imageView: bubbleImageView)
         
         self.message = message
-        
-        if message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.messageStatus == .sent {
-            if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
-                if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
-                    print("sender",sendMediaMessages?.count)
+        if message?.isCarbonMessage == false {
+            if message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                    if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
+                        print("sender",sendMediaMessages?.count)
+                        nicoProgressBar?.isHidden = false
+                        nicoProgressBar?.transition(to: .indeterminate)
+                        uploadView?.isHidden = true
+                        progressView?.isHidden = false
+                        retryButton?.isHidden = false
+                    } else {
+                        print("sender",sendMediaMessages?.count)
+                        nicoProgressBar?.isHidden = true
+                        retryButton?.isHidden = false
+                        uploadView?.isHidden = false
+                        progressView?.isHidden = true
+                    }
+                }
+            } else if message?.mediaChatMessage?.mediaUploadStatus == .uploading {
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                     nicoProgressBar?.isHidden = false
                     nicoProgressBar?.transition(to: .indeterminate)
-                    uploadView?.isHidden = true
                     progressView?.isHidden = false
+                    uploadView?.isHidden = true
                     retryButton?.isHidden = false
+                }
+            } else if message?.mediaChatMessage?.mediaUploadStatus == .uploaded {
+                if let localPath = message?.mediaChatMessage?.mediaFileName {
+                    let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                    let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                    if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+                        let data = NSData(contentsOf: fileURL)
+                        let image = UIImage(data: data! as Data)
+                        imageContainer?.image = image
+                    }
                 } else {
-                    print("sender",sendMediaMessages?.count)
+                    if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                        ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                    }
+                }
+                retryButton?.isHidden = true
+                nicoProgressBar?.isHidden = true
+                progressView?.isHidden = true
+                uploadView?.isHidden = true
+            } else {
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                     nicoProgressBar?.isHidden = true
-                    retryButton?.isHidden = false
-                    uploadView?.isHidden = false
                     progressView?.isHidden = true
+                    retryButton?.isHidden = true
+                    uploadView?.isHidden = true
                 }
             }
-    } else if message?.mediaChatMessage?.mediaUploadStatus == .uploading {
-            if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
-                nicoProgressBar?.isHidden = false
-                nicoProgressBar?.transition(to: .indeterminate)
-                progressView?.isHidden = false
-                uploadView?.isHidden = true
-                retryButton?.isHidden = false
-        }
-    } else if message?.mediaChatMessage?.mediaUploadStatus == .uploaded {
             if let localPath = message?.mediaChatMessage?.mediaFileName {
                 let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
                 let fileURL: URL = folderPath.appendingPathComponent(localPath)
                 if FileManager.default.fileExists(atPath: fileURL.relativePath) {
-                          let data = NSData(contentsOf: fileURL)
-                      let image = UIImage(data: data! as Data)
-                  imageContainer?.image = image
-                  }
+                    let data = NSData(contentsOf: fileURL)
+                    let image = UIImage(data: data! as Data)
+                    imageContainer?.image = image
+                }
             } else {
                 if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                 }
             }
-            retryButton?.isHidden = true
-            nicoProgressBar?.isHidden = true
-            progressView?.isHidden = true
-            uploadView?.isHidden = true
         } else {
-            if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
-                ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+            if message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.messageStatus == .sent {
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                    if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
+                        print("sender",sendMediaMessages?.count)
+                        nicoProgressBar?.isHidden = false
+                        nicoProgressBar?.transition(to: .indeterminate)
+                        uploadView?.isHidden = true
+                        progressView?.isHidden = false
+                        retryButton?.isHidden = false
+                    } else {
+                        print("sender",sendMediaMessages?.count)
+                        nicoProgressBar?.isHidden = true
+                        retryButton?.isHidden = false
+                        uploadView?.isHidden = false
+                        progressView?.isHidden = true
+                    }
+                }
+            } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloading {
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                    nicoProgressBar?.isHidden = false
+                    nicoProgressBar?.transition(to: .indeterminate)
+                    progressView?.isHidden = false
+                    uploadView?.isHidden = true
+                    retryButton?.isHidden = false
+                }
+            } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloaded {
+                if let localPath = message?.mediaChatMessage?.mediaFileName {
+                    let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                    let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                    if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+                        let data = NSData(contentsOf: fileURL)
+                        let image = UIImage(data: data! as Data)
+                        imageContainer?.image = image
+                    }
+                } else {
+                    if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                        ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                    }
+                }
+                retryButton?.isHidden = true
                 nicoProgressBar?.isHidden = true
                 progressView?.isHidden = true
-                retryButton?.isHidden = true
                 uploadView?.isHidden = true
+            } else {
+                if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
+                    nicoProgressBar?.isHidden = true
+                    progressView?.isHidden = true
+                    retryButton?.isHidden = true
+                    uploadView?.isHidden = true
+                }
+            }
         }
-    }
             let status = message?.messageStatus
             if status == .acknowledged || status == .received || status == .delivered || status == .seen {
                 uploadView?.isHidden = true

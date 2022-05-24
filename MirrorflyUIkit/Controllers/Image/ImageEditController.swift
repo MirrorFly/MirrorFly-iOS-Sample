@@ -10,6 +10,7 @@ import Photos
 import BSImagePicker
 import AVKit
 import Tatsi
+import FlyCommon
 import GrowingTextViewHandler_Swift
 
 protocol EditImageDelegate: class {
@@ -154,6 +155,7 @@ class ImageEditController: UIViewController {
     }
     
     @IBAction func sendAction(_ sender: Any) {
+        view.endEditing(true)
         navigationController?.popViewController(animated: true)
         if let captionText = captionTxt {
             captionTxt?.resignFirstResponder()
@@ -162,7 +164,6 @@ class ImageEditController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.delegate?.selectedImages(images: self?.imageAray ?? [])
         }
-       
     }
     
     @IBAction func deleteAction(_ sender: Any) {
@@ -182,6 +183,36 @@ class ImageEditController: UIViewController {
     
     @IBAction func close(_ sender: Any) {
         popView()
+    }
+    
+    func PHAssetForFileURL(url: URL) -> PHAsset? {
+        let imageRequestOptions = PHImageRequestOptions()
+        imageRequestOptions.version = .current
+        imageRequestOptions.deliveryMode = .fastFormat
+        imageRequestOptions.resizeMode = .fast
+        imageRequestOptions.isSynchronous = true
+
+        let fetchResult = PHAsset.fetchAssets(with: nil)
+        var index = 0
+        while index < fetchResult.count {
+            if let asset = fetchResult[index] as? PHAsset {
+                var found = false
+                PHImageManager.default().requestImageData(for: asset,
+                    options: imageRequestOptions) { (_, _, _, info) in
+                    if let urlkey = info?["PHImageFileURLKey"] as? NSURL {
+                        if urlkey.absoluteString! == url.absoluteString {
+                                found = true
+                            }
+                        }
+                }
+                if (found) {
+                    index += 1
+                    return asset
+                }
+            }
+        }
+
+        return nil
     }
     
     func addMoreImages() {
@@ -228,7 +259,6 @@ class ImageEditController: UIViewController {
                 let videoUrl = isVideo ? image.videoUrl : nil
                 let imgData: ImageData = ImageData(image: image.image, caption: nil, isVideo: isVideo, videoUrl: videoUrl, isSlowMotion: false)
                 strongSelf.imageAray.append(imgData)
-            }
                 strongSelf.topCollection?.reloadData()
             if !strongSelf.iscamera {
                 strongSelf.botomCollection.reloadData()
@@ -238,6 +268,7 @@ class ImageEditController: UIViewController {
                 strongSelf.showHideAddMoreOption()
             }
             self?.checkForSlowMotionVideo()
+            }
         })
     }
     
@@ -362,7 +393,7 @@ extension ImageEditController: UICollectionViewDelegate, UICollectionViewDataSou
         }else{
             let cell:ListImageCell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.listImageCell, for: indexPath) as! ListImageCell
             let imgeDetail = imageAray[indexPath.row]
-            cell.cellImage.contentMode = .scaleAspectFit
+            cell.cellImage.contentMode = .scaleAspectFill
             cell.cellImage.image = imgeDetail.image
             if botmImageIndex == indexPath.row {
                 cell.setBorder()

@@ -11,10 +11,6 @@ import FlyXmpp
 import FlyCore
 import FlyCommon
 
-let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let CONTAINER_ID = "group.com.mirrorfly.qa"
-
-
 class NotificationService: UNNotificationServiceExtension {
     
     var contentHandler: ((UNNotificationContent) -> Void)?
@@ -29,6 +25,7 @@ class NotificationService: UNNotificationServiceExtension {
         if payloadType == "media_call" {
             NotificationExtensionSupport.shared.didReceiveNotificationRequest(request.content.mutableCopy() as? UNMutableNotificationContent, onCompletion: { [self] bestAttemptContent in
                 if let userInfo = bestAttemptContent?.userInfo["message_id"] {
+                    bestAttemptContent?.title = encryptDecryptData(key: userInfo as? String ?? "", data: bestAttemptContent?.title ?? "", encrypt: false)
                     print("Push Show title: \(bestAttemptContent?.title ?? "") body: \(bestAttemptContent?.body ?? ""), ID - \(userInfo)")
                 }
                 self.bestAttemptContent = bestAttemptContent

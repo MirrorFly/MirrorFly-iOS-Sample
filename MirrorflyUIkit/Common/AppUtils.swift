@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 import Photos
 import FlyCommon
+import SDWebImage
 
 class AppUtils: NSObject {
     
@@ -87,10 +88,17 @@ class AppUtils: NSObject {
     
     func openURLInBrowser(urlString: String) {
         var tempUrl = urlString
-        if !tempUrl.contains("http://") || !tempUrl.contains("https://")  {
+        if tempUrl.localizedCaseInsensitiveContains("http://") || tempUrl.localizedCaseInsensitiveContains("https://")  {
+            openURL(tempURL: tempUrl)
+            return
+        } else {
             tempUrl = "https://" + tempUrl
+            openURL(tempURL: tempUrl)
         }
-        if let url = URL(string: tempUrl) {
+    }
+    
+    func openURL(tempURL: String?) {
+        if let url = URL(string: tempURL ?? "") {
             if #available(iOS 10.0, *) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
@@ -172,13 +180,56 @@ func executeOnMainThread( codeBlock: @escaping () -> Void) {
         codeBlock()
     }
 }
-
-
-func getUserName(name : String , nickName : String ) -> String {
-    FlyUtils.getUserName(name: name, nickName: nickName)
+    
+func getUserName(jid : String, name : String , nickName : String, contactType : ContactType) -> String {
+    FlyUtils.getUserName(jid: jid, name: name, nickName: nickName, contactType: contactType)
 }
 
 func getColor(userName : String) -> UIColor {
     return ChatUtils.getColorForUser(userName: userName)
+}
+
+extension UIImageView {
+    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown){
+        let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken
+        let url = URL(string: urlString)
+        var placeholder : UIImage?
+        switch chatType {
+        case .groupChat:
+            placeholder = UIImage(named: "smallGroupPlaceHolder")
+        default:
+            
+            if uniqueId == FlyDefaults.myJid {
+                placeholder = UIImage(named: "ic_profile_placeholder")
+            } else {
+                let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                let ipimage = IPImage(text: trimmedName, radius: Double(self.frame.size.height), font: UIFont.font32px_appBold(),
+                                      textColor: nil, color: getColor(userName: name))
+                placeholder = ipimage.generateInitialImage()
+            }
+        }
+        if contactType == .deleted {
+            placeholder = UIImage(named: "ic_profile_placeholder")
+        }
+        self.sd_setImage(with: url, placeholderImage: placeholder, options: [.continueInBackground,.decodeFirstFrameOnly,.highPriority,.scaleDownLargeImages], progress: nil){ (image, responseError, isFromCache, imageUrl) in
+            if let error =  responseError as? NSError{
+                if let errorCode = error.userInfo[SDWebImageErrorDownloadStatusCodeKey] as? Int {
+                    if errorCode == 401{
+                        ApiService.shared.refreshToken { isSuccess, error, data in
+                            if isSuccess{
+                                self.loadFlyImage(imageURL: imageURL, name: name, chatType : chatType)
+                            }else{
+                                self.image = placeholder
+                            }
+                        }
+                    }else{
+                        self.image = placeholder
+                    }
+                }
+            }else{
+                self.image = image
+            }
+        }
+    }
 }
 

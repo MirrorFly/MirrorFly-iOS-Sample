@@ -18,7 +18,7 @@
 		</data>
 		<key>Headers/FlyCall-Swift.h</key>
 		<data>
-		IWpv+1rK3vaxW7FCk41BLBVmJec=
+		L0uJF9vbU/Dyx2o590VaIYYER9M=
 		</data>
 		<key>Headers/FlyCall.h</key>
 		<data>
@@ -38,31 +38,19 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		4bABN7rN+x4LG9WNIWGhEZqAJFo=
+		rU4jTKhW7qVllH12esMA04cFu7I=
 		</data>
 		<key>Modules/FlyCall.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		fpv8anEIFXzy4/dyP+qsVyt3JpY=
+		THMB8Yg94TE0d+fX3PpIb1AWlP8=
 		</data>
 		<key>Modules/FlyCall.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		AGmxeJSJbii69XDeLcirMEOGPf8=
+		P7ln8hDPH/fAyBQYqZXTZTSJa64=
 		</data>
 		<key>Modules/FlyCall.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		wjLyJ+ET3GjSAuu0J8noOmeCo7s=
-		</data>
-		<key>Modules/FlyCall.swiftmodule/x86_64.swiftdoc</key>
-		<data>
-		fpv8anEIFXzy4/dyP+qsVyt3JpY=
-		</data>
-		<key>Modules/FlyCall.swiftmodule/x86_64.swiftinterface</key>
-		<data>
-		AGmxeJSJbii69XDeLcirMEOGPf8=
-		</data>
-		<key>Modules/FlyCall.swiftmodule/x86_64.swiftmodule</key>
-		<data>
-		wjLyJ+ET3GjSAuu0J8noOmeCo7s=
+		Ok09+nkC967MBW1ZcIjsk7mfnHk=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -96,7 +84,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			qPaBBGqQ5xuS4/1rhv/N9gHi36fG9QsqyROCNiiy6C0=
+			yYXjcGLoOiom8vj1+t/HCIyq3afhG/wNJ+ooN7N5XH0=
 			</data>
 		</dict>
 		<key>Headers/FlyCall.h</key>
@@ -131,42 +119,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			DRxV49DIOAy+IG04caRe6W/rnf0hqQRSfkgBRJmzAW8=
+			TWjQZLV0vDKAu3Fz1JMNERmaD6IpU1p9c3PMKqcezRE=
 			</data>
 		</dict>
 		<key>Modules/FlyCall.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			tK3uIrYU+15G0Z6UFe/H3TBbMMy1eyxKjb93vxzjZ1o=
+			8+08ZNuf5NA8xAkHkqDHj7I5BspyRxHWp82ARgvwsmg=
 			</data>
 		</dict>
 		<key>Modules/FlyCall.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FT9vQO2W0EOWlo6WbFtvVg2AlTk1/ok5/sLRRWmr8WU=
-			</data>
-		</dict>
-		<key>Modules/FlyCall.swiftmodule/x86_64.swiftdoc</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			DRxV49DIOAy+IG04caRe6W/rnf0hqQRSfkgBRJmzAW8=
-			</data>
-		</dict>
-		<key>Modules/FlyCall.swiftmodule/x86_64.swiftinterface</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			tK3uIrYU+15G0Z6UFe/H3TBbMMy1eyxKjb93vxzjZ1o=
-			</data>
-		</dict>
-		<key>Modules/FlyCall.swiftmodule/x86_64.swiftmodule</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			FT9vQO2W0EOWlo6WbFtvVg2AlTk1/ok5/sLRRWmr8WU=
+			O+dZTCg4sqHPEiPwvRbYgTwUeJ49+Z3S2TmSV+Gly2Q=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

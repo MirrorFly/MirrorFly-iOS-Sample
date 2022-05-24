@@ -26,7 +26,7 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
     @IBOutlet weak var profileImage: UIImageView!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var mobileNumberLabel: UILabel!
+    @IBOutlet weak var mobileNumberLabel: UITextField!
     @IBOutlet weak var statusButton: UIButton!
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var saveButton: UIButton!
@@ -85,6 +85,7 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
            self.getProfile()
         }
         isSaveButtonTapped = false
+        mobileNumberLabel.delegate = self
     }
     
     @objc override func didMoveToBackground() {
@@ -183,6 +184,7 @@ extension ProfileViewController {
                         DispatchQueue.main.async {
                             print(data.getData() as! ProfileDetails)
                             self?.profileDetails = data.getData() as? ProfileDetails
+                            let mobileNumber = self?.profileDetails?.mobileNumber ?? ""
                             if(self?.profileDetails?.image != "") {
                                 self?.setImage(imageURL: self?.profileDetails?.image ?? "", completionHandler: { _ in
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -200,8 +202,13 @@ extension ProfileViewController {
                             self?.nameTextField.text = self?.profileDetails?.name
                             self?.emailTextField.text = self?.profileDetails?.email
                             self?.getUserMobileNumber = self?.profileDetails!.mobileNumber ?? ""
-                            let mobileNumberWithoutCountryCode = self?.mobileNumberParse(phoneNo: (self?.profileDetails!.mobileNumber)!)
-                            self?.mobileNumberLabel.text = "+91 " +  mobileNumberWithoutCountryCode!
+                            if mobileNumber.isEmpty || mobileNumber.count < 6 {
+                                self?.mobileNumberLabel.text = self?.getMobileNumber ?? ""
+                            }else{
+                                let mobileNumberWithoutCountryCode = self?.mobileNumberParse(phoneNo: mobileNumber)
+                                self?.mobileNumberLabel.text = "+91 " +  mobileNumberWithoutCountryCode!
+                            }
+                            
                             self?.statusLabel.text = self?.profileDetails?.status
                             DispatchQueue.main.async { [weak self] in
                                 self?.stopLoading()
@@ -295,7 +302,7 @@ extension ProfileViewController {
                 if isSuccess {
                     Utility.saveInPreference(key: isProfileSaved, value: true)
                     Utility.saveInPreference(key: isLoginContactSyncDone, value: false)
-                    if IS_LIVE {
+                    if ENABLE_CONTACT_SYNC {
                         if self?.isSaveButtonTapped == true {
                             AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
                             let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
@@ -322,6 +329,7 @@ extension ProfileViewController {
                 }
             }
         }else {
+            stopLoading()
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
     }
@@ -437,7 +445,10 @@ extension ProfileViewController: UITextFieldDelegate{
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if(textField == nameTextField) {
-            return  textLimit(existingText: textField.text, newText: string, limit: userNameMaxLength)
+            return  textLimit(existingText: textField.text, newText: string, limit: userNameMaxLength, isName: true)
+        }
+        if(textField == mobileNumberLabel) {
+            return  textLimit(existingText: textField.text, newText: string, limit: 17, isName: false)
         }
         return true
     }
@@ -470,12 +481,12 @@ extension ProfileViewController: UITextFieldDelegate{
         return true
     }
     
-    func textLimit(existingText: String?, newText: String, limit: Int) -> Bool {
+    func textLimit(existingText: String?, newText: String, limit: Int, isName: Bool) -> Bool {
           let text = existingText ?? ""
           let limitText = text.count + newText.count
           let isAtLimit = text.count + newText.count <= limit
           if limitText > limit {
-           AppAlert.shared.showToast(message:  userNameValidation.localized)
+              AppAlert.shared.showToast(message:  isName ? userNameValidation.localized : userMobileNumber.localized)
           }
           return isAtLimit
       }
@@ -609,7 +620,6 @@ extension ProfileViewController {
         
         let pickerViewController = TatsiPickerViewController(config: config)
         pickerViewController.pickerDelegate = self
-        pickerViewController.isEditing = true
         self.present(pickerViewController, animated: true, completion: nil)
     }
     

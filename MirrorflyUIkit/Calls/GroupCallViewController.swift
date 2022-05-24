@@ -11,6 +11,7 @@ import FlyCall
 import FlyDatabase
 import FlyCommon
 import Alamofire
+import FlyCore
 
 class GroupCallViewController: UIViewController {
     
@@ -34,6 +35,9 @@ class GroupCallViewController: UIViewController {
     @IBOutlet weak var imgFour: UIImageView!
     @IBOutlet weak var plusCountLbl: UILabel!
     var contactJidArr = NSMutableArray()
+    var isGroup = false
+    @IBOutlet weak var imgeOneHeight: NSLayoutConstraint!
+    @IBOutlet weak var imgOneWidth: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         print(callLog)
@@ -61,103 +65,21 @@ class GroupCallViewController: UIViewController {
         imgFour.layer.cornerRadius = imgFour.frame.size.height / 2
         imgFour.layer.masksToBounds = true
         
-        if contactJidArr.count == 2{
+        
+        if isGroup{
+            imgOneWidth.constant = 60
+            imgeOneHeight.constant = 60
+            imgOne.layer.cornerRadius = 30
+            imgOne.layer.masksToBounds = true
             imgTwo.isHidden = true
-            imgOneLeading.constant = 10
             imgThree.isHidden = true
-            imgFour.isHidden = false
+            imgFour.isHidden = true
             plusCountLbl.isHidden = true
-            for i in 0...contactJidArr.count - 1{
-                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                    if i == 0{
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                    if i == 1{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                }
+            if let contact = rosterManager.getContact(jid: callLog.groupId!){
+                imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType ,contactType: contact.contactType)
             }
-            
-        }else if contactJidArr.count == 3{
-            for i in 0...contactJidArr.count - 1{
-                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                    if i == 0{
-                        
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
-                    }
-                    if i == 1{
-                        
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
-                    }
-                    
-                    if i == 2{
-                        
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
-                    }
-                }
-            }
-            imgTwo.isHidden = true
-            imgOneLeading.constant = 15
-            imgThree.isHidden = false
-            imgFour.isHidden = false
-            plusCountLbl.isHidden = true
-            
-        }else if contactJidArr.count == 4{
-            for i in 0...contactJidArr.count - 1{
-                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                    if i == 0{
-                        
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
-                    }
-                    if i == 1{
-                        
-                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
-                    }
-                    
-                    if i == 2{
-                        
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                        
-                    }
-                    if i == 3{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                }
-            }
-            imgTwo.isHidden = false
-            imgThree.isHidden = false
-            imgFour.isHidden = false
-            plusCountLbl.isHidden = true
-            
-        }else if contactJidArr.count != 0{
-            imgOne.isHidden = false
-            imgTwo.isHidden = false
-            imgThree.isHidden = false
-            imgFour.isHidden = false
-            plusCountLbl.isHidden = false
-            plusCountLbl.text =  "+ " + "\(fullNameArr.count - 4)"
-            for i in 0...contactJidArr.count - 1{
-                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                    if i == 0{
-                        Utility.download(token: contact.image, profileImage: imgOne, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                    if i == 1{
-                        Utility.download(token: contact.image, profileImage: imgTwo, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                    
-                    if i == 2{
-                        Utility.download(token: contact.image, profileImage: imgThree, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                    if i == 3{
-                        Utility.download(token: contact.image, profileImage: imgFour, uniqueId: contactJidArr[i] as! String,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-                    }
-                }
-            }
+        }else{
+            loadImagesForMutiUserCall()
         }
         
         if callLog["callType"] as! String == "audio"{
@@ -180,6 +102,16 @@ class GroupCallViewController: UIViewController {
         callInitiateBtn.addTarget(self, action: #selector(buttonClicked(sender:)), for: .touchUpInside)
         // memberCell?.contactNamelabel.text = contactArr.componentsJoined(by: ",")
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ContactManager.shared.profileDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
     }
     
     @IBAction func backAction(_ sender: Any) {
@@ -222,7 +154,9 @@ class GroupCallViewController: UIViewController {
         var callUserProfiles = [ProfileDetails]()
         for JID in fullNameArr{
             if let contact = rosterManager.getContact(jid: JID){
-                callUserProfiles.append(contact)
+                if contact.contactType != .deleted{
+                    callUserProfiles.append(contact)
+                }
             }
         }
         if callLog["callType"] as! String == "audio"{
@@ -230,6 +164,98 @@ class GroupCallViewController: UIViewController {
         }
         else{
             RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video)
+        }
+    }
+    
+    func loadImagesForMutiUserCall(){
+        let userString = callLog["userList"] as? String ?? ""
+        var userList = userString.components(separatedBy: ",")
+        userList.removeAll { jid in
+            jid == FlyDefaults.myJid
+        }
+        
+        if contactJidArr.count == 2{
+            imgTwo.isHidden = true
+            imgOneLeading.constant = 10
+            imgThree.isHidden = true
+            imgFour.isHidden = false
+            plusCountLbl.isHidden = true
+            for i in 0...contactJidArr.count - 1{
+                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                    if i == 0{
+                        imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 1{
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                }
+            }
+            
+        }else if contactJidArr.count == 3{
+            for i in 0...contactJidArr.count - 1{
+                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                    if i == 0{
+                        imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 1{
+                        imgThree.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 2{
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                }
+            }
+            imgTwo.isHidden = true
+            imgOneLeading.constant = 15
+            imgThree.isHidden = false
+            imgFour.isHidden = false
+            plusCountLbl.isHidden = true
+            
+        }else if contactJidArr.count == 4{
+            for i in 0...contactJidArr.count - 1{
+                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                    if i == 0{
+                        imgOne.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 1{
+                        imgTwo.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 2{
+                        imgThree.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 3{
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                }
+            }
+            imgTwo.isHidden = false
+            imgThree.isHidden = false
+            imgFour.isHidden = false
+            plusCountLbl.isHidden = true
+            
+        }else if contactJidArr.count != 0{
+            imgOne.isHidden = false
+            imgTwo.isHidden = false
+            imgThree.isHidden = false
+            imgFour.isHidden = false
+            plusCountLbl.isHidden = false
+            plusCountLbl.text =  "+ " + "\(userList.count - 4)"
+            for i in 0...contactJidArr.count - 1{
+                if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                    if i == 0{
+                        imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 1{
+                        imgTwo.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 2{
+                        imgThree.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                    if i == 3{
+                        imgFour.loadFlyImage(imageURL: contact.image, name:  getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+                    }
+                }
+            }
         }
     }
 }
@@ -244,16 +270,112 @@ extension GroupCallViewController : UITableViewDataSource, UITableViewDelegate {
         let contact = callUserProfiles[indexPath.row]
         memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
         memberCell?.userImageView.layer.masksToBounds = true
-        
-        Utility.download(token: contact.image, profileImage: (memberCell?.userImageView)!, uniqueId: contact.jid,name :getUserName(name: contact.name, nickName: contact.nickName),colorCode: contact.colorCode,frameSize:50,fontSize:16, completion: {})
-        
-        memberCell?.contactNamelabel.text = getUserName(name: contact.name, nickName: contact.nickName)
+        memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
+        memberCell?.contactNamelabel.text = getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
         return memberCell!
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 90
     }
+    
+}
+
+extension GroupCallViewController : ProfileEventsDelegate {
+    
+    func userCameOnline(for jid: String) {
+        
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
+        
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        let userString = callLog["userList"] as? String ?? ""
+        var userList = userString.components(separatedBy: ",")
+        userList.removeAll { jid in
+            jid == FlyDefaults.myJid
+        }
+        callUserProfiles.removeAll()
+        for JID in userList{
+            if let contact = rosterManager.getContact(jid: JID){
+                callUserProfiles.append(contact)
+            }
+        }
+        let contactArr = NSMutableArray()
+        for contact in callUserProfiles{
+            contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+        }
+        if isGroup{
+            groupCallNameLbl.text = groupCallName
+        }else{
+            groupCallNameLbl.text = contactArr.componentsJoined(by: ",")
+            loadImagesForMutiUserCall()
+        }
+        groupDetailTblView.reloadData()
+    }
+    
+    func blockedThisUser(jid: String) {
+        
+    }
+    
+    func unblockedThisUser(jid: String) {
+        
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+        
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+        
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        if let index = callUserProfiles.firstIndex(where: { pd in pd.jid == jid }) {
+            callUserProfiles[index] = profileDetails
+            let indexPath = IndexPath(item: index, section: 0)
+            groupDetailTblView?.reloadRows(at: [indexPath], with: .fade)
+            let contactArr = NSMutableArray()
+            for contact in callUserProfiles{
+                contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+            }
+            if !isGroup{
+                groupCallNameLbl.text = contactArr.componentsJoined(by: ",")
+                loadImagesForMutiUserCall()
+            }
+        }
+    }
+    
     
 }
 

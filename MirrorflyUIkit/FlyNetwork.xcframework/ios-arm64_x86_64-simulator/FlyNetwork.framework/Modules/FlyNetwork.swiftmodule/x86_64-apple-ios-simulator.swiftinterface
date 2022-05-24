@@ -1,14 +1,12 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyNetwork
-import Alamofire
 import CommonCrypto
 import FlyCommon
 @_exported import FlyNetwork
 import Foundation
 import MobileCoreServices
 import Network
-import SocketIO
 import Swift
 import _Concurrency
 @objc @_inheritsConvenienceInitializers public class FlyForwardManager : ObjectiveC.NSObject {
@@ -51,7 +49,7 @@ public protocol WebLoginDelegate {
   public static let shared: FlyNetwork.MediaManager
   public var flyMediaDelegate: FlyNetwork.FlyMediaDelegate?
   @objc override dynamic public init()
-  public func uploadFile(message: FlyCommon.ChatMessage)
+  public func uploadFile(message: FlyCommon.ChatMessage, completion: ((Swift.Bool) -> Swift.Void)? = nil)
   public func cancelUploadTask(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
   public func downloadFile(message: FlyCommon.ChatMessage, completionHandler: ((Swift.Bool) -> ())? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public func cancelDownloadTask(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
@@ -67,14 +65,16 @@ public protocol FlyNetworkControllerDelegate : ObjectiveC.NSObjectProtocol {
   @objc deinit
 }
 extension FlyNetwork.FlyNetworkController {
-  public func registerApiService(mobilenumber: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, isLive: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func registerApiService(uniqueIdentifier: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, isLive: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func requestOtpApiService(mobileNumber: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func removeProfileImage(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func uploadMyProfileImage(fileUrl: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func downloadProfileImage(imageUrl: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
-  public func contactSync(addContacts: [FlyCommon.ContactInfo], deleteContacts: [FlyCommon.ContactInfo], forceDelete: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func contactSync(contactPermission: Swift.Bool, addContacts: [FlyCommon.ContactInfo], deleteContacts: [FlyCommon.ContactInfo], forceDelete: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func clearChatRevokeApiService(toUsers: Swift.Dictionary<Swift.String, Swift.String>, starredMessage: Swift.Bool, status: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func deleteForEveryoneMediaRevokeAccessApiService(fileNames: [Swift.String], starredMessage: Swift.Bool, status: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func sendMessageReceivedStatusApiService(userInfo: [Swift.AnyHashable : Any]?, completionHandler: @escaping ([Swift.String : Any]) -> Swift.Void)
   public func logoutApiService(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func sendContactUsInfo(title: Swift.String, description: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func sendDeleteMyAccontData(reason: Swift.String, feedback: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
 }

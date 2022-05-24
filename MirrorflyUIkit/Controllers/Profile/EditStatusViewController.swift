@@ -34,7 +34,6 @@ class EditStatusViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
           setupUI()
           statusArray =   getStatus()
         if(  statusArray.count > 0) {
@@ -110,7 +109,7 @@ class EditStatusViewController: UIViewController {
           backgroundView.alpha = 0.5
           topStatusView.backgroundColor = Color.primaryTextColor
           topStatusView.alpha = 0.5
-          view.bringSubviewToFront(  backgroundView)
+          view.bringSubviewToFront(backgroundView)
           statusTextview.becomeFirstResponder()
           editTextButton.isHidden = true
           typeHereLabel.isHidden = false
@@ -192,6 +191,7 @@ extension EditStatusViewController: UITableViewDelegate, UITableViewDataSource {
         cell.statusLabel.text =   statusArray[indexPath.row].status
         if(statusArray[indexPath.row].isCurrentStatus) {
             cell.selectImage.isHidden = false
+            cell.statusLabel.textColor = .black
         }
         else {
             cell.selectImage.isHidden = true

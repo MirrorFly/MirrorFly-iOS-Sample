@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Photos
 
 var currentBundle: Bundle!
 
@@ -129,7 +130,7 @@ extension String{
     }
     
     func verifyisUrl (urlString: String?) -> Bool {
-        if let urlString = urlString {
+        if let urlString = urlString?.lowercased() {
             if let url = NSURL(string: urlString) {
                 if UIApplication.shared.canOpenURL(url as URL) {
                     return true
@@ -183,4 +184,3 @@ extension String{
         return text
     }
 }
-

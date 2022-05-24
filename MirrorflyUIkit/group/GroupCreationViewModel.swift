@@ -40,7 +40,7 @@ class GroupCreationViewModel : NSObject {
     
     func searchContacts(text : String,contacts : [ProfileDetails])  -> [ProfileDetails] {
         text.isEmpty ? contacts : contacts.filter { term in
-            return getUserName(name: term.name, nickName: term.nickName).lowercased().contains(text.lowercased())
+            return getUserName(jid:term.jid,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(text.lowercased())
         }
     }
     
@@ -93,7 +93,7 @@ class GroupCreationViewModel : NSObject {
         
         var contactsList = contacts
         
-        let groupMembers = GroupManager.shared.getGroupMemeberFromLocal(groupJid: groupID)
+        let groupMembers = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID)
         groupMembers.participantDetailArray.forEach { groupParticipantDetail in
             contactsList = contactsList.filter({$0.jid != groupParticipantDetail.memberJid})
         }

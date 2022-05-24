@@ -21,8 +21,9 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     @IBOutlet weak var retryLabel: UILabel!
     @IBOutlet weak var cancelUploadButton: UIButton!
     @IBOutlet weak var videoTimeLabel: UILabel!
-
-
+    @IBOutlet weak var downloadLabel: UILabel?
+    @IBOutlet weak var downloadImage: UIImageView?
+    @IBOutlet weak var downloadView: UIView?
     @IBOutlet weak var cellView: UIView!
     @IBOutlet weak var imageContainer: UIImageView!
     @IBOutlet weak var sentTime: UILabel!
@@ -30,9 +31,8 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var progressLoader: NicoProgressBar!
     @IBOutlet weak var progressView: UIView!
-
     @IBOutlet weak var captionLabel: UILabel!
-
+    @IBOutlet weak var downloadButton: UIButton?
     
     // Reply Message Outlet
     @IBOutlet weak var mediaMessageImageView: UIImageView?
@@ -44,7 +44,8 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     @IBOutlet weak var retryButton: UIButton?
     @IBOutlet weak var replyView: UIView?
     @IBOutlet weak var mediaLocationMapView: GMSMapView?
-    
+    @IBOutlet weak var replyWithoutMediaCons: NSLayoutConstraint?
+    @IBOutlet weak var replyWithMediaCOns: NSLayoutConstraint?
     // Forward Outlet
     @IBOutlet weak var forwardImageView: UIImageView?
     @IBOutlet weak var forwardView: UIView?
@@ -110,7 +111,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+          //  forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
@@ -118,9 +119,11 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
             quickfwdView?.isHidden = true
             quickFwdBtn?.isHidden = true
+            isAllowSwipe = false
         } else {
             quickfwdView?.isHidden = false
             quickFwdBtn?.isHidden = false
+            isAllowSwipe = true
         }
         
         // Reply view elements and its data
@@ -143,10 +146,14 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                        mediaMessageImageView?.image = image
                        replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
                    }
+                   replyWithoutMediaCons?.isActive = false
+                   replyWithMediaCOns?.isActive = true
                case .audio:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
+                   replyWithoutMediaCons?.isActive = true
+                   replyWithMediaCOns?.isActive = false
                case .video:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
                    if let thumImage = replyMessage?.mediaChatMessage?.mediaThumbImage {
@@ -155,13 +162,18 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                        mediaMessageImageView?.image = image
                        replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyWithoutMediaCons?.isActive = false
+                   replyWithMediaCOns?.isActive = true
                default:
                    messageTypeIconView?.isHidden = true
+                   replyWithoutMediaCons?.isActive = true
+                   replyWithMediaCOns?.isActive = false
                }
                
            } else if replyMessage?.locationChatMessage != nil {
                mediaLocationMapView?.isHidden = false
                replyTextLabel?.text = "Location"
+               mediaLocationMapView?.isUserInteractionEnabled = false
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
                guard let latitude = replyMessage?.locationChatMessage?.latitude else {
                    return nil
@@ -180,16 +192,25 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                    marker.map = mediaLocationMapView
                }
                messageTypeIconView?.isHidden = false
+               replyWithoutMediaCons?.isActive = false
+               replyWithMediaCOns?.isActive = true
            } else if replyMessage?.contactChatMessage != nil {
-               replyTextLabel?.text = "Contact"
+               let replyTextMessage = "Contact: \(replyMessage?.contactChatMessage?.contactName ?? "")"
+                   replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: replyMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                messageTypeIconView?.isHidden = false
+               replyWithoutMediaCons?.isActive = true
+               replyWithMediaCOns?.isActive = false
+           } else {
+               replyWithoutMediaCons?.isActive = true
+               replyWithMediaCOns?.isActive = false
            }
         if(replyMessage!.isMessageSentByMe) {
             userTitleLabel?.text = you.localized
         }
         else {
-            userTitleLabel?.text = replyMessage?.senderUserName
+            userTitleLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
+                                               nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     }
         else {
@@ -250,6 +271,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             retryButton?.isHidden = false
             uploadView?.isHidden = false
             progressView?.isHidden = true
+            
         case .uploading:
             let progrss = message?.mediaChatMessage?.mediaProgressStatus ?? 0
             print("Video Upload mediaStatus \(message?.mediaChatMessage?.mediaUploadStatus)")

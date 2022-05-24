@@ -40,10 +40,17 @@ class callLogViewController: UIViewController, RequestInterceptor {
     }
    
     override func viewWillAppear(_ animated: Bool) {
+        CallLogArray = CallLogManager.getCallLogs()
+        noCallLogView.isHidden = CallLogArray.count > 0
+        deleteAllBtn.isHidden = CallLogArray.isEmpty
+        callLogTableView.reloadData()
         getsyncedLogs()
         postUnSyncedLogs()
         CallLogArray = CallLogManager.getCallLogs()
         deleteAllBtn.isHidden = CallLogArray.count > 0 ? false : true
+        if let fab = floaty{
+            fab.removeFromSuperview()
+        }
         floaty = Floaty(frame:  CGRect(x: (view.bounds.maxX - 68), y:  (view.bounds.maxY - 160), width: 56, height: 56))
         floaty?.addItem("", icon: UIImage(named: "audio_call")!, handler: { item in
             let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
@@ -53,6 +60,7 @@ class callLogViewController: UIViewController, RequestInterceptor {
             controller.isMultiSelect = true
             controller.callType = .Audio
             controller.hideNavigationbar = true
+            controller.isInvite = false
             self.navigationController?.pushViewController(controller, animated: true)
             self.floaty?.close()
         })
@@ -64,18 +72,31 @@ class callLogViewController: UIViewController, RequestInterceptor {
             controller.isMultiSelect = true
             controller.callType = .Video
             controller.hideNavigationbar = true
+            controller.isInvite = false
             self.navigationController?.pushViewController(controller, animated: true)
             self.floaty?.close()
         })
         if let floaty = floaty {
+            floaty.overlayColor = UIColor(white: 1, alpha: 0.0)
             view.addSubview(floaty)
         }
         callLogTableView.tableFooterView = UIView()
         callLogTableView.reloadData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ContactManager.shared.profileDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         if let floaty = floaty {
+            floaty.close()
             floaty.removeFromSuperview()
         }
     }
@@ -125,7 +146,8 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
         memberCell?.callInitiateBtn.tag = indexPath.row
         memberCell?.callInitiateBtn.addTarget(self, action: #selector(buttonClicked(sender:)), for: .touchUpInside)
         if let callLog = CallLogArray[indexPath.row] as? RealmCallLog{
-            if callLog["callMode"] as? String == "onetoone" || callLog["callMode"] as? String == ""{
+            let isGroupCall =  (callLog.groupId?.count ?? 0 != 0)
+            if callLog["callMode"] as? String == "onetoone" || callLog["callMode"] as? String == "" || isGroupCall{
                 memberCell?.groupView.isHidden = true
                 memberCell?.userImageView.isHidden = false
                 var jidString = String()
@@ -134,12 +156,12 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                 }else{
                     jidString = callLog["fromUser"] as! String
                 }
-                if let contact = rosterManager.getContact(jid: jidString){
-                    memberCell?.contactNamelabel.text = getUserName(name: contact.name, nickName: contact.nickName)
+                let jid =  (callLog.groupId?.count ?? 0 == 0) ? jidString : callLog.groupId!
+                if let contact = rosterManager.getContact(jid: jid){
+                    memberCell?.contactNamelabel.text = getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
                     memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
                     memberCell?.userImageView.layer.masksToBounds = true
-                    
-                    Utility.download(token: contact.image, profileImage: (memberCell?.userImageView)!, uniqueId:jidString,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:18, completion: {})
+                    memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType)
                 }
             }else{
                 memberCell?.imgOne.layer.cornerRadius = (memberCell?.imgOne.frame.size.height)! / 2
@@ -166,12 +188,12 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                 let contactJidArr = NSMutableArray()
                 for JID in fullNameArr{
                     if let contact = rosterManager.getContact(jid: JID){
-                        contactArr.add(getUserName(name: contact.name, nickName: contact.nickName))
+                        contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                         contactJidArr.add(JID)
                     }
                 }
                 if callLog.groupId?.count ?? 0 > 0 {
-                    memberCell?.contactNamelabel.text = rosterManager.getGroupName(jid: callLog.groupId!)
+                    memberCell?.contactNamelabel.text = rosterManager.getContact(jid: callLog.groupId!)?.name ?? ""
                 }
                 else {
                 memberCell?.contactNamelabel.text = contactArr.componentsJoined(by: ",")
@@ -188,13 +210,10 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                     for i in 0...contactJidArr.count - 1{
                         if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                             if i == 0{
-                               
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgOne)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
-                                
+                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             if i == 1{
-                               
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgFour)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                                
                             }
                         }
@@ -204,14 +223,14 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                     for i in 0...contactJidArr.count - 1{
                         if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                             if i == 0{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgOne)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             if i == 1{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgThree)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             
                             if i == 2{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgFour)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                         }
                     }
@@ -225,17 +244,17 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                     for i in 0...contactJidArr.count - 1{
                         if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                             if i == 0{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgOne)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType)
                             }
                             else if i == 1{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgTwo)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType)
                             }
                             
                             else if i == 2{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgThree)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType)
                             }
                             else if i == 3{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgFour)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType)
                             }
                             else {
                                 break
@@ -259,17 +278,17 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                     for i in 0...contactJidArr.count - 1{
                         if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
                             if i == 0{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgOne)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             else if i == 1{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgTwo)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             
                             else if i == 2{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgThree)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             else if i == 3{
-                                Utility.download(token: contact.image, profileImage: (memberCell?.imgFour)!, uniqueId: contactJidArr[i] as! String,name :contact.name,colorCode: contact.colorCode,frameSize:50,fontSize:14, completion: {})
+                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType)
                             }
                             else {
                                 break
@@ -317,7 +336,9 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                 
                 if let contact = rosterManager.getContact(jid: jidString)
                 {
-                    callUserProfiles.append(contact)
+                    if contact.contactType != .deleted{
+                        callUserProfiles.append(contact)
+                    }
                 }
                 if callLog["callType"] as! String == "audio"{
                     RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio)
@@ -331,7 +352,9 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                 var callUserProfiles = [ProfileDetails]()
                 for JID in fullNameArr{
                     if let contact = rosterManager.getContact(jid: JID){
-                        callUserProfiles.append(contact)
+                        if contact.contactType != .deleted{
+                            callUserProfiles.append(contact)
+                        }
                     }
                 }
                 if callLog["callType"] as! String == "audio"{
@@ -434,7 +457,7 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         callLog = CallLogArray[indexPath.row] as! RealmCallLog
-        if callLog["callMode"] as? String == "onetoone"{
+        if callLog["callMode"] as? String == "onetoone" && (callLog.groupId?.isEmpty ?? true){
             
         }else{
             let storyboard = UIStoryboard(name: "Call", bundle: nil)
@@ -442,17 +465,27 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
             groupCallViewController?.callLog = callLog
             let userString = callLog["userList"] as? String ?? ""
             let fullNameArr = userString.components(separatedBy: ",")
-            let contactArr = NSMutableArray()
-            for JID in fullNameArr{
-                if let contact = rosterManager.getContact(jid: JID){
-                    contactArr.add(getUserName(name: contact.name, nickName: contact.nickName))
+            var name = ""
+            if !(callLog.groupId?.isEmpty ?? true){
+                if let contact = rosterManager.getContact(jid: callLog.groupId!){
+                    name = contact.name
                 }
+                groupCallViewController?.isGroup = true
+            }else{
+                let contactArr = NSMutableArray()
+                for JID in fullNameArr{
+                    if let contact = rosterManager.getContact(jid: JID){
+                        contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                    }
+                }
+                name = contactArr.componentsJoined(by: ",")
             }
-            groupCallViewController?.groupCallName = contactArr.componentsJoined(by: ",")
+            groupCallViewController?.groupCallName = name
             let time = callLog["callTime"] as! Double
             let todayTimeStamp = FlyCallUtils.generateTimestamp()
             groupCallViewController?.callTime = self.callLogTime(time, currentTime: todayTimeStamp)!
             groupCallViewController?.callDuration = self.callLogDuration(callLog["startTime"] as! Double, endTime: callLog["endTime"] as! Double)!
+            groupCallViewController
             self.navigationController?.pushViewController(groupCallViewController!, animated: true)
         }
     }
@@ -577,8 +610,10 @@ extension callLogViewController{
                         callLogs.add(newLog as Any)
                     }
                     callLogManager.saveRealmArray(callLogs as! [RealmCallLog])
+                    CallLogArray.removeAll()
                     CallLogArray = CallLogManager.getCallLogs()
                     noCallLogView.isHidden = CallLogArray.count > 0
+                    deleteAllBtn.isHidden = CallLogArray.isEmpty
                     callLogTableView.reloadData()
                 }
             }
@@ -743,6 +778,70 @@ extension callLogViewController{
             }
         }
     }
+}
+
+extension callLogViewController : ProfileEventsDelegate{
+    func userCameOnline(for jid: String) {
+        
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
+            
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        callLogTableView.reloadData()
+    }
+    
+    func blockedThisUser(jid: String) {
+        
+    }
+    
+    func unblockedThisUser(jid: String) {
+        
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+        
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        callLogTableView.reloadData()
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+        
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        callLogTableView.reloadData()
+    }
+    
+    
 }
 
 

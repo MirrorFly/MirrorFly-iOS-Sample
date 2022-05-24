@@ -84,6 +84,13 @@ class ProfileViewModel {
                 guard let responseDictionary = JSON as?[String : Any]  else{
                     return
                 }
+                if !Utility.getBoolFromPreference(key: firstTimeSandboxContactSyncDone) {
+                    ChatManager.sendRegisterUpdate { isSuccess, error, data in
+                        if isSuccess{
+                            Utility.saveInPreference(key: firstTimeSandboxContactSyncDone, value: true)
+                        }
+                    }
+                }
                 ContactManager.shared.getFriendsList(fromServer: true) { isSuccess, error, data in }
                 print("success \(responseDictionary)")
                 break

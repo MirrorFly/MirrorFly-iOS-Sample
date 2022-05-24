@@ -146,7 +146,7 @@ class VerifyOTPViewController: UIViewController
         self.stopLoading()
         let localGoogleToken = Utility.getStringFromPreference(key: googleToken)
         if userData.verifyUserData?.deviceToken == nil {
-            checkLoginExistance()
+            registration()
         }else if localGoogleToken != userData.verifyUserData?.deviceToken
         {
             let localGoogleToken = Utility.getStringFromPreference(key: googleToken)
@@ -155,36 +155,17 @@ class VerifyOTPViewController: UIViewController
                 AppAlert.shared.onAlertAction = { (result) ->
                     Void in
                     if result == 1 {
-                        self.checkLoginExistance()
+                        self.registration()
                     }else {
                         self.popView()
                     }
                 }
             }
         }else {
-            self.checkLoginExistance()
+            self.registration()
         }
     }
     
-    func checkLoginExistance() {
-        registration()
-//        let mobile = Utility.removeCharFromString(string: self.mobileNumber, char: "+")
-//        let deviceToken = Utility.getStringFromPreference(key: googleToken)
-//        let param = NSMutableDictionary()
-//        param.setValue(deviceToken, forKey: "googleToken")
-//        param.setValue(mobile, forKey: "mobileNumber")
-//        print("verifyOTPViewModel.validateUser \(param)")
-//        verifyOTPViewModel.validateUser(params: param) { [weak self] verifyToken, error in
-//            let token = verifyToken?.data?["deviceToken"] ?? ""
-//            print("verifyOTPViewModel.validateUser \(token) \(verifyToken?.message ?? "")")
-//            if token.isEmpty || token == deviceToken {
-//                self?.registration()
-//            } else {
-//                self?.showAlreadyLoggedIn()
-//            }
-//
-//        }
-    }
     
     func showAlreadyLoggedIn() {
         AppAlert.shared.showAlert(view: self, title: nil, message: youWantToLogout, buttonOneTitle: noButton, buttonTwoTitle: yesButton)
@@ -214,9 +195,9 @@ class VerifyOTPViewController: UIViewController
     func registration() {
         self.startLoading(withText: pleaseWait)
         let mobile = Utility.removeCharFromString(string: self.mobileNumber, char: "+")
-        verifyOTPViewModel.registration(mobileNumber: mobile) { (result, error) in
+        verifyOTPViewModel.registration(uniqueIdentifier: mobile) { [weak self] (result, error) in
             if error == nil {
-                self.stopLoading()
+                self?.stopLoading()
                 guard let userPassword = result?["password"] as? String else{
                     return
                 }
@@ -226,24 +207,37 @@ class VerifyOTPViewController: UIViewController
                 guard let profileUpdateStatus = result?["isProfileUpdated"] as? Int else{
                     return
                 }
+                FlyDefaults.isLoggedIn = true
                 Utility.saveInPreference(key: isLoggedIn, value: true)
                 Utility.saveInPreference(key: username, value: userName)
                 Utility.saveInPreference(key: password, value: userPassword)
                 FlyDefaults.myXmppPassword = userPassword
                 FlyDefaults.myXmppUsername = userName
-                FlyDefaults.myMobileNumber = self.getMobileNumber
+                FlyDefaults.myMobileNumber = self?.getMobileNumber ?? ""
                 FlyDefaults.isProfileUpdated = profileUpdateStatus == 1
                 AppAlert.shared.showToast(message: SuccessMessage.successAuth)
-                self.isAuthorizedSuccess = true
-                self.verifyOTPViewModel.initializeChatCredentials(username: userName, secretKey: userPassword)
-                self.startLoading(withText: pleaseWait)
+                self?.isAuthorizedSuccess = true
+                self?.verifyOTPViewModel.initializeChatCredentials(username: userName, secretKey: userPassword)
+                self?.startLoading(withText: pleaseWait)
             } else{
-                self.stopLoading()
+                self?.stopLoading()
                 if let errorMsg  = error {
-                    AppAlert.shared.showToast(message: errorMsg)
+                    if errorMsg == userBlocked {
+                        self?.navigateToBlockedScreen()
+                    } else {
+                        AppAlert.shared.showToast(message: errorMsg)
+                    }
+                    
                 }
             }
         }
+    }
+    
+    func navigateToBlockedScreen() {
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        let initialViewController = storyboard.instantiateViewController(withIdentifier: "BlockedByAdminViewController") as! BlockedByAdminViewController
+        UIApplication.shared.keyWindow?.rootViewController =  UINavigationController(rootViewController: initialViewController)
+        UIApplication.shared.keyWindow?.makeKeyAndVisible()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -321,7 +315,7 @@ class VerifyOTPViewController: UIViewController
                         }
                         self?.stopTimer()
                         DispatchQueue.main.async { [weak self] in
-                            self?.checkLoginExistance()
+                            self?.registration()
                         }
                         
                     }

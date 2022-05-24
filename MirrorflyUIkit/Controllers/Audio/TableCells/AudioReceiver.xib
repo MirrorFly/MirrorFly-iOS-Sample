@@ -19,7 +19,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AudioReceiver" rowHeight="180" id="KGk-i7-Jjw" customClass="AudioReceiver" customModule="MirrorflyUIkit" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AudioReceiver" rowHeight="180" id="KGk-i7-Jjw" customClass="AudioReceiver" customModule="Mirrorfly" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="586" height="190"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
@@ -146,6 +146,7 @@
                                     <constraint firstItem="8Ts-Ff-Rdf" firstAttribute="top" secondItem="GOc-Kp-NPe" secondAttribute="bottom" constant="3" id="cCy-JE-5jT"/>
                                     <constraint firstItem="3tD-Q0-cwy" firstAttribute="bottom" secondItem="bMv-YG-qcq" secondAttribute="bottom" id="f9r-MO-6Q1"/>
                                     <constraint firstItem="3tD-Q0-cwy" firstAttribute="top" secondItem="bMv-YG-qcq" secondAttribute="top" id="g1i-7G-x0n"/>
+                                    <constraint firstAttribute="trailing" secondItem="GOc-Kp-NPe" secondAttribute="trailing" constant="4" id="gL2-hz-mzc"/>
                                     <constraint firstItem="GOc-Kp-NPe" firstAttribute="leading" secondItem="Fzq-Qv-SHM" secondAttribute="leading" constant="10" id="kJm-r9-4Ba"/>
                                     <constraint firstItem="ZBr-8N-TCh" firstAttribute="top" secondItem="Fzq-Qv-SHM" secondAttribute="top" id="kpt-i3-RSk"/>
                                     <constraint firstAttribute="bottom" secondItem="8Ts-Ff-Rdf" secondAttribute="bottom" constant="4" id="q5o-3A-VU7"/>
@@ -162,6 +163,7 @@
                                 </userDefinedRuntimeAttributes>
                                 <variation key="default">
                                     <mask key="constraints">
+                                        <exclude reference="gL2-hz-mzc"/>
                                         <exclude reference="Gj0-1m-gr6"/>
                                     </mask>
                                 </variation>
@@ -192,9 +194,9 @@
                                                 <rect key="frame" x="88" y="23.5" width="255.5" height="10"/>
                                                 <subviews>
                                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Srx-fa-Duk">
-                                                        <rect key="frame" x="-2" y="0.0" width="259.5" height="11"/>
+                                                        <rect key="frame" x="-2" y="-5" width="259.5" height="21"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="10" id="Mus-VY-apE"/>
+                                                            <constraint firstAttribute="height" constant="20" id="Mus-VY-apE"/>
                                                         </constraints>
                                                         <color key="minimumTrackTintColor" red="0.0" green="0.4592103958" blue="0.89129447939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <connections>
@@ -208,9 +210,7 @@
                                                     <constraint firstItem="Srx-fa-Duk" firstAttribute="centerX" secondItem="2VD-XK-DIr" secondAttribute="centerX" id="InE-g7-oqY"/>
                                                     <constraint firstAttribute="trailing" secondItem="Srx-fa-Duk" secondAttribute="trailing" id="Vyc-WY-kKc"/>
                                                     <constraint firstItem="Srx-fa-Duk" firstAttribute="centerY" secondItem="2VD-XK-DIr" secondAttribute="centerY" id="W9T-k8-A06"/>
-                                                    <constraint firstItem="Srx-fa-Duk" firstAttribute="top" secondItem="2VD-XK-DIr" secondAttribute="top" id="cpy-sm-XEL"/>
                                                     <constraint firstItem="Srx-fa-Duk" firstAttribute="leading" secondItem="2VD-XK-DIr" secondAttribute="leading" id="pg3-2Z-MXT"/>
-                                                    <constraint firstAttribute="bottom" secondItem="Srx-fa-Duk" secondAttribute="bottom" id="xP7-Jb-mqe"/>
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:11" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c3l-EC-C0k">
@@ -363,6 +363,8 @@
                 <outlet property="replyTextLabel" destination="Kph-Sb-wf3" id="BIl-gb-Gcw"/>
                 <outlet property="replyUserLabel" destination="GOc-Kp-NPe" id="lX7-gX-gcX"/>
                 <outlet property="replyView" destination="Fzq-Qv-SHM" id="tdV-7S-U6Y"/>
+                <outlet property="replyWithMediaCons" destination="Zpk-fg-BSr" id="4yL-md-iTL"/>
+                <outlet property="replyWithOutMediaCons" destination="gL2-hz-mzc" id="UCq-PO-i3P"/>
                 <outlet property="slider" destination="Srx-fa-Duk" id="KNv-ew-tyl"/>
                 <outlet property="timeView" destination="qPu-i7-Ar1" id="W90-ob-RzY"/>
             </connections>

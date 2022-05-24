@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wST-Oy-5V5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wST-Oy-5V5">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -24,7 +24,7 @@
         <!--Call View Controller-->
         <scene sceneID="Tja-Qx-fUq">
             <objects>
-                <viewController storyboardIdentifier="CallViewController" id="wST-Oy-5V5" customClass="CallViewController" customModule="MirrorflyUIkit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CallViewController" id="wST-Oy-5V5" customClass="CallViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sW0-h1-5wH">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -39,7 +39,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GroupCallCell" id="tak-n9-IR4" customClass="GroupCallCell" customModule="MirrorflyUIkit" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GroupCallCell" id="tak-n9-IR4" customClass="GroupCallCell" customModule="Mirrorfly" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="165" height="147"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="UeS-hi-0pM">
@@ -157,7 +157,7 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KDO-iw-ayW" customClass="OutGoingCallXib" customModule="MirrorflyUIkit" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KDO-iw-ayW" customClass="OutGoingCallXib" customModule="Mirrorfly" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                             </view>
                         </subviews>
@@ -191,7 +191,7 @@
         <!--Group Call View Controller-->
         <scene sceneID="0a5-iy-ev3">
             <objects>
-                <viewController storyboardIdentifier="GroupCallViewController" id="JLu-ok-Hmg" customClass="GroupCallViewController" customModule="MirrorFlyiOS_SDK" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GroupCallViewController" id="JLu-ok-Hmg" customClass="GroupCallViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EQL-8J-NoK">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -320,7 +320,7 @@
                                 <rect key="frame" x="0.0" y="120" width="414" height="598"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CCFGroupCallLogListCell" rowHeight="91" id="GDO-7b-Ain" customClass="CCFGroupCallLogListCell" customModule="MirrorFlyiOS_SDK" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CCFGroupCallLogListCell" rowHeight="91" id="GDO-7b-Ain" customClass="CCFGroupCallLogListCell" customModule="Mirrorfly" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="44.666666030883789" width="414" height="91"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GDO-7b-Ain" id="VGS-ni-jYP">
@@ -496,8 +496,10 @@
                         <outlet property="imgFour" destination="Duy-2Y-lv4" id="CaP-Ui-kA7"/>
                         <outlet property="imgOne" destination="Vtf-8v-ZAh" id="4J1-l7-Mbo"/>
                         <outlet property="imgOneLeading" destination="Ef5-7c-f60" id="UAY-mc-OSz"/>
+                        <outlet property="imgOneWidth" destination="Mfe-C2-da1" id="0RF-Cx-4xd"/>
                         <outlet property="imgThree" destination="u2t-eU-Wc1" id="qun-Ji-8VR"/>
                         <outlet property="imgTwo" destination="Sxl-DR-4is" id="V3Q-xI-IYF"/>
+                        <outlet property="imgeOneHeight" destination="tLc-Kh-HcT" id="KXF-gd-7tC"/>
                         <outlet property="plusCountLbl" destination="sdq-ak-OVG" id="skd-Hx-hWy"/>
                     </connections>
                 </viewController>

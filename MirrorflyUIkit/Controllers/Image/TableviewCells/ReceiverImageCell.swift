@@ -33,6 +33,8 @@ class ReceiverImageCell: BaseTableViewCell {
     var imageGeasture: UITapGestureRecognizer!
     @IBOutlet weak var groupSenderNameLabel: GroupReceivedMessageHeader!
     @IBOutlet weak var bubbleImageTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var replyTrailingWithMediaCons: NSLayoutConstraint?
+    @IBOutlet weak var replyTrailingCons: NSLayoutConstraint?
     
     @IBOutlet weak var overlayImage: UIImageView!
     
@@ -46,7 +48,11 @@ class ReceiverImageCell: BaseTableViewCell {
     @IBOutlet weak var bubbleImageView: UIImageView?
     @IBOutlet weak var receivedTimeBottomcons: NSLayoutConstraint?
     @IBOutlet weak var senderNameContainer: UIView!
-    
+    //Translation View
+    @IBOutlet weak var translatedTextLabel: UILabel?
+    @IBOutlet weak var captionStackView: UIStackView!
+    @IBOutlet weak var captionViewBottomCons: NSLayoutConstraint?
+    @IBOutlet weak var timestampBottomCons: NSLayoutConstraint?
     // Forward Outlet
     @IBOutlet weak var forwardImageView: UIImageView?
     @IBOutlet weak var forwardView: UIView?
@@ -99,6 +105,9 @@ class ReceiverImageCell: BaseTableViewCell {
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?) -> ReceiverImageCell? {
         currentIndexPath = indexPath
         chatMapView?.isHidden = true
+        replyTextLabel?.text = ""
+        replyUserLabel?.text = ""
+        translatedTextLabel?.text = ""
         
         // Forward view elements and its data
         forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) ? false : true
@@ -112,7 +121,7 @@ class ReceiverImageCell: BaseTableViewCell {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+           // forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
@@ -124,6 +133,8 @@ class ReceiverImageCell: BaseTableViewCell {
             fwdView?.isHidden = true
             fwdIcon?.isHidden = true
         }
+        
+        isAllowSwipe = message?.messageStatus == .notAcknowledged ? false : true
         
         // Reply view elements and its data
        if(message?.isReplyMessage == true) {
@@ -144,10 +155,14 @@ class ReceiverImageCell: BaseTableViewCell {
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
                    }
+                   replyTrailingCons?.isActive = false
+                   replyTrailingWithMediaCons?.isActive = true
                case .audio:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
+                   replyTrailingCons?.isActive = true
+                   replyTrailingWithMediaCons?.isActive = false
                case .video:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
                    if let thumImage = replyMessage?.mediaChatMessage?.mediaThumbImage {
@@ -156,14 +171,19 @@ class ReceiverImageCell: BaseTableViewCell {
                        mediaImageView?.image = image
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
+                       replyTrailingCons?.isActive = false
+                       replyTrailingWithMediaCons?.isActive = true
                    }
                default:
+                   replyTrailingCons?.isActive = true
+                   replyTrailingWithMediaCons?.isActive = false
                    messageTypeIconView?.isHidden = true
                }
                
            } else if replyMessage?.locationChatMessage != nil {
                chatMapView?.isHidden = false
                replyTextLabel?.text = "Location"
+               chatMapView?.isUserInteractionEnabled = false
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
                guard let latitude = replyMessage?.locationChatMessage?.latitude else {
                    return nil
@@ -173,26 +193,33 @@ class ReceiverImageCell: BaseTableViewCell {
                }
                
                chatMapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
-      
+               
                DispatchQueue.main.async { [self] in
                    // 2. Perform UI Operations.
                    let position = CLLocationCoordinate2DMake(latitude,longitude)
                    let marker = GMSMarker(position: position)
                    marker.map = chatMapView
                }
+               replyTrailingCons?.isActive = false
+               replyTrailingWithMediaCons?.isActive = true
                messageTypeIconView?.isHidden = false
            } else if replyMessage?.contactChatMessage != nil {
-               replyTextLabel?.text = "Contact"
+                   replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: replyMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                messageTypeIconView?.isHidden = false
+               replyTrailingCons?.isActive = true
+               replyTrailingWithMediaCons?.isActive = false
            } else {
                mediaImageView?.isHidden = true
+               replyTrailingCons?.isActive = true
+               replyTrailingWithMediaCons?.isActive = false
            }
         if(replyMessage?.isMessageSentByMe ?? false) {
             replyUserLabel?.text = you.localized
         }
         else {
-            replyUserLabel?.text = replyMessage?.senderUserName
+            replyUserLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
+                                               nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     }
         else {
@@ -305,6 +332,25 @@ class ReceiverImageCell: BaseTableViewCell {
             return self
         }
         self.reecivedTime.text = Utility.convertTime(timeStamp: timeStamp)
+        
+    //MARK: - Populating the Incoming Cell with the translated message
+        
+        if (message!.isMessageTranslated && FlyDefaults.isTranlationEnabled) {
+            translatedTextLabel?.isHidden = false
+            guard let chatMessage = message else {return self }
+            print(chatMessage.mediaChatMessage?.mediaCaptionText)
+            print(chatMessage.translatedMessageTextContent)
+            caption!.text = chatMessage.mediaChatMessage?.mediaCaptionText ?? ""
+            translatedTextLabel?.text = chatMessage.translatedMessageTextContent
+            captionViewBottomCons?.constant = -20
+            timestampBottomCons?.constant = -2
+            captionStackView.spacing = 3
+        } else {
+            captionViewBottomCons?.constant = caption.text?.isEmpty ?? false ? 12 : -10
+            timestampBottomCons?.constant = caption.text?.isEmpty ?? false ? -8 : -5
+            captionStackView.spacing = 0
+        }
+
    
         return self
     }
@@ -408,3 +454,6 @@ class ReceiverImageCell: BaseTableViewCell {
         
     }
 }
+
+
+

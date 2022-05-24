@@ -11,6 +11,7 @@ import AVKit
 import FlyCommon
 import SDWebImage
 import FlyCore
+import Photos
 
 class ChatUtils {
     
@@ -44,6 +45,17 @@ class ChatUtils {
         } else {
             return UIColor.gray
         }
+    }
+    
+    static func setAttributeString(name: String?) -> NSMutableAttributedString {
+        let replyTextMessage = "Contact: \(name ?? "")"
+        if let range = replyTextMessage.range(of: name ?? "", options: [.caseInsensitive, .diacriticInsensitive]) {
+            let convertedRange = NSRange(range, in: replyTextMessage.capitalized)
+            let attributedString = NSMutableAttributedString(string: replyTextMessage.capitalized)
+            attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.black,NSAttributedString.Key.font: UIFont.font12px_appSemibold()], range: convertedRange)
+            return attributedString
+        }
+        return NSMutableAttributedString()
     }
     
     static func compressSlowMotionVideo(asset : AVComposition, onCompletion: @escaping (Bool, URL?) -> Void){
@@ -107,6 +119,60 @@ class ChatUtils {
                 fatalError()
             }
         }
+    }
+    
+    static func convertAssetToUrlWithcompression(asset: PHAsset,onComplete : @escaping (Bool, URL?) -> Void) {
+        
+        let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + MessageExtension.video.rawValue)
+        var videoUrl: URL? = nil
+        let options: PHVideoRequestOptions = PHVideoRequestOptions()
+        options.version = .original
+        PHImageManager.default().requestAVAsset(forVideo: asset, options: options, resultHandler: {(asset: AVAsset?, audioMix: AVAudioMix?, info: [AnyHashable : Any]?) -> Void in
+            if let urlAsset = asset as? AVURLAsset {
+                let localVideoUrl: URL = urlAsset.url as URL
+                ChatUtils.compressVideo(inputURL: localVideoUrl,
+                                        outputURL: compressedURL) { exportSession in
+                    guard let session = exportSession else {
+                        return
+                    }
+                    
+                    switch session.status {
+                    case .unknown:
+                        print("unknown")
+                        break
+                    case .waiting:
+                        print("waiting")
+                        break
+                    case .exporting:
+                        print("exporting")
+                        break
+                    case .completed:
+                        do {
+                            let compressedData = try  Data.init(contentsOf: compressedURL)
+                            print("File size AFTER compression: \(Double(compressedData.count / 1048576)) mb")
+                            onComplete(true,compressedURL)
+                        }
+                        catch{
+                            onComplete(false,nil)
+                            print(error)
+                        }
+                    case .failed:
+                        onComplete(false,nil)
+                        print("failed")
+                        break
+                    case .cancelled:
+                        onComplete(false,nil)
+                        print("cancelled")
+                        break
+                    @unknown default:
+                        fatalError()
+                    }
+                }
+            } else {
+                videoUrl = nil
+            }
+        })
+        
     }
     
     static func compressVideo(inputURL: URL, outputURL: URL, handler:@escaping (_ exportSession: AVAssetExportSession?)-> Void) {
@@ -180,6 +246,6 @@ class ChatUtils {
     
     static func getGroupSenderName(messsage: ChatMessage?) -> String{
         let result = ChatManager.getUserNameAndNickName(userJid: messsage?.senderUserJid ?? "")
-        return getUserName(name: result.name, nickName: result.nickName)
+        return getUserName(jid: messsage?.senderUserJid ?? "", name: result.name, nickName: result.nickName, contactType: result.contactType)
     }
 }

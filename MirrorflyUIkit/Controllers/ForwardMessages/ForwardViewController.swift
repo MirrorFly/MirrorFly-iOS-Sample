@@ -21,6 +21,8 @@ class ForwardViewController: UIViewController {
     @IBOutlet weak var emptyMessageView: UIView?
     @IBOutlet weak var segmentControlView: UIView?
     @IBOutlet weak var sendButton: UIButton?
+    @IBOutlet weak var forwardHeaderView: UIView?
+    @IBOutlet weak var forwardViewHeightCons: NSLayoutConstraint?
     
     private var contactViewModel : ContactViewModel?
     private var recentChatViewModel: RecentChatViewModel?
@@ -36,6 +38,9 @@ class ForwardViewController: UIViewController {
     var selectedUserDelegate: SendSelectecUserDelegate? = nil
     var getProfileDetails: ProfileDetails?
     var forwardMessages: [SelectedForwardMessage] = []
+    var searchedText : String = emptyString()
+    var refreshProfileDelegate: RefreshProfileInfo?
+    var fromJid : String? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,8 +49,19 @@ class ForwardViewController: UIViewController {
         configTableView()
         loadChatList()
         FlyMessenger.shared.messageEventsDelegate = self
-        ContactManager.shared.profileDelegate = self
         GroupManager.shared.groupDelegate = self
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            forwardTableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height + (forwardTableView?.rowHeight ?? 0.0) + 30, right: 0)
+        }
+    }
+    
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        forwardTableView?.contentInset = .zero
     }
     
     // MARK: ConfigTableView
@@ -75,9 +91,21 @@ class ForwardViewController: UIViewController {
         getContactList()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ContactManager.shared.profileDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.adminBlockDelegate = nil
+        navigationController?.isNavigationBarHidden = true
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        navigationController?.isNavigationBarHidden = false
     }
     
     func getLastMesssage() -> [ChatMessage]? {
@@ -256,11 +284,11 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
             switch segmentSelectedIndex {
                 case 0:
                 let contactDetails = isSearchEnabled == true ? filteredContactList[indexPath.row] : allContactsList[indexPath.row]
-                cell.nameUILabel?.text = getUserName(name: contactDetails.name, nickName: contactDetails.nickName)
+                cell.nameUILabel?.text = getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType)
                 cell.statusUILabel?.text = contactDetails.status
                  let hashcode = contactDetails.name.hashValue
                  let color = randomColors[abs(hashcode) % randomColors.count]
-                cell.setImage(imageURL: contactDetails.image, name: contactDetails.name, color: color ?? .gray)
+                cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType)
                 cell.checkBoxImageView?.image = contactDetails.isSelected ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
                 cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", profileDetail: contactDetails)
                 cell.statusUILabel?.isHidden = false
@@ -269,7 +297,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 cell.hideLastMessageContentInfo()
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? filteredContactList.count : allContactsList.count)
                 case 1:
-                let recentChatDetails = isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row] : getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row]
+                let recentChatDetails = isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false })[indexPath.row] : getAllRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row]
                 let hashcode = recentChatDetails.profileName.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
                 cell.setRecentChatDetails(recentChat: recentChatDetails, color: color ?? .gray)
@@ -466,17 +494,18 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
 extension ForwardViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.trim().count > 0 {
+            searchedText = searchText
             isSearchEnabled = true
-            getRecentChat = searchText.isEmpty ? getAllRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
-                return recentChat.profileName.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil ||
-                recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+            getRecentChat = searchedText.isEmpty ? getAllRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
+                return (recentChat.profileName.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
+                (recentChat.lastMessageContent.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false)
             })
-            filteredContactList = searchText.isEmpty ? allContactsList : allContactsList.filter({ contact -> Bool in
-                return contact.name.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+            filteredContactList = searchedText.isEmpty ? allContactsList : allContactsList.filter({ contact -> Bool in
+                return contact.name.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
             })
             handleEmptyViewWhileSearch()
         } else {
-            segmentControlView?.isHidden = false
+            searchedText = emptyString()
             isSearchEnabled = false
             getRecentChatList()
             getContactList()
@@ -486,7 +515,7 @@ extension ForwardViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        segmentControlView?.isHidden = false
+        segmentControlView?.isHidden = true
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         refreshMessages()
@@ -535,20 +564,18 @@ extension ForwardViewController {
     func getRecentChatList() {
         recentChatViewModel?.getRecentChatList(isBackground: false, completionHandler: { [weak self] recentChatList in
             if let weakSelf = self {
-                if weakSelf.isSearchEnabled == false {
-                    weakSelf.getRecentChat = recentChatList ?? []
-                    weakSelf.getAllRecentChat = weakSelf.getRecentChat
-                    
-                    weakSelf.getAllRecentChat.enumerated().forEach { (index,contact) in
-                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
-                            weakSelf.getAllRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
-                        }
+                weakSelf.getRecentChat = recentChatList?.filter({$0.isBlockedByAdmin == false}) ?? []
+                weakSelf.getAllRecentChat = weakSelf.getRecentChat
+                
+                weakSelf.getAllRecentChat.enumerated().forEach { (index,contact) in
+                    if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                        weakSelf.getAllRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
                     }
-                    
-                    weakSelf.getRecentChat.enumerated().forEach { (index,contact) in
-                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
-                            weakSelf.getRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
-                        }
+                }
+                
+                weakSelf.getRecentChat.enumerated().forEach { (index,contact) in
+                    if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                        weakSelf.getRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
                     }
                 }
             }
@@ -579,7 +606,15 @@ extension ForwardViewController : ProfileEventsDelegate {
     }
     
     func usersProfilesFetched() {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.loadChatList()
+            if let uiSearchBar = self?.searchBar, self?.isSearchEnabled ?? false{
+                self?.searchBar(uiSearchBar, textDidChange: self?.searchedText ?? emptyString())
+            }
+            if let fromJid = self?.fromJid,let pd = ContactManager.shared.getUserProfileDetails(for: fromJid){
+                self?.refreshProfileDelegate?.refreshProfileDetails(profileDetails: pd)
+            }
+        }
     }
     
     func blockedThisUser(jid: String) {
@@ -612,6 +647,67 @@ extension ForwardViewController : ProfileEventsDelegate {
     
     func getUserLastSeen() {
         
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        
+        if let indexOfAllContactList = allContactsList.firstIndex(where: {$0.jid == jid}){
+            allContactsList.remove(at: indexOfAllContactList)
+            if segmentSelectedIndex == 0 && !isSearchEnabled{
+                forwardTableView?.reloadData()
+                if let index = selectedMessages.firstIndex(where: {$0.jid == jid}){
+                    selectedMessages.remove(at: index)
+                    sendButton?.isEnabled = selectedMessages.count == 0 ? false : true
+                    sendButton?.alpha = selectedMessages.count == 0 ? 0.4 : 1.0
+                }
+            }
+        }
+        if let indexOfFilteredList = filteredContactList.firstIndex(where: {$0.jid == jid}){
+            filteredContactList.remove(at: indexOfFilteredList)
+            if segmentSelectedIndex == 0 && isSearchEnabled{
+                forwardTableView?.reloadData()
+                if let index = selectedMessages.firstIndex(where: {$0.jid == jid}){
+                    selectedMessages.remove(at: index)
+                    sendButton?.isEnabled = selectedMessages.count == 0 ? false : true
+                    sendButton?.alpha = selectedMessages.count == 0 ? 0.4 : 1.0
+                }
+            }
+        }
+        if let indexOfRecentChat = getRecentChat.firstIndex(where: {$0.jid == jid}){
+            getRecentChat[indexOfRecentChat].nickName = profileDetails.nickName
+            getRecentChat[indexOfRecentChat].profileName = profileDetails.name
+            getRecentChat[indexOfRecentChat].isItSavedContact = false
+            getRecentChat[indexOfRecentChat].isSelected = false
+            getRecentChat[indexOfRecentChat].isDeletedUser = true
+            getRecentChat[indexOfRecentChat].profileImage = emptyString()
+            if segmentSelectedIndex == 3  && isSearchEnabled {
+                let indexPath = IndexPath(item: indexOfRecentChat, section: 0)
+                forwardTableView?.reloadRows(at: [indexPath], with: .fade)
+                if let index = selectedMessages.firstIndex(where: {$0.jid == jid}){
+                    selectedMessages.remove(at: index)
+                    sendButton?.isEnabled = selectedMessages.count == 0 ? false : true
+                    sendButton?.alpha = selectedMessages.count == 0 ? 0.4 : 1.0
+                }
+            }
+        }
+        if let indexOfAllRecentChat = getAllRecentChat.firstIndex(where: {$0.jid == jid}){
+            getAllRecentChat[indexOfAllRecentChat].nickName = profileDetails.nickName
+            getAllRecentChat[indexOfAllRecentChat].profileName = profileDetails.name
+            getAllRecentChat[indexOfAllRecentChat].isItSavedContact = false
+            getAllRecentChat[indexOfAllRecentChat].isSelected = false
+            getAllRecentChat[indexOfAllRecentChat].isDeletedUser = true
+            getAllRecentChat[indexOfAllRecentChat].profileImage = emptyString()
+            if segmentSelectedIndex == 3 && !isSearchEnabled {
+                let indexPath = IndexPath(item: indexOfAllRecentChat, section: 0)
+                forwardTableView?.reloadRows(at: [indexPath], with: .fade)
+                if let index = selectedMessages.firstIndex(where: {$0.jid == jid}){
+                    selectedMessages.remove(at: index)
+                    sendButton?.isEnabled = selectedMessages.count == 0 ? false : true
+                    sendButton?.alpha = selectedMessages.count == 0 ? 0.4 : 1.0
+                }
+            }
+        }
+        refreshProfileDelegate?.refreshProfileDetails(profileDetails: profileDetails)
     }
     
 func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
@@ -722,7 +818,10 @@ extension ForwardViewController : GroupEventsDelegate {
     func didFetchGroupProfile(groupJid: String) {
         print("RecentChatViewController didGroupProfileFetch \(groupJid)")
         DispatchQueue.main.async { [weak self] in
-                self?.loadChatList()
+            self?.loadChatList()
+            if let uiSearchBar = self?.searchBar, self?.isSearchEnabled ?? false{
+                self?.searchBar(uiSearchBar, textDidChange: self?.searchedText ?? emptyString())
+            }
         }
     }
     
@@ -749,6 +848,11 @@ extension ForwardViewController : GroupEventsDelegate {
 
 // MessageEventDelegate
 extension ForwardViewController : MessageEventsDelegate {
+  
+    func onMessageTranslated(message: ChatMessage, jid: String) {
+        
+    }
+    
     func onMessageStatusUpdated(messageId: String, chatJid: String, status: MessageStatus) {
         if isSearchEnabled == false {
             refreshMessages()
@@ -779,5 +883,52 @@ extension ForwardViewController : MessageEventsDelegate {
     
     func onMessageReceived(message: ChatMessage, chatJid: String) {
         refreshMessages()
+    }
+}
+
+extension ForwardViewController : AdminBlockDelegate {
+    func didBlockOrUnblockContact(userJid: String, isBlocked: Bool) {
+        checkUserForAdminBlocking(jid: userJid, isBlocked: isBlocked)
+    }
+    
+    func didBlockOrUnblockSelf(userJid: String, isBlocked: Bool) {
+    
+    }
+    
+    func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
+        checkUserForAdminBlocking(jid: groupJid, isBlocked: isBlocked)
+        let messages = forwardMessages.filter({$0.chatMessage.chatUserJid == groupJid})
+        if isBlocked && messages.count > 0 {
+            self.navigationController?.navigationBar.isHidden = false
+            self.navigationController?.popToRootViewController(animated: true)
+            executeOnMainThread {
+                AppAlert.shared.showToast(message: groupNoLongerAvailable)
+            }
+        }
+    }
+
+}
+
+// To handle Admin Blocked user
+
+extension ForwardViewController {
+    func checkUserForAdminBlocking(jid : String, isBlocked : Bool) {
+        if isBlocked{
+            filteredContactList = removeAdminBlockedContact(profileList: filteredContactList, jid: jid, isBlockedByAdmin: isBlocked)
+            allContactsList = removeAdminBlockedContact(profileList: allContactsList, jid: jid, isBlockedByAdmin: isBlocked)
+            getRecentChat = removeAdminBlockedRecentChat(recentChatList: getRecentChat, jid: jid, isBlockedByAdmin: isBlocked)
+            getAllRecentChat = removeAdminBlockedRecentChat(recentChatList: getAllRecentChat, jid: jid, isBlockedByAdmin: isBlocked)
+        } else {
+            getRecentChat = checkAndAddRecentChat(recentChatList: getRecentChat, jid: jid, isBlockedByAdmin: isBlocked)
+            getAllRecentChat = checkAndAddRecentChat(recentChatList: getAllRecentChat, jid: jid, isBlockedByAdmin: isBlocked)
+            if !FlyUtils.isValidGroupJid(groupJid: jid) {
+                allContactsList = addUnBlockedContact(profileList: allContactsList, jid: jid, isBlockedByAdmin: isBlocked)
+                filteredContactList = addUnBlockedContact(profileList: filteredContactList, jid: jid, isBlockedByAdmin: isBlocked)
+            }
+        }
+        executeOnMainThread { [weak self] in
+            self?.forwardTableView?.reloadData()
+        }
+        
     }
 }

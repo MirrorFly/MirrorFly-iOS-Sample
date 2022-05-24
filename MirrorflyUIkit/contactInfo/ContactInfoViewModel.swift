@@ -6,20 +6,13 @@
 //
 
 import Foundation
-import FlyDatabase
 import FlyCommon
 import FlyCore
 
 class ContactInfoViewModel : NSObject {
     
-    var databaseController : FlyDatabaseController?
-    
-    override init() {
-        databaseController = FlyDatabaseController.shared
-    }
-    
     func getContactInfo(jid : String) -> ProfileDetails? {
-        return databaseController?.rosterManager.getContact(jid: jid)
+        return ChatManager.getContact(jid: jid)
     }
     
     func getLastSeen(jid : String, completionHandler : @escaping (String) -> Void) {

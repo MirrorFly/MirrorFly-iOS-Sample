@@ -221,6 +221,7 @@ SWIFT_CLASS("_TtC7FlyXmpp17FlyXmppController")
 @end
 
 
+
 @class UNMutableNotificationContent;
 
 SWIFT_CLASS("_TtC7FlyXmpp26NotificationMessageSupport")

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -21,11 +21,13 @@
         </array>
     </customFonts>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ForwardViewController" customModule="MirrorflyUIkit" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ForwardViewController" customModule="Mirrorfly" customModuleProvider="target">
             <connections>
                 <outlet property="descriptionLabel" destination="PQe-PS-CB6" id="GUr-qT-giI"/>
                 <outlet property="emptyMessageView" destination="S4I-r3-xb7" id="IVp-VU-pmp"/>
+                <outlet property="forwardHeaderView" destination="rMs-eC-RmW" id="XEm-BX-IVb"/>
                 <outlet property="forwardTableView" destination="VBt-Im-mea" id="Fu6-fS-Bnu"/>
+                <outlet property="forwardViewHeightCons" destination="QbG-dS-Use" id="FyG-wi-UAd"/>
                 <outlet property="searchBar" destination="Vsc-dv-N6C" id="bzq-hX-dpC"/>
                 <outlet property="segmentControl" destination="fgs-h4-OtC" id="bo4-qn-LUJ"/>
                 <outlet property="segmentControlView" destination="lar-NR-2d9" id="6OK-gc-zHD"/>
@@ -147,7 +149,7 @@
                                         <constraint firstAttribute="trailing" secondItem="fgs-h4-OtC" secondAttribute="trailing" constant="15" id="npD-dM-Ytk"/>
                                     </constraints>
                                 </view>
-                                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="VBt-Im-mea">
+                                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="VBt-Im-mea">
                                     <rect key="frame" x="0.0" y="54" width="384" height="654"/>
                                 </tableView>
                             </subviews>

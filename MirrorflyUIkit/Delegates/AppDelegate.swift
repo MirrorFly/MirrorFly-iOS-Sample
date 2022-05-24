@@ -19,15 +19,70 @@ import FlyCall
 import RxSwift
 import Contacts
 
-let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
-let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
-let XMPP_PORT = 5222
-let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
-let JANUS_URL = "wss://janus.mirrorfly.com"
-let CONTAINER_ID = "group.com.mirrorfly.qa"
-let ENABLE_CONTACT_SYNC = false
-let IS_LIVE = false
+
+//#if QA
+//    let BASE_URL = "https://api-qa19.mirrorfly.com/api/v1/"
+//    let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+//    let XMPP_DOMAIN = "fly-qa19.mirrorfly.com"
+//    let XMPP_PORT = 5226
+//    let SOCKETIO_SERVER_HOST = "https://signal-qa19.mirrorfly.com/"
+//    let JANUS_URL = "wss://janus.mirrorfly.com/"
+//    let CONTAINER_ID = "group.com.mirrorfly.qa"
+//    let ENABLE_CONTACT_SYNC = true
+//    let IS_LIVE = true
+//    let WEB_LOGIN_URL = "https://webreact-qa19.mirrorfly.com/"
+//    let IS_MOBILE_NUMBER_LOGIN = true
+//#elseif DEV
+//    let BASE_URL = "https://api-dev19.mirrorfly.com/api/v1/"
+//    let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+//    let XMPP_DOMAIN = "fly-dev19.mirrorfly.com"
+//    let XMPP_PORT = 5232
+//    let SOCKETIO_SERVER_HOST = "https://signal-dev19.mirrorfly.com/"
+//    let JANUS_URL = "wss://janus.mirrorfly.com"
+//    let CONTAINER_ID = "group.com.mirrorfly.qa"
+//    let ENABLE_CONTACT_SYNC = true
+//    let IS_LIVE = true
+//    let WEB_LOGIN_URL = "https://webreact-dev19.mirrorfly.com/"
+//    let IS_MOBILE_NUMBER_LOGIN = true
+//#elseif LIVE
+//    let BASE_URL = "https://api-beta.mirrorfly.com/api/v1/"
+//    let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+//    let XMPP_DOMAIN = "xmpp-beta.mirrorfly.com"
+//    let XMPP_PORT = 5222
+//    let SOCKETIO_SERVER_HOST = "https://signal-beta.mirrorfly.com/"
+//    let JANUS_URL = "wss://janus.mirrorfly.com"
+//    let CONTAINER_ID = "group.com.mirror.fly"
+//    let ENABLE_CONTACT_SYNC = true
+//    let IS_LIVE = true
+//    let WEB_LOGIN_URL = "https://web.mirrorfly.com/"
+//    let IS_MOBILE_NUMBER_LOGIN = true
+//#elseif UIKITQA
+//    let BASE_URL = "https://api-uikit-qa.contus.us/api/v1/"
+//    let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+//    let XMPP_DOMAIN = "xmpp-uikit-qa.contus.us"
+//    let XMPP_PORT = 5249
+//    let SOCKETIO_SERVER_HOST = "https://signal-uikit-qa.contus.us/"
+//    let JANUS_URL = "wss://janus.mirrorfly.com"
+//    let CONTAINER_ID = "group.com.mirrorfly.qa"
+//    let ENABLE_CONTACT_SYNC = false
+//    let IS_LIVE = false
+//    let WEB_LOGIN_URL = "https://webchat-uikit-qa.contus.us/"
+//    let IS_MOBILE_NUMBER_LOGIN = false
+//#else
+    let BASE_URL = "https://api-uikit-dev.contus.us/api/v1/"
+    let LICENSE_KEY = "5RYyc9b32qTIkPMGe6JuIXY2fLFq9A"
+    let XMPP_DOMAIN = "xmpp-uikit-dev.contus.us"
+    let XMPP_PORT = 5248
+    let SOCKETIO_SERVER_HOST = "https://signal-uikit-dev.contus.us/"
+    let JANUS_URL = "wss://janus.mirrorfly.com"
+    let CONTAINER_ID = "group.com.mirrorfly.qa"
+    let ENABLE_CONTACT_SYNC = false
+    let IS_LIVE = false
+    let WEB_LOGIN_URL = "https://webchat-uikit-dev.contus.us/"
+    let IS_MOBILE_NUMBER_LOGIN = false
+//#endif
+
+let isMigrationDone = "isMigrationDone"
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
@@ -37,13 +92,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     var contactSyncSubscription : Disposable? = nil
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        if !Utility.getBoolFromPreference(key: isMigrationDone) {
+//            resetData()
+//        }
         CallManager.setAppGroupContainerId(id: CONTAINER_ID )
-        FlyDefaults.licenseKey = LICENSE_KEY
-        FlyDefaults.isTrialLicense = !IS_LIVE
-        startObservingContactChanges()
         FlyDefaults.isTrialLicense = !IS_LIVE
         FlyDefaults.licenseKey = LICENSE_KEY
         FlyDefaults.baseURL = BASE_URL
+        FlyDefaults.profileIV = "5RYyc9b32qTIkPMG"
+        FlyDefaults.isMobileNumberLogin = IS_MOBILE_NUMBER_LOGIN
         if ENABLE_CONTACT_SYNC{
             startObservingContactChanges()
         }
@@ -54,36 +111,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         IQKeyboardManager.shared.enable = true
         GMSServices.provideAPIKey(googleApiKey)
         IQKeyboardManager.shared.shouldResignOnTouchOutside = true
+        IQKeyboardManager.shared.disabledDistanceHandlingClasses.append(ChatViewParentController.self)
         NetworkReachability.shared.startMonitoring()
         
         // Clear Push
         clearPushNotifications()
         registerForPushNotifications()
         
-        if Utility.getBoolFromPreference(key: isProfileSaved) {
-            let navigationController : UINavigationController
-            if IS_LIVE {
-                if !Utility.getBoolFromPreference(key: isLoginContactSyncDone){
-                    let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
-                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }else{
-                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                    let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }
-            }else{
-                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                navigationController =  UINavigationController(rootViewController: initialViewController)
-            }
-            self.window?.rootViewController = navigationController
-            self.window?.makeKeyAndVisible()
-        }else if Utility.getBoolFromPreference(key: isLoggedIn) {
-            let storyboard = UIStoryboard(name: "Profile", bundle: nil)
-            let initialViewController = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
-            self.window?.rootViewController =  UINavigationController(rootViewController: initialViewController)
-            self.window?.makeKeyAndVisible()
+        if FlyDefaults.isBlockedByAdmin {
+            navigateToBlockedScreen()
+        } else {
+            navigateTo()
         }
         
         let groupConfig = try? GroupConfig.Builder.enableGroupCreation(groupCreation: true)
@@ -93,6 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         assert(groupConfig != nil)
         
         ChatManager.shared.logoutDelegate = self
+        ChatManager.shared.adminBlockCurrentUserDelegate = self
         
         try? ChatSDK.Builder.enableContactSync(isEnable: ENABLE_CONTACT_SYNC)
             .setDomainBaseUrl(baseUrl: BASE_URL)
@@ -129,9 +168,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         }
         // Added this line so that we can start receing contact updates
         let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+        if contactPermissionStatus == .authorized || contactPermissionStatus == .denied{
+            FlyDefaults.isContactPermissionSkipped = false
+        }
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.CNContactStoreDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(contactsDidChange), name: NSNotification.Name.CNContactStoreDidChange, object: nil)
-        NetworkMonitor.shared.startMonitoring()
+        
+        if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = .light
+        } else {
+            // Fallback on earlier versions
+        }
         
         return true
     }
@@ -159,14 +206,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         print("#appDelegate applicationDidBecomeActive")
-        if (FlyDefaults.isLoggedIn) {
+        if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
+            NSLog("#sync request from  applicationDidBecomeActive")
+            if FlyDefaults.isContactSyncNeeded || ContactSyncManager.shared.isContactPermissionChanged() {
+                ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
+                    print("#sync #contactSync status => \(isSuccess)")
+                }
+            }
         }
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
         print("#appDelegate applicationDidEnterBackground")
-        NetStatus.shared.stopMonitoring()
         if (FlyDefaults.isLoggedIn) {
             ChatManager.disconnectXMPPConnection()
         }
@@ -174,7 +226,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         contactSyncSubscription?.dispose()
-        NetworkMonitor.shared.stop()
+        NetStatus.shared.stopMonitoring()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.CNContactStoreDidChange, object: nil)
     }
     
@@ -221,7 +273,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         print("Push didFailToRegisterForRemoteNotificationsWithError)")
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler(.alert)
+        completionHandler([.alert, .sound])
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Push userInfo \(userInfo)")
@@ -229,7 +281,11 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         if response.notification.request.content.threadIdentifier.contains(XMPP_DOMAIN){
-            navigateToChatScreen(chatId: response.notification.request.content.threadIdentifier, completionHandler: completionHandler)
+            if FlyDefaults.isBlockedByAdmin {
+                navigateToBlockedScreen()
+            } else {
+                navigateToChatScreen(chatId: response.notification.request.content.threadIdentifier, completionHandler: completionHandler)
+            }
         }
     }
 }
@@ -264,8 +320,10 @@ extension AppDelegate {
     func startObservingContactChanges(){
         contactSyncSubscription = contactSyncSubject.throttle(.seconds(3), latest: false ,scheduler: MainScheduler.instance).subscribe(onNext: { bool in
             if bool{
-                ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
-                   print("#contact Sync status => \(isSuccess)")
+                if !FlyDefaults.isContactPermissionSkipped{
+                    ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
+                       print("#contact Sync status => \(isSuccess)")
+                    }
                 }
             }
         })
@@ -298,7 +356,7 @@ extension AppDelegate {
                 
                 if let chatViewController =  UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController, let navigationController = rootViewController as? UINavigationController{
                     chatViewController.getProfileDetails = profileDetails
-                    let color = getColor(userName:  getUserName(name: profileDetails.name, nickName: profileDetails.nickName))
+                    let color = getColor(userName: getUserName(jid: profileDetails.jid,name: profileDetails.name, nickName: profileDetails.nickName, contactType: profileDetails.contactType))
                     chatViewController.contactColor = color
                     if dismisLastViewController{
                         navigationController.popViewController(animated: false)
@@ -314,7 +372,7 @@ extension AppDelegate {
                 }
                 if let chatViewController =  UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController, let navigationController = self.window?.rootViewController as? UINavigationController{
                     chatViewController.getProfileDetails = profileDetails
-                    let color = getColor(userName:  getUserName(name: profileDetails.name, nickName: profileDetails.nickName))
+                    let color = getColor(userName: getUserName(jid: profileDetails.jid,name: profileDetails.name, nickName: profileDetails.nickName, contactType: profileDetails.contactType))
                     chatViewController.contactColor = color
                     if dismisLastViewController{
                         navigationController.popViewController(animated: false)
@@ -325,6 +383,29 @@ extension AppDelegate {
             }
         }
     }
+    
+    func resetData(){
+        print("#migration resetData")
+        Utility.clearUserDefaults()
+        FlyConstants.suiteName = CONTAINER_ID
+        ChatManager.shared.resetFlyDefaults()
+        let fileManager:FileManager = FileManager.default
+        if let realmPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: CONTAINER_ID)?.appendingPathComponent("Realm").path {
+            if let fileList = try? FileManager.default.contentsOfDirectory(atPath: realmPath){
+                for path in fileList {
+                    let fullPath = realmPath + "/" + path
+                    if fileManager.fileExists(atPath: fullPath){
+                        try! fileManager.removeItem(atPath: fullPath)
+                        print("#migration #files \(fullPath) deleted")
+                    }else{
+                        print("#migration #files \(fullPath) unable to delete")
+                    }
+                }
+            }
+        }
+        Utility.saveInPreference(key: isMigrationDone, value: true)
+    }
+
 }
 // If a user logged in a new device this delegate will be triggered.otpViewController
 extension AppDelegate : LogoutDelegate {
@@ -347,6 +428,59 @@ extension AppDelegate : LogoutDelegate {
             navigationController.popToRootViewController(animated: false)
             navigationController.navigationBar.isHidden = true
             navigationController.pushViewController(otpViewController, animated: false)
+        }
+    }
+}
+
+// If user blocked by admin in control panel this delegate will be triggered
+extension AppDelegate : AdminBlockCurrentUserDelegate {
+    func didBlockOrUnblockCurrentUser(userJid: String, isBlocked: Bool) {
+        if isBlocked {
+            navigateToBlockedScreen()
+        } else {
+            navigateTo()
+        }
+    }
+    
+}
+
+extension AppDelegate {
+    
+    func navigateToBlockedScreen() {
+        if CallManager.isOngoingCall() {
+            CallManager.disconnectCall()
+        }
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        let initialViewController = storyboard.instantiateViewController(withIdentifier: "BlockedByAdminViewController") as! BlockedByAdminViewController
+        UIApplication.shared.keyWindow?.rootViewController =  UINavigationController(rootViewController: initialViewController)
+        UIApplication.shared.keyWindow?.makeKeyAndVisible()
+    }
+    
+    func navigateTo() {
+        if Utility.getBoolFromPreference(key: isProfileSaved) {
+            let navigationController : UINavigationController
+            if ENABLE_CONTACT_SYNC {
+                if !Utility.getBoolFromPreference(key: isLoginContactSyncDone){
+                    let storyboard = UIStoryboard.init(name: Storyboards.profile, bundle: nil)
+                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }else{
+                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                    let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
+            }else{
+                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                navigationController =  UINavigationController(rootViewController: initialViewController)
+            }
+            UIApplication.shared.keyWindow?.rootViewController = navigationController
+            UIApplication.shared.keyWindow?.makeKeyAndVisible()
+        }else if Utility.getBoolFromPreference(key: isLoggedIn) {
+            let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+            let initialViewController = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+            UIApplication.shared.keyWindow?.rootViewController =  UINavigationController(rootViewController: initialViewController)
+            UIApplication.shared.keyWindow?.makeKeyAndVisible()
         }
     }
 }

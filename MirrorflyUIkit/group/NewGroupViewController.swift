@@ -205,7 +205,6 @@ extension NewGroupViewController {
         
         let pickerViewController = TatsiPickerViewController(config: config)
         pickerViewController.pickerDelegate = self
-        pickerViewController.isEditing = true
         self.present(pickerViewController, animated: true, completion: nil)
     }
     

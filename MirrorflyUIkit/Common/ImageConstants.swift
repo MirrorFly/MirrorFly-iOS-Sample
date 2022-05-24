@@ -33,6 +33,7 @@ enum ImageConstant{
     
     static let ic_selected = "ic_selected"
     static let ic_unSelected = "ic_unSelected"
+    static let Translate_Unselected = "Translate_Unselected"
     static let ic_download = "ic_download"
     static let ic_download_cancel = "ic_download_cancel"
     static let ic_slider = "ic_slider"

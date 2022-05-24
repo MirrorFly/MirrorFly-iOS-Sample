@@ -15,6 +15,7 @@ public struct ImageData {
     var videoUrl: PHAsset?
     var isSlowMotion : Bool
     var slowMotionVideoUrl : URL?
+    var isUploaded : Bool?
 }
 
 struct Profile {

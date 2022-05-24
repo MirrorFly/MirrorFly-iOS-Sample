@@ -295,12 +295,16 @@ public class IPImage: NSObject {
     }
     
     public func generateInitialImage() -> UIImage? {
-            let view = setupView()
-            UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, 0.0)
-            view.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let view = setupView()
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, 0.0)
+        if let graphicsContext = UIGraphicsGetCurrentContext(){
+            view.layer.render(in: graphicsContext)
             let image = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             return image
+        }
+        return nil
+        
     }
     
     public func generateInitialSqareImage() -> UIImage? {

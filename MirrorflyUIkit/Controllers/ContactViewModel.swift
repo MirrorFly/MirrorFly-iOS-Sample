@@ -15,7 +15,7 @@ class ContactViewModel : NSObject
         super.init()
         
     }
-    func getContacts(fromServer: Bool, completionHandler:  @escaping ([ProfileDetails]?, String?)-> Void) {
+    func getContacts(fromServer: Bool, removeContacts : [String] = [],completionHandler:  @escaping ([ProfileDetails]?, String?)-> Void) {
         if fromServer{
             syncContacts()
         }
@@ -23,7 +23,10 @@ class ContactViewModel : NSObject
             var data  = flyData
             if isSuccess {
                 if  let  contactsList = data.getData() as? [ProfileDetails]  {
-                    let filteredContact = contactsList.filter( {$0.profileChatType != .groupChat && $0.jid != FlyDefaults.myJid})
+                    var filteredContact = contactsList.filter( {$0.profileChatType != .groupChat && $0.jid != FlyDefaults.myJid && $0.isBlockedByAdmin == false})
+                    filteredContact.removeAll { pd in
+                        removeContacts.contains(pd.jid)
+                    }
                     completionHandler(filteredContact, nil)
                 }else {
                     completionHandler(nil, data.getMessage() as? String)

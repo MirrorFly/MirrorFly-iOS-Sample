@@ -23,6 +23,7 @@ enum Identifiers {
     static let noContacts = "NoContacts"
     static let contactCell = "ContactCell"
     static let contactViewController = "ContactViewController"
+    static let dmaReasonVC = "DMAReasonVC"
     
     //MARK: - Chat
     static let chatTextView =  "ChatTextView"
@@ -101,6 +102,11 @@ enum Identifiers {
     static let updateGroupInfoViewController = "UpdateGroupInfoViewController"
     static let groupInfoOptionsViewController = "GroupInfoOptionsViewController"
     static let groupInfoOptionsTableViewCell = "GroupInfoOptionsTableViewCell"
+    
+    //MARK: ChatSettings
+    static let ChatSettingsTableViewCell = "ChatSettingsTableViewCell"
+    static let LanguageSelectionTableViewCell = "LanguageSelectionTableViewCell"
+    static let LanguageSelectionViewController = "LanguageSelectionViewController"
 }
 
 //MARK: - Storyboards

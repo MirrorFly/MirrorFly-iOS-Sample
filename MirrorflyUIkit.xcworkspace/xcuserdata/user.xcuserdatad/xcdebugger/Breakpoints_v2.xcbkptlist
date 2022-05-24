@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "BAE9AC21-6AEE-4AFA-A94E-CD6D49C15CE1"
+   uuid = "0C07BEEF-68A0-451C-9D8A-CAE1CB89978E"
    type = "0"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2ECD3BF8-1D1B-4894-8356-03A123241F5A"
+            uuid = "2B668A8B-23B1-4BC3-960C-7DC5D7E1F525"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+            filePath = "SubmoduleCore/FlyCore/FlyCore/GroupManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "316"
-            endingLineNumber = "316"
-            landmarkName = "performPostRequest(restEnd:headers:method:params:interceptor:completionHandler:)"
+            startingLineNumber = "1021"
+            endingLineNumber = "1021"
+            landmarkName = "didReceiveUseraddedMessage(participantProfile:publisherProfile:groupMemberDetail:isFromPush:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "2ECD3BF8-1D1B-4894-8356-03A123241F5A - a9685cac21dcd52f"
+                  uuid = "2B668A8B-23B1-4BC3-960C-7DC5D7E1F525 - bd9c79c793e1f997"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;) -&gt; () in FlyNetwork.RequestManager.performPostRequest(restEnd: Swift.String, headers: Swift.Optional&lt;Alamofire.HTTPHeaders&gt;, method: Alamofire.HTTPMethod, params: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;, interceptor: Swift.Optional&lt;Alamofire.RequestInterceptor&gt;, completionHandler: (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; ()) -&gt; Alamofire.DataRequest"
-                  moduleName = "FlyNetwork"
+                  symbolName = "FlyCore.GroupManager.didReceiveUseraddedMessage(participantProfile: FlyCommon.ProfileDetails, publisherProfile: FlyCommon.ProfileDetails, groupMemberDetail: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool) -&gt; ()"
+                  moduleName = "FlyCore"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleCore/FlyCore/FlyCore/GroupManager.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "316"
-                  endingLineNumber = "316"
-                  offsetFromSymbolStart = "5640">
+                  startingLineNumber = "1023"
+                  endingLineNumber = "1023"
+                  offsetFromSymbolStart = "6308">
                </Location>
                <Location
-                  uuid = "2ECD3BF8-1D1B-4894-8356-03A123241F5A - a9685cac21dcd52f"
+                  uuid = "2B668A8B-23B1-4BC3-960C-7DC5D7E1F525 - bd9c79c793e1f997"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;) -&gt; () in FlyNetwork.RequestManager.performPostRequest(restEnd: Swift.String, headers: Swift.Optional&lt;Alamofire.HTTPHeaders&gt;, method: Alamofire.HTTPMethod, params: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;, interceptor: Swift.Optional&lt;Alamofire.RequestInterceptor&gt;, completionHandler: (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; ()) -&gt; Alamofire.DataRequest"
-                  moduleName = "FlyNetwork"
+                  symbolName = "FlyCore.GroupManager.didReceiveUseraddedMessage(participantProfile: FlyCommon.ProfileDetails, publisherProfile: FlyCommon.ProfileDetails, groupMemberDetail: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool) -&gt; ()"
+                  moduleName = "FlyCore"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleCore/FlyCore/FlyCore/GroupManager.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "316"
-                  endingLineNumber = "316"
-                  offsetFromSymbolStart = "2772">
+                  startingLineNumber = "1023"
+                  endingLineNumber = "1023"
+                  offsetFromSymbolStart = "6532">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -55,47 +55,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "19A8400F-5CC4-489A-A2A3-68762C142F90"
+            uuid = "40F92A95-3580-4A93-8460-7CE85E817085"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
-            landmarkName = "performPushPostRequest(restEnd:headers:method:params:interceptor:completionHandler:)"
+            startingLineNumber = "595"
+            endingLineNumber = "595"
+            landmarkName = "deleteMyAccountRequest(restEnd:headers:method:params:completionHandler:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "19A8400F-5CC4-489A-A2A3-68762C142F90 - d361d153526183f4"
+                  uuid = "40F92A95-3580-4A93-8460-7CE85E817085 - 5cf6f1866f6e8a59"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;) -&gt; () in FlyNetwork.RequestManager.performPushPostRequest(restEnd: Swift.String, headers: Swift.Optional&lt;Alamofire.HTTPHeaders&gt;, method: Alamofire.HTTPMethod, params: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;, interceptor: Swift.Optional&lt;Alamofire.RequestInterceptor&gt;, completionHandler: (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; ()) -&gt; Alamofire.DataRequest"
+                  symbolName = "___lldb_unnamed_symbol130$$FlyNetwork"
                   moduleName = "FlyNetwork"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "205"
-                  endingLineNumber = "205"
-                  offsetFromSymbolStart = "4148">
+                  startingLineNumber = "595"
+                  endingLineNumber = "595"
+                  offsetFromSymbolStart = "140">
                </Location>
                <Location
-                  uuid = "19A8400F-5CC4-489A-A2A3-68762C142F90 - d361d153526183f4"
+                  uuid = "40F92A95-3580-4A93-8460-7CE85E817085 - 5cf6f1866f6e8a59"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;) -&gt; () in FlyNetwork.RequestManager.performPushPostRequest(restEnd: Swift.String, headers: Swift.Optional&lt;Alamofire.HTTPHeaders&gt;, method: Alamofire.HTTPMethod, params: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;, interceptor: Swift.Optional&lt;Alamofire.RequestInterceptor&gt;, completionHandler: (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; ()) -&gt; Alamofire.DataRequest"
+                  symbolName = "___lldb_unnamed_symbol130$$FlyNetwork"
                   moduleName = "FlyNetwork"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "205"
-                  endingLineNumber = "205"
-                  offsetFromSymbolStart = "1204">
+                  startingLineNumber = "595"
+                  endingLineNumber = "595"
+                  offsetFromSymbolStart = "120">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -103,49 +103,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "503ECB0E-CDC5-4CD1-88E5-88B48DBBEFBA"
+            uuid = "A63BAFA5-9956-4285-A2DF-413F940D4380"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+            filePath = "MirrorflyUIkit/Controllers/DeleteMyAccount/DMAReasonVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
-            landmarkName = "performPushPostRequest(restEnd:headers:method:params:interceptor:completionHandler:)"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "dmaBtnTapped(_:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "503ECB0E-CDC5-4CD1-88E5-88B48DBBEFBA - d361d153526184ec"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;) -&gt; () in FlyNetwork.RequestManager.performPushPostRequest(restEnd: Swift.String, headers: Swift.Optional&lt;Alamofire.HTTPHeaders&gt;, method: Alamofire.HTTPMethod, params: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;, interceptor: Swift.Optional&lt;Alamofire.RequestInterceptor&gt;, completionHandler: (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; ()) -&gt; Alamofire.DataRequest"
-                  moduleName = "FlyNetwork"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "213"
-                  endingLineNumber = "213"
-                  offsetFromSymbolStart = "4708">
-               </Location>
-               <Location
-                  uuid = "503ECB0E-CDC5-4CD1-88E5-88B48DBBEFBA - d361d153526184ec"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Any, Alamofire.AFError&gt;) -&gt; () in FlyNetwork.RequestManager.performPushPostRequest(restEnd: Swift.String, headers: Swift.Optional&lt;Alamofire.HTTPHeaders&gt;, method: Alamofire.HTTPMethod, params: Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;, interceptor: Swift.Optional&lt;Alamofire.RequestInterceptor&gt;, completionHandler: (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; ()) -&gt; Alamofire.DataRequest"
-                  moduleName = "FlyNetwork"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "213"
-                  endingLineNumber = "213"
-                  offsetFromSymbolStart = "240">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

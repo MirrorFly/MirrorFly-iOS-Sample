@@ -4,10 +4,12 @@
 
 
 import UIKit
+import Foundation
 import FlyCore
 import FlyCommon
 import SDWebImage
 import AVKit
+import Contacts
 
 class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
    
@@ -36,9 +38,8 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     var unreadMessageChatList: [RecentChat] = []
     var allUnreadMessageChatList: [RecentChat] = []
     var isSearchEnabled: Bool = false
-   // var randomColors = [UIColor?]()
     let chatManager = ChatManager.shared
-    var currentIndex = 0
+    var currentIndex = -1
     private var contactViewModel : ContactViewModel?
     private var recentChatViewModel: RecentChatViewModel?
     private var selectionRecentChatList: [RecentChat] = []
@@ -58,31 +59,55 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         handleBackgroundAndForground()
         configTableView()
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            recentChatTableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height + (recentChatTableView?.rowHeight ?? 0.0) + 30, right: 0)
+        }
+    }
+    
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        recentChatTableView?.contentInset = .zero
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
         configureDefaults()
         getRecentChatList()
         getContactList()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.adminBlockDelegate = nil
+        GroupManager.shared.groupDelegate = nil
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
-        ContactManager.shared.profileDelegate = nil
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        ContactManager.shared.profileDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+        GroupManager.shared.groupDelegate = self
     }
     
     func configureDefaults() {
         FlyMessenger.shared.messageEventsDelegate = self
         chatManager.messageEventsDelegate = self
         chatManager.connectionDelegate = self
-        GroupManager.shared.groupDelegate = self
-        ContactManager.shared.profileDelegate = self
+    }
+    
+    override func willCometoForeground() {
+        profilePopupContainer?.isHidden = true
     }
     
     private func configTableView() {
@@ -147,16 +172,26 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @objc func imageButtonAction(_ sender:AnyObject){
         closeKeyboard()
-        UIView.transition(with: profilePopupContainer ?? UIView(), duration: 0.5, options: .transitionCrossDissolve, animations: { [weak self] in
-            if let weakSelf = self {
-                weakSelf.profilePopupContainer?.isHidden = false
-            }
-        })
-        if  let buttonTag = sender.tag {
+        if let buttonTag = sender.tag {
             currentIndex = buttonTag
-            setProfile()
+            if getRecentChat[currentIndex].isBlockedByAdmin && getRecentChat[currentIndex].isGroup {
+                showGroupBlockedView()
+            } else {
+                UIView.transition(with: profilePopupContainer ?? UIView(), duration: 0.5, options: .transitionCrossDissolve, animations: { [weak self] in
+                    if let weakSelf = self {
+                        weakSelf.profilePopupContainer?.isHidden = false
+                    }
+                })
+                setProfile()
+            }
         }
+      
     }
+    
+    private func showGroupBlockedView() {
+        AppAlert.shared.showAlert(view: self, title: groupNoLongerAvailable, message: "", buttonTitle: okButton)
+    }
+    
     
     @objc func closeKeyboard() {
         self.view.endEditing(true)
@@ -166,6 +201,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         UIView.transition(with: profilePopupContainer ?? UIView(), duration: 0.5, options: .transitionFlipFromLeft, animations: { [weak self] in
             if let weakSelf = self {
                 weakSelf.profilePopupContainer?.isHidden = true
+                weakSelf.currentIndex = -1
             }
         })
     }
@@ -198,13 +234,23 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
             if !didCancelTap {
                 switch tappedTitle {
                 case CreateGroupOptions.createGroup.rawValue:
-                    self?.navigateTo(identifier: Identifiers.createNewGroup)
-//                case CreateGroupOptions.broadCastList.rawValue:
-//                        print(" \(tappedTitle)")
+                    let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+                    if contactPermissionStatus == .denied {
+                        AppAlert.shared.contactAccess(view: self!,
+                                                      title: contactAccessTitle,
+                                                      message: contactAccessMessage,
+                                                      settingstitle: settings,
+                                                      cancelTitle: cancelUppercase)
+                        FlyDefaults.isContactPermissionSkipped = false
+                    } else {
+                        self?.navigateTo(identifier: Identifiers.createNewGroup)
+                    }
+                    //                case CreateGroupOptions.broadCastList.rawValue:
+                    //                        print(" \(tappedTitle)")
                 case CreateGroupOptions.web.rawValue:
                     self?.checkCameraPermission()
-                    default:
-                        print(" \(tappedTitle)")
+                default:
+                    print(" \(tappedTitle)")
                 }
             } else {
                 print("createGroup Cancel")
@@ -276,7 +322,9 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         if let deleteAlertViewController = controller {
             current?.present(deleteAlertViewController, animated: false, completion: { [weak self] in
                 if self?.selectionRecentChatList.count == 1 {
-                    let messages = "Delete chat with \"\(self?.selectionRecentChatList.first?.profileName ?? "")\"?"
+                    let selectedProfile = self?.selectionRecentChatList.first
+                    let name = getUserName(jid: selectedProfile?.jid ?? "", name: selectedProfile?.profileName ?? "", nickName: selectedProfile?.nickName ?? "", contactType: selectedProfile?.isItSavedContact ?? false ? .live : .unknown)
+                    let messages = "Delete chat with \"\(name)\"?"
                     controller?.deleteDecriptionLabel?.text = messages
                 } else {
                     controller?.deleteDecriptionLabel?.text = "Delete \(self?.selectionRecentChatList.count ?? 0) selected chats?"
@@ -324,7 +372,11 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if isSearchEnabled == true {
-            return unreadMessageChatList.count > 0  ? 3 : 2
+            if getRecentChat.count > 0 && filteredContactList.count > 0 {
+                return 2
+            } else {
+                return 1
+            }
         } else if getRecentChat.count > 0 {
             return 1
         } else {
@@ -335,20 +387,16 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch isSearchEnabled {
         case true:
-            if unreadMessageChatList.count == 0 {
-                return section == 0 ? getRecentChat.count : filteredContactList.count
-            } else {
                 switch section {
                 case 0:
-                    return getRecentChat.filter({$0.unreadMessageCount == 0}).count
+                    return getRecentChat.count > 0 ? getRecentChat.filter({$0.unreadMessageCount == 0}).count : (filteredContactList.count > 0) ? filteredContactList.count : 0
                 case 1:
-                    return unreadMessageChatList.count > 0 ? unreadMessageChatList.count : filteredContactList.count
+                    return filteredContactList.count > 0 ? filteredContactList.count : 0
                 case 2:
                     return filteredContactList.count
                 default:
                     break
                 }
-            }
         case false:
             return getRecentChat.count
         }
@@ -359,7 +407,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         if isSearchEnabled == true {
             switch section {
             case 0:
-                return getRecentChat.filter({$0.unreadMessageCount == 0}).count > 0 ? 50 : 0
+                return getRecentChat.count > 0 ? 50 : (filteredContactList.count > 0) ? 50 : 0
             case 1:
                 return (unreadMessageChatList.count > 0 || filteredContactList.count > 0) ? 50 : 0
             case 2:
@@ -378,9 +426,9 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         if isSearchEnabled == true {
             switch section {
             case 0:
-                return chatTitle.appending(" (\(getRecentChat.count))")
+                return getRecentChat.count > 0 ? chatTitle.appending(" (\(getRecentChat.count))") : (filteredContactList.count > 0) ? contactTitle.appending(" (\(filteredContactList.count))") : ""
             case 1:
-                return unreadMessageChatList.count > 0 ?messageTitle.appending(" (\(unreadMessageChatList.count))") : contactTitle.appending(" (\(filteredContactList.count))")
+                return filteredContactList.count > 0 ? contactTitle.appending(" (\(filteredContactList.count))") : ""
             case 2:
                 return contactTitle.appending(" (\(filteredContactList.count))")
             default:
@@ -400,7 +448,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
             if getRecentChat.count > indexPath.row {
                 let recentChat = getRecentChat[indexPath.row]
-                let name = getUserName(name: recentChat.profileName, nickName: recentChat.nickName)
+                let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
                 let color = getColor(userName: name)
                 cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                 cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
@@ -418,7 +466,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
                 if getRecentChat.filter({$0.unreadMessageCount == 0}).count > indexPath.row {
                     let recentChat = getRecentChat.filter({$0.unreadMessageCount == 0})[indexPath.row]
-                    let name = getUserName(name: recentChat.profileName, nickName: recentChat.nickName)
+                    let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
                     let color = getColor(userName: name)
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                     cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
@@ -432,11 +480,13 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 } else {
                     if filteredContactList.count > indexPath.row {
                         let profile = filteredContactList[indexPath.row]
-                        let name = getUserName(name: profile.name, nickName: profile.nickName)
+                        let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
                         let recentChat =  RecentChat()
                         recentChat.profileName = profile.name
                         recentChat.nickName = profile.nickName
                         recentChat.lastMessageContent = profile.status
+                        recentChat.isItSavedContact = profile.contactType == .live ? true : false
+                        recentChat.jid = profile.jid
                         let color = getColor(userName: name)
                         cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                         cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
@@ -450,7 +500,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
             if unreadMessageChatList.count > indexPath.row {
                 let recentChat = unreadMessageChatList[indexPath.row]
-                let name = getUserName(name: recentChat.profileName, nickName: recentChat.nickName)
+                let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
                 let color = getColor(userName: name)
                 cell.setTextColorWhileSearch(searchText: "", recentChat: recentChat)
                 cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
@@ -464,12 +514,15 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             } else {
                 if filteredContactList.count > indexPath.row {
                     let profile = filteredContactList[indexPath.row]
-                    let name = getUserName(name: profile.name, nickName: profile.nickName)
+                    let name = getUserName(jid: profile.jid, name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
                     let recentChat =  RecentChat()
                     recentChat.profileName = profile.name
                     recentChat.nickName = profile.nickName
                     recentChat.profileImage = profile.image
                     recentChat.lastMessageContent = profile.status
+                    recentChat.isItSavedContact = profile.contactType == .live ? true : false
+                    recentChat.jid = profile.jid
+                    recentChat.isDeletedUser = profile.contactType == .deleted
                     let color = getColor(userName: name)
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                     cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
@@ -483,11 +536,13 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
                 if filteredContactList.count > indexPath.row {
                     let profile = filteredContactList[indexPath.row]
-                    let name = getUserName(name: profile.name, nickName: profile.nickName)
+                    let name = getUserName(jid: profile.jid, name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
                     let recentChat =  RecentChat()
                     recentChat.profileName = profile.name
                     recentChat.nickName = profile.nickName
                     recentChat.lastMessageContent = profile.status
+                    recentChat.isItSavedContact = profile.contactType == .live ? true : false
+                    recentChat.jid = profile.jid
                     let color = getColor(userName: name)
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                     cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
@@ -526,7 +581,10 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             }
         }
         if !(isCellLongPressed ?? false) {
-            if isSearchEnabled == true {
+            let tempRecent = getRecentChat[indexPath.row]
+            if tempRecent.profileType == .groupChat && tempRecent.isBlockedByAdmin {
+                showGroupBlockedView()
+            } else if isSearchEnabled == true {
                 openContactChat(index: indexPath)
             } else {
                 openChat(index: indexPath.row)
@@ -604,12 +662,19 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         profileDetails.nickName = profile.nickName
         profileDetails.image = profile.profileImage ?? ""
         profileDetails.profileChatType = profile.profileType
+        if profile.isDeletedUser{
+            profileDetails.contactType = .deleted
+        }else{
+            profileDetails.contactType = profile.isItSavedContact == true ? .live : .unknown
+        }
+        profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
         vc?.getProfileDetails = profileDetails
-        let color = getColor(userName:  profile.profileName)
+        let color = getColor(userName: profile.profileName)
         vc?.contactColor = color
         vc?.replyMessagesDelegate = self
         vc?.replyMessageObj = replyMessageObj
         vc?.replyJid = replyJid
+        vc?.ismarkMessagesAsRead = true
         vc?.messageText = messageTxt
         vc?.navigationController?.modalPresentationStyle = .overFullScreen
         self.navigationController?.pushViewController(vc!, animated: true)
@@ -619,25 +684,14 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
         switch index.section {
         case 0:
-            let profile = getRecentChat.filter({$0.unreadMessageCount == 0})[index.row]
-            let profileDetails = ProfileDetails(jid: profile.jid)
-            profileDetails.name = profile.profileName
-            profileDetails.nickName = profile.nickName
-            profileDetails.image = profile.profileImage ?? ""
-            profileDetails.profileChatType = profile.profileType
-            vc?.getProfileDetails = profileDetails
-            vc?.replyMessagesDelegate = self
-            vc?.replyMessageObj = replyMessageObj
-            vc?.replyJid = replyJid
-            vc?.messageText = messageTxt
-            let color = getColor(userName: profile.profileName)
-            vc?.contactColor = color
-        case 1:
-            if unreadMessageChatList.count > index.row {
-                let profile = unreadMessageChatList[index.row]
+            if getRecentChat.filter({$0.unreadMessageCount == 0}).count > index.row {
+                let profile = getRecentChat.filter({$0.unreadMessageCount == 0})[index.row]
                 let profileDetails = ProfileDetails(jid: profile.jid)
                 profileDetails.name = profile.profileName
                 profileDetails.nickName = profile.nickName
+                profileDetails.image = profile.profileImage ?? ""
+                profileDetails.profileChatType = profile.profileType
+                profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
                 vc?.getProfileDetails = profileDetails
                 vc?.replyMessagesDelegate = self
                 vc?.replyMessageObj = replyMessageObj
@@ -650,6 +704,35 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 let profileDetails = ProfileDetails(jid: profile.jid)
                 profileDetails.name = profile.name
                 profileDetails.nickName = profile.nickName
+                profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
+                vc?.getProfileDetails = profileDetails
+                let color = getColor(userName: profile.name)
+                vc?.replyMessagesDelegate = self
+                vc?.replyMessageObj = replyMessageObj
+                vc?.replyJid = replyJid
+                vc?.messageText = messageTxt
+                vc?.contactColor = color
+            }
+        case 1:
+            if unreadMessageChatList.count > index.row {
+                let profile = unreadMessageChatList[index.row]
+                let profileDetails = ProfileDetails(jid: profile.jid)
+                profileDetails.name = profile.profileName
+                profileDetails.nickName = profile.nickName
+                profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
+                vc?.getProfileDetails = profileDetails
+                vc?.replyMessagesDelegate = self
+                vc?.replyMessageObj = replyMessageObj
+                vc?.replyJid = replyJid
+                vc?.messageText = messageTxt
+                let color = getColor(userName: profile.profileName)
+                vc?.contactColor = color
+            } else {
+                let profile = filteredContactList[index.row]
+                let profileDetails = ProfileDetails(jid: profile.jid)
+                profileDetails.name = profile.name
+                profileDetails.nickName = profile.nickName
+                profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
                 vc?.getProfileDetails = profileDetails
                 let color = getColor(userName: profile.name)
                 vc?.replyMessagesDelegate = self
@@ -663,6 +746,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             let profileDetails = ProfileDetails(jid: profile.jid)
             profileDetails.name = profile.name
             profileDetails.nickName = profile.nickName
+            profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
             vc?.getProfileDetails = profileDetails
             let color = getColor(userName: profile.name)
             vc?.contactColor = color
@@ -693,9 +777,9 @@ extension RecentChatViewController {
             if let weakSelf = self {
                 if  let  contactsList = contacts {
                     weakSelf.allContactsList.removeAll()
-                    weakSelf.filteredContactList.removeAll()
+                    //weakSelf.filteredContactList.removeAll()
                     weakSelf.allContactsList = contactsList
-                    weakSelf.allContactsList = weakSelf.allContactsList.sorted { getUserName(name: $0.name, nickName: $0.nickName)  < getUserName(name: $1.name, nickName: $1.nickName)  }
+                    weakSelf.allContactsList = weakSelf.allContactsList.sorted { getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType)  < getUserName(jid: $1.jid,name: $1.name, nickName: $1.nickName, contactType: $1.contactType)  }
                     weakSelf.recentChatTableView?.reloadData()
                 }
             }
@@ -720,6 +804,7 @@ extension RecentChatViewController {
                 if weakSelf.isSearchEnabled == false {
                     weakSelf.clearChatList()
                     weakSelf.getRecentChat = recentChatList ?? []
+                    weakSelf.getAllRecentChat = recentChatList ?? []
                     weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
                         weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
                     }
@@ -789,18 +874,16 @@ extension RecentChatViewController: UISearchBarDelegate {
             isSearchEnabled = true
             hideMultipleSelectionView()
             clearSelectedColor()
-            getRecentChat = searchText.isEmpty ? getRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
-                let name = getUserName(name: recentChat.profileName, nickName: recentChat.nickName)
-                return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil ||
+            getRecentChat = searchText.trim().isEmpty ? getAllRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
+                let name = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName,contactType: recentChat.isItSavedContact ? .live : .unknown)
+                return (name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
                 recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
             })
-            filteredContactList = searchText.isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
-                let name = getUserName(name: contact.name , nickName: contact.nickName)
-                return name.range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+            filteredContactList = searchText.trim().isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
+                let name = getUserName(jid: contact.jid,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
+                return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil
             })
-            unreadMessageChatList = searchText.isEmpty ? unreadMessageChatList : allUnreadMessageChatList.filter({ recentChat -> Bool in
-                return recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-            })
+            
         } else {
             isSearchEnabled = false
             getRecentChatList()
@@ -826,28 +909,35 @@ extension RecentChatViewController: UISearchBarDelegate {
 // UI Method
 extension RecentChatViewController {
     func setProfile() {
-        let profile = getRecentChat[currentIndex]
-        let urlString = "\(FlyDefaults.baseURL)\(media)/\(profile.profileImage ?? "")?mf=\(FlyDefaults.authtoken)"
-        username?.text = getUserName(name: profile.profileName, nickName: profile.nickName)
-        let url = URL(string: urlString)
-        let color = getColor(userName: getUserName(name: profile.profileName, nickName: profile.nickName))
-        userImage?.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        var placeHolder = UIImage()
-        if profile.profileType == .groupChat {
-            placeHolder = UIImage(named: ImageConstant.ic_group_placeholder)!
-            let isImageEmpty = profile.profileImage?.isEmpty ?? false
-            print("setProfile \(isImageEmpty)")
-            if isImageEmpty {
-                userImage?.backgroundColor = Color.groupIconBackgroundGray
-                userImage?.contentMode = .center
-            } else {
+        if currentIndex > -1{
+            let profile = getRecentChat[currentIndex]
+            let urlString = "\(FlyDefaults.baseURL)\(media)/\(profile.profileImage ?? "")?mf=\(FlyDefaults.authtoken)"
+            let isDeletedUser = profile.isDeletedUser
+            username?.text = getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: isDeletedUser ? .deleted :  (profile.isItSavedContact ? .live : .unknown))
+            let url = URL(string: urlString)
+            let color = getColor(userName: getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: profile.isItSavedContact ? .live : .unknown))
+            userImage?.sd_imageIndicator = SDWebImageActivityIndicator.gray
+            var placeHolder = UIImage()
+            if profile.profileType == .groupChat {
+                placeHolder = UIImage(named: ImageConstant.ic_group_placeholder)!
+                let isImageEmpty = profile.profileImage?.isEmpty ?? false
+                print("setProfile \(isImageEmpty)")
+                if isImageEmpty {
+                    userImage?.backgroundColor = Color.groupIconBackgroundGray
+                    userImage?.contentMode = .center
+                } else {
+                    userImage?.contentMode = .scaleAspectFill
+                }
+                userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
+            }else if isDeletedUser {
+                userImage?.backgroundColor =  Color.groupIconBackgroundGray
+                userImage?.sd_setImage(with: nil, placeholderImage: UIImage(named: "ic_profile_placeholder") ?? UIImage())
+            }else {
+                placeHolder = getPlaceholder(name: getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: profile.isItSavedContact ? .live : .unknown), color: color )
                 userImage?.contentMode = .scaleAspectFill
+                userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
             }
-        }else {
-            placeHolder = getPlaceholder(name: getUserName(name: profile.profileName, nickName: profile.nickName), color: color )
-            userImage?.contentMode = .scaleAspectFill
         }
-        userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
     }
     
     func getOverallUnreadCount() {
@@ -932,6 +1022,11 @@ extension RecentChatViewController : ConnectionEventDelegate {
 
 // MessageEventDelegate
 extension RecentChatViewController : MessageEventsDelegate {
+    
+    func onMessageTranslated(message: ChatMessage, jid: String) {
+        
+    }
+    
     func onMessageStatusUpdated(messageId: String, chatJid: String, status: MessageStatus) {
         getRecentChatList()
     }
@@ -972,11 +1067,30 @@ extension RecentChatViewController : ProfileEventsDelegate {
     
     func userWentOffline(for jid: String) {}
     
-    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {}
+    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
+        
+        if let index = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+            getRecentChat[index].profileImage = profileDetails?.image
+            getRecentChat[index].profileName = profileDetails?.name ?? ""
+            print("userUpdatedTheirProfile currentIndex \(currentIndex)")
+            let profile = ["jid": profileDetails?.jid, "name": profileDetails?.name, "image": profileDetails?.image, "status": profileDetails?.status]
+            NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate),
+                                            object: nil,userInfo: profile as [AnyHashable: Any])
+            NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState),
+                                            object: nil, userInfo: profile as [AnyHashable: Any])
+            let indexPath = IndexPath(item: index, section: 0)
+            recentChatTableView?.reloadRows(at: [indexPath], with: .fade)
+        }
+    }
     
     func myProfileUpdated() {}
     
-    func usersProfilesFetched() {}
+    func usersProfilesFetched() {
+        print("RecentChatViewController usersProfilesFetched")
+        getRecentChatList()
+        getContactList()
+        setProfile()
+    }
     
     func blockedThisUser(jid: String) {}
     
@@ -996,16 +1110,48 @@ extension RecentChatViewController : ProfileEventsDelegate {
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         print("userUpdatedTheirProfile \(jid)")
-        if  let index = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+        if let index = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
             getRecentChat[index].profileImage = profileDetails.image
             getRecentChat[index].profileName = profileDetails.name
             print("userUpdatedTheirProfile currentIndex \(currentIndex)")
             let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
-            NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
-            NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil, userInfo: profile as [AnyHashable : Any])
+            NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil,
+                                            userInfo: profile as [AnyHashable : Any])
+            NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil,
+                                            userInfo: profile as [AnyHashable : Any])
             let indexPath = IndexPath(item: index, section: 0)
             recentChatTableView?.reloadRows(at: [indexPath], with: .fade)
+            
+            if profilePopupContainer?.isHidden == false  && currentIndex == index {
+                setProfile()
+            }
         }
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        print("#userDeleted \(jid)  \(profileDetails.name) \(profileDetails.nickName)")
+        if let index = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+            getRecentChat[index].profileImage = profileDetails.image
+            getRecentChat[index].profileName = profileDetails.name
+            getRecentChat[index].nickName = profileDetails.nickName
+            getRecentChat[index].isItSavedContact = false
+            getRecentChat[index].isDeletedUser = true
+        }
+        if let index = getAllRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+            getAllRecentChat[index].profileImage = profileDetails.image
+            getAllRecentChat[index].profileName = profileDetails.name
+            getAllRecentChat[index].nickName = profileDetails.nickName
+            getAllRecentChat[index].isItSavedContact = false
+            getAllRecentChat[index].isDeletedUser = true
+        }
+        if let index = allContactsList.firstIndex(where: { pd in pd.jid == jid }) {
+            allContactsList.remove(at: index)
+            
+        }
+        if let index = filteredContactList.firstIndex(where: { pd in pd.jid == jid }) {
+            filteredContactList.remove(at: index)
+        }
+        recentChatTableView?.reloadData()
     }
 }
 
@@ -1018,56 +1164,79 @@ extension RecentChatViewController : GroupCreationDelegate {
 
 extension RecentChatViewController : GroupEventsDelegate {
     func didRemoveMemberFromAdmin(groupJid: String, removedAdminMemberJid: String, removedByMemberJid: String) {
-
+        DispatchQueue.main.async { [weak self] in
+            self?.updateGroupInRecentChat(groupJid: groupJid)
+        }
     }
     
     func didAddNewMemeberToGroup(groupJid: String, newMemberJid: String, addedByMemberJid: String) {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.updateGroupInRecentChat(groupJid: groupJid)
+        }
     }
     
     func didRemoveMemberFromGroup(groupJid: String, removedMemberJid: String, removedByMemberJid: String) {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.updateGroupInRecentChat(groupJid: groupJid)
+        }
     }
     
     func didMakeMemberAsAdmin(groupJid: String, newAdminMemberJid: String, madeByMemberJid: String) {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.updateGroupInRecentChat(groupJid: groupJid)
+        }
     }
     
     func didDeleteGroupLocally(groupJid: String) {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.getRecentChat = self?.getRecentChat.filter({ $0.jid != groupJid}) ?? []
+            self?.getAllRecentChat = self?.getAllRecentChat.filter({ $0.jid != groupJid}) ?? []
+            self?.recentChatTableView?.reloadData()
+        }
     }
     
     func didLeftFromGroup(groupJid: String, leftUserJid: String) {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.updateGroupInRecentChat(groupJid: groupJid)
+        }
     }
     
     func didCreateGroup(groupJid: String) {
-        
+        DispatchQueue.main.async { [weak self] in
+            self?.updateGroupInRecentChat(groupJid: groupJid)
+        }
     }
     
     func didFetchGroupMembers(groupJid: String) {
-        
+        updateGroupInRecentChat(groupJid: groupJid)
     }
     
     func didReceiveGroupNotificationMessage(message: ChatMessage) {
-        getRecentChatList()
+        
     }
     
     func didUpdateGroupProfile(groupJid: String) {
-        print("RecentChatViewController didGroupInfoUpdatedMessage \(groupJid)")
-      
-        let group = GroupManager.shared.getAGroupFromLocal(groupJid: groupJid)
-      
         DispatchQueue.main.async { [weak self] in
-            self?.getRecentChat.enumerated().forEach { (index, element) in
-                if element.jid == groupJid {
-                   
-                    self?.getRecentChat[index].profileName = (group?.name ?? group?.nickName) ?? ""
-                    self?.getRecentChat[index].profileImage = group?.image
-                    print("\(self?.getRecentChat[index].nickName) \(self?.recentChatTableView)")
-                    self?.recentChatTableView?.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+            if let index = self?.getRecentChat.firstIndex(where: { pd in pd.jid == groupJid }) {
+                let group = self?.recentChatViewModel?.getGroupDetails(groupJid: groupJid)
+                
+                self?.getRecentChat[index].profileImage = group?.image
+                self?.getRecentChat[index].profileName = group?.name ?? ""
+                let groupProfile = ["jid": group?.jid, "name": group?.name, "image": group?.image, "status": group?.status]
+                
+                NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil,
+                                                userInfo: groupProfile as [AnyHashable : Any])
+                NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil,
+                                                userInfo: groupProfile as [AnyHashable : Any])
+                
+                let indexPath = IndexPath(item: index, section: 0)
+                self?.recentChatTableView?.reloadRows(at: [indexPath], with: .fade)
+                
+                if self?.profilePopupContainer?.isHidden == false  && self?.currentIndex == index {
+                    self?.setProfile()
                 }
             }
+            self?.updateGroupInRecentChat(groupJid: groupJid)
         }
     }
     
@@ -1077,8 +1246,6 @@ extension RecentChatViewController : GroupEventsDelegate {
     }
     
     func didFetchGroupProfile(groupJid: String) {
-        print("RecentChatViewController didGroupProfileFetch \(groupJid)")
-        getRecentChatList()
     }
 }
 
@@ -1087,5 +1254,75 @@ extension RecentChatViewController : ReplyMessagesDelegate {
         replyMessageObj = message
         replyJid = jid
         messageTxt = messageText
+    }
+}
+
+extension RecentChatViewController : AdminBlockDelegate {
+    func didBlockOrUnblockContact(userJid: String, isBlocked: Bool) {
+        updateAdminBlockedState(jid: userJid, isBlocked: isBlocked)
+    }
+    
+    func didBlockOrUnblockSelf(userJid: String, isBlocked: Bool) {
+        
+    }
+    
+    func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
+        updateAdminBlockedState(jid: groupJid, isBlocked: isBlocked)
+    }
+}
+
+// To hanlde User (group, single user, current user) Bloced events
+extension RecentChatViewController {
+    func updateAdminBlockedState(jid : String, isBlocked : Bool) {
+        executeOnMainThread { [weak self] in
+            if let recentChats = self?.getRecentChat {
+                for (index, recent) in recentChats.enumerated() {
+                    if recent.jid == jid {
+                        self?.getRecentChat[index].isBlockedByAdmin = isBlocked
+                        self?.recentChatTableView?.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                        break
+                    }
+                }
+            }
+        }
+    }
+}
+
+// To hanlde Group Events
+extension RecentChatViewController {
+    
+    func updateGroupInRecentChat(groupJid : String) {
+        let groupAndRecent = getGroupAndRecent(groupJid: groupJid)
+        if checkGroupExistInRecntChat(groupJid: groupJid) {
+            executeOnMainThread { [weak self] in
+                self?.getRecentChat.enumerated().forEach { (index, element) in
+                    if element.jid == groupJid {
+                        if let recent = groupAndRecent.recentChat {
+                            self?.getRecentChat.remove(at: index)
+                            self?.getRecentChat.insert(recent, at: 0)
+                            print("\(self?.getRecentChat[index].nickName ?? "")")
+                            self?.recentChatTableView?.reloadData()
+                        }
+                    }
+                }
+            }
+        } else {
+            if let recent = groupAndRecent.recentChat {
+                executeOnMainThread { [weak self] in
+                    self?.getRecentChat.insert(recent, at: 0)
+                    self?.recentChatTableView?.reloadData()
+                }
+            }
+        }
+    }
+    
+    func getGroupAndRecent(groupJid : String) -> (groupProfile : ProfileDetails? , recentChat : RecentChat?) {
+        let group = recentChatViewModel?.getGroupDetails(groupJid: groupJid)
+        let recentChat = recentChatViewModel?.getRecentChat(jid: groupJid)
+        return(group,recentChat)
+    }
+    
+    func checkGroupExistInRecntChat(groupJid : String) -> Bool{
+        return getRecentChat.filter ({$0.jid == groupJid}).first != nil
     }
 }

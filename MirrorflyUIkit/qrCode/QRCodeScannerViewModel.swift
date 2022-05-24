@@ -39,6 +39,10 @@ class QRCodeScannerViewModel : NSObject{
         return WebLoginsManager.shared.getWebLogins()
     }
     
+    func getRecentWebLogin() -> [WebLoginInfo?] {
+        return WebLoginsManager.shared.getRecentWebLogin()
+    }
+    
     func resetConnection() {
         WebLoginsManager.shared.reset()
     }

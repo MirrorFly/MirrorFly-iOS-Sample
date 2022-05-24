@@ -33,7 +33,7 @@ class ContactCell: UITableViewCell {
     
     // MARK: SetTextColor whileSearch
     func setTextColorWhileSearch(searchText: String,profile: ProfileDetails) {
-        let profileName = getUserName(name: profile.name, nickName: profile.nickName)
+        let profileName =  getUserName(jid : profile.jid ,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
         if let range = profileName.range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive])  {
             let convertedRange = NSRange(range, in: profileName.capitalized)
             let attributedString = NSMutableAttributedString(string: profileName.capitalized)
