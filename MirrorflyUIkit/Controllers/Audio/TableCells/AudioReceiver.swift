@@ -122,7 +122,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+           // forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
@@ -141,6 +141,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
        if(message?.isReplyMessage ?? false) {
            replyView?.isHidden = false
             let getReplymessage =  message?.replyParentChatMessage?.messageTextContent
+           let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
            mapView?.isHidden = true
            replyTextLabel?.text = getReplymessage
            if message?.replyParentChatMessage?.mediaChatMessage != nil {
@@ -219,7 +220,8 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             replyUserLabel?.text = you.localized
         }
         else {
-            replyUserLabel?.text = message!.replyParentChatMessage?.senderUserName
+            replyUserLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
+                                               nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     }
         else {

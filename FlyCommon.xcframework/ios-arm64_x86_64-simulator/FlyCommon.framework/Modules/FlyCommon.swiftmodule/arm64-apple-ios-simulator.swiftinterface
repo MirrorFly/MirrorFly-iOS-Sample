@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target arm64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCommon
 import AVFoundation
 import CommonCrypto
@@ -37,6 +37,7 @@ import _Concurrency
   @objc public var isGroupInOfflineMode: Swift.Bool
   @objc public var isConversationUnRead: Swift.Bool
   @objc public var isBlockedByAdmin: Swift.Bool
+  @objc public var isDeletedUser: Swift.Bool
   @objc override dynamic public init()
   @objc deinit
 }
@@ -400,6 +401,11 @@ public struct MessageReceipt {
     set
     _modify
   }
+  @FlyCommon.SDKDefaults public static var isLive: Swift.Bool {
+    get
+    set
+    _modify
+  }
   public static func clearAllFlyDefaults()
   @objc deinit
 }
@@ -441,6 +447,7 @@ public enum ContactType : Swift.String, Swift.CustomStringConvertible {
   case live
   case local
   case unknown
+  case deleted
   public var description: Swift.String {
     get
   }
@@ -526,6 +533,7 @@ public struct FlyUtils {
   public static let uploadedVideoAlbum: Swift.String
   public static let downloadImage: Swift.String
   public static let uploadImage: Swift.String
+  public static func setAppGroupContainerId(id: Swift.String)
   public static func getJid(from uniqueId: Swift.String) throws -> Swift.String
   public static func getIdFromJid(jid: Swift.String) throws -> Swift.String
   public static func getMyJid() throws -> Swift.String
@@ -591,6 +599,7 @@ extension FlyCommon.FlyUtils {
   public static func printTime()
   public static func getUserName(jid: Swift.String, name: Swift.String, nickName: Swift.String, contactType: FlyCommon.ContactType) -> Swift.String
   public static func getUserName(name: Swift.String, nickName: Swift.String) -> Swift.String
+  public static func getFormattedMobileNumber(mobileNumber: Swift.String) -> Swift.String
 }
 public enum ChatType : Swift.String, Swift.CustomStringConvertible {
   case singleChat
@@ -767,6 +776,7 @@ public struct FlyProfile {
   @objc public var replyParentChatMessage: FlyCommon.ReplyParentChatMessage?
   public var audioTrackTime: Swift.Float?
   public var isRetryButtonDisabled: Swift.Bool?
+  public var isDeletedUser: Swift.Bool?
   @objc override dynamic public init()
   @objc deinit
 }
@@ -801,6 +811,10 @@ public struct FlyProfile {
       get
     }
   }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class FlyLog {
+  public class func DLog(param1: Swift.String?, param2: Any?)
   @objc deinit
 }
 public enum FileType : Swift.String {
@@ -929,6 +943,7 @@ public struct FlyEncryption {
   @objc public var contactChatMessage: FlyCommon.ContactChatMessage?
   @objc public var locationChatMessage: FlyCommon.LocationChatMessage?
   @objc public var mediaChatMessage: FlyCommon.MediaChatMessage?
+  public var isDeletedUser: Swift.Bool?
   @objc override dynamic public init()
   @objc deinit
 }
@@ -1097,6 +1112,7 @@ public struct FlyConstants {
   public static let isContactPermissionSkipped: Swift.String
   public static let profileIV: Swift.String
   public static let isMobileNumberLogin: Swift.String
+  public static let isLive: Swift.String
   public struct ErrorMessage {
     public static let internetNotAvailable: Swift.String
     public static let invalidJid: Swift.String
@@ -1129,8 +1145,6 @@ public struct FlyConstants {
     public static let leaveThenDelete: Swift.String
     public static let emptyFileUrl: Swift.String
     public static let invalidMessageId: Swift.String
-    public static let groupNoLongerAvailable: Swift.String
-    public static let thisUerIsNoLonger: Swift.String
   }
   public struct SuccessMessage {
     public static let profileFetch: Swift.String
@@ -1166,6 +1180,7 @@ public struct FlyConstants {
     public static let getGroupsSuccess: Swift.String
     public static let typingStatusSuccess: Swift.String
     public static let typingGoneStatusSuccess: Swift.String
+    public static let register_update_success: Swift.String
     public static let result: Swift.String
   }
 }

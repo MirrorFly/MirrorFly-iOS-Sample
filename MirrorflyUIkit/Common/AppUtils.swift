@@ -190,7 +190,7 @@ func getColor(userName : String) -> UIColor {
 }
 
 extension UIImageView {
-    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = ""){
+    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown){
         let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken
         let url = URL(string: urlString)
         var placeholder : UIImage?
@@ -207,6 +207,9 @@ extension UIImageView {
                                       textColor: nil, color: getColor(userName: name))
                 placeholder = ipimage.generateInitialImage()
             }
+        }
+        if contactType == .deleted {
+            placeholder = UIImage(named: "ic_profile_placeholder")
         }
         self.sd_setImage(with: url, placeholderImage: placeholder, options: [.continueInBackground,.decodeFirstFrameOnly,.highPriority,.scaleDownLargeImages], progress: nil){ (image, responseError, isFromCache, imageUrl) in
             if let error =  responseError as? NSError{

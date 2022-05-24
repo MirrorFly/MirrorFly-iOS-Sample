@@ -23,6 +23,10 @@ import Tatsi
 import QCropper
 import Contacts
 
+protocol RefreshProfileInfo {
+    func refreshProfileDetails(profileDetails:ProfileDetails?)
+}
+
 class GroupInfoViewController: UIViewController {
     
     // MARK: Properties
@@ -46,7 +50,8 @@ class GroupInfoViewController: UIViewController {
     var lastSelectedCollection: PHAssetCollection?
     var isAdminMember: Bool = false
     var isExistMember: Bool = false
-    
+    var delegate: RefreshProfileInfo?
+    var isGroupInfoUpdated: Bool = false
     var firstView: TatsiConfig.StartView {
         if let lastCollection = self.lastSelectedCollection {
             return .album(lastCollection)
@@ -70,6 +75,7 @@ class GroupInfoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        isGroupInfoUpdated = false
         refreshData()
         getGroupMembers()
         if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
@@ -132,6 +138,9 @@ class GroupInfoViewController: UIViewController {
     func didTapBack(sender : Any) {
         navigationController?.navigationBar.isHidden = false
         navigationController?.popViewController(animated: true)
+        if isGroupInfoUpdated {
+            delegate?.refreshProfileDetails(profileDetails: profileDetails)
+        }
     }
     
     @objc
@@ -447,6 +456,7 @@ extension GroupInfoViewController: ContactImageCellDelegate {
                 if success {
                     self?.setupConfiguration()
                     self?.refreshData()
+                    self?.isGroupInfoUpdated = true
                 } else {
                     AppAlert.shared.showToast(message: "Please try again later")
                 }
@@ -611,6 +621,10 @@ extension GroupInfoViewController: ProfileEventsDelegate {
     }
     
     func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
         
     }
 }

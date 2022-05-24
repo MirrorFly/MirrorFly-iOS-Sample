@@ -49,10 +49,12 @@ class AddParticipantsViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         ChatManager.shared.adminBlockDelegate = self
+        ContactManager.shared.profileDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         ChatManager.shared.adminBlockDelegate = nil
+        ContactManager.shared.profileDelegate = nil
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -299,4 +301,70 @@ extension AddParticipantsViewController {
         }
     }
     
+}
+
+extension AddParticipantsViewController : ProfileEventsDelegate{
+    
+    func userCameOnline(for jid: String) {
+        
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
+            
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        participantTableView.reloadData()
+    }
+    
+    func blockedThisUser(jid: String) {
+        
+    }
+    
+    func unblockedThisUser(jid: String) {
+        
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+        
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        participantTableView.reloadData()
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+        
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+       getContacts()
+        if GroupCreationData.participants.contains(where: {$0.jid == jid}) {
+            GroupCreationData.participants = groupCreationViewModel.removeSelectedParticipantJid(selectedParticipants: GroupCreationData.participants, participant: profileDetails)
+        }
+    }
 }

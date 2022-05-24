@@ -23,6 +23,7 @@ enum Identifiers {
     static let noContacts = "NoContacts"
     static let contactCell = "ContactCell"
     static let contactViewController = "ContactViewController"
+    static let dmaReasonVC = "DMAReasonVC"
     
     //MARK: - Chat
     static let chatTextView =  "ChatTextView"

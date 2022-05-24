@@ -8,6 +8,7 @@ import AVFoundation
 import NicoProgress
 import MapKit
 import GoogleMaps
+import FlyCore
 
 class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var uploadCancel: UIImageView?
@@ -119,7 +120,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+           // forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
@@ -149,6 +150,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
        if(message!.isReplyMessage) {
            replyView?.isHidden = false
             let getReplymessage =  message?.replyParentChatMessage?.messageTextContent
+           let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
            mediaLocationMap?.isHidden = true
            userTextLabel?.text = getReplymessage
            if message?.replyParentChatMessage?.mediaChatMessage != nil {
@@ -226,7 +228,8 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             replyUserLabel?.text = you.localized
         }
         else {
-            replyUserLabel?.text = message!.replyParentChatMessage?.senderUserName
+            replyUserLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
+                                               nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     } else {
             replyView?.isHidden = true

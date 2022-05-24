@@ -522,6 +522,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                     recentChat.lastMessageContent = profile.status
                     recentChat.isItSavedContact = profile.contactType == .live ? true : false
                     recentChat.jid = profile.jid
+                    recentChat.isDeletedUser = profile.contactType == .deleted
                     let color = getColor(userName: name)
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                     cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
@@ -661,9 +662,11 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         profileDetails.nickName = profile.nickName
         profileDetails.image = profile.profileImage ?? ""
         profileDetails.profileChatType = profile.profileType
-
-        profileDetails.contactType = profile.isItSavedContact == true ? .live : .unknown
-
+        if profile.isDeletedUser{
+            profileDetails.contactType = .deleted
+        }else{
+            profileDetails.contactType = profile.isItSavedContact == true ? .live : .unknown
+        }
         profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
         vc?.getProfileDetails = profileDetails
         let color = getColor(userName: profile.profileName)
@@ -873,7 +876,7 @@ extension RecentChatViewController: UISearchBarDelegate {
             clearSelectedColor()
             getRecentChat = searchText.trim().isEmpty ? getAllRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
                 let name = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName,contactType: recentChat.isItSavedContact ? .live : .unknown)
-                return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil ||
+                return (name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
                 recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
             })
             filteredContactList = searchText.trim().isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
@@ -909,7 +912,8 @@ extension RecentChatViewController {
         if currentIndex > -1{
             let profile = getRecentChat[currentIndex]
             let urlString = "\(FlyDefaults.baseURL)\(media)/\(profile.profileImage ?? "")?mf=\(FlyDefaults.authtoken)"
-            username?.text = getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: profile.isItSavedContact ? .live : .unknown)
+            let isDeletedUser = profile.isDeletedUser
+            username?.text = getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: isDeletedUser ? .deleted :  (profile.isItSavedContact ? .live : .unknown))
             let url = URL(string: urlString)
             let color = getColor(userName: getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: profile.isItSavedContact ? .live : .unknown))
             userImage?.sd_imageIndicator = SDWebImageActivityIndicator.gray
@@ -924,11 +928,15 @@ extension RecentChatViewController {
                 } else {
                     userImage?.contentMode = .scaleAspectFill
                 }
+                userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
+            }else if isDeletedUser {
+                userImage?.backgroundColor =  Color.groupIconBackgroundGray
+                userImage?.sd_setImage(with: nil, placeholderImage: UIImage(named: "ic_profile_placeholder") ?? UIImage())
             }else {
                 placeHolder = getPlaceholder(name: getUserName(jid: profile.jid,name: profile.profileName, nickName: profile.nickName, contactType: profile.isItSavedContact ? .live : .unknown), color: color )
                 userImage?.contentMode = .scaleAspectFill
+                userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
             }
-            userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
         }
     }
     
@@ -1080,6 +1088,7 @@ extension RecentChatViewController : ProfileEventsDelegate {
     func usersProfilesFetched() {
         print("RecentChatViewController usersProfilesFetched")
         getRecentChatList()
+        getContactList()
         setProfile()
     }
     
@@ -1117,6 +1126,32 @@ extension RecentChatViewController : ProfileEventsDelegate {
                 setProfile()
             }
         }
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        print("#userDeleted \(jid)  \(profileDetails.name) \(profileDetails.nickName)")
+        if let index = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+            getRecentChat[index].profileImage = profileDetails.image
+            getRecentChat[index].profileName = profileDetails.name
+            getRecentChat[index].nickName = profileDetails.nickName
+            getRecentChat[index].isItSavedContact = false
+            getRecentChat[index].isDeletedUser = true
+        }
+        if let index = getAllRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+            getAllRecentChat[index].profileImage = profileDetails.image
+            getAllRecentChat[index].profileName = profileDetails.name
+            getAllRecentChat[index].nickName = profileDetails.nickName
+            getAllRecentChat[index].isItSavedContact = false
+            getAllRecentChat[index].isDeletedUser = true
+        }
+        if let index = allContactsList.firstIndex(where: { pd in pd.jid == jid }) {
+            allContactsList.remove(at: index)
+            
+        }
+        if let index = filteredContactList.firstIndex(where: { pd in pd.jid == jid }) {
+            filteredContactList.remove(at: index)
+        }
+        recentChatTableView?.reloadData()
     }
 }
 

@@ -1,21 +1,21 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyXmpp
 import FlyCommon
 @_exported import FlyXmpp
 import Foundation
-import KissXML
 import Swift
 import UIKit
 import UserNotifications
-import XMPPFramework
+@_exported import XMPPFramework
 import _Concurrency
 public struct XmppUtils {
   public static func generateMyXmppResource()
   public static func getMyXMPPJID() -> XMPPFramework.XMPPJID
 }
 public protocol XMPPMessageDelegate : ObjectiveC.NSObjectProtocol {
-  func didReceivedSingleChatMessage(messageId: Swift.String, from: Swift.String, body: Swift.String, time: Swift.String) -> Swift.String
+  func didReciveSingleChatCorbonMessage(messageId: Swift.String, from: Swift.String, to: Swift.String, body: Swift.String, time: Swift.String) -> Swift.String
+  func didReceivedSingleChatMessage(messageId: Swift.String, from: Swift.String, body: Swift.String, time: Swift.String, groupJid: Swift.String) -> Swift.String
   func didReceiveGroupChatMessage(messageId: Swift.String, from: Swift.String, groupJid: Swift.String, body: Swift.String, time: Swift.String)
   func onSentMessageStatusUpdated(from: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, time: Swift.String?)
   func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus)
@@ -35,17 +35,20 @@ public protocol XMPPTypingStatusDelegate : ObjectiveC.NSObjectProtocol {
   func onChatTypingStatusChanged(userJid: Swift.String, status: FlyCommon.TypingStatus)
   func onGroupChatTypingStatusChanged(groupJid: Swift.String, userJid: Swift.String, status: FlyCommon.TypingStatus)
 }
+public protocol XMPPAdminBlockDelegate : ObjectiveC.NSObjectProtocol {
+  func didBlock(adminBlock: FlyCommon.AdminBlock?)
+}
 public protocol XMPPGroupDelegate : ObjectiveC.NSObjectProtocol {
-  func didReceiveUseraddedMessage(particiapntList: FlyCommon.ProfileDetails, publisherList: FlyCommon.ProfileDetails, groupInfo: FlyCommon.GroupParticipantDetail)
+  func didReceiveUseraddedMessage(participantProfile: FlyCommon.ProfileDetails, publisherProfile: FlyCommon.ProfileDetails, groupMemberDetail: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool)
   func didAddParticipantSuccessMessage(addParticipantmessage: Swift.String)
   func didAdminRemoveParticipant(message: Swift.String)
-  func didAdminRemoveParticipantReceiveMessage(removeparticipantList: FlyCommon.ParticipantDetails)
+  func didAdminRemoveParticipantReceiveMessage(removedParticipant: FlyCommon.ParticipantDetails)
   func didGroupUserProfileFetch(for jid: Swift.String, groupInfoDetails: FlyCommon.GroupModel?)
   func didGroupProfileFetch(groupJid: Swift.String)
   func didGroupInfoProfileUpdated(message: Swift.String)
   func didMakeAdmin(message: Swift.String)
-  func didGroupInfoUpdatedMessage(groupInfoUpdateList: FlyCommon.ParticipantDetails)
-  func didMakeAdminMessage(makeAdminList: FlyCommon.ParticipantDetails)
+  func didGroupInfoUpdatedMessage(groupDetail: FlyCommon.ParticipantDetails)
+  func didMakeAdminMessage(participantDetail: FlyCommon.ParticipantDetails)
   func didExitFromGroup(message: Swift.String)
   func didDeleteFromGroup(message: Swift.String)
   func didReceiveGroupDeleteMessage(groupJid: Swift.String, messageFrom: Swift.String)
@@ -76,9 +79,11 @@ public protocol XMPPProfileDelegate : ObjectiveC.NSObjectProtocol {
   func usersBlockedMeListFetched(jidList: [Swift.String])
   func hideUserLastSeen()
   func getUserLastSeen()
+  func userDeletedTheirAccount(jid: Swift.String)
+  func userRegisterUpdate(jid: Swift.String)
 }
 public protocol FlyXmppControllerDelegate : ObjectiveC.NSObjectProtocol {
-  func processPushMessage(_ userInfo: [Swift.AnyHashable : Any]?, completionHandler: @escaping (Swift.String) -> Swift.Void)
+  func processPushMessage(_ userInfo: [Swift.AnyHashable : Any]?, completionHandler: @escaping (Swift.String, Swift.String, Swift.String, Swift.String) -> Swift.Void)
   func processGroupPushMessage(_ userInfo: [Swift.AnyHashable : Any]?) -> Swift.String
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class FlyXmppController : ObjectiveC.NSObject {
@@ -90,6 +95,8 @@ public protocol FlyXmppControllerDelegate : ObjectiveC.NSObjectProtocol {
   public func setConnectionDelegate(xmmpConnectionDelegate: FlyXmpp.XMPPConnectionDelegate)
   public func setTypingDelegate(xmppTypingDelegate: FlyXmpp.XMPPTypingStatusDelegate)
   public func setWebLogoutDelegate(webLogoutDelegate: FlyXmpp.XMPPWebLogoutDelegate)
+  public func setAdminBlockDelegate(adminBlockDelegate: FlyXmpp.XMPPAdminBlockDelegate)
+  public func setLogoutDelegate(logoutDelegate: FlyXmpp.XMPPLogoutDelegate)
   public func connect()
   public func disConnect()
   public func isXmppAuthenticated() -> Swift.Bool
@@ -132,8 +139,11 @@ extension FlyXmpp.FlyXmppController {
   public func exitParticipantFromGroup(groupJID: Swift.String, userJID: Swift.String, status: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func getParticipant(groupJID: Swift.String, callback: FlyCommon.FlyCompletionHandler? = nil)
   public func sendCallMessage(for status: Swift.String, roomId: Swift.String, groupId: Swift.String, callType: Swift.String, callMode: Swift.String, callTime: Swift.String, startTime: Swift.String, endTime: Swift.String, callStatus: Swift.String, callFrom: Swift.String, users: [Swift.String], inviteUsers: [Swift.String], callback: @escaping FlyCommon.FlyCompletionHandler)
-  public func sendGroupTyping(groupJid: Swift.String, chatState: XMPPFramework.XMPPMessage.ChatState, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendWebLogout(socketId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
+  public func sendRegisterUpdate(callback: @escaping FlyCommon.FlyCompletionHandler)
+}
+public protocol XMPPLogoutDelegate : ObjectiveC.NSObjectProtocol {
+  func didReceiveLogout()
 }
 public protocol XMPPWebLogoutDelegate : ObjectiveC.NSObjectProtocol {
   func didLogoutWeb(socketId: Swift.String)

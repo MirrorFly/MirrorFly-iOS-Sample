@@ -121,6 +121,13 @@ class ContactSyncController: UIViewController {
     func moveToDashboard(){
         DispatchQueue.main.async { [weak self] in
             Utility.saveInPreference(key: isLoginContactSyncDone, value: true)
+            if !Utility.getBoolFromPreference(key: firstTimeSandboxContactSyncDone) {
+                ChatManager.sendRegisterUpdate { isSuccess, error, data in
+                    if isSuccess{
+                        Utility.saveInPreference(key: firstTimeSandboxContactSyncDone, value: true)
+                    }
+                }
+            }
             let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
             let mainTabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
             self?.navigationController?.pushViewController(mainTabBarController, animated: true)

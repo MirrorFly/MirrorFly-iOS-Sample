@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCall
 import AVFAudio
 import AVFoundation
@@ -8,8 +8,7 @@ import Contacts
 @_exported import FlyCall
 import FlyCommon
 import Foundation
-import Realm
-import RealmSwift
+@_exported import RealmSwift
 import Swift
 import UIKit
 import UserNotifications
@@ -46,7 +45,6 @@ public enum ARDSignalingChannelState : Swift.Int {
   @objc dynamic public var isLogSync: Swift.Bool
   public func initWithCallID(_ callID: Swift.String?, fromJID: Swift.String?, toJID: Swift.String?, callerDevice: Swift.String?, callType: Swift.String?, callingTime: Swift.Double, callStartTime: Swift.Double, callEndTime: Swift.Double, callState: Swift.String, callMode: Swift.String, usersList: Swift.String, groupId: Swift.String?) -> FlyCall.RealmCallLog?
   public func getCallLog(forCallID callID: Swift.String?) -> FlyCall.RealmCallLog?
-  @objc override dynamic public class func primaryKey() -> Swift.String?
   @objc override dynamic public init()
   @objc deinit
 }

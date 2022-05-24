@@ -18,8 +18,7 @@ class SettingsViewController : UIViewController {
     
     //private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","Archived Chats","About and Help","App Lock","Connection Label", "Logout"]
     
-
-    private var settingsArr = ["Chats","About and Help", "Contact Us" ,"Logout"]
+    private var settingsArr = ["Chats","About and Help","Delete My Account","Logout"]
 
     override func viewDidLoad() {
         let info = Bundle.main.infoDictionary
@@ -108,26 +107,24 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             break
-
-        case "Contact Us":
-            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ContactUsController") as? ContactUsController {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-            break
-            
         case "About and Help":
             if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutandHelpViewController") as? AboutandHelpViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             
             break
-
+        case "Delete My Account":
+            if let vc = UIStoryboard(name: "Profile", bundle: nil).instantiateViewController(withIdentifier: "DeleteMyAccountVC") as? DeleteMyAccountVC {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            break
         case "Logout":
             self.onLogout()
             break
         default :
             break
         }
+        
     }
     
     

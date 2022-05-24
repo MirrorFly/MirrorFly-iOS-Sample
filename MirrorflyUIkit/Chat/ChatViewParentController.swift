@@ -123,6 +123,12 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
     var messageText: String?
     var replyCloseButtonTapped: Bool? = false
     var ismarkMessagesAsRead: Bool? = false
+    var mediaMessagesToSend : [ImageData]?
+    
+    
+    private var uploadMediaQueue: [ChatMessage]?
+    private var timer: Timer?
+    private var uploading = false
     
     // If the rememberCollectioSwitch is turned on we return the last known collection, if available.
      var firstView: TatsiConfig.StartView {
@@ -201,9 +207,14 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
 
        // translateIncomingMessage()
         
-
+        uploadMediaQueue = [];
+        startUploadMediaTimer();
         checkForUserBlocked()
 
+    }
+    
+    deinit {
+        //stopUploadMediaTimer();
     }
     @objc private func keyboardWillShow(notification: NSNotification) {
         if let value = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
@@ -590,7 +601,10 @@ extension ChatViewParentController {
             var placeholder = UIImage()
             if getProfileDetails.profileChatType == .groupChat {
                 placeholder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
-            } else {
+            }else if getProfileDetails.contactType == .deleted{
+                placeholder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
+            }
+            else {
                 placeholder = getPlaceholder(name: getUserName(jid : getProfileDetails.jid ,name: getProfileDetails.name, nickName: getProfileDetails.nickName, contactType: getProfileDetails.contactType), color: contactColor)
             }
             userImage.sd_setImage(with: url, placeholderImage: placeholder)
@@ -660,6 +674,8 @@ extension ChatViewParentController {
         destination.pageDismissClosure = dismissClosure
         destination.forwardMessages = forwardMessages
         destination.selectedUserDelegate = self
+        destination.refreshProfileDelegate = self
+        destination.fromJid = getProfileDetails.jid
         presentViewController(source: self, destination: destination)
     }
     
@@ -822,6 +838,11 @@ extension ChatViewParentController {
     }
     
     func getLastSeen() {
+        if getProfileDetails.contactType == .deleted{
+            lastSeenLabel.text = emptyString()
+            lastSeenLabel.isHidden = true
+            return
+        }
         ChatManager.getUserLastSeen(for: getProfileDetails.jid) { [self] isSuccess, flyError, flyData in
             var data  = flyData
             if isSuccess {
@@ -829,6 +850,7 @@ extension ChatViewParentController {
                 guard let lastSeenTime = data.getData() as? String else{
                     return
                 }
+                lastSeenLabel.isHidden = false
                 if (Int(lastSeenTime) == 0) {
                    lastSeenLabel.text = online.localized
                 }
@@ -1787,7 +1809,7 @@ extension ChatViewParentController {
         }
     }
     
-    func sendImageMessage(imageInfo: ImageData, jid: String?) {
+    func sendImageMessage(imageInfo: ImageData, jid: String?,  completionHandler :  @escaping (ChatMessage) -> Void) {
         selectedIndexs.removeAll()
         guard let image = imageInfo.image else { return }
         let compressedImage = image.compressImage(image: image)
@@ -1816,10 +1838,16 @@ extension ChatViewParentController {
                         self?.replyMessageObj = nil
                         self?.isReplyViewOpen = false
                     }
+                  //  FlyMessenger.uploadFile(chatMessage: chatMessage)
+                    self?.uploadMediaQueue?.append(chatMessage);
+                
                 }
                 DispatchQueue.main.async {
                     self?.chatTableView.reloadData()
+                    
                 }
+               
+                completionHandler(sendMessage!)
             }
         }
     }
@@ -2074,11 +2102,13 @@ extension ChatViewParentController {
         } else if segue.identifier == Identifiers.contactInfoViewController {
             let contcatInfo =  segue.destination as! ContactInfoViewController
             contcatInfo.contactJid = getProfileDetails.jid
+            contcatInfo.delegate = self
             view.endEditing(true)
         } else if segue.identifier == Identifiers.groupInfoViewController {
             let contcatInfo =  segue.destination as! GroupInfoViewController
             contcatInfo.groupID = getProfileDetails.jid
             contcatInfo.currentGroupName = getProfileDetails.name
+            contcatInfo.delegate = self
             view.endEditing(true)
         }
     }
@@ -2725,6 +2755,7 @@ extension ChatViewParentController {
                     currentPreviewIndexPath = indexPath
                     isReplyViewOpen = true
                     let message =  chatMessages[currentPreviewIndexPath?.section ?? 0][currentPreviewIndexPath?.row ?? 0]
+                    let senderInfo = contactManager.getUserProfileDetails(for: message.senderUserJid)
                     replyMessageObj = message
                     replyJid = getProfileDetails.jid
                     messageText = messageTextView?.text ?? ""
@@ -2733,7 +2764,7 @@ extension ChatViewParentController {
                     replyMessageId = message.messageId
                     chatTextViewXib?.closeButton?.addTarget(self, action: #selector(closeButtontapped(sender:)), for: .touchUpInside)
                     chatTextViewXib?.setupUI()
-                    chatTextViewXib?.setSenderReceiverMessage(message: message)
+                    chatTextViewXib?.setSenderReceiverMessage(message: message, contactType: senderInfo?.contactType ?? .unknown)
                     tableViewBottomConstraint?.constant = CGFloat(chatBottomConstant)
                     tableViewBottomConstraint?.constant = (tableViewBottomConstraint?.constant ?? 0) + 40 + textToolBarViewHeight!.constant
                     messageTextView?.becomeFirstResponder()
@@ -2781,13 +2812,29 @@ extension ChatViewParentController : UIImagePickerControllerDelegate, EditImageD
             return
         }
         
-        executeOnMainThread { [self] in
+       // let group = DispatchGroup()
+       executeOnMainThread { [self] in
             images.forEach { item in
+              //  group.enter()
                 if item.isVideo {
-                    self.sendVideoMessage(videoDetail: item, jid: self.getProfileDetails.jid)
+                    print("Video message *****")
+                    self.sendVideoMessage(videoDetail: item, jid: self.getProfileDetails.jid) { chatMessage in
+                        print("Video message *****sent")
+                       // self.uploadMediaQueue?.append(chatMessage);
+                  //  group.leave()
+                    }
                 } else {
-                    self.sendImageMessage(imageInfo: item, jid: getProfileDetails.jid)
+                    print("Image message *****")
+                    // self.sendImageMessage(imageInfo: item, jid: getProfileDetails.jid, completionHandler: (isS) -> Void)
+                    self.sendImageMessage(imageInfo: item, jid: getProfileDetails.jid) { chatMessage in
+                        print("Image message ***** sent")
+                        
+                       // self.uploadMediaQueue?.append(chatMessage);
+                      //  group.leave()
+                    }
                 }
+               // group.wait()
+                
             }
             self.replyMessageId = ""
             self.containerBottomConstraint.constant = 0.0
@@ -3300,7 +3347,7 @@ extension ChatViewParentController {
             getReplyId =  replyMessageId
             isReplyViewOpen = false
         }
-        FlyMessenger.sendTextMessage(toJid: getProfileDetails.jid, message: message,replyMessageId: getReplyId){ [weak self]isSuccess,error,textMessage in
+        FlyMessenger.sendTextMessage(toJid: getProfileDetails.jid, message: message,replyMessageId: getReplyId){ [weak self] isSuccess,error,textMessage in
             if isSuccess {
               //  self.view.endEditing(true)
 
@@ -3461,6 +3508,15 @@ extension ChatViewParentController : ProfileEventsDelegate {
             self.getProfileDetails = profile
             setProfile()
             checkForUserBlocked()
+            getLastSeen()
+        }
+        if isReplyViewOpen {
+            if let replyMessageUserJid = replyMessageObj?.senderUserJid, let profileDetails = contactManager.getUserProfileDetails(for: replyMessageUserJid){
+                chatTextViewXib?.titleLabel?.text = (replyMessageObj?.isMessageSentByMe ?? false) ? "You" : getUserName(jid: replyMessageUserJid, name: profileDetails.name, nickName: profileDetails.nickName, contactType: profileDetails.contactType)
+            }
+        }
+        if getProfileDetails.profileChatType == .groupChat{
+            getMessages()
         }
     }
     
@@ -3503,6 +3559,22 @@ extension ChatViewParentController : ProfileEventsDelegate {
     }
     
     func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid : String , profileDetails:ProfileDetails){
+        if getProfileDetails.jid == jid{
+            getProfileDetails = profileDetails
+            setProfile()
+            lastSeenLabel.text = emptyString()
+            lastSeenLabel.isHidden = true
+        }
+        if isReplyViewOpen && (replyMessageObj?.senderUserJid == jid) {
+            chatTextViewXib?.titleLabel?.text = (replyMessageObj?.isMessageSentByMe ?? false) ? "You" : getUserName(jid: jid, name: profileDetails.name, nickName: profileDetails.nickName, contactType: profileDetails.contactType)
+        }
+        if getProfileDetails.profileChatType == .groupChat{
+            getMessages()
+        }
         
     }
 }
@@ -3620,7 +3692,7 @@ extension ChatViewParentController {
 //MARK: Video
 extension ChatViewParentController {
     
-    func sendVideoMessage (videoDetail: ImageData,jid: String?) {
+    func sendVideoMessage (videoDetail: ImageData,jid: String?, completionHandler :  @escaping (ChatMessage) -> Void) {
         selectedIndexs.removeAll()
         loadVideoData(phAsset: videoDetail.videoUrl!, slowMotionVideoUrl: videoDetail.slowMotionVideoUrl) { [weak self] videoData in
             
@@ -3651,23 +3723,24 @@ extension ChatViewParentController {
                             }
                             self?.chatTableView.reloadData()
                             self?.tableViewBottomConstraint?.constant = CGFloat(chatBottomConstant)
-                            if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == chatMessage.messageId}) {
-                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ChatViewVideoOutgoingCell {
-                                    cell.uploadView.isHidden = true
-                                    cell.progressView.isHidden = false
-                                    cell.progressLoader.transition(to: .indeterminate)
-                                }
-                            }
-                        }
+//                            if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == chatMessage.messageId}) {
+//                                if let cell = self?.chatTableView.cellForRow(at: indexPath) as? ChatViewVideoOutgoingCell {
+//                                    cell.uploadView.isHidden = true
+//                                    cell.progressView.isHidden = false
+//                                    cell.progressLoader.transition(to: .indeterminate)
+//                                }
+//                            }
+                     }
                         if self?.replyJid == self?.getProfileDetails.jid {
                             self?.replyMessageObj = nil
                             self?.isReplyViewOpen = false
                         }
+                        DispatchQueue.main.async {
+                            self?.chatTableView.reloadData()
+                        }
+                        self?.uploadMediaQueue?.append(chatMessage);
+                        completionHandler(chatMessage)
                     }
-                    DispatchQueue.main.async {
-                        self?.chatTableView.reloadData()
-                    }
-                    
                 }
             }
         }
@@ -4123,7 +4196,9 @@ extension ChatViewParentController {
             controller.groupJid = getProfileDetails.jid
             self.navigationController?.pushViewController(controller, animated: true)
         } else if getProfileDetails.profileChatType == .singleChat{
-            RootViewController.sharedInstance.callViewController?.makeCall(usersList: [getProfileDetails.jid], callType: callType)
+            if getProfileDetails.contactType != .deleted{
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: [getProfileDetails.jid], callType: callType)
+            }
         }
     }
 }
@@ -4880,4 +4955,54 @@ extension ChatViewParentController : AdminBlockDelegate {
         checkUserForBlocking(jid: groupJid, isBlocked: isBlocked)
     }
 
+}
+
+extension ChatViewParentController : RefreshProfileInfo {
+    func refreshProfileDetails(profileDetails:ProfileDetails?) {
+        if getProfileDetails.jid == profileDetails?.jid{
+            getProfileDetails = profileDetails
+            setProfile()
+            setGroupMemberInHeader()
+            getMessages()
+        }
+    }
+}
+
+//
+extension ChatViewParentController {
+    
+    private func startUploadMediaTimer() {
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) {[weak self]  _ in
+            if self?.canUploadMedia() == true {
+                self?.uploadNext()
+            }
+        }
+    }
+    
+    private func canUploadMedia() -> Bool {
+        uploadMediaQueue?.count ?? 0 > 0 && !uploading
+    }
+    
+    private func stopUploadMediaTimer() {
+        
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    private func uploadNext() {
+        
+        if (uploading) { return }
+        
+        if let message = uploadMediaQueue?.first {
+            
+            uploading = true
+            FlyMessenger.uploadFile(chatMessage: message) {[weak self] result in
+                self?.uploadMediaQueue?.removeFirst();
+                
+                self?.uploading = false
+            }
+        }
+        
+    }
 }

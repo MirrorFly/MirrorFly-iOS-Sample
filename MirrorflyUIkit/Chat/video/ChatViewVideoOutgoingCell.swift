@@ -111,7 +111,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+          //  forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
@@ -209,7 +209,8 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             userTitleLabel?.text = you.localized
         }
         else {
-            userTitleLabel?.text = replyMessage?.senderUserName
+            userTitleLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
+                                               nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     }
         else {
@@ -270,6 +271,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             retryButton?.isHidden = false
             uploadView?.isHidden = false
             progressView?.isHidden = true
+            
         case .uploading:
             let progrss = message?.mediaChatMessage?.mediaProgressStatus ?? 0
             print("Video Upload mediaStatus \(message?.mediaChatMessage?.mediaUploadStatus)")

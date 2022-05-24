@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3203AA41A57E5512E04A9A0D /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BC0BCC8EA0CACD08188647 /* Pods_UiKitQaNotificationExtention.framework */; };
 		3D12788F27A7AC6D00A34436 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */; };
-		4297817D1E177842C6D0F680 /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2A0394A86CDA878361E2A0A /* Pods_UiKitQa.framework */; };
+		6CDFDDDBA5B3515A3B832E81 /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C09967003C7565FA3D4ED6 /* Pods_UiKitQa.framework */; };
+		9E96C8ED6688A9E172AB2D45 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16117F5456B0E2F1D64C2387 /* Pods_UiKitQaNotificationExtention.framework */; };
 		CE084E462747687F005D304E /* DateFormatterUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE084E452747687F005D304E /* DateFormatterUtility.swift */; };
 		CE0B4FAC27A3E3E9005349EB /* ContactInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B4FAB27A3E3E9005349EB /* ContactInfoViewController.swift */; };
 		CE0B4FB027A3E44F005349EB /* ContactImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B4FAE27A3E44F005349EB /* ContactImageCell.swift */; };
@@ -76,6 +76,20 @@
 		CE6C9868280477E9009D508E /* LanguageSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6C9867280477E9009D508E /* LanguageSelectionTableViewCell.swift */; };
 		CE6C986A28047807009D508E /* LanguageSelectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6C986928047807009D508E /* LanguageSelectionTableViewCell.xib */; };
 		CE72209827D07BFF001F64FF /* GroupInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE72209727D07BFF001F64FF /* GroupInfoViewController.swift */; };
+		CE785D482837A79F00F36F4F /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3B2837A79C00F36F4F /* FlyCall.xcframework */; };
+		CE785D492837A79F00F36F4F /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3B2837A79C00F36F4F /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE785D4A2837A7A100F36F4F /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D402837A79D00F36F4F /* FlyCommon.xcframework */; };
+		CE785D4B2837A7A100F36F4F /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D402837A79D00F36F4F /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE785D4C2837A7A200F36F4F /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3C2837A79C00F36F4F /* FlyCore.xcframework */; };
+		CE785D4D2837A7A200F36F4F /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3C2837A79C00F36F4F /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE785D502837A7A400F36F4F /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3A2837A79C00F36F4F /* FlyNetwork.xcframework */; };
+		CE785D512837A7A400F36F4F /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3A2837A79C00F36F4F /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE785D522837A7A500F36F4F /* FlyTranslate.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3E2837A79C00F36F4F /* FlyTranslate.xcframework */; };
+		CE785D532837A7A500F36F4F /* FlyTranslate.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3E2837A79C00F36F4F /* FlyTranslate.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE785D542837A7A700F36F4F /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3D2837A79C00F36F4F /* FlyXmpp.xcframework */; };
+		CE785D552837A7A700F36F4F /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D3D2837A79C00F36F4F /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE785D582837A90400F36F4F /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D562837A90000F36F4F /* FlyDatabase.xcframework */; };
+		CE785D592837A90400F36F4F /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE785D562837A90000F36F4F /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE7C1A9C26E7AADB00A20754 /* IntegerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C1A9B26E7AADB00A20754 /* IntegerExtension.swift */; };
 		CE7D017E27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D017D27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift */; };
 		CE7D018427D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D018227D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift */; };
@@ -105,24 +119,13 @@
 		CE9121162795484200B007E0 /* QRCodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9121152795484200B007E0 /* QRCodeScanner.swift */; };
 		CE91211A279549AE00B007E0 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE912119279549AE00B007E0 /* QRScannerView.swift */; };
 		CE91211E279563FF00B007E0 /* QRCodeScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91211D279563FF00B007E0 /* QRCodeScannerViewModel.swift */; };
-		CE91B33A2833704700B3A527 /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8622832CA8B007B024E /* FlyCall.xcframework */; };
-		CE91B33B2833704700B3A527 /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8622832CA8B007B024E /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE91B33D2833704B00B3A527 /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8602832CA8B007B024E /* FlyCommon.xcframework */; };
-		CE91B33E2833704B00B3A527 /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8602832CA8B007B024E /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE91B33F2833704D00B3A527 /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8642832CA8C007B024E /* FlyCore.xcframework */; };
-		CE91B3402833704D00B3A527 /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8642832CA8C007B024E /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE91B3412833704E00B3A527 /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8652832CA8C007B024E /* FlyDatabase.xcframework */; };
-		CE91B3422833704E00B3A527 /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8652832CA8C007B024E /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE91B3432833704F00B3A527 /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8612832CA8B007B024E /* FlyNetwork.xcframework */; };
-		CE91B3442833704F00B3A527 /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8612832CA8B007B024E /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE91B3452833705100B3A527 /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8632832CA8B007B024E /* FlyXmpp.xcframework */; };
-		CE91B3462833705100B3A527 /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE14A8632832CA8B007B024E /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE91B3492833713300B3A527 /* FlyTranslate.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE91B3472833712900B3A527 /* FlyTranslate.xcframework */; };
-		CE91B34A2833713300B3A527 /* FlyTranslate.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE91B3472833712900B3A527 /* FlyTranslate.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE94E80426D9FA9800F2E3A7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE94E80326D9FA9800F2E3A7 /* GoogleService-Info.plist */; };
 		CE968370274B696700701ADF /* AppActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE96836F274B696700701ADF /* AppActionSheet.swift */; };
 		CE968374274B950400701ADF /* NewGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE968373274B950400701ADF /* NewGroupViewController.swift */; };
 		CE9A65552754A997007DB23C /* NoResultFoundCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9A65532754A997007DB23C /* NoResultFoundCell.swift */; };
 		CE9A65562754A997007DB23C /* NoResultFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9A65542754A997007DB23C /* NoResultFoundCell.xib */; };
+		CE9DEFDD282E6F230088A4DE /* DeleteMyAccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9DEFDB282E6F230088A4DE /* DeleteMyAccountVC.swift */; };
+		CE9DEFDF282E6F230088A4DE /* DMAReasonVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9DEFDC282E6F230088A4DE /* DMAReasonVC.swift */; };
 		CE9EC7E126CA67BA0089D9EB /* AppAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EC7DA26CA67B90089D9EB /* AppAlert.swift */; };
 		CE9EC7E226CA67BA0089D9EB /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EC7DB26CA67B90089D9EB /* Identifiers.swift */; };
 		CE9EC7E326CA67BA0089D9EB /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EC7DC26CA67BA0089D9EB /* Color.swift */; };
@@ -245,13 +248,13 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE91B33E2833704B00B3A527 /* FlyCommon.xcframework in Embed Frameworks */,
-				CE91B34A2833713300B3A527 /* FlyTranslate.xcframework in Embed Frameworks */,
-				CE91B33B2833704700B3A527 /* FlyCall.xcframework in Embed Frameworks */,
-				CE91B3442833704F00B3A527 /* FlyNetwork.xcframework in Embed Frameworks */,
-				CE91B3422833704E00B3A527 /* FlyDatabase.xcframework in Embed Frameworks */,
-				CE91B3462833705100B3A527 /* FlyXmpp.xcframework in Embed Frameworks */,
-				CE91B3402833704D00B3A527 /* FlyCore.xcframework in Embed Frameworks */,
+				CE785D532837A7A500F36F4F /* FlyTranslate.xcframework in Embed Frameworks */,
+				CE785D4B2837A7A100F36F4F /* FlyCommon.xcframework in Embed Frameworks */,
+				CE785D492837A79F00F36F4F /* FlyCall.xcframework in Embed Frameworks */,
+				CE785D512837A7A400F36F4F /* FlyNetwork.xcframework in Embed Frameworks */,
+				CE785D592837A90400F36F4F /* FlyDatabase.xcframework in Embed Frameworks */,
+				CE785D552837A7A700F36F4F /* FlyXmpp.xcframework in Embed Frameworks */,
+				CE785D4D2837A7A200F36F4F /* FlyCore.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -270,15 +273,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1EA5882DDAD82DA6F4B0E6FC /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
-		25BC0BCC8EA0CACD08188647 /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		29580053F3BAAD56FDFE617F /* Pods-Mirrorfly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirrorfly.debug.xcconfig"; path = "Target Support Files/Pods-Mirrorfly/Pods-Mirrorfly.debug.xcconfig"; sourceTree = "<group>"; };
-		2D0EE3FD0D564FAF0DB5A8BF /* Pods-MirrorflyNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-MirrorflyNotificationExtention/Pods-MirrorflyNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
+		0C6D0C6B52CE2C447ED5DE20 /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
+		16117F5456B0E2F1D64C2387 /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		18C09967003C7565FA3D4ED6 /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
-		72099E3270E90F95FB312753 /* Pods-Mirrorfly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirrorfly.release.xcconfig"; path = "Target Support Files/Pods-Mirrorfly/Pods-Mirrorfly.release.xcconfig"; sourceTree = "<group>"; };
-		820B2F8DE12AEA2670735B72 /* Pods_MirrorflyNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MirrorflyNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFB0E18DB1D73701A8710D22 /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
-		CC8556583CEC786A08ACFD7F /* Pods-MirrorflyNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-MirrorflyNotificationExtention/Pods-MirrorflyNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
+		8BC6BDEAC323453065795C6B /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
+		97FAE6E69C1A5513EE7325A4 /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
 		CE084E452747687F005D304E /* DateFormatterUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterUtility.swift; sourceTree = "<group>"; };
 		CE0B4FAB27A3E3E9005349EB /* ContactInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactInfoViewController.swift; sourceTree = "<group>"; };
 		CE0B4FAE27A3E44F005349EB /* ContactImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactImageCell.swift; sourceTree = "<group>"; };
@@ -291,12 +291,6 @@
 		CE0B4FBE27A414E3005349EB /* ContactInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContactInfoCell.xib; sourceTree = "<group>"; };
 		CE0B757627AD0E7300331AE4 /* ContactSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSyncController.swift; sourceTree = "<group>"; };
 		CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoViewModel.swift; sourceTree = "<group>"; };
-		CE14A8602832CA8B007B024E /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyCommon.xcframework; path = ../../Desktop/sdk/FlyCommon.xcframework; sourceTree = "<group>"; };
-		CE14A8612832CA8B007B024E /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyNetwork.xcframework; path = ../../Desktop/sdk/FlyNetwork.xcframework; sourceTree = "<group>"; };
-		CE14A8622832CA8B007B024E /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyCall.xcframework; path = ../../Desktop/sdk/FlyCall.xcframework; sourceTree = "<group>"; };
-		CE14A8632832CA8B007B024E /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyXmpp.xcframework; path = ../../Desktop/sdk/FlyXmpp.xcframework; sourceTree = "<group>"; };
-		CE14A8642832CA8C007B024E /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyCore.xcframework; path = ../../Desktop/sdk/FlyCore.xcframework; sourceTree = "<group>"; };
-		CE14A8652832CA8C007B024E /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyDatabase.xcframework; path = ../../Desktop/sdk/FlyDatabase.xcframework; sourceTree = "<group>"; };
 		CE1FD791280F7A3D0075304E /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE1FD795280F7B3B0075304E /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2FA0532812B38E004C0A85 /* ContactUsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsController.swift; sourceTree = "<group>"; };
@@ -351,6 +345,13 @@
 		CE6C9867280477E9009D508E /* LanguageSelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		CE6C986928047807009D508E /* LanguageSelectionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LanguageSelectionTableViewCell.xib; sourceTree = "<group>"; };
 		CE72209727D07BFF001F64FF /* GroupInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoViewController.swift; sourceTree = "<group>"; };
+		CE785D3A2837A79C00F36F4F /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
+		CE785D3B2837A79C00F36F4F /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
+		CE785D3C2837A79C00F36F4F /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
+		CE785D3D2837A79C00F36F4F /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
+		CE785D3E2837A79C00F36F4F /* FlyTranslate.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyTranslate.xcframework; sourceTree = "<group>"; };
+		CE785D402837A79D00F36F4F /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
+		CE785D562837A90000F36F4F /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
 		CE7C1A9B26E7AADB00A20754 /* IntegerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegerExtension.swift; sourceTree = "<group>"; };
 		CE7D017D27D9B8DC006DDB23 /* GroupInfoOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoOptionsViewController.swift; sourceTree = "<group>"; };
 		CE7D018227D9B92D006DDB23 /* GroupInfoOptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoOptionsTableViewCell.swift; sourceTree = "<group>"; };
@@ -391,11 +392,13 @@
 		CE9121152795484200B007E0 /* QRCodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScanner.swift; sourceTree = "<group>"; };
 		CE912119279549AE00B007E0 /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
 		CE91211D279563FF00B007E0 /* QRCodeScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerViewModel.swift; sourceTree = "<group>"; };
-		CE91B3472833712900B3A527 /* FlyTranslate.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FlyTranslate.xcframework; path = ../../Desktop/sdk/FlyTranslate.xcframework; sourceTree = "<group>"; };
+		CE94E80326D9FA9800F2E3A7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE96836F274B696700701ADF /* AppActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActionSheet.swift; sourceTree = "<group>"; };
 		CE968373274B950400701ADF /* NewGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupViewController.swift; sourceTree = "<group>"; };
 		CE9A65532754A997007DB23C /* NoResultFoundCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResultFoundCell.swift; sourceTree = "<group>"; };
 		CE9A65542754A997007DB23C /* NoResultFoundCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoResultFoundCell.xib; sourceTree = "<group>"; };
+		CE9DEFDB282E6F230088A4DE /* DeleteMyAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeleteMyAccountVC.swift; path = DeleteMyAccount/DeleteMyAccountVC.swift; sourceTree = "<group>"; };
+		CE9DEFDC282E6F230088A4DE /* DMAReasonVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DMAReasonVC.swift; path = DeleteMyAccount/DMAReasonVC.swift; sourceTree = "<group>"; };
 		CE9EC7DA26CA67B90089D9EB /* AppAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAlert.swift; sourceTree = "<group>"; };
 		CE9EC7DB26CA67B90089D9EB /* Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		CE9EC7DC26CA67BA0089D9EB /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -498,10 +501,7 @@
 		CEF43750273BCAB2008D0F39 /* NotificationExtentionQa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtentionQa.entitlements; sourceTree = "<group>"; };
 		CEFD042F26CD25B90017287F /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		CEFD043126CD3D4B0017287F /* CountryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryModel.swift; sourceTree = "<group>"; };
-		E2A0394A86CDA878361E2A0A /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9CF24F6BF6D55346F6C58AB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
-		EC74098A0DF092E4C53F93D3 /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
-		EFA6EAA9B2E0EB82980F9EA5 /* Pods_Mirrorfly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mirrorfly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F668C15D8945BCEA0E7B6C5B /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -509,14 +509,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE91B3492833713300B3A527 /* FlyTranslate.xcframework in Frameworks */,
-				CE91B33D2833704B00B3A527 /* FlyCommon.xcframework in Frameworks */,
-				CE91B33F2833704D00B3A527 /* FlyCore.xcframework in Frameworks */,
-				4297817D1E177842C6D0F680 /* Pods_UiKitQa.framework in Frameworks */,
-				CE91B3432833704F00B3A527 /* FlyNetwork.xcframework in Frameworks */,
-				CE91B3452833705100B3A527 /* FlyXmpp.xcframework in Frameworks */,
-				CE91B3412833704E00B3A527 /* FlyDatabase.xcframework in Frameworks */,
-				CE91B33A2833704700B3A527 /* FlyCall.xcframework in Frameworks */,
+				CE785D522837A7A500F36F4F /* FlyTranslate.xcframework in Frameworks */,
+				CE785D4A2837A7A100F36F4F /* FlyCommon.xcframework in Frameworks */,
+				CE785D542837A7A700F36F4F /* FlyXmpp.xcframework in Frameworks */,
+				CE785D482837A79F00F36F4F /* FlyCall.xcframework in Frameworks */,
+				CE785D502837A7A400F36F4F /* FlyNetwork.xcframework in Frameworks */,
+				CE785D4C2837A7A200F36F4F /* FlyCore.xcframework in Frameworks */,
+				CE785D582837A90400F36F4F /* FlyDatabase.xcframework in Frameworks */,
+				6CDFDDDBA5B3515A3B832E81 /* Pods_UiKitQa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,7 +524,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3203AA41A57E5512E04A9A0D /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
+				9E96C8ED6688A9E172AB2D45 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,10 +557,8 @@
 				CE8BC8E6280EB466007FF8C3 /* FlyTranslate.framework */,
 				CEA178D4274F8ABC00EAD2A3 /* FlyCall.framework */,
 				CEA178D3274F8ABC00EAD2A3 /* FlyCommon.framework */,
-				EFA6EAA9B2E0EB82980F9EA5 /* Pods_Mirrorfly.framework */,
-				820B2F8DE12AEA2670735B72 /* Pods_MirrorflyNotificationExtention.framework */,
-				E2A0394A86CDA878361E2A0A /* Pods_UiKitQa.framework */,
-				25BC0BCC8EA0CACD08188647 /* Pods_UiKitQaNotificationExtention.framework */,
+				18C09967003C7565FA3D4ED6 /* Pods_UiKitQa.framework */,
+				16117F5456B0E2F1D64C2387 /* Pods_UiKitQaNotificationExtention.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -568,14 +566,10 @@
 		6B19A949DEFF3996B7AA7823 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				29580053F3BAAD56FDFE617F /* Pods-Mirrorfly.debug.xcconfig */,
-				72099E3270E90F95FB312753 /* Pods-Mirrorfly.release.xcconfig */,
-				2D0EE3FD0D564FAF0DB5A8BF /* Pods-MirrorflyNotificationExtention.debug.xcconfig */,
-				CC8556583CEC786A08ACFD7F /* Pods-MirrorflyNotificationExtention.release.xcconfig */,
-				AFB0E18DB1D73701A8710D22 /* Pods-UiKitQa.debug.xcconfig */,
-				1EA5882DDAD82DA6F4B0E6FC /* Pods-UiKitQa.release.xcconfig */,
-				E9CF24F6BF6D55346F6C58AB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
-				EC74098A0DF092E4C53F93D3 /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
+				8BC6BDEAC323453065795C6B /* Pods-UiKitQa.debug.xcconfig */,
+				0C6D0C6B52CE2C447ED5DE20 /* Pods-UiKitQa.release.xcconfig */,
+				F668C15D8945BCEA0E7B6C5B /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
+				97FAE6E69C1A5513EE7325A4 /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -664,6 +658,8 @@
 		CE40C5B726DDC09E001F829F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				CE9DEFDB282E6F230088A4DE /* DeleteMyAccountVC.swift */,
+				CE9DEFDC282E6F230088A4DE /* DMAReasonVC.swift */,
 				CE6C986128045C06009D508E /* Language Selection */,
 				CE6C985728040039009D508E /* Chat Settings */,
 				CE2FA0522812B365004C0A85 /* ContactUs */,
@@ -1000,13 +996,6 @@
 		CEA2F91C26569C590013F5E8 = {
 			isa = PBXGroup;
 			children = (
-				CE14A8632832CA8B007B024E /* FlyXmpp.xcframework */,
-				CE91B3472833712900B3A527 /* FlyTranslate.xcframework */,
-				CE14A8622832CA8B007B024E /* FlyCall.xcframework */,
-				CE14A8602832CA8B007B024E /* FlyCommon.xcframework */,
-				CE14A8642832CA8C007B024E /* FlyCore.xcframework */,
-				CE14A8652832CA8C007B024E /* FlyDatabase.xcframework */,
-				CE14A8612832CA8B007B024E /* FlyNetwork.xcframework */,
 				CEA2F92726569C590013F5E8 /* MirrorflyUIkit */,
 				CE448B6E27883692002774DD /* fly_call_ringtone.mp3 */,
 				CE448B702788426F002774DD /* fly_reconnecting_tone.mp3 */,
@@ -1030,6 +1019,14 @@
 		CEA2F92726569C590013F5E8 /* MirrorflyUIkit */ = {
 			isa = PBXGroup;
 			children = (
+				CE785D562837A90000F36F4F /* FlyDatabase.xcframework */,
+				CE785D3B2837A79C00F36F4F /* FlyCall.xcframework */,
+				CE785D402837A79D00F36F4F /* FlyCommon.xcframework */,
+				CE785D3C2837A79C00F36F4F /* FlyCore.xcframework */,
+				CE785D3A2837A79C00F36F4F /* FlyNetwork.xcframework */,
+				CE785D3E2837A79C00F36F4F /* FlyTranslate.xcframework */,
+				CE785D3D2837A79C00F36F4F /* FlyXmpp.xcframework */,
+				CE94E80326D9FA9800F2E3A7 /* GoogleService-Info.plist */,
 				CEA2F93D26569D8B0013F5E8 /* Plist */,
 				CEC08B8227E24FD8005E48C5 /* GooglePlist */,
 				CE87E728280D6A5700E4A288 /* blockedByAdmin */,
@@ -1425,16 +1422,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "UiKitQa" */;
 			buildPhases = (
-				0E81DAE43EFC9F8DD1C16D00 /* [CP] Check Pods Manifest.lock */,
+				FD7E9B729864237E99F491D6 /* [CP] Check Pods Manifest.lock */,
 				CEA2F92126569C590013F5E8 /* Sources */,
 				CEA2F92226569C590013F5E8 /* Frameworks */,
 				CEA2F92326569C590013F5E8 /* Resources */,
 				CEF4374C273BCA77008D0F39 /* Embed App Extensions */,
 				CED4FB5C277DE60D008FAF15 /* ShellScript */,
 				CEC08B8327E25037005E48C5 /* Google Plist */,
-				CEB7AA0BCEB2148E42CAC2FF /* [CP] Embed Pods Frameworks */,
-				74273326B1A7A0765F69BF4E /* [CP] Copy Pods Resources */,
 				CE91B33C2833704700B3A527 /* Embed Frameworks */,
+				C01EE47727A697DEDAB0AAC1 /* [CP] Embed Pods Frameworks */,
+				0852026D9283DC8FFCDF1515 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1450,7 +1447,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "UiKitQaNotificationExtention" */;
 			buildPhases = (
-				FEF01610E02E7879A751BB1B /* [CP] Check Pods Manifest.lock */,
+				9E315228A00DAABF610B98AE /* [CP] Check Pods Manifest.lock */,
 				CEF43740273BCA76008D0F39 /* Sources */,
 				CEF43741273BCA76008D0F39 /* Frameworks */,
 				CEF43742273BCA76008D0F39 /* Resources */,
@@ -1559,6 +1556,7 @@
 				CE5B82CE27F7340100E2F8D8 /* ChatTextView.xib in Resources */,
 				CE448B6F27883692002774DD /* fly_call_ringtone.mp3 in Resources */,
 				CE6C986A28047807009D508E /* LanguageSelectionTableViewCell.xib in Resources */,
+				CE94E80426D9FA9800F2E3A7 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1572,29 +1570,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0E81DAE43EFC9F8DD1C16D00 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-UiKitQa-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		74273326B1A7A0765F69BF4E /* [CP] Copy Pods Resources */ = {
+		0852026D9283DC8FFCDF1515 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1611,7 +1587,29 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CEB7AA0BCEB2148E42CAC2FF /* [CP] Embed Pods Frameworks */ = {
+		9E315228A00DAABF610B98AE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UiKitQaNotificationExtention-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C01EE47727A697DEDAB0AAC1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1665,7 +1663,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
-		FEF01610E02E7879A751BB1B /* [CP] Check Pods Manifest.lock */ = {
+		FD7E9B729864237E99F491D6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1680,7 +1678,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-UiKitQaNotificationExtention-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-UiKitQa-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1710,6 +1708,7 @@
 				CE6C9868280477E9009D508E /* LanguageSelectionTableViewCell.swift in Sources */,
 				CE51790E26E1FCE00077636C /* ImageDetail.swift in Sources */,
 				CE85EDFA274CF9AF002A6D50 /* ParticipantCell.swift in Sources */,
+				CE9DEFDD282E6F230088A4DE /* DeleteMyAccountVC.swift in Sources */,
 				CE31D80C274365BD0052FFFF /* ChatViewModel.swift in Sources */,
 				CEFD043226CD3D4B0017287F /* CountryModel.swift in Sources */,
 				CEA4FFAF26DFBA94004A1268 /* EditStatusTableViewCell.swift in Sources */,
@@ -1782,6 +1781,7 @@
 				CE56257226E2B7400020BDD3 /* ChatContactViewController.swift in Sources */,
 				CE40C5CF26DDC0B5001F829F /* OTPViewModel.swift in Sources */,
 				CE40C5C626DDC0B5001F829F /* ContactViewModel.swift in Sources */,
+				CE9DEFDF282E6F230088A4DE /* DMAReasonVC.swift in Sources */,
 				CE9EC7E326CA67BA0089D9EB /* Color.swift in Sources */,
 				CEA4FF2026DF750B004A1268 /* ValueConstants.swift in Sources */,
 				CE9121162795484200B007E0 /* QRCodeScanner.swift in Sources */,
@@ -2004,7 +2004,7 @@
 		};
 		CEA2F93A26569C5C0013F5E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AFB0E18DB1D73701A8710D22 /* Pods-UiKitQa.debug.xcconfig */;
+			baseConfigurationReference = 8BC6BDEAC323453065795C6B /* Pods-UiKitQa.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -2033,7 +2033,7 @@
 					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
 					"$(BUILT_PRODUCTS_DIR)/FlyCall",
 				);
-				MARKETING_VERSION = 6.3.0;
+				MARKETING_VERSION = 4.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
@@ -2048,7 +2048,7 @@
 		};
 		CEA2F93B26569C5C0013F5E8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1EA5882DDAD82DA6F4B0E6FC /* Pods-UiKitQa.release.xcconfig */;
+			baseConfigurationReference = 0C6D0C6B52CE2C447ED5DE20 /* Pods-UiKitQa.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -2078,7 +2078,7 @@
 					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
 					"$(BUILT_PRODUCTS_DIR)/FlyCall",
 				);
-				MARKETING_VERSION = 6.3.0;
+				MARKETING_VERSION = 4.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
@@ -2093,14 +2093,14 @@
 		};
 		CEF4374D273BCA77008D0F39 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E9CF24F6BF6D55346F6C58AB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
+			baseConfigurationReference = F668C15D8945BCEA0E7B6C5B /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 124;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2117,7 +2117,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 4.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
@@ -2132,14 +2132,14 @@
 		};
 		CEF4374E273BCA77008D0F39 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EC74098A0DF092E4C53F93D3 /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
+			baseConfigurationReference = 97FAE6E69C1A5513EE7325A4 /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 124;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2156,7 +2156,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 4.8.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
 				PRODUCT_NAME = "$(TARGET_NAME)";

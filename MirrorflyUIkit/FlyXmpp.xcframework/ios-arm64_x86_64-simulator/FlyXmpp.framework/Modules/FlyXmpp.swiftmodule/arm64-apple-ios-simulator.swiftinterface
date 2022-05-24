@@ -4,11 +4,10 @@
 import FlyCommon
 @_exported import FlyXmpp
 import Foundation
-import KissXML
 import Swift
 import UIKit
 import UserNotifications
-import XMPPFramework
+@_exported import XMPPFramework
 import _Concurrency
 public struct XmppUtils {
   public static func generateMyXmppResource()
@@ -36,17 +35,20 @@ public protocol XMPPTypingStatusDelegate : ObjectiveC.NSObjectProtocol {
   func onChatTypingStatusChanged(userJid: Swift.String, status: FlyCommon.TypingStatus)
   func onGroupChatTypingStatusChanged(groupJid: Swift.String, userJid: Swift.String, status: FlyCommon.TypingStatus)
 }
+public protocol XMPPAdminBlockDelegate : ObjectiveC.NSObjectProtocol {
+  func didBlock(adminBlock: FlyCommon.AdminBlock?)
+}
 public protocol XMPPGroupDelegate : ObjectiveC.NSObjectProtocol {
-  func didReceiveUseraddedMessage(particiapntList: FlyCommon.ProfileDetails, publisherList: FlyCommon.ProfileDetails, groupInfo: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool)
+  func didReceiveUseraddedMessage(participantProfile: FlyCommon.ProfileDetails, publisherProfile: FlyCommon.ProfileDetails, groupMemberDetail: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool)
   func didAddParticipantSuccessMessage(addParticipantmessage: Swift.String)
   func didAdminRemoveParticipant(message: Swift.String)
-  func didAdminRemoveParticipantReceiveMessage(removeparticipantList: FlyCommon.ParticipantDetails)
+  func didAdminRemoveParticipantReceiveMessage(removedParticipant: FlyCommon.ParticipantDetails)
   func didGroupUserProfileFetch(for jid: Swift.String, groupInfoDetails: FlyCommon.GroupModel?)
   func didGroupProfileFetch(groupJid: Swift.String)
   func didGroupInfoProfileUpdated(message: Swift.String)
   func didMakeAdmin(message: Swift.String)
   func didGroupInfoUpdatedMessage(groupDetail: FlyCommon.ParticipantDetails)
-  func didMakeAdminMessage(makeAdminList: FlyCommon.ParticipantDetails)
+  func didMakeAdminMessage(participantDetail: FlyCommon.ParticipantDetails)
   func didExitFromGroup(message: Swift.String)
   func didDeleteFromGroup(message: Swift.String)
   func didReceiveGroupDeleteMessage(groupJid: Swift.String, messageFrom: Swift.String)
@@ -77,6 +79,8 @@ public protocol XMPPProfileDelegate : ObjectiveC.NSObjectProtocol {
   func usersBlockedMeListFetched(jidList: [Swift.String])
   func hideUserLastSeen()
   func getUserLastSeen()
+  func userDeletedTheirAccount(jid: Swift.String)
+  func userRegisterUpdate(jid: Swift.String)
 }
 public protocol FlyXmppControllerDelegate : ObjectiveC.NSObjectProtocol {
   func processPushMessage(_ userInfo: [Swift.AnyHashable : Any]?, completionHandler: @escaping (Swift.String, Swift.String, Swift.String, Swift.String) -> Swift.Void)
@@ -91,6 +95,7 @@ public protocol FlyXmppControllerDelegate : ObjectiveC.NSObjectProtocol {
   public func setConnectionDelegate(xmmpConnectionDelegate: FlyXmpp.XMPPConnectionDelegate)
   public func setTypingDelegate(xmppTypingDelegate: FlyXmpp.XMPPTypingStatusDelegate)
   public func setWebLogoutDelegate(webLogoutDelegate: FlyXmpp.XMPPWebLogoutDelegate)
+  public func setAdminBlockDelegate(adminBlockDelegate: FlyXmpp.XMPPAdminBlockDelegate)
   public func setLogoutDelegate(logoutDelegate: FlyXmpp.XMPPLogoutDelegate)
   public func connect()
   public func disConnect()
@@ -135,6 +140,7 @@ extension FlyXmpp.FlyXmppController {
   public func getParticipant(groupJID: Swift.String, callback: FlyCommon.FlyCompletionHandler? = nil)
   public func sendCallMessage(for status: Swift.String, roomId: Swift.String, groupId: Swift.String, callType: Swift.String, callMode: Swift.String, callTime: Swift.String, startTime: Swift.String, endTime: Swift.String, callStatus: Swift.String, callFrom: Swift.String, users: [Swift.String], inviteUsers: [Swift.String], callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendWebLogout(socketId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
+  public func sendRegisterUpdate(callback: @escaping FlyCommon.FlyCompletionHandler)
 }
 public protocol XMPPLogoutDelegate : ObjectiveC.NSObjectProtocol {
   func didReceiveLogout()

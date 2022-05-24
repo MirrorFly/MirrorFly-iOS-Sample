@@ -47,7 +47,9 @@ class RecentChatTableViewCell: UITableViewCell {
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
             placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
-        } else {
+        }else if recentChat.isDeletedUser {
+            placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
+        }else{
             placeHolder = getPlaceholder(name: name, color: color)
         }
         profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
@@ -56,7 +58,10 @@ class RecentChatTableViewCell: UITableViewCell {
     func setSingleChatImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
         var placeHolder = UIImage()
         placeHolder = getPlaceholder(name: name, color: color)
-        if imageURL.isNotEmpty {
+        if recentChat.isDeletedUser {
+            placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
+            profileImageView?.sd_setImage(with: nil, placeholderImage: placeHolder)
+        }else if imageURL.isNotEmpty {
             let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
             let url = URL(string: urlString)
             profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
@@ -104,7 +109,7 @@ class RecentChatTableViewCell: UITableViewCell {
     
     // MARK: SetTextColor whileSearch
     func setTextColorWhileSearch(searchText: String,recentChat: RecentChat) {
-        let name = getUserName(jid: recentChat.jid,name: recentChat.profileName , nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
+        let name = getUserName(jid: recentChat.jid,name: recentChat.profileName , nickName: recentChat.nickName, contactType: (recentChat.isDeletedUser ? .deleted :  recentChat.isItSavedContact ? .live : .unknown))
         if let range = name.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
             let convertedRange = NSRange(range, in: name.capitalized)
             let attributedString = NSMutableAttributedString(string: name.capitalized)

@@ -85,19 +85,25 @@ class ParticipantCell: UITableViewCell {
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
             placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder)!
-            
-        } else {
+        }else if recentChat.isDeletedUser{
+            placeHolder = UIImage(named: ImageConstant.ic_profile_placeholder)!
+        }else {
             placeHolder = getPlaceholder(name: name, color: color)
         }
         contactImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
     }
     
     func setRecentChatDetails(recentChat: RecentChat,color: UIColor) {
-        nameUILabel?.text = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
+        nameUILabel?.text = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName, contactType: (recentChat.isDeletedUser ? .deleted :  recentChat.isItSavedContact ? .live : .unknown))
         statusUILabel?.text = recentChat.lastMessageContent
-        setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown), color: color, chatType: recentChat.profileType)
-        checkBoxImageView?.image = recentChat.isSelected ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
-        setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown), color: color , recentChat: recentChat)
+        if !recentChat.isDeletedUser{
+            checkBoxImageView?.image = recentChat.isSelected ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
+            setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown), color: color , recentChat: recentChat)
+            checkBoxImageView?.isHidden = false
+        }else{
+            contactImageView?.sd_setImage(with: nil, placeholderImage: UIImage(named: ImageConstant.ic_profile_placeholder)!)
+            checkBoxImageView?.isHidden = true
+        }
         removeButton?.isHidden = true
         statusUILabel?.isHidden = false
         statusImage?.isHidden = (recentChat.isLastMessageSentByMe == true) ? false : true

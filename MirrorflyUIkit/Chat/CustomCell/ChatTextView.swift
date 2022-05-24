@@ -42,10 +42,10 @@ class ChatTextView: UIView, UITextViewDelegate {
         closeView?.makeCircleView(borderColor: UIColor.white.cgColor, borderWidth: 1.0)
     }
     
-    func setSenderReceiverMessage(message: ChatMessage) {
+    func setSenderReceiverMessage(message: ChatMessage, contactType : ContactType =  .unknown) {
         mapView?.isHidden = true
         contactNameLabel?.isHidden = true
-        titleLabel?.text = message.isMessageSentByMe ? "You" : getUserName(jid: message.senderUserJid, name: message.senderUserName, nickName: message.senderNickName, contactType: message.isSavedContact ? .live : .unknown)
+        titleLabel?.text = message.isMessageSentByMe ? "You" : getUserName(jid: message.senderUserJid, name: message.senderUserName, nickName: message.senderNickName, contactType: contactType)
         messageTypeImage?.isHidden = message.messageType == .text ? true : false
         if message.messageType != .text {
         let thumbImage = message.mediaChatMessage?.mediaThumbImage ?? ""

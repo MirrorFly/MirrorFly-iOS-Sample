@@ -187,6 +187,7 @@ let voipToken = "voipToken"
 let password = "password"
 let username = "username"
 let isLoginContactSyncDone = "isLoginContactSyncDone"
+let firstTimeSandboxContactSyncDone = "firstTimeSandboxContactSyncDone"
 
 let isLocationDenied = "isLocationDenied"
 
@@ -252,6 +253,7 @@ public struct ErrorMessage {
     public static let restrictedforwardUsers = NSLocalizedString("You can only forward with up to 5 users or groups", comment: "")
     public static let checkYourInternet = NSLocalizedString("Please check your internet connection", comment: "")
     public static let fileSizeLarge = NSLocalizedString("File size is too large", comment: "")
+    public static let numberDoesntMatch =  NSLocalizedString("mobileNumberDoesntMatch", comment: "")
 }
 // Error messages
 public struct SuccessMessage {

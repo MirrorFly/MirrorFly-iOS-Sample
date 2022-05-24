@@ -9,7 +9,5 @@
 		<key>NSExtensionPrincipalClass</key>
 		<string>$(PRODUCT_MODULE_NAME).NotificationService</string>
 	</dict>
-	<key>CFBundleExecutable</key>
-	<string>Runner</string>
 </dict>
 </plist>

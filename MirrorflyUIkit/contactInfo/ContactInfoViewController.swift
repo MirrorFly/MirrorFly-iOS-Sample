@@ -22,6 +22,7 @@ class ContactInfoViewController: ViewController {
     let contactInfoViewModel = ContactInfoViewModel()
     let contactInfoTitle = [email, mobileNumber, status]
     let contactInfoIcon = [ImageConstant.ic_info_email, ImageConstant.ic_info_phone, ImageConstant.ic_info_status]
+    var delegate: RefreshProfileInfo?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +33,19 @@ class ContactInfoViewController: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ContactManager.shared.profileDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.adminBlockDelegate = nil
+        delegate = nil
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
@@ -39,19 +53,10 @@ class ContactInfoViewController: ViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
-        ContactManager.shared.profileDelegate = nil
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        ChatManager.shared.adminBlockDelegate = self
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        ChatManager.shared.adminBlockDelegate = nil
-    }
     
     private func setConfiguration(){
-        ContactManager.shared.profileDelegate = self
         if contactJid.isNotEmpty {
             profileDetails = contactInfoViewModel.getContactInfo(jid: contactJid)
         }
@@ -66,7 +71,13 @@ class ContactInfoViewController: ViewController {
     private func setLastSeen(lastSeen : String) {
         let indexPath = IndexPath(row: 0, section: 0)
         if let cell = contactInfoTableView?.cellForRow(at: indexPath) as? ContactImageCell {
-            cell.onlineStatus?.text = lastSeen
+            if (profileDetails?.contactType == .deleted) {
+                cell.onlineStatus?.text = emptyString()
+                cell.onlineStatus?.isHidden = true
+            }else{
+                cell.onlineStatus?.text = lastSeen
+                cell.onlineStatus?.isHidden = false
+            }
         }
     }
     
@@ -159,10 +170,16 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             let name = getUserName(jid: profileDetails?.jid ?? "",name: profileDetails?.name ?? "", nickName: profileDetails?.nickName ?? "", contactType: profileDetails?.contactType ?? .unknown )
             cell.userNameLabel?.text = name
             let imageUrl = profileDetails?.image  ?? ""
-            let placeholder = ChatUtils.getPlaceholder(name: name, userColor: ChatUtils.getColorForUser(userName: name), userImage: cell.userImage ?? UIImageView())
-            cell.userImage?.backgroundColor = ChatUtils.getColorForUser(userName: name)
-            cell.userImage?.loadFlyImage(imageURL: imageUrl, name: name ?? "", chatType: profileDetails?.profileChatType ?? .singleChat)
-            
+            var placeholder : UIImage
+            if profileDetails?.contactType == .deleted{
+                cell.userImage?.image = UIImage(named: "ic_profile_placeholder") ?? UIImage()
+                cell.userImage?.contentMode = .center
+                cell.userImage?.backgroundColor = UIColor.darkGray
+            }else{
+                placeholder = ChatUtils.getPlaceholder(name: name, userColor: ChatUtils.getColorForUser(userName: name), userImage: cell.userImage ?? UIImageView())
+                cell.userImage?.backgroundColor = ChatUtils.getColorForUser(userName: name)
+                cell.userImage?.loadFlyImage(imageURL: imageUrl, name: name ?? "", chatType: profileDetails?.profileChatType ?? .singleChat)
+            }
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapImage(sender:)))
             cell.userImage?.isUserInteractionEnabled = true
             cell.userImage?.addGestureRecognizer(gestureRecognizer)
@@ -200,7 +217,11 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        if (profileDetails?.contactType != .deleted){
+            return 2
+        }else{
+            return 1
+        }
     }
     
 }
@@ -231,6 +252,7 @@ extension ContactInfoViewController : ProfileEventsDelegate {
         if let profile = contactInfoViewModel.getContactInfo(jid: profileDetails?.jid ?? "") {
             profileDetails = profile
             refreshData()
+            delegate?.refreshProfileDetails(profileDetails: profileDetails)
         }
     }
     
@@ -273,6 +295,13 @@ extension ContactInfoViewController : ProfileEventsDelegate {
     
     func getUserLastSeen() {
         
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        self.profileDetails = profileDetails
+        contactInfoTableView?.reloadData()
+        setLastSeen(lastSeen: emptyString())
+        delegate?.refreshProfileDetails(profileDetails: profileDetails)
     }
     
 }

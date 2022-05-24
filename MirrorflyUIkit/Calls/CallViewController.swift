@@ -119,10 +119,10 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         }
         
         let jidToCheck = (CallManager.isOneToOneCall() ? members.filter({$0.jid != FlyDefaults.myJid})[0].jid : CallManager.getGroupID()) ?? ""
-        if  ChatManager.isUserOrGroupBlockedByAdmin(jid: jidToCheck) {
-            CallManager.disconnectCall()
-            AppAlert.shared.showToast(message: CallManager.isOneToOneCall() ? thisUerIsNoLonger : groupNoLongerAvailable)
-        }
+//        if  ChatManager.isUserOrGroupBlockedByAdmin(jid: jidToCheck) {
+//            CallManager.disconnectCall()
+//            AppAlert.shared.showToast(message: CallManager.isOneToOneCall() ? thisUerIsNoLonger : groupNoLongerAvailable)
+//        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -469,9 +469,16 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     override func viewDidAppear(_ animated: Bool) {
         print("#lifecycle viewDidAppear")
+        ContactManager.shared.profileDelegate = self
         isAudioMuted = CallManager.isAudioMuted()
         isVideoMuted = CallManager.isVideoMuted()
         updateActionsUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("#lifecycle viewWillDisappear")
+        super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -1505,6 +1512,7 @@ extension CallViewController : CallManagerDelegate {
         controller.isInvite = true
         controller.hideNavigationbar = true
         controller.groupJid = self.groupId
+        controller.refreshDelegate = self
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -2380,6 +2388,87 @@ extension CallViewController {
             isLocalViewSwitched = !isLocalViewSwitched
             oneToOneVideoViewTransforms()
             addAndRenderOneToOneCallTracks()
+        }
+    }
+}
+
+extension CallViewController : ProfileEventsDelegate{
+    func userCameOnline(for jid: String) {
+        
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
+        
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        
+    }
+    
+    func blockedThisUser(jid: String) {
+        
+    }
+    
+    func unblockedThisUser(jid: String) {
+        
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+    
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+        
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        if CallManager.isOneToOneCall() && CallManager.getAllCallUsersList().contains(jid){
+            dismissWithDelay()
+        }else{
+            onCallStatusUpdated(callStatus: .DISCONNECTED, userId: jid)
+        }
+    }
+    
+    
+}
+
+extension CallViewController : RefreshProfileInfo {
+    
+    func refreshProfileDetails(profileDetails: ProfileDetails?) {
+        if let jid = profileDetails?.jid{
+            if CallManager.isOneToOneCall() && CallManager.getAllCallUsersList().contains(jid){
+                dismissWithDelay()
+            }else{
+                onCallStatusUpdated(callStatus: .DISCONNECTED, userId: jid)
+            }
         }
     }
 }

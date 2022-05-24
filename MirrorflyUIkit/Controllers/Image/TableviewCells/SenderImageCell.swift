@@ -124,7 +124,7 @@ class SenderImageCell: BaseTableViewCell {
             forwardImageView?.isHidden = false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
         } else {
-            forwardImageView?.image = UIImage(named: "")
+           // forwardImageView?.image = UIImage(named: "")
             forwardImageView?.isHidden = true
             forwardButton?.isSelected = !(forwardButton?.isSelected ?? false)
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
@@ -237,7 +237,7 @@ class SenderImageCell: BaseTableViewCell {
         }
         else {
             userLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
-                                          nickName: replyMessage?.senderNickName ?? "", contactType: replyMessage?.isSavedContact == true ? .live : .unknown)
+                                          nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
     }
         else {

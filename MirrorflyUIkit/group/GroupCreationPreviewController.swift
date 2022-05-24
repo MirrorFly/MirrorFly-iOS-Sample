@@ -27,10 +27,12 @@ class GroupCreationPreviewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         ChatManager.shared.adminBlockDelegate = self
+        ContactManager.shared.profileDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         ChatManager.shared.adminBlockDelegate = nil
+        ContactManager.shared.profileDelegate = nil
     }
     
     func setUpUI() {
@@ -210,4 +212,69 @@ extension GroupCreationPreviewController {
         }
     }
     
+}
+
+
+extension GroupCreationPreviewController : ProfileEventsDelegate {
+    
+    func userCameOnline(for jid: String) {
+        
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
+            
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        participantTableView.reloadData()
+    }
+    
+    func blockedThisUser(jid: String) {
+        
+    }
+    
+    func unblockedThisUser(jid: String) {
+        
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+        
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
+        participantTableView.reloadData()
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+        
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        searchedParticipants = groupCreationViewModel.removeParticipant(participant: profileDetails, participantList: searchedParticipants)
+        participantTableView.reloadData()
+    }
 }

@@ -48,6 +48,8 @@ class ContactViewController: UIViewController {
     var isGroupBlockedByAdmin : Bool = false
 
     var permissionDialogShowedOnViewDidLoad = false
+    
+    var refreshDelegate : RefreshProfileInfo? = nil
 
     
     public var profileCount = Int()
@@ -651,6 +653,26 @@ extension ContactViewController : ProfileEventsDelegate {
     
     func getUserLastSeen() {
         
+    }
+    
+    func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
+        getCotactFromLocal(fromServer: false)
+        if isMultiSelect{
+            if selectedProfilesJid.contains(jid) {
+                selectedProfilesJid.remove(jid)
+                contactList.reloadData()
+            }
+        }
+        if isInvite{
+            if CallManager.isOneToOneCall() && CallManager.getAllCallUsersList().contains(jid){
+                self.navigationController?.popViewController(animated: true)
+                refreshDelegate?.refreshProfileDetails(profileDetails: profileDetails)
+                refreshDelegate = nil
+            }else{
+                refreshDelegate?.refreshProfileDetails(profileDetails: profileDetails)
+            }
+        }
+        updateBottomButton()
     }
 }
 
