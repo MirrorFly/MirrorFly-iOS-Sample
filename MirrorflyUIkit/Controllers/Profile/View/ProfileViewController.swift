@@ -212,6 +212,9 @@ extension ProfileViewController {
                             self?.statusLabel.text = self?.profileDetails?.status
                             DispatchQueue.main.async { [weak self] in
                                 self?.stopLoading()
+                                if FlyDefaults.isTrialLicense{
+                                    ProfileViewModel().contactSync()
+                                }
                             }
                         }
                     } else {
@@ -277,7 +280,7 @@ extension ProfileViewController {
             guard let mobileNumber = mobileNumberLabel.text else {
                 return
             }
-            myProfile.mobileNumber = mobileNumber.isNotEmpty ? mobileNumber : FlyDefaults.myMobileNumber
+            myProfile.mobileNumber = getPhoneNumberToUpdate(phoneNumber: mobileNumber.isNotEmpty ? mobileNumber : FlyDefaults.myMobileNumber)
             
             guard let nickName = nameTextField.text else {
                 return
@@ -381,9 +384,6 @@ extension ProfileViewController {
     
     func moveToDashboard() {
         RootViewController.sharedInstance.initCallSDK()
-        if FlyDefaults.isTrialLicense{
-            ProfileViewModel().contactSync()
-        }
         let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
         let mainTabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
          navigationController?.pushViewController(mainTabBarController, animated: true)

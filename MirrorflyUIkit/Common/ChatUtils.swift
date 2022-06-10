@@ -248,4 +248,36 @@ class ChatUtils {
         let result = ChatManager.getUserNameAndNickName(userJid: messsage?.senderUserJid ?? "")
         return getUserName(jid: messsage?.senderUserJid ?? "", name: result.name, nickName: result.nickName, contactType: result.contactType)
     }
+    
+    static func reportFor(chatUserJid : String, completionHandler : @escaping (_ isSuccess : Bool) -> Void) {
+        guard let lastFiveMessages = ChatManager.getMessagesForReporting(chatUserJid: chatUserJid, messagesCount: 5) else {
+            completionHandler(false)
+            return
+        }
+        report(reportMessage: lastFiveMessages) { isSuccess in
+            completionHandler(isSuccess)
+        }
+    }
+    
+    static func reportFrom(message : ChatMessage, completionHandler : @escaping (_ isSuccess : Bool) -> Void) {
+        guard let lastFiveMessages = ChatManager.getMessagesForReporting(message: message, messagesCount: 5) else {
+            completionHandler(false)
+            return
+        }
+        report(reportMessage: lastFiveMessages) { isSuccess in
+            completionHandler(isSuccess)
+        }
+        
+    }
+    
+    private static func report(reportMessage : ReportMessage, completionHandler : @escaping (_ isSuccess : Bool) -> Void) {
+        ChatManager.reportMessage(reportMessage: reportMessage) { isSent in
+            completionHandler(isSent)
+        }
+    }
+    
+    
+    public static func isMessagesAvailableFor(jid : String) -> Bool {
+        return ChatManager.isMessagesAvailableFor(jid: jid)
+    }
 }

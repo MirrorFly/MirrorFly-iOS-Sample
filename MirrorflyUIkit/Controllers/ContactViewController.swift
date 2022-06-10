@@ -226,6 +226,7 @@ class ContactViewController: UIViewController {
                     if  let  contactsList = profiles {
                         profileDetails.append(contentsOf: contactsList)
                         self?.reloadTableView(profileDetails: profileDetails)
+                        self?.refreshControl.endRefreshing()
                     }
                 }
             }
@@ -236,6 +237,7 @@ class ContactViewController: UIViewController {
                 if  let  contactsList = profiles {
                     profileDetails.append(contentsOf: contactsList)
                     self?.reloadTableView(profileDetails: profileDetails)
+                    self?.refreshControl.endRefreshing()
                 }
             }
         }else{
@@ -269,6 +271,7 @@ class ContactViewController: UIViewController {
                 self?.userName.text = self?.contacts[index ?? 0].name
                 self?.setProfile()
             }
+            self?.refreshControl.endRefreshing()
         }
     }
     
@@ -288,6 +291,7 @@ class ContactViewController: UIViewController {
         searchTxt.text = ""
         contactViewModel.getContacts(fromServer: synced, removeContacts: callUsers) { [weak self] (profiles, error) in
             guard let weakSelf = self else { return }
+            weakSelf.refreshControl.endRefreshing()
             weakSelf.synced = true
             if profiles?.count == 0 {
                 if  !weakSelf.isLocalCalled {
@@ -306,6 +310,7 @@ class ContactViewController: UIViewController {
            // weakSelf.randomColors = AppUtils.shared.setRandomColors(totalCount: weakSelf.contacts.count)
             if error != nil {
                 weakSelf.contactList.reloadData()
+                weakSelf.refreshControl.endRefreshing()
             }
         }
     }

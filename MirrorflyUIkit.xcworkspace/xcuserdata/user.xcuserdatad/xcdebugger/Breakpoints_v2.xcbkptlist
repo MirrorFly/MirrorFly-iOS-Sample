@@ -7,112 +7,96 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2B668A8B-23B1-4BC3-960C-7DC5D7E1F525"
+            uuid = "4ACB0007-ECB8-435A-91DD-E5C7EBD92DA9"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SubmoduleCore/FlyCore/FlyCore/GroupManager.swift"
+            filePath = "MirrorflyUIkit/Group Info/Controller/GroupInfoViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1021"
-            endingLineNumber = "1021"
-            landmarkName = "didReceiveUseraddedMessage(participantProfile:publisherProfile:groupMemberDetail:isFromPush:)"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "refreshData()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2B668A8B-23B1-4BC3-960C-7DC5D7E1F525 - bd9c79c793e1f997"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FlyCore.GroupManager.didReceiveUseraddedMessage(participantProfile: FlyCommon.ProfileDetails, publisherProfile: FlyCommon.ProfileDetails, groupMemberDetail: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool) -&gt; ()"
-                  moduleName = "FlyCore"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleCore/FlyCore/FlyCore/GroupManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1023"
-                  endingLineNumber = "1023"
-                  offsetFromSymbolStart = "6308">
-               </Location>
-               <Location
-                  uuid = "2B668A8B-23B1-4BC3-960C-7DC5D7E1F525 - bd9c79c793e1f997"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FlyCore.GroupManager.didReceiveUseraddedMessage(participantProfile: FlyCommon.ProfileDetails, publisherProfile: FlyCommon.ProfileDetails, groupMemberDetail: FlyCommon.GroupParticipantDetail, isFromPush: Swift.Bool) -&gt; ()"
-                  moduleName = "FlyCore"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleCore/FlyCore/FlyCore/GroupManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1023"
-                  endingLineNumber = "1023"
-                  offsetFromSymbolStart = "6532">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "40F92A95-3580-4A93-8460-7CE85E817085"
+            uuid = "038FF5F9-1A07-4D04-ACDF-480BB6C7D46B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+            filePath = "SubmoduleCore/FlyCore/FlyCore/FlyMessenger.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "595"
-            endingLineNumber = "595"
-            landmarkName = "deleteMyAccountRequest(restEnd:headers:method:params:completionHandler:)"
+            startingLineNumber = "995"
+            endingLineNumber = "995"
+            landmarkName = "forwardMessageMediaAccess(messages:jidList:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "40F92A95-3580-4A93-8460-7CE85E817085 - 5cf6f1866f6e8a59"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "___lldb_unnamed_symbol130$$FlyNetwork"
-                  moduleName = "FlyNetwork"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "595"
-                  endingLineNumber = "595"
-                  offsetFromSymbolStart = "140">
-               </Location>
-               <Location
-                  uuid = "40F92A95-3580-4A93-8460-7CE85E817085 - 5cf6f1866f6e8a59"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "___lldb_unnamed_symbol130$$FlyNetwork"
-                  moduleName = "FlyNetwork"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user/Desktop/UiKit-iOS/SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "595"
-                  endingLineNumber = "595"
-                  offsetFromSymbolStart = "120">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A63BAFA5-9956-4285-A2DF-413F940D4380"
+            uuid = "9FCDEB56-7F13-4C40-A3E7-4F1B8EDCE10A"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MirrorflyUIkit/Controllers/DeleteMyAccount/DMAReasonVC.swift"
+            filePath = "SubmoduleCore/FlyCore/FlyCore/FlyMessenger.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "dmaBtnTapped(_:)"
+            startingLineNumber = "1015"
+            endingLineNumber = "1015"
+            landmarkName = "composeForwardMessage(messageIds:toJidList:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "02809CA1-CEA5-41D5-89D2-50430DF1B411"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SubmoduleCore/FlyCore/FlyCore/FlyMessenger.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1028"
+            endingLineNumber = "1028"
+            landmarkName = "FlyMessenger"
+            landmarkType = "21">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2B37F9A9-2A80-4F73-8278-8DD57C92F600"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SubmoduleCore/FlyCore/FlyCore/FlyMessenger.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1000"
+            endingLineNumber = "1000"
+            landmarkName = "composeForwardMessage(messageIds:toJidList:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4266C902-B952-4215-BF76-54E9740A26AB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/FlyUploader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "uploadFile(message:multipleChatJids:groupIds:interceptor:completionBlock:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

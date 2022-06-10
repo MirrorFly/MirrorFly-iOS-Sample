@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
+// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCommon
 import AVFoundation
 import CommonCrypto
@@ -464,6 +464,26 @@ public struct BusyStatus {
   public var isCurrentStatus: Swift.Bool
   public init(statusText: Swift.String)
 }
+public struct ReportMessage : Swift.Codable {
+  public init()
+  public var from: Swift.String
+  public var to: Swift.String
+  public var chatType: Swift.String
+  public var data: [FlyCommon.ReportMessgeData]
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ReportMessgeData : Swift.Codable {
+  public init()
+  public var msgId: Swift.String
+  public var message: Swift.String
+  public var msgType: Swift.String
+  public var filename: Swift.String
+  public var timestamp: Swift.String
+  public var publisherId: Swift.String
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
 public struct QrCodeInfo : Swift.Codable {
   public var browser: Swift.String
   public var platform: Swift.String
@@ -732,6 +752,10 @@ public struct WebLoginInfo {
   @objc public init(groupId: Swift.String)
   @objc deinit
 }
+@_hasMissingDesignatedInitializers public class FlyLog {
+  public class func DLog(param1: Swift.String?, param2: Any?)
+  @objc deinit
+}
 public struct FlyProfile {
   public let jid: Swift.String!
   public var name: Swift.String
@@ -811,10 +835,6 @@ public struct FlyProfile {
       get
     }
   }
-  @objc deinit
-}
-@_hasMissingDesignatedInitializers public class FlyLog {
-  public class func DLog(param1: Swift.String?, param2: Any?)
   @objc deinit
 }
 public enum FileType : Swift.String {
@@ -1113,6 +1133,8 @@ public struct FlyConstants {
   public static let profileIV: Swift.String
   public static let isMobileNumberLogin: Swift.String
   public static let isLive: Swift.String
+  public static let messageTimeCountThirteen: Swift.Int
+  public static let messageTimeCountTwelve: Swift.Int
   public struct ErrorMessage {
     public static let internetNotAvailable: Swift.String
     public static let invalidJid: Swift.String
@@ -1145,6 +1167,8 @@ public struct FlyConstants {
     public static let leaveThenDelete: Swift.String
     public static let emptyFileUrl: Swift.String
     public static let invalidMessageId: Swift.String
+    public static let groupNoLongerAvailable: Swift.String
+    public static let thisUserIsNoLonger: Swift.String
   }
   public struct SuccessMessage {
     public static let profileFetch: Swift.String

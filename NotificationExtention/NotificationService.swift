@@ -11,6 +11,11 @@ import FlyXmpp
 import FlyCore
 import FlyCommon
 
+
+    let BASE_URL = "https://api-uikit-dev.contus.us/api/v1/"
+    let CONTAINER_ID = "group.com.mirrorfly.qa"
+
+
 class NotificationService: UNNotificationServiceExtension {
     
     var contentHandler: ((UNNotificationContent) -> Void)?

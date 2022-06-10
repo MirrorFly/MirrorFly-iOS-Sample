@@ -113,16 +113,14 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     }
     
     func checkForUserBlockingByAdmin() {
-        
         if members.count == 0 {
             return
         }
-        
         let jidToCheck = (CallManager.isOneToOneCall() ? members.filter({$0.jid != FlyDefaults.myJid})[0].jid : CallManager.getGroupID()) ?? ""
-//        if  ChatManager.isUserOrGroupBlockedByAdmin(jid: jidToCheck) {
-//            CallManager.disconnectCall()
-//            AppAlert.shared.showToast(message: CallManager.isOneToOneCall() ? thisUerIsNoLonger : groupNoLongerAvailable)
-//        }
+        if  ChatManager.isUserOrGroupBlockedByAdmin(jid: jidToCheck) {
+            CallManager.disconnectCall()
+            AppAlert.shared.showToast(message: CallManager.isOneToOneCall() ? thisUerIsNoLonger : groupNoLongerAvailable)
+        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

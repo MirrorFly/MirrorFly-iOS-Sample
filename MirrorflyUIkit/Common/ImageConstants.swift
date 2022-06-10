@@ -65,6 +65,7 @@ enum ImageConstant{
     static let ic_group_placeholder = "groupPlaceholder"
     static let ic_group_small_placeholder = "smallGroupPlaceHolder"
     static let ic_remove = "remove"
+    static let ic_group_report = "reportGroup"
     
     // WebLogin
     static let ic_web_login_chrome = "webLoginChrome"
@@ -80,4 +81,5 @@ enum ImageConstant{
     static let ic_info_email = "infoEmail"
     static let ic_info_phone = "infoPhone"
     static let ic_info_status = "infoStatus"
+    static let ic_info_report = "report"
 }

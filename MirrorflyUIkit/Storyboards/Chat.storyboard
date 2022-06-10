@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="a6v-qf-Ud1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="a6v-qf-Ud1">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -79,25 +79,25 @@
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="L7p-IE-elR">
-                                        <rect key="frame" x="98" y="-45" width="232" height="150"/>
+                                        <rect key="frame" x="98" y="-45" width="194" height="150"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Kristian" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Saq-0X-it7">
-                                                <rect key="frame" x="0.0" y="0.0" width="232" height="19.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="194" height="19.5"/>
                                                 <fontDescription key="fontDescription" name="SFUIDisplay-Semibold" family="SF UI Display" pointSize="16"/>
                                                 <color key="textColor" name="PrimaryTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QKq-yb-211">
-                                                <rect key="frame" x="0.0" y="21.5" width="232" height="128.5"/>
+                                                <rect key="frame" x="0.0" y="21.5" width="194" height="128.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1qq-YJ-Avs">
-                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="128.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="194" height="128.5"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Light" family="SF UI Display" pointSize="10"/>
                                                         <color key="textColor" name="PrimaryTextColor2"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C6I-tW-scf" customClass="MarqueeLabel" customModule="MarqueeLabel">
-                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="128.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="194" height="128.5"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="10"/>
                                                         <color key="textColor" name="PrimaryTextColor2"/>
                                                         <nil key="highlightedColor"/>
@@ -118,7 +118,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="DRB-KR-iWo">
-                                        <rect key="frame" x="338" y="14" width="76" height="32"/>
+                                        <rect key="frame" x="300" y="14" width="108" height="32"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ith-wf-GOv">
                                                 <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
@@ -139,8 +139,8 @@
                                                 <inset key="imageEdgeInsets" minX="2" minY="2" maxX="2" maxY="2"/>
                                                 <state key="normal" image="ic_audiocall"/>
                                             </button>
-                                            <button hidden="YES" opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Grz-AT-BAL">
-                                                <rect key="frame" x="76" y="0.0" width="24" height="32"/>
+                                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Grz-AT-BAL">
+                                                <rect key="frame" x="84" y="0.0" width="24" height="32"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="24" id="MRD-wO-O0X"/>
@@ -155,7 +155,7 @@
                                 <constraints>
                                     <constraint firstItem="pnK-vo-bIg" firstAttribute="leading" secondItem="tYR-ZY-lng" secondAttribute="leading" id="1PP-YZ-ugR"/>
                                     <constraint firstItem="ZfW-dr-kdl" firstAttribute="leading" secondItem="pnK-vo-bIg" secondAttribute="trailing" constant="-10" id="2kZ-rF-A26"/>
-                                    <constraint firstAttribute="trailing" secondItem="DRB-KR-iWo" secondAttribute="trailing" id="7vp-OO-TYU"/>
+                                    <constraint firstAttribute="trailing" secondItem="DRB-KR-iWo" secondAttribute="trailing" constant="6" id="7vp-OO-TYU"/>
                                     <constraint firstItem="L7p-IE-elR" firstAttribute="centerY" secondItem="ZfW-dr-kdl" secondAttribute="centerY" id="Js5-AP-64N"/>
                                     <constraint firstAttribute="bottom" secondItem="pnK-vo-bIg" secondAttribute="bottom" id="LaR-v8-5OA"/>
                                     <constraint firstItem="L7p-IE-elR" firstAttribute="leading" secondItem="ZfW-dr-kdl" secondAttribute="trailing" constant="8" id="NCQ-TB-pNT"/>
@@ -1071,7 +1071,7 @@
     </scenes>
     <designables>
         <designable name="C6I-tW-scf">
-            <size key="intrinsicContentSize" width="24.5" height="12"/>
+            <size key="intrinsicContentSize" width="24" height="12"/>
         </designable>
     </designables>
     <inferredMetricsTieBreakers>

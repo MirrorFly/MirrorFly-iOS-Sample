@@ -83,7 +83,7 @@ extension FlyCore.ChatManager : FlyXmpp.XMPPMessageDelegate {
 }
 extension FlyCore.ChatManager {
   public static func requestOTPApiService(for mobilenumber: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
-  public static func registerApiService(for uniqueIdentifier: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, isLive: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
+  public static func registerApiService(for uniqueIdentifier: Swift.String, deviceToken: Swift.String = emptyString(), voipDeviceToken: Swift.String = emptyString(), isLive: Swift.Bool = false, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func enableDisableHideLastSeen(EnableLastSeen: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func getUserLastSeen(for Jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func markConversationAsRead(for jids: [Swift.String])
@@ -107,6 +107,7 @@ extension FlyCore.ChatManager {
 }
 extension FlyCore.ChatManager {
   public static func profileDetaisFor(jid: Swift.String) -> FlyCommon.ProfileDetails?
+  public static func isUserOrGroupBlockedByAdmin(jid: Swift.String) -> Swift.Bool
   public static func sendRegisterUpdate(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
 }
 extension FlyCore.ChatManager {
@@ -123,6 +124,12 @@ extension FlyCore.ChatManager : FlyTranslate.FlyTranslationManagerDelegate {
 }
 extension FlyCore.ChatManager : FlyXmpp.XMPPAdminBlockDelegate {
   public func didBlock(adminBlock: FlyCommon.AdminBlock?)
+}
+extension FlyCore.ChatManager {
+  public static func getMessagesForReporting(message: FlyCommon.ChatMessage, messagesCount: Swift.Int) -> FlyCommon.ReportMessage?
+  public static func getMessagesForReporting(chatUserJid: Swift.String, messagesCount: Swift.Int) -> FlyCommon.ReportMessage?
+  public static func reportMessage(reportMessage: FlyCommon.ReportMessage, completionHanlder: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
+  public static func isMessagesAvailableFor(jid: Swift.String) -> Swift.Bool
 }
 @_hasMissingDesignatedInitializers @objcMembers public class GroupConfig {
   public static var Builder: FlyCore.GroupConfig
@@ -193,6 +200,9 @@ public enum ContactSyncState : Swift.String {
   public static let Builder: FlyCore.ChatSDK
   public func setDomainBaseUrl(baseUrl: Swift.String) -> FlyCore.ChatSDK
   public func setAppGroupContainerID(containerID: Swift.String) -> FlyCore.ChatSDK
+  public func setLicenseKey(key: Swift.String) -> FlyCore.ChatSDK
+  public func isTrialLicense(isTrial: Swift.Bool) -> FlyCore.ChatSDK
+  public func setEncryptionIVs(messageIV: Swift.String, profileIV: Swift.String) -> FlyCore.ChatSDK
   public func enableContactSync(isEnable: Swift.Bool) -> FlyCore.ChatSDK
   public func setMaximumPinningForRecentChat(maxPinChat: Swift.Int = 4) -> FlyCore.ChatSDK
   public func deleteMediaFromDevice(delete: Swift.Bool = true) -> FlyCore.ChatSDK
@@ -214,6 +224,8 @@ public protocol TypingStatusDelegate : ObjectiveC.NSObjectProtocol {
 }
 public protocol AdminBlockCurrentUserDelegate : ObjectiveC.NSObjectProtocol {
   func didBlockOrUnblockCurrentUser(userJid: Swift.String, isBlocked: Swift.Bool)
+  func didBlockOrUnblockGroup(groupJid: Swift.String, isBlocked: Swift.Bool)
+  func didBlockOrUnblockContact(userJid: Swift.String, isBlocked: Swift.Bool)
 }
 public typealias FlySendMessageListener = (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMesage: FlyCommon.ChatMessage?) -> Swift.Void
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class FlyMessenger : ObjectiveC.NSObject, FlyNetwork.FlyMediaDelegate {

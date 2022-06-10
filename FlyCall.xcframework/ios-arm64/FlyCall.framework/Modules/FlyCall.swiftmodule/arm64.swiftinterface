@@ -8,8 +8,7 @@ import Contacts
 @_exported import FlyCall
 import FlyCommon
 import Foundation
-import Realm
-import RealmSwift
+@_exported import RealmSwift
 import Swift
 import UIKit
 import UserNotifications
@@ -46,7 +45,6 @@ public enum ARDSignalingChannelState : Swift.Int {
   @objc dynamic public var isLogSync: Swift.Bool
   public func initWithCallID(_ callID: Swift.String?, fromJID: Swift.String?, toJID: Swift.String?, callerDevice: Swift.String?, callType: Swift.String?, callingTime: Swift.Double, callStartTime: Swift.Double, callEndTime: Swift.Double, callState: Swift.String, callMode: Swift.String, usersList: Swift.String, groupId: Swift.String?) -> FlyCall.RealmCallLog?
   public func getCallLog(forCallID callID: Swift.String?) -> FlyCall.RealmCallLog?
-  @objc override dynamic public class func primaryKey() -> Swift.String?
   @objc override dynamic public init()
   @objc deinit
 }

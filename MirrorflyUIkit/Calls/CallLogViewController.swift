@@ -321,10 +321,28 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
         return memberCell!
     }
     
+    private func isGroupOrUserBlocked(callLog : RealmCallLog?) -> Bool {
+        if let callLog = callLog {
+            if let tempGroupJid = callLog["groupId"] as? String, ChatManager.isUserOrGroupBlockedByAdmin(jid: tempGroupJid) {
+                AppAlert.shared.showToast(message: groupNoLongerAvailable)
+                return true
+            } else if let tempToUser = callLog["toUser"] as? String, ChatManager.isUserOrGroupBlockedByAdmin(jid: tempToUser) {
+                AppAlert.shared.showToast(message: thisUerIsNoLonger)
+                return true
+            }
+        }
+        return false
+    }
+    
     @objc func buttonClicked(sender: UIButton) {
         let buttonRow = sender.tag
         print(buttonRow)
         if let callLog = CallLogArray[buttonRow] as? RealmCallLog{
+            
+            if isGroupOrUserBlocked(callLog: callLog) {
+                return
+            }
+            
             if callLog["callMode"] as? String == "onetoone"{
                 var jidString = String()
                 if callLog["fromUser"] as! String == FlyDefaults.myJid{
@@ -457,6 +475,11 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         callLog = CallLogArray[indexPath.row] as! RealmCallLog
+        
+        if isGroupOrUserBlocked(callLog: callLog) {
+            return
+        }
+        
         if callLog["callMode"] as? String == "onetoone" && (callLog.groupId?.isEmpty ?? true){
             
         }else{

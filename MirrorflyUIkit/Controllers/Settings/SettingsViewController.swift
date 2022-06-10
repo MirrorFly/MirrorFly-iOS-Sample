@@ -33,6 +33,10 @@ class SettingsViewController : UIViewController {
         self.tblSettings.dataSource = self
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        AppAlert.shared.onAlertAction = nil
+    }
+    
     
     
  func onLogout() {

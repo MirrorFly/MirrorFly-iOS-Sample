@@ -235,6 +235,7 @@ SWIFT_CLASS("_TtC7FlyCore11ChatManager")
 
 
 
+
 /// Delegate for Chat Server Connection
 SWIFT_PROTOCOL("_TtP7FlyCore23ConnectionEventDelegate_")
 @protocol ConnectionEventDelegate <NSObject>

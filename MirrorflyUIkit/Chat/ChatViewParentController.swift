@@ -172,6 +172,8 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
     
     //Mark: Translate Message
     var targetLanguageCode: String?
+    
+    var selectedChatMessage : ChatMessage? = nil
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -343,6 +345,7 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         videoButton.tag = 102
         audioButton.addTarget(self, action: #selector(makeCall(_:)), for: .touchUpInside)
         videoButton.addTarget(self, action: #selector(makeCall(_:)), for: .touchUpInside)
+        menuButton.addTarget(self, action: #selector(didTapMenu(_:)), for: .touchUpInside)
         
         if getProfileDetails.profileChatType == .groupChat {
             getParticipants()
@@ -371,10 +374,8 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
     private func getUserForAdminBlock() -> Bool{
         let profile = ChatManager.profileDetaisFor(jid: getProfileDetails.jid)
         guard let isBlockedByAdmin = profile?.isBlockedByAdmin else { return false }
-        if isBlockedByAdmin {
-            executeOnMainThread { [weak self] in
-                self?.checkUserForBlocking(jid: self?.getProfileDetails.jid ?? "", isBlocked: isBlockedByAdmin)
-            }
+        executeOnMainThread { [weak self] in
+            self?.checkUserForBlocking(jid: self?.getProfileDetails.jid ?? "", isBlocked: isBlockedByAdmin)
         }
         return isBlockedByAdmin
     }
@@ -578,12 +579,6 @@ extension ChatViewParentController {
     }
     
     @objc func goToInfoScreen(sender: Any){
-        
-//        if getProfileDetails.isBlockedByAdmin {
-//            AppAlert.shared.showToast(message: thisUerIsNoLonger)
-//            return
-//        }
-        
         if getProfileDetails.profileChatType == .singleChat {
             performSegue(withIdentifier: Identifiers.contactInfoViewController, sender: nil)
         } else if getProfileDetails.profileChatType == .groupChat {
@@ -597,14 +592,14 @@ extension ChatViewParentController {
             let imageUrl = getProfileDetails?.image  ?? ""
             let urlString = FlyDefaults.baseURL + "media/" + imageUrl + "?mf=" + FlyDefaults.authtoken
             print("setProfile \(urlString)")
-            let url = URL(string: urlString)
+            var url = URL(string: urlString)
             var placeholder = UIImage()
             if getProfileDetails.profileChatType == .groupChat {
                 placeholder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
-            }else if getProfileDetails.contactType == .deleted{
+            }else if getProfileDetails.contactType == .deleted || getProfileDetails.isBlockedByAdmin{
                 placeholder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
-            }
-            else {
+                url = URL(string: "")
+            }else {
                 placeholder = getPlaceholder(name: getUserName(jid : getProfileDetails.jid ,name: getProfileDetails.name, nickName: getProfileDetails.nickName, contactType: getProfileDetails.contactType), color: contactColor)
             }
             userImage.sd_setImage(with: url, placeholderImage: placeholder)
@@ -685,28 +680,19 @@ extension ChatViewParentController {
     }
     
     @objc func handleCellLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-        
-        if getBlockedByAdmin() {
-            return
-        }
-        
-        if getProfileDetails.profileChatType == .groupChat {
-            if !isParticipantExist().doesExist {
-                return
-            }
-        }
-        
         if isShowForwardView == false {
             var replyItem: UIMenuItem!
             var forwardItem: UIMenuItem!
+            var reportItem: UIMenuItem!
         if( longPressCount == 0 && chatMessages.count > 0) {
             if gestureRecognizer.state == .began {
                 isCellLongPressed = true
                 let touchPoint = gestureRecognizer.location(in:  chatTableView)
                 if let indexPath =  chatTableView.indexPathForRow(at: touchPoint) {
                     previousIndexPath = indexPath
+                    selectedChatMessage = chatMessages[indexPath.section ][indexPath.row]
                     let messageStatus =  chatMessages[indexPath.section ][indexPath.row].messageStatus
-                    if  (messageStatus == .delivered || messageStatus == .received || messageStatus == .seen || messageStatus == .acknowledged) {
+                    if  (messageStatus == .delivered || messageStatus == .received || messageStatus == .seen || messageStatus == .acknowledged) && !getBlockedByAdmin() {
                         chatTableView.allowsMultipleSelection = false
                         let replyImage = UIImage(named: "replyIcon")
                         replyItem = UIMenuItem(title: "Reply", image: replyImage) { [weak self] _ in
@@ -717,38 +703,61 @@ extension ChatViewParentController {
                         }
                     }
                     
+                    var flag : Bool = false
+                    
                     if (messageStatus == .delivered || messageStatus == .sent || messageStatus == .received || messageStatus == .seen || messageStatus == .acknowledged)  {
                         if ((chatMessages[indexPath.section ][indexPath.row].mediaChatMessage != nil) && chatMessages[indexPath.section ][indexPath.row].mediaChatMessage?.mediaUploadStatus == .uploaded || chatMessages[indexPath.section ][indexPath.row].mediaChatMessage?.mediaDownloadStatus == .downloaded) {
-                            forwardItem = UIMenuItem(title: "Forward") { [weak self] _ in
-                                self?.isShowForwardView = true
-                                self?.currentIndexPath = indexPath
-                                self?.refreshBubbleImageView(indexPath: indexPath, isSelected: true)
-                                self?.chatTableView.reloadData()
-                            }
+                            flag = true
                         }
                     }
                     if (messageStatus == .delivered || messageStatus == .received || messageStatus == .seen || messageStatus == .acknowledged)  {
                         if chatMessages[indexPath.section ][indexPath.row].mediaChatMessage == nil {
-                            forwardItem = UIMenuItem(title: "Forward") { [weak self] _ in
-                                self?.isShowForwardView = true
-                                self?.currentIndexPath = indexPath
-                                self?.refreshBubbleImageView(indexPath: indexPath, isSelected: true)
-                                self?.chatTableView.reloadData()
+                            flag = true
+                        }
+                    }
+                    
+                    if flag {
+                        forwardItem = UIMenuItem(title: "Forward") { [weak self] _ in
+                            self?.isShowForwardView = true
+                            self?.currentIndexPath = indexPath
+                            self?.refreshBubbleImageView(indexPath: indexPath, isSelected: true)
+                            self?.chatTableView.reloadData()
+                        }
+                        
+                        if let tmepMessage = selectedChatMessage, !tmepMessage.isMessageSentByMe && !getBlockedByAdmin(){
+                            reportItem = UIMenuItem(title: report) { [weak self] _ in
+                                
+                                if self?.getProfileDetails.contactType == .deleted {
+                                    AppAlert.shared.showToast(message: unableToReportDeletedUserMessage)
+                                    return
+                                }
+                                
+                                self?.reportFromMessage(chatMessage: tmepMessage)
                             }
                         }
                     }
-//                        let infoItem = UIMenuItem(title: "Info") { _ in
-//                        }
+                    
+                    
+                    if getProfileDetails.profileChatType == .groupChat {
+                        if !isParticipantExist().doesExist {
+                            replyItem = nil
+                            forwardItem = nil
+                        }
+                    }
                     
                     switch true {
-                    case replyItem == nil && forwardItem == nil:
+                    case replyItem == nil && forwardItem == nil && reportItem == nil:
                         toolTipController.menuItems = []
+                    case replyItem != nil && forwardItem != nil && reportItem != nil:
+                        toolTipController.menuItems = [replyItem,forwardItem, reportItem]
                     case replyItem != nil && forwardItem != nil:
                         toolTipController.menuItems = [replyItem,forwardItem]
                     case replyItem != nil:
                         toolTipController.menuItems = [replyItem]
                     case forwardItem != nil:
                         toolTipController.menuItems = [forwardItem]
+                    case reportItem != nil:
+                        toolTipController.menuItems = [reportItem]
                     default:
                         toolTipController.menuItems = [replyItem,forwardItem]
                     }
@@ -838,7 +847,7 @@ extension ChatViewParentController {
     }
     
     func getLastSeen() {
-        if getProfileDetails.contactType == .deleted{
+        if getProfileDetails.contactType == .deleted || getProfileDetails.isBlockedByAdmin {
             lastSeenLabel.text = emptyString()
             lastSeenLabel.isHidden = true
             return
@@ -864,6 +873,11 @@ extension ChatViewParentController {
     }
     
     func setLastSeen(lastSeenTime : String){
+        if getProfileDetails.contactType == .deleted || getProfileDetails.isBlockedByAdmin {
+            lastSeenLabel.text = emptyString()
+            lastSeenLabel.isHidden = true
+            return
+        }
         let dateFormat = DateFormatter()
         dateFormat.timeStyle = .short
         dateFormat.dateStyle = .short
@@ -3574,6 +3588,12 @@ extension ChatViewParentController : ProfileEventsDelegate {
         }
         if getProfileDetails.profileChatType == .groupChat{
             getMessages()
+            if let index = groupMembers.firstIndex(where: { participant in
+                participant.memberJid == jid
+            }){
+                groupMembers.remove(at: index)
+                setGroupMemberInHeader()
+            }
         }
         
     }
@@ -4904,6 +4924,8 @@ extension ChatViewParentController {
         if getProfileDetails.jid == jid && getProfileDetails.profileChatType == .singleChat {
             getProfileDetails.isBlockedByAdmin = isBlocked
             checkForUserBlocked()
+            getLastSeen()
+            setProfile()
         } else if isBlocked && getProfileDetails.jid == jid && getProfileDetails.profileChatType == .groupChat {
             view.endEditing(true)
             AppAlert.shared.showToast(message: groupNoLongerAvailable)
@@ -4955,6 +4977,46 @@ extension ChatViewParentController : AdminBlockDelegate {
         checkUserForBlocking(jid: groupJid, isBlocked: isBlocked)
     }
 
+}
+
+// Reporting user or message
+extension ChatViewParentController {
+    
+    @objc func didTapMenu(_ sender : UIButton) {
+        let values : [String] = ChatActions.allCases.map { $0.rawValue }
+        var actions = [(String, UIAlertAction.Style)]()
+        values.forEach { title in
+            actions.append((title, UIAlertAction.Style.default))
+        }
+        
+        AppActionSheet.shared.showActionSeet(title: chatActions, message: "", actions: actions) { [weak self] didCancelTap, tappedOption in
+            if !didCancelTap {
+                switch tappedOption {
+                case ChatActions.report.rawValue:
+                    
+                    if self?.getProfileDetails.contactType == .deleted {
+                        AppAlert.shared.showToast(message: unableToReportDeletedUser)
+                        return
+                    }
+                    
+                    print("\(tappedOption)")
+                    if ChatUtils.isMessagesAvailableFor(jid: self?.getProfileDetails.jid ?? "") {
+                        if let profileDetails = self?.getProfileDetails {
+                            self?.reportForJid(profileDetails: profileDetails)
+                        }
+                    } else {
+                        AppAlert.shared.showToast(message: noMessgesToReport)
+                    }
+                default:
+                    print(" \(tappedOption)")
+                }
+            }
+        }
+    }
+    
+    func didTapReportInMessage(chatMessge : ChatMessage) {
+        reportFromMessage(chatMessage: chatMessge)
+    }
 }
 
 extension ChatViewParentController : RefreshProfileInfo {

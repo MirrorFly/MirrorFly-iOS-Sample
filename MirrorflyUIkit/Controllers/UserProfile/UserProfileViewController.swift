@@ -236,7 +236,7 @@ extension UserProfileViewController {
             guard let mobileNumber = mobileNumberLabel?.text else {
                 return
             }
-            myProfile.mobileNumber = self.getUserMobileNumber
+            myProfile.mobileNumber = getPhoneNumberToUpdate(phoneNumber: self.getUserMobileNumber)
             
             guard let nickName = nameTextField?.text else {
                 return
