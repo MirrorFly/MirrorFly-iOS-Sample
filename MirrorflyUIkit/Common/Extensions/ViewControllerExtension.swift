@@ -61,7 +61,10 @@ extension UIViewController {
             exit(0)
         }
     }
-    
+}
+
+// For admin blocking and unblocking
+extension UIViewController {
     func removeAdminBlockedContact(profileList : [ProfileDetails], jid : String, isBlockedByAdmin : Bool) -> [ProfileDetails]{
         var tempProfileList = profileList
         if tempProfileList.isEmpty {
@@ -120,5 +123,104 @@ extension UIViewController {
         tempRecent = tempRecent.filter({!$0.isBlockedByAdmin})
         
         return tempRecent
+    }
+}
+
+// For reporting
+extension UIViewController {
+    
+    func showConfirmDialogToReport(profileDetail : ProfileDetails?, completionHandler : @escaping (_ didTapReport : Bool) -> Void) {
+        guard let profileDetail = profileDetail else {
+            return
+        }
+        let title = report + " " + getUserName(jid: profileDetail.jid, name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType) + "?"
+        AppAlert.shared.showAlert(view: self, title: title, message: reportLastFiveMessage, buttonOneTitle: cancelUppercase, buttonTwoTitle: report)
+        AppAlert.shared.onAlertAction = { result in
+            if result == 1 {
+                if NetworkReachability.shared.isConnected {
+                    completionHandler(true)
+                } else {
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }
+               
+            }
+        }
+    }
+    
+    func showReportingGroupOptions( completionHandler : @escaping (_ reportAction : String) -> Void){
+        let values : [String] = ChatActions.allCases.map { $0.rawValue }
+        var actions = [(String, UIAlertAction.Style)]()
+        values.forEach { title in
+            actions.append((title, UIAlertAction.Style.default))
+        }
+        
+        AppActionSheet.shared.showActionSeet(title: reportThisGroup, message: reportGroupMessage, actions: actions, titleBold: true) { didCancelTap, tappedOption in
+            if !didCancelTap {
+                completionHandler(tappedOption)
+            }
+        }
+    }
+    
+    func showReportSuccessDialog() {
+        AppAlert.shared.showAlert(view: self, title: reportSend, message: "", buttonTitle: okButton)
+    }
+    
+    func reportForJid(profileDetails : ProfileDetails, isFromGroupInfo : Bool = false) {
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            return
+        }
+        
+        if isFromGroupInfo {
+            startLoading(withText: pleaseWait)
+            reportUserOrGroup(jid: profileDetails.jid)
+            return
+        }
+        
+        showConfirmDialogToReport(profileDetail: profileDetails) { [weak self] didTapReport in
+            if didTapReport {
+                self?.startLoading(withText: pleaseWait)
+                self?.reportUserOrGroup(jid: profileDetails.jid)
+            }
+        }
+    }
+    
+    private func reportUserOrGroup(jid : String) {
+        ChatUtils.reportFor(chatUserJid: jid) { [weak self] isSuccess in
+            self?.stopLoader(isSuccess: isSuccess)
+        }
+    }
+    
+    public func reportAndExitFromGroup(jid : String, completionHandler : @escaping (_ isReported : Bool) -> Void) {
+        startLoading(withText: pleaseWait)
+        ChatUtils.reportFor(chatUserJid: jid) { [weak self] isSuccess in
+            self?.stopLoading()
+            completionHandler(isSuccess)
+            if !isSuccess {
+                AppAlert.shared.showToast(message: reportFailure)
+            }
+        }
+    }
+    
+    func reportFromMessage(chatMessage : ChatMessage) {
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            return
+        }
+        startLoading(withText: pleaseWait)
+        ChatUtils.reportFrom(message: chatMessage) { [weak self] isSuccess in
+            self?.stopLoader(isSuccess: isSuccess)
+        }
+    }
+    
+    private func stopLoader(isSuccess : Bool) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.stopLoading()
+            if isSuccess {
+                self?.showReportSuccessDialog()
+            } else {
+                AppAlert.shared.showToast(message: pleaseTryAgain)
+            }
+        }
     }
 }

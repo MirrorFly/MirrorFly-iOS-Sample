@@ -66,10 +66,14 @@ class DeleteMyAccountVC: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func continueBtnTapped(_ sender: Any) {
-        guard let mobileNumber = mobileNumberField.text, let accountNumber = FlyDefaults.myMobileNumber.components(separatedBy: " ").last, let accountCountryCode = FlyDefaults.myMobileNumber.components(separatedBy: " ").first?.replacingOccurrences(of: "+", with: "")  else {
+        guard let mobileNumber = mobileNumberField.text else {
             return
         }
         if !mobileNumber.isEmpty{
+    
+            let accountCountryCode = FlyDefaults.myMobileNumber.replacingOccurrences(of: mobileNumber, with: "")
+            let accountNumber = FlyDefaults.myMobileNumber.replacingOccurrences(of: accountCountryCode, with: "")
+            
             if mobileNumber == accountNumber{
                 if accountCountryCode == countryDialCode{
                     if NetStatus.shared.isConnected{

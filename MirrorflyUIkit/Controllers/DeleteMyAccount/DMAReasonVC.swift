@@ -57,6 +57,7 @@ class DMAReasonVC: UIViewController {
                 ContactManager.shared.deleteMyAccountRequest(reason: reason, feedback: feedBack) { isSuccess, error, data in
                     let message = data["message"] as? String ?? ""
                     if isSuccess{
+                        CallLogManager().deleteCallLogs()
                         Utility.saveInPreference(key: firstTimeSandboxContactSyncDone, value: false)
                         AppAlert.shared.showToast(message: "Your MirrorFly account has been deleted.")
                     }else{
@@ -111,9 +112,12 @@ extension DMAReasonVC : UITextFieldDelegate{
     
     @objc func doneButtonClicked(_ sender: Any) {
         if selectedRow > -1 {
-            dmaBtn.isHidden = false
             reasonField.text = reasons[selectedRow]
-            reasonField.resignFirstResponder()
+        }else{
+            reasonField.text = reasons.first!
         }
+        dmaBtn.isHidden = false
+        reasonField.resignFirstResponder()
     }
 }
+

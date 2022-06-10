@@ -581,8 +581,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             }
         }
         if !(isCellLongPressed ?? false) {
-            let tempRecent = getRecentChat[indexPath.row]
-            if tempRecent.profileType == .groupChat && tempRecent.isBlockedByAdmin {
+            if !getRecentChat.isEmpty && getRecentChat[indexPath.row].profileType == .groupChat && getRecentChat[indexPath.row].isBlockedByAdmin {
                 showGroupBlockedView()
             } else if isSearchEnabled == true {
                 openContactChat(index: indexPath)

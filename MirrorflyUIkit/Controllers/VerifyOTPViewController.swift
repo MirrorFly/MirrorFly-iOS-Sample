@@ -219,6 +219,9 @@ class VerifyOTPViewController: UIViewController
                 self?.isAuthorizedSuccess = true
                 self?.verifyOTPViewModel.initializeChatCredentials(username: userName, secretKey: userPassword)
                 self?.startLoading(withText: pleaseWait)
+                if FlyDefaults.isTrialLicense{
+                    ProfileViewModel().contactSync()
+                }
             } else{
                 self?.stopLoading()
                 if let errorMsg  = error {

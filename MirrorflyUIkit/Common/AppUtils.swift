@@ -189,6 +189,19 @@ func getColor(userName : String) -> UIColor {
     return ChatUtils.getColorForUser(userName: userName)
 }
 
+func getPhoneNumberToUpdate(phoneNumber : String) -> String {
+ 
+    if phoneNumber.isEmpty {
+        return FlyDefaults.myMobileNumber
+    }
+    
+    var tempMobileNumber = phoneNumber
+    tempMobileNumber = tempMobileNumber.contains("+") ? tempMobileNumber.replacingOccurrences(of: "+", with: "")  : tempMobileNumber
+    tempMobileNumber = tempMobileNumber.contains(" ") ? tempMobileNumber.replacingOccurrences(of: " ", with: "") : tempMobileNumber
+
+    return tempMobileNumber
+}
+
 extension UIImageView {
     func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown){
         let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken

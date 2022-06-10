@@ -257,7 +257,7 @@ class GroupInfoViewController: UIViewController {
 extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -333,6 +333,12 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             
         } else if indexPath.section == 3 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
+            cell.optionImageview.image = UIImage(named: ImageConstant.ic_group_report)
+            cell.optionLabel.textColor = Color.leaveGroupTextColor
+            cell.optionLabel.text = reportGroup
+            return cell
+        } else if indexPath.section == 4 {
+            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             if isExistMember == true {
                 cell.optionImageview.image = UIImage(named: "leave_group")
                 cell.optionLabel.textColor = Color.leaveGroupTextColor
@@ -387,6 +393,8 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         } else if indexPath.section == 3 {
+            showReportOptions()
+        } else if indexPath.section == 4 {
             if isExistMember == true {
                 AppAlert.shared.showAlert(view: self,
                                           title: exitGroup,
@@ -399,15 +407,7 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     
                     if result == 0 && !isBlocked{
                         let groupMembers = self?.groupMembers[indexPath.row]
-                        self?.groupInfoViewModel.leaveFromGroup(groupID: self?.groupID ?? "",
-                                                                userJid: groupMembers?.memberJid ?? "") {
-                            [weak self] success in
-                            if success {
-                                AppAlert.shared.showToast(message: leftFromgroup)
-                                self?.navigationController?.navigationBar.isHidden = false
-                                self?.navigationController?.popViewController(animated: true)
-                            }
-                        }
+                        self?.leaveFromGroup()
                     }
                 }
             } else {
@@ -440,6 +440,22 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension GroupInfoViewController: ContactImageCellDelegate {
+    
+    func leaveFromGroup() {
+        if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
+            return
+        }
+        startLoading(withText: pleaseWait)
+        groupInfoViewModel.leaveFromGroup(groupID: groupID,userJid: FlyDefaults.myJid) {
+            [weak self] success in
+            self?.stopLoading()
+            if success {
+                AppAlert.shared.showToast(message: leftFromgroup)
+                self?.navigationController?.navigationBar.isHidden = false
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
     
     func updatedGroupName(groupName: String) {
         
@@ -660,7 +676,7 @@ extension GroupInfoViewController : GroupEventsDelegate {
     }
     
     func didLeftFromGroup(groupJid: String, leftUserJid: String) {
-        
+        getGroupMembers()
     }
     
     func didCreateGroup(groupJid: String) {
@@ -960,9 +976,48 @@ extension GroupInfoViewController {
         self.dismiss(animated: true, completion: nil)
         self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.popToRootViewController(animated: true)
-        executeOnMainThread {
-            self.stopLoading()
+        executeOnMainThread { [weak self] in
+            self?.stopLoading()
             AppAlert.shared.showToast(message: groupNoLongerAvailable)
+        }
+    }
+}
+
+// For reporting
+extension GroupInfoViewController {
+    func showReportOptions() {
+        let values : [String] = ChatActions.allCases.map { $0.rawValue }
+        var actions = [(String, UIAlertAction.Style)]()
+        values.forEach { title in
+            actions.append((title, UIAlertAction.Style.default))
+        }
+        
+        AppActionSheet.shared.showActionSeet(title: report, message: "", actions: actions) { [weak self] didCancelTap, tappedOption in
+            if !didCancelTap {
+                switch tappedOption {
+                case ChatActions.report.rawValue:
+                    if ChatUtils.isMessagesAvailableFor(jid: self?.profileDetails?.jid ?? "") {
+                        self?.showReportingGroupOptions(completionHandler: { action in
+                            print("\(action)")
+                            if let profileDetails = self?.profileDetails {
+                                if action == GroupReportActions.report.rawValue {
+                                    self?.reportForJid(profileDetails: profileDetails, isFromGroupInfo: true)
+                                }else if action == GroupReportActions.reportAndExit.rawValue {
+                                    self?.reportAndExitFromGroup(jid: profileDetails.jid, completionHandler: { isReported in
+                                        if isReported {
+                                            self?.leaveFromGroup()
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: noMessgesToReport)
+                    }
+                default:
+                    print(" \(tappedOption)")
+                }
+            }
         }
     }
 }

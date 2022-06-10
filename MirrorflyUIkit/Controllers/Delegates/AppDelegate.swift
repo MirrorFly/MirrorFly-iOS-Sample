@@ -20,6 +20,7 @@ import RxSwift
 import Contacts
 
 
+
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
@@ -31,6 +32,7 @@ let ENABLE_CONTACT_SYNC = false
 let IS_LIVE = false
 let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
 let IS_MOBILE_NUMBER_LOGIN = true
+
 
 
 let isMigrationDone = "isMigrationDone"
@@ -46,12 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 //        if !Utility.getBoolFromPreference(key: isMigrationDone) {
 //            resetData()
 //        }
-        CallManager.setAppGroupContainerId(id: CONTAINER_ID )
-        FlyDefaults.isTrialLicense = !IS_LIVE
-        FlyDefaults.licenseKey = LICENSE_KEY
-        FlyDefaults.baseURL = BASE_URL
-        FlyDefaults.profileIV = LICENSE_KEY.substring(to: 16)
-        FlyDefaults.isLive = IS_LIVE
+        FlyUtils.setAppGroupContainerId(id: CONTAINER_ID )
+
         FlyDefaults.isMobileNumberLogin = IS_MOBILE_NUMBER_LOGIN
         if ENABLE_CONTACT_SYNC{
             startObservingContactChanges()
@@ -86,6 +84,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         ChatManager.shared.adminBlockCurrentUserDelegate = self
         
         try? ChatSDK.Builder.enableContactSync(isEnable: ENABLE_CONTACT_SYNC)
+            .setLicenseKey(key: LICENSE_KEY)
+            .isTrialLicense(isTrial: !IS_LIVE)
+            .setEncryptionIVs(messageIV: "ddc0f15cc2c90fca", profileIV: LICENSE_KEY.substring(to: 16))
             .setDomainBaseUrl(baseUrl: BASE_URL)
             .signalServer(signalServerUrl: SOCKETIO_SERVER_HOST)
             .setMaximumPinningForRecentChat(maxPinChat: 4)
@@ -362,6 +363,7 @@ extension AppDelegate : LogoutDelegate {
         ChatManager.disconnectXMPPConnection()
         ChatManager.shared.clearAllTablesInDB()
         ChatManager.shared.resetFlyDefaults()
+        CallLogManager().deleteCallLogs()
         var controller : OTPViewController?
         if #available(iOS 13.0, *) {
             controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")

@@ -206,6 +206,7 @@ let typing = "typing..."
 let processingVideo = "Processsing Video..."
 let waitingForNetwork = "Waiting for Network"
 let adminEmail = "mirrorflyadminsupport@gmail.com"
+let chatActions = "Chat Actions"
 
 //MARK: Group
 let groupNameRequired = "Please provide group name"
@@ -234,6 +235,20 @@ let status = "Status"
 
 // MARK: notification name
 let foregroundNotification = "foregroundNotification"
+
+// MARK: rporting user or group or message
+let report = "Report"
+let reportLastFiveMessage = "The last 5 message from this contact will be forwarded to admin. This contact will not be notified."
+let reportSend = "Report Sent"
+let reportGroup = "Report Group"
+let reportThisGroup = "Report this group?"
+let reportGroupMessage = "The last 5 message from this group will be forwarded to admin. No one in this group will be notified."
+let reportAndExit = "Report and exit"
+let pleaseTryAgain = "Please try again"
+let reportFailure = "Reporting Failure. Please try again"
+let noMessgesToReport = "No messges to Report"
+let unableToReportDeletedUser = "Cannot report deleted user"
+let unableToReportDeletedUserMessage =  "Cannot report deleted user's message"
 
 // Error messages
 public struct ErrorMessage {
@@ -276,6 +291,15 @@ enum CreateGroupOptions : String, CaseIterable {
     case createGroup = "Create Group"
    // case broadCastList = "Broadcast List"
     case web = "Web"
+}
+
+enum ChatActions : String, CaseIterable {
+    case report = "Report"
+}
+
+enum GroupReportActions : String, CaseIterable {
+    case reportAndExit = "Report and exit"
+    case report = "Report"
 }
 
 enum ImagePickingOptions : String, CaseIterable {

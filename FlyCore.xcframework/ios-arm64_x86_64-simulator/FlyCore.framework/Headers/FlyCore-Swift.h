@@ -237,6 +237,7 @@ SWIFT_CLASS("_TtC7FlyCore11ChatManager")
 
 
 
+
 /// Delegate for Chat Server Connection
 SWIFT_PROTOCOL("_TtP7FlyCore23ConnectionEventDelegate_")
 @protocol ConnectionEventDelegate <NSObject>
@@ -685,6 +686,7 @@ SWIFT_CLASS("_TtC7FlyCore11ChatManager")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
 
 
 
