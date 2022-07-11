@@ -40,7 +40,6 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
     var delegate: ProfileViewControllerProtocol?
     var getUserMobileNumber:String = ""
     var profileDetails: ProfileDetails? = nil
-    let defaults = UserDefaults.standard
     var isSaveButtonTapped: Bool? = false
     // The last collection the user has selected. Set from the picker's delegate method.
     // It is not recommended to PHAssetCollection in persitant storage. If you do, check if the album is still available before showing the picker.

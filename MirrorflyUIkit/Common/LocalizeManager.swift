@@ -29,16 +29,12 @@ class LocalizeManager {
     var selectedLanguage : Language = .english
     
     func changeLocalization(language:Language) {
-        let defaults = UserDefaults.standard
-        defaults.set(language.rawValue, forKey: "Language")
-        UserDefaults.standard.synchronize()
+        Utility.saveInPreference(key: "Language", value: language.rawValue)
     }
     
     func currentlocalization() -> String {
-        if let savedLocale = UserDefaults.standard.object(forKey: "Language") as? String {
-            return savedLocale
-        }
-        return Language.english.rawValue
+        let savedLocale = Utility.getStringFromPreference(key: "Language")
+        return savedLocale.isEmpty ? Language.english.rawValue : savedLocale
     }
     
     func currentLanguage() -> String{

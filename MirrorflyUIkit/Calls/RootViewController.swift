@@ -13,28 +13,9 @@ import FlyCommon
 @objc class RootViewController : NSObject {
     public static var sharedInstance = RootViewController()
     var callViewController : CallViewController?
-    let defaults = UserDefaults.standard
     
     override init() {
         super.init()
-    }
-    
-    @objc func appMovedToBackground() {
-        if CallManager.isCallConnected() && CallManager.getCallType() == .Video {
-            let isVideoMutedByUser =  defaults.object(forKey: "muteStatus") as? Bool ?? false
-            if !CallManager.isVideoMuted() && !isVideoMutedByUser{
-                CallManager.muteVideo(true)
-            }
-        }
-    }
-    
-    @objc func appMovedToForeground() {
-        if CallManager.isCallConnected() && CallManager.getCallType() == .Video {
-            let isVideoMutedByUser =  defaults.object(forKey: "muteStatus") as? Bool ?? false
-            if CallManager.isVideoMuted() && !isVideoMutedByUser {
-                CallManager.muteVideo(false)
-            }
-        }
     }
     
     deinit {
@@ -62,7 +43,10 @@ extension RootViewController : CallManagerDelegate {
     }
     
     func getDisplayName(IncomingUser :[String]) {
-        callViewController?.getDisplayName(IncomingUser: IncomingUser)
+        DispatchQueue.main.async { [weak self] in
+            self?.callViewController?.getDisplayName(IncomingUser: IncomingUser)
+        }
+        
     }
     
     func sendCallMessage( groupCallDetails : GroupCallDetails , users: [String], invitedUsers: [String]) {
@@ -161,15 +145,18 @@ extension RootViewController {
         let iceServer1 = RTCIceServer.init(urlStrings: ["stun:stun.l.google.com:19302"], username: "", credential: "")
         iceServerList.append(iceServer1)
         
-        try! CallSDK.Builder.setUserId(id: FlyDefaults.myJid)
-            .setDomainBaseUrl(baseUrl: BASE_URL)
-            .setSignalSeverUrl(url: SOCKETIO_SERVER_HOST)
-            .setJanusSeverUrl(url: JANUS_URL)
-            .setAppGroupContainerID(containerID: CONTAINER_ID)
-            .setICEServersList(iceServers: iceServerList)
-            .setCallDelegate(delegate: RootViewController.sharedInstance)
-            .setCallViewController(viewController: callViewController!)
-            .buildAndInitialize()
+        if let myJid = try? FlyUtils.getMyJid(){
+            try! CallSDK.Builder.setUserId(id: myJid)
+                .setDomainBaseUrl(baseUrl: BASE_URL)
+                .setSignalSeverUrl(url: SOCKETIO_SERVER_HOST)
+                .setJanusSeverUrl(url: JANUS_URL)
+                .setAppGroupContainerID(containerID: CONTAINER_ID)
+                .setICEServersList(iceServers: iceServerList)
+                .setCallDelegate(delegate: RootViewController.sharedInstance)
+                .setCallViewController(viewController: callViewController!)
+                .buildAndInitialize()
+        }
+       
     }
 }
 

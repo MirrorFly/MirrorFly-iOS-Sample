@@ -203,7 +203,6 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: matchingNotifications.map({ $0.request.identifier }))
         }
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
-
         
         //MARK: Function call for the Message Translation
 
@@ -1317,7 +1316,7 @@ extension ChatViewParentController {
             return
         }
         let audioName  = FlyConstants.audio + FlyUtils.generateUniqueId() + MessageExtension.audio.rawValue
-        if let audioLocalPath  = FlyUtils.saveInDirectory(with: audioData, fileName: audioName, messageType: .audio)  {
+        if let audioLocalPath  = FlyUtils.saveInDirectory(with: audioData, fileName: audioName, messageType: .audio)?.0  {
             let duration = FlyUtils.getMediaDuration(url: audioUrl) ?? 0
             if audioUrl.pathExtension == "mp3" || audioUrl.pathExtension == "aac" || audioUrl.pathExtension == "wav" {
                 FlyMessenger.sendAudioMessage(toJid: getProfileDetails.jid, audioFileSize: Double(audioData.count), audioFileUrl: fileUrl, audioFileLocalPath: audioLocalPath, audioFileName: audioName, audioDuration: duration, replyMessageId: replyMessageId){ isSuccess,error,message in
@@ -1831,12 +1830,12 @@ extension ChatViewParentController {
             return
         }
         let imageName  = FlyConstants.image + FlyUtils.generateUniqueId() + MessageExtension.image.rawValue
-        if let imageLocalPath  = FlyUtils.saveInDirectory(with: imageData , fileName: imageName, messageType: .image) {
+        if let (localPath,imageKey)  = FlyUtils.saveInDirectory(with: imageData , fileName: imageName, messageType: .image), let imageLocalPath = localPath, let key = imageKey {
             let imageUrl = URL(fileURLWithPath: imageLocalPath)
             let thumbail = UIImage(data: imageData)
             let resizedImage = ChatUtils.resize(thumbail ?? UIImage())
             let base64 = FlyUtils.convertImageToBase64(img: resizedImage)
-            FlyMessenger.sendImageMessage(toJid: getProfileDetails.jid , imageFileName: imageName, imageFileSize: Double(imageData.count), imageFileUrl: imageUrl, imageFileLocalPath: imageLocalPath, base64Thumbnail: base64 , caption: imageInfo.caption?.trim(), replyMessageId: replyMessageId) { [weak self] isSuccess, error, sendMessage in
+            FlyMessenger.sendImageMessage(toJid: getProfileDetails.jid , imageFileName: imageName, imageFileSize: Double(imageData.count), imageFileUrl: imageUrl, imageFileLocalPath: imageLocalPath, base64Thumbnail: base64 , caption: imageInfo.caption?.trim(), replyMessageId: replyMessageId, imageFileKey: key) { [weak self] isSuccess, error, sendMessage in
                 if let chatMessage = sendMessage {
                     chatMessage.mediaChatMessage?.mediaThumbImage = base64
                     chatMessage.mediaChatMessage?.mediaUploadStatus = .not_uploaded
@@ -3720,7 +3719,7 @@ extension ChatViewParentController {
                 return
             }
             let videoName  = FlyConstants.video + FlyUtils.generateUniqueId() + MessageExtension.video.rawValue
-            if let videoLocalPath  = FlyUtils.saveInDirectory(with: videoData , fileName: videoName, messageType: .video) {
+            if let videoLocalPath  = FlyUtils.saveInDirectory(with: videoData , fileName: videoName, messageType: .video)?.0 {
                 FlyMessenger.sendVideoMessage(toJid: self?.getProfileDetails.jid ?? "", videoFileName: videoName, videoFileUrl: videoLocalPath, localFilePath: videoLocalPath, videoCaption: videoDetail.caption, replyMessageId: self?.replyMessageId){ isSuccess,error,message in
                     if let chatMessage = message {
                         chatMessage.mediaChatMessage?.mediaUploadStatus = .not_uploaded

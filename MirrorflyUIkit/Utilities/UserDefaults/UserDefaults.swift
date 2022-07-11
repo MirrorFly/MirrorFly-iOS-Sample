@@ -8,48 +8,50 @@
 import UIKit
 import FlyCommon
 import Alamofire
+import CommonCrypto
+import FlyCore
 
 class Utility: NSObject{
     
     class func saveInPreference (key : String , value : Any) {
-        UserDefaults.standard.setValue(value, forKey: key)
-    }
-    
-    class func getIntFromPreference(key : String) -> Int32 {
-        if (UserDefaults.standard.object(forKey: key) != nil)
-        {
-            return  Int32(UserDefaults.standard.integer(forKey:key))
-        }else{
-            return 0
+        var stringaValue = ""
+        if let boolString = value as? Bool{
+            stringaValue = boolString ? "true" : "false"
+        }else if let value = value as? String{
+            stringaValue  = value
+        }
+        if let encryptedData = encryptDecryptFlyDefaults(key: key, data:  Data(stringaValue.utf8), encrypt: true){
+            UserDefaults.standard.setValue(encryptedData, forKey: key)
+            UserDefaults.standard.synchronize()
         }
     }
     
     class func getStringFromPreference(key : String) -> String {
-        if (UserDefaults.standard.object(forKey: key) != nil)
-        {
-            return  UserDefaults.standard.string(forKey: key) ?? ""
-        }else{
-            return ""
+        if let value =  UserDefaults.standard.object(forKey: key) {
+            if let encryptedData = value as? Data{
+                if let decryptedData = encryptDecryptFlyDefaults(key: key, data:  encryptedData, encrypt: false){
+                    return String(data: decryptedData, encoding: .utf8)!
+                }
+            }else if let oldValue = value as? String {
+                saveInPreference(key: key, value: oldValue)
+                return oldValue
+            }
         }
-    }
-    
-    class func getArrayFromPreference(key : String) -> NSArray {
-        if (UserDefaults.standard.object(forKey: key) != nil)
-        {
-            return  UserDefaults.standard.object(forKey: key) as? NSArray ?? NSArray()
-        }else
-        {
-            return NSArray()
-        }
+        return ""
     }
     
     class func getBoolFromPreference(key : String) -> Bool {
-        if (UserDefaults.standard.object(forKey: key) != nil)
-        {
-            return  UserDefaults.standard.bool(forKey:key)
-        }else{
-            return false
+        if let value = UserDefaults.standard.object(forKey: key) {
+            if let encryptedData =  value as? Data{
+                if let decryptedData = encryptDecryptFlyDefaults(key: key, data:  encryptedData, encrypt: false){
+                    return (String(data: decryptedData, encoding: .utf8)! == "true" )
+                }
+            } else if let oldValue = value as? Bool {
+                saveInPreference(key: key, value: oldValue)
+                return oldValue
+            }
         }
+        return false
     }
     
     class func timeString(time: TimeInterval) -> String {
@@ -196,30 +198,8 @@ class Utility: NSObject{
     }
     
     public class func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
-        let username = FlyDefaults.myXmppUsername
-        let password = FlyDefaults.myXmppPassword
-        if username.count == 0 || password.count == 0 {
-            return
-        }
-        let parameters = ["username" : username,
-                          "password": password];
-        let url = appendBaseURL(restEnd: "login")
-        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil, requestModifier: nil).validate().responseJSON { response in
-            switch response.result {
-            case .success(let result):
-                if response.response?.statusCode == 200 {
-                    guard let responseDictionary = result as? [String : Any]  else{
-                        return
-                    }
-                    let data = responseDictionary["data"] as? [String: String] ?? [:]
-                    let token = data["token"] ?? ""
-                    FlyDefaults.authtoken = token
-                }
-                onCompletion(true)
-                
-            case .failure(_) :
-                onCompletion(false)
-            }
+        ChatManager.refreshToken { isSuccess, error, data in
+            onCompletion(isSuccess)
         }
     }
     
@@ -277,6 +257,29 @@ class Utility: NSObject{
         }
     }
     
+    class func encryptDecryptFlyDefaults(key:String, data : Data, encrypt : Bool, iv : String = "ddc0f15cc2c90fca") -> Data?{
+        guard let key = FlyEncryption.sha256(key, length: 32) else {
+            return data
+        }
+        guard let flyEncryption = FlyEncryption(encryptionKey: key, initializationVector: iv ) else {
+            return data
+        }
+        
+        if encrypt {
+            guard let encryptedData  = flyEncryption.crypt(data: data, option: CCOperation(kCCEncrypt)) else {
+                return data
+            }
+            print("#ud encrypt \(key)  \(encryptedData)")
+            return encryptedData
+        } else {
+            guard let decryptedData  = flyEncryption.crypt(data: data, option:  CCOperation(kCCDecrypt)) else {
+                return nil
+            }
+            print("#ud decrypt \(key)  \(decryptedData)")
+            return decryptedData
+        }
+    }
+    
 }
 extension TimeInterval {
     var minuteSecondMS: String {
@@ -304,3 +307,9 @@ public class ImageCache {
     
 }
 
+
+extension String {
+    func toDouble() -> Double? {
+        return NumberFormatter().number(from: self)?.doubleValue
+    }
+}

@@ -67,13 +67,6 @@ class ProfileViewModel {
             if response.response?.statusCode == 401 {
                 apiService.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
                     if isSuccess {
-                        var resultDict : [String: Any] = [:]
-                        resultDict = flyData
-                        let profiledict = resultDict.getData() as? NSDictionary ?? [:]
-                        guard let token = profiledict.value(forKey: "token") as? String else{
-                            return
-                        }
-                        FlyDefaults.authtoken = token
                         self?.contactSync()
                     }
                 })
