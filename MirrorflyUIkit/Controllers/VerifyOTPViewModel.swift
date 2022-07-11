@@ -53,7 +53,7 @@ class VerifyOTPViewModel : NSObject
         print(deviceToken, mobileNumber)
         voipToken = voipToken.isEmpty ? deviceToken : voipToken
 
-        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isLive: true) { isSuccess, flyError, flyData in
+        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: true) { isSuccess, flyError, flyData in
             var data = flyData
             if isSuccess {
                 completionHandler(data, nil)
@@ -65,13 +65,9 @@ class VerifyOTPViewModel : NSObject
     }
     
     func initializeChatCredentials(username: String, secretKey: String){
-        do {
-            try ChatManager.shared.initialize(username: username, secretKey:secretKey, xmppDomain: XMPP_DOMAIN, xmppPort: XMPP_PORT )
             FlyDefaults.isLoggedIn = true
             RootViewController.sharedInstance.initCallSDK()
             VOIPManager.sharedInstance.updateDeviceToken()
-        } catch let error {
-            print(error.localizedDescription)
-        }
+            ChatManager.connect()
     }
 }

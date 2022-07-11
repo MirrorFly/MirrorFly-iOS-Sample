@@ -111,7 +111,7 @@ class callLogViewController: UIViewController, RequestInterceptor {
         CallLogArray = CallLogManager.getCallLogs()
         let lastCallLog = CallLogArray.first as? RealmCallLog
         if let callTime = lastCallLog?["callTime"] {
-            FlyCallUtils.sharedInstance.setConfigUserDefaults(callTime, withKey: "LastMissedCallTime")
+            FlyCallUtils.sharedInstance.setConfigUserDefaults("\(callTime)", withKey: "LastMissedCallTime")
         }
         self.setMissedCallCount()
     }
@@ -669,7 +669,7 @@ extension callLogViewController{
     }
     
     func getMissedCallCount() -> Int {
-        var lastValue = FlyCallUtils.sharedInstance.getUserDefaultsValue(forKey: "LastMissedCallTime")
+        var lastValue = FlyCallUtils.sharedInstance.getConfigUserDefault(forKey: "LastMissedCallTime") as? Any
         let countString: String?
         lastValue = lastValue as? Double != 0.0 ? lastValue : 0
         let MissedCallsArray = CallLogManager.getAllMissedCallList()
@@ -775,28 +775,11 @@ extension callLogViewController{
     }
     
     func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
-        let username = FlyDefaults.myXmppUsername
-        let password = FlyDefaults.myXmppPassword
-        if username.count == 0 || password.count == 0 {
-            return
-        }
-        let parameters = ["username" : username,
-                          "password": password];
-        let url = Utility.appendBaseURL(restEnd: "login")
-        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil, interceptor: self, requestModifier: nil).validate().responseJSON { response in
-            print(response.result)
-            switch response.result {
-            case .success(let result):
-                if response.response?.statusCode == 200 {
-                    guard let responseDictionary = result as? [String : Any]  else{
-                        return
-                    }
-                    let data = responseDictionary["data"] as? [String: String] ?? [:]
-                    let token = data["token"] ?? ""
-                    FlyCallUtils.sharedInstance.setConfigUserDefaults(token, withKey: "token")
-                }
+        VOIPManager.sharedInstance.refreshToken { isSuccess in
+            if isSuccess{
+                FlyCallUtils.sharedInstance.setConfigUserDefaults(FlyDefaults.authtoken, withKey: "token")
                 onCompletion(true)
-            case .failure(_) :
+            }else{
                 onCompletion(false)
             }
         }

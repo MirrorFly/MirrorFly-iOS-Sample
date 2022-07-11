@@ -14,8 +14,6 @@ import Contacts
 class MainTabBarController: UITabBarController{
     @IBOutlet weak var chatTabBars: UITabBar?
     
-    let defaults = UserDefaults.standard
-    
     static var isConnected = false
     
     override func viewDidLoad() {
@@ -34,8 +32,8 @@ class MainTabBarController: UITabBarController{
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        defaults.set(view.safeAreaLayoutGuide.layoutFrame.height, forKey: "safeAreaHeight")
-        defaults.set(view.safeAreaLayoutGuide.layoutFrame.width, forKey: "safeAreaWidth")
+        Utility.saveInPreference(key: "safeAreaHeight", value: "\(view.safeAreaLayoutGuide.layoutFrame.height)")
+        Utility.saveInPreference(key: "safeAreaWidth", value: "\(view.safeAreaLayoutGuide.layoutFrame.width)")
     }
     
     // MARK: - Functions

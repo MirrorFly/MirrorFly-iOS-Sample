@@ -26,7 +26,6 @@ class OTPViewController: UIViewController {
     private var otpViewModel : OTPViewModel!
     let chatmanager = ChatManager.shared
     var countryRegion = ""
-    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,8 +57,8 @@ class OTPViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        defaults.set(view.safeAreaLayoutGuide.layoutFrame.height, forKey: "safeAreaHeight")
-        defaults.set(view.safeAreaLayoutGuide.layoutFrame.width, forKey: "safeAraeWidth")
+        Utility.saveInPreference(key: "safeAreaHeight", value: "\(view.safeAreaLayoutGuide.layoutFrame.height)")
+        Utility.saveInPreference(key: "safeAreaWidth", value: "\(view.safeAreaLayoutGuide.layoutFrame.width)")
     }
     
     func configureDefaults() {

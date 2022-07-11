@@ -7,6 +7,7 @@
 import Alamofire
 import Foundation
 import FlyCommon
+import FlyCore
 
 class ApiService
 {
@@ -86,36 +87,7 @@ class ApiService
     }
     
     func refreshToken(completionHandler : @escaping FlyCompletionHandler) {
-        let url = FlyDefaults.baseURL + login
-        print(url)
-        let parameter:[String:String] = ["username":Utility.getStringFromPreference(key: username),
-                                      "type": "",
-                                      "password":Utility.getStringFromPreference(key: password)]
-        let headers: HTTPHeaders
-        headers = [
-            "content-type": "application/json"]
-        print(parameter)
-        self.refreshRequest(url:url, headers:nil, method: .post, params:parameter){ isSuccess, flyError, flyData in
-            var resultDict : [String: Any] = [:]
-            resultDict = flyData
-            print(resultDict)
-            if isSuccess {
-                guard let profileDict = resultDict.getData() as? NSDictionary  else {
-                    return
-                }
-                guard let token = profileDict.value(forKey: "token") as? String else {
-                    return
-                }
-                FlyDefaults.authtoken = token
-                executeOnMainThread {
-                    completionHandler(true,nil,resultDict)
-                }
-            } else {
-                executeOnMainThread {
-                    completionHandler(false, flyError, resultDict)
-                }
-            }
-        }
+        ChatManager.refreshToken(completionHandler: completionHandler)
     }
 
     func refreshRequest(url:String, headers:HTTPHeaders?, method: HTTPMethod , params: [String: String],  completionHandler : @escaping FlyCompletionHandler) {

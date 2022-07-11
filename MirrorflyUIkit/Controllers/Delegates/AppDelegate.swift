@@ -19,8 +19,6 @@ import FlyCall
 import RxSwift
 import Contacts
 
-
-
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
@@ -32,7 +30,7 @@ let ENABLE_CONTACT_SYNC = false
 let IS_LIVE = false
 let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
 let IS_MOBILE_NUMBER_LOGIN = true
-
+let APP_NAME = "UiKit"
 
 
 let isMigrationDone = "isMigrationDone"
@@ -48,16 +46,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 //        if !Utility.getBoolFromPreference(key: isMigrationDone) {
 //            resetData()
 //        }
-        FlyUtils.setAppGroupContainerId(id: CONTAINER_ID )
+        
+        let groupConfig = try? GroupConfig.Builder.enableGroupCreation(groupCreation: true)
+            .onlyAdminCanAddOrRemoveMembers(adminOnly: true)
+            .setMaximumMembersInAGroup(membersCount: 200)
+            .build()
+        assert(groupConfig != nil)
+        
+        try? ChatSDK.Builder.setAppGroupContainerID(containerID: CONTAINER_ID)
+            .setLicenseKey(key: LICENSE_KEY)
+            .isTrialLicense(isTrial: !IS_LIVE)
+            .setDomainBaseUrl(baseUrl: BASE_URL)
+            .setGroupConfiguration(groupConfig: groupConfig!)
+            .buildAndInitialize()
+        
+        ChatManager.enableContactSync(isEnable: ENABLE_CONTACT_SYNC)
+        ChatManager.setSignalServer(signalServerUrl: SOCKETIO_SERVER_HOST)
+        ChatManager.setMaximumPinningForRecentChat(maxPinChat: 4)
+        ChatManager.deleteMediaFromDevice(delete: true)
 
         FlyDefaults.isMobileNumberLogin = IS_MOBILE_NUMBER_LOGIN
         if ENABLE_CONTACT_SYNC{
             startObservingContactChanges()
         }
-        print(Utility.getStringFromPreference(key: username),Utility.getStringFromPreference(key: password))
-        print(FlyDefaults.myXmppPassword,FlyDefaults.myXmppUsername )
-        print(FlyDefaults.myJid)
-        print(FlyDefaults.authtoken)
         IQKeyboardManager.shared.enable = true
         GMSServices.provideAPIKey(googleApiKey)
         IQKeyboardManager.shared.shouldResignOnTouchOutside = true
@@ -74,26 +85,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
             navigateTo()
         }
         
-        let groupConfig = try? GroupConfig.Builder.enableGroupCreation(groupCreation: true)
-            .onlyAdminCanAddOrRemoveMembers(adminOnly: true)
-            .setMaximumMembersInAGroup(membersCount: 200)
-            .build()
-        assert(groupConfig != nil)
-        
         ChatManager.shared.logoutDelegate = self
         ChatManager.shared.adminBlockCurrentUserDelegate = self
-        
-        try? ChatSDK.Builder.enableContactSync(isEnable: ENABLE_CONTACT_SYNC)
-            .setLicenseKey(key: LICENSE_KEY)
-            .isTrialLicense(isTrial: !IS_LIVE)
-            .setEncryptionIVs(messageIV: "ddc0f15cc2c90fca", profileIV: LICENSE_KEY.substring(to: 16))
-            .setDomainBaseUrl(baseUrl: BASE_URL)
-            .signalServer(signalServerUrl: SOCKETIO_SERVER_HOST)
-            .setMaximumPinningForRecentChat(maxPinChat: 4)
-            .setGroupConfiguration(groupConfig: groupConfig!)
-            .deleteMediaFromDevice(delete: true)
-            .setAppGroupContainerID(containerID: CONTAINER_ID)
-            .buildAndInitialize()
         
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
@@ -132,7 +125,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         } else {
             // Fallback on earlier versions
         }
-        
+        ChatManager.setMediaEncryption(isEnable: true)
+        ChatManager.hideNotificationContent(hide: false)
+        FlyUtils.setAppName(appName: APP_NAME)
         return true
     }
     
@@ -200,7 +195,6 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     func clearPushNotifications() {
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UIApplication.shared.applicationIconBadgeNumber = 0
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

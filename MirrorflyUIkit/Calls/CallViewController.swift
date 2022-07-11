@@ -86,7 +86,6 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     var isOnCall = false
     
-    let defaults = UserDefaults.standard
     var safeAreaHeight : CGFloat = 0.0
     var safeAraeWidth : CGFloat = 0.0
     var isAddParticipant = false
@@ -105,11 +104,11 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         
         isTapped = false
         outgoingCallView.addParticipantBtn.isHidden = true
-        safeAreaHeight = defaults.object(forKey: "safeAreaHeight") as! CGFloat
-        safeAraeWidth = defaults.object(forKey: "safeAraeWidth") as! CGFloat
-        
+        if let heightFormatter = NumberFormatter().number(from: Utility.getStringFromPreference(key: "safeAreaHeight")), let widthFormatter =  NumberFormatter().number(from: Utility.getStringFromPreference(key:  "safeAreaWidth")) {
+            safeAreaHeight = CGFloat(truncating: heightFormatter)
+            safeAraeWidth = CGFloat(truncating: widthFormatter)
+        }
         updateUI()
-        
     }
     
     func checkForUserBlockingByAdmin() {
@@ -1151,7 +1150,6 @@ extension CallViewController : CallViewControllerDelegate {
     
     func onVideoMute(status:Bool) {
         print("#mute status \(status)")
-        defaults.set(status, forKey: "muteStatus")
         CallManager.muteVideo(status)
         members.last?.isVideoMuted = status
         if CallManager.isOneToOneCall() {
@@ -1262,29 +1260,37 @@ extension CallViewController : CallManagerDelegate {
     
     func getDisplayName(IncomingUser :[String]) {
         var userString = [String]()
-        for JID in IncomingUser where JID != FlyDefaults.myJid{
-            print("#jid \(JID)")
-            if let contact = rosterManager.getContact(jid: JID.lowercased()){
-                if contact.contactType == .unknown{
-                    userString.append((try? FlyUtils.getIdFromJid(jid: JID)) ?? "")
-                }else{
-                    userString.append(getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+        if FlyDefaults.hideNotificationContent{
+            userString.append(FlyDefaults.appName)
+        }else{
+            for JID in IncomingUser where JID != FlyDefaults.myJid{
+                print("#jid \(JID)")
+                if let contact = rosterManager.getContact(jid: JID.lowercased()){
+                    if contact.contactType == .unknown{
+                        userString.append((try? FlyUtils.getIdFromJid(jid: JID)) ?? "")
+                    }else{
+                        userString.append(getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                    }
+                }else {
+                    let pd = ContactManager.shared.saveTempContact(userId: JID)
+                    userString.append(pd?.name ?? "User")
                 }
-            }else {
-                let pd = ContactManager.shared.saveTempContact(userId: JID)
-                userString.append(pd?.name ?? "User")
             }
+            print("#names \(userString)")
         }
-        print("#names \(userString)")
         CallManager.getContactNames(IncomingUserName: userString)
     }
     
     func getGroupName(_ groupId : String) {
         self.groupId = groupId
-        if let groupContact =  rosterManager.getContact(jid: groupId.lowercased()){
-            CallManager.getContactNames(IncomingUserName: [groupContact.name])
+        if FlyDefaults.hideNotificationContent{
+            CallManager.getContactNames(IncomingUserName: [FlyDefaults.appName])
         }else{
-            CallManager.getContactNames(IncomingUserName: ["Call from Group"])
+            if let groupContact =  rosterManager.getContact(jid: groupId.lowercased()){
+                CallManager.getContactNames(IncomingUserName: [groupContact.name])
+            }else{
+                CallManager.getContactNames(IncomingUserName: ["Call from Group"])
+            }
         }
     }
     

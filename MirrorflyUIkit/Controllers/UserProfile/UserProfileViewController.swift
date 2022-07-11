@@ -116,13 +116,6 @@ class UserProfileViewController : UIViewController {
                 if error != nil {
                     apiService.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
                            if isSuccess {
-                               var resultDict : [String: Any] = [:]
-                               resultDict = flyData
-                               let profiledict = resultDict.getData() as? NSDictionary ?? [:]
-                               guard let token = profiledict.value(forKey: "token") as? String else{
-                                   return
-                               }
-                               FlyDefaults.authtoken = token
                                self?.profileImage?.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"), completed: { [weak self]image,error,_,imageUrl in
                                    self?.profileImage?.stopAnimating()
                                    completionHandler(true)

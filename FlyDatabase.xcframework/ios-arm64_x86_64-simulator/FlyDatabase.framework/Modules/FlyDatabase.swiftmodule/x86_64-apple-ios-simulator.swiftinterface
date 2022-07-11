@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyDatabase
 import FlyCommon
 @_exported import FlyDatabase
@@ -31,9 +31,9 @@ import _Concurrency
   public static func composeAndSaveLocationMessage(toJid: Swift.String, latitude: Swift.Double, longitude: Swift.Double, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
   public static func composeAndSaveContactMessage(toJid: Swift.String, contactName: Swift.String, contactNumbers: [Swift.String], replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
   public static func composeAndSaveImage(toJid: Swift.String, imageFile: Foundation.URL, base64Thumbnail: Swift.String, imageCaption: Swift.String? = nil, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
-  public static func composeAndSaveImage(toJid: Swift.String, imageFileName: Swift.String, imageFileSize: Swift.Double, imageFileUrl: Foundation.URL, imageFileLocalPath: Swift.String, base64Thumbnail: Swift.String, imageCaption: Swift.String? = nil, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
+  public static func composeAndSaveImage(toJid: Swift.String, imageFileName: Swift.String, imageFileSize: Swift.Double, imageFileUrl: Foundation.URL, imageFileLocalPath: Swift.String, base64Thumbnail: Swift.String, imageCaption: Swift.String? = nil, imageKey: Swift.String, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
   public static func composeAndSaveVideo(toJid: Swift.String, videoFile: Foundation.URL, videoCaption: Swift.String? = nil, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
-  public static func composeAndSaveVideo(toJid: Swift.String, videoFileName: Swift.String, videoFileUrl: Swift.String, videoFileSize: Swift.Double, videoDuration: Swift.Double, thumbImageBase64: Swift.String, localFilePath: Swift.String, videoCaption: Swift.String? = nil, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
+  public static func composeAndSaveVideo(toJid: Swift.String, videoFileName: Swift.String, videoFileUrl: Swift.String, videoFileSize: Swift.Double, videoDuration: Swift.Double, thumbImageBase64: Swift.String, localFilePath: Swift.String, videoCaption: Swift.String? = nil, videoKey: Swift.String, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
   public static func composeAndSaveDocument(type: FlyCommon.MessageType, toJid: Swift.String, MediaData: Foundation.Data, caption: Swift.String? = nil, replyMessageId: Swift.String? = nil, fileExtension: Swift.String, duration: Swift.Double = 0) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
   public static func composeAndSaveAudio(toJid: Swift.String, audioFileSize: Swift.Double, audioFileUrl: Swift.String, audioFileLocalPath: Swift.String, audioFileName: Swift.String, audioDuration: Swift.Double, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
   public static func composeAndSaveAudio(toJid: Swift.String, audioFile: Foundation.URL, audioDuration: Swift.Double, replyMessageId: Swift.String? = nil) -> (FlyCommon.ChatMessage, FlyCommon.MessageDetail)?
@@ -104,6 +104,7 @@ extension RealmSwift.Realm {
   public func updateChatMuteStatus(jid: Swift.String, muteStatus: Swift.Bool)
   public func removeRecentChatUser(groupId: Swift.String)
   public func deleteAllRecentChat()
+  public func getUnreadMessageAndChatCount() -> (Swift.Int, Swift.Int)
   @objc override dynamic public init()
   @objc deinit
 }
