@@ -20,7 +20,7 @@ import RxSwift
 import Contacts
 
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+let LICENSE_KEY = "G5B6e9WkmK5WsEmypM3Zcl1CoackIA"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
 let XMPP_PORT = 5222
 let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
@@ -43,9 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     var contactSyncSubscription : Disposable? = nil
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-//        if !Utility.getBoolFromPreference(key: isMigrationDone) {
-//            resetData()
-//        }
         
         let groupConfig = try? GroupConfig.Builder.enableGroupCreation(groupCreation: true)
             .onlyAdminCanAddOrRemoveMembers(adminOnly: true)
@@ -64,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         ChatManager.setSignalServer(signalServerUrl: SOCKETIO_SERVER_HOST)
         ChatManager.setMaximumPinningForRecentChat(maxPinChat: 4)
         ChatManager.deleteMediaFromDevice(delete: true)
-
+        
         FlyDefaults.isMobileNumberLogin = IS_MOBILE_NUMBER_LOGIN
         if ENABLE_CONTACT_SYNC{
             startObservingContactChanges()
@@ -125,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         } else {
             // Fallback on earlier versions
         }
-        ChatManager.setMediaEncryption(isEnable: true)
+        ChatManager.setMediaEncryption(isEnable: false)
         ChatManager.hideNotificationContent(hide: false)
         FlyUtils.setAppName(appName: APP_NAME)
         return true

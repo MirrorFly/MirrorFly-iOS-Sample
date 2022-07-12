@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyNetwork
 import CommonCrypto
 import FlyCommon
@@ -65,7 +65,7 @@ public protocol FlyNetworkControllerDelegate : ObjectiveC.NSObjectProtocol {
   @objc deinit
 }
 extension FlyNetwork.FlyNetworkController {
-  public func registerApiService(uniqueIdentifier: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, isLive: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func registerApiService(uniqueIdentifier: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, mode: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func requestOtpApiService(mobileNumber: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func removeProfileImage(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func uploadMyProfileImage(fileUrl: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
@@ -78,4 +78,5 @@ extension FlyNetwork.FlyNetworkController {
   public func sendContactUsInfo(title: Swift.String, description: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func reportMessge(reportMessage: FlyCommon.ReportMessage, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func sendDeleteMyAccontData(reason: Swift.String, feedback: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
 }

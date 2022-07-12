@@ -115,7 +115,17 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if members.count == 0 {
             return
         }
-        let jidToCheck = (CallManager.isOneToOneCall() ? members.filter({$0.jid != FlyDefaults.myJid})[0].jid : CallManager.getGroupID()) ?? ""
+        var jidToCheck = ""
+        if CallManager.isOneToOneCall() {
+            let filteredJid = members.filter({$0.jid != FlyDefaults.myJid})
+            if filteredJid.count > 0 {
+                jidToCheck = filteredJid[0].jid
+            }
+        }else {
+            jidToCheck = CallManager.getGroupID() ?? ""
+        }
+        
+        
         if  ChatManager.isUserOrGroupBlockedByAdmin(jid: jidToCheck) {
             CallManager.disconnectCall()
             AppAlert.shared.showToast(message: CallManager.isOneToOneCall() ? thisUerIsNoLonger : groupNoLongerAvailable)
@@ -1205,14 +1215,14 @@ extension CallViewController {
         var membersJid = members.compactMap { $0.jid }
         if callType == .Audio {
             if members.count == 2 && groupId.isEmpty{
-                CallManager.makeVoiceCall(members.first!.jid) { [weak self] (isSuccess , message)  in
+                try! CallManager.makeVoiceCall(members.first!.jid) { [weak self] (isSuccess , message)  in
                     if isSuccess == false {
                         AppAlert.shared.showAlert(view: self!, title: "", message: message, buttonTitle: "Okay")
                     }
                 }
             } else {
                 membersJid.remove(at: members.count - 1)
-                CallManager.makeGroupVoiceCall(membersJid, groupID: groupId) {[weak self] isSuccess , message in
+                try! CallManager.makeGroupVoiceCall(membersJid, groupID: groupId) {[weak self] isSuccess , message in
                     if isSuccess == false {
                         AppAlert.shared.showAlert(view: self!, title: "", message: message, buttonTitle: "Okay")
                     }
@@ -1224,14 +1234,14 @@ extension CallViewController {
         } else {
             isVideoMuted = false
             if members.count == 2  && groupId.isEmpty {
-                CallManager.makeVideoCall(members.first!.jid)  { [weak self]isSuccess, message in
+                try! CallManager.makeVideoCall(members.first!.jid)  { [weak self]isSuccess, message in
                     if isSuccess == false {
                         AppAlert.shared.showAlert(view: self!, title: "", message: message, buttonTitle: "Okay")
                     }
                 }
             } else {
                 membersJid.remove(at: members.count - 1)
-                CallManager.makeGroupVideoCall(membersJid, groupID: groupId) { [weak self] (isSuccess, message) in
+                try! CallManager.makeGroupVideoCall(membersJid, groupID: groupId) { [weak self] (isSuccess, message) in
                     if isSuccess == false {
                         AppAlert.shared.showAlert(view: self!, title: "", message: message, buttonTitle: "Okay")
                     }
