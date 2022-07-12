@@ -11,12 +11,12 @@ import FlyXmpp
 import FlyCore
 import FlyCommon
 
-
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let CONTAINER_ID = "group.com.mirrorfly.qa"
 let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let IS_LIVE = false
 let APP_NAME = "UiKit"
+
 
 class NotificationService: UNNotificationServiceExtension {
     
@@ -24,6 +24,8 @@ class NotificationService: UNNotificationServiceExtension {
     var bestAttemptContent: UNMutableNotificationContent?
     
     var notificationIDs = [String]()
+    
+    
     
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler

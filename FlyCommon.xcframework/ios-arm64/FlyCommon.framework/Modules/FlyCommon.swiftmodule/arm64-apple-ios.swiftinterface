@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5 (swiftlang-1300.0.31.1 clang-1300.0.29.1)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target arm64-apple-ios12.1 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCommon
 import AVFoundation
 import CommonCrypto
@@ -406,6 +406,41 @@ public struct MessageReceipt {
     set
     _modify
   }
+  @FlyCommon.SDKDefaults public static var enableFileEncryption: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var hideNotificationContent: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var lastNotificationId: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var hideLastSeen: Swift.Bool {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var appName: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var callMediaServer: Swift.String {
+    get
+    set
+    _modify
+  }
+  @FlyCommon.SDKDefaults public static var callIceServers: Swift.String {
+    get
+    set
+    _modify
+  }
   public static func clearAllFlyDefaults()
   @objc deinit
 }
@@ -588,7 +623,7 @@ public struct FlyUtils {
   public static func generateUniqueId() -> Swift.String
   public static func verifyUrl(urlString: Swift.String?) -> Swift.Bool
   public static func getFileName(forJID: Swift.String?, uniqueString: Swift.String?, uploadExtension: Swift.String?) -> Swift.String?
-  public static func saveInDirectory(with data: Foundation.Data, fileName: Swift.String, messageType: FlyCommon.MessageType) -> Swift.String?
+  public static func saveInDirectory(with data: Foundation.Data, fileName: Swift.String, messageType: FlyCommon.MessageType) -> (Swift.String?, Swift.String?)?
   public static func attachmentsDocumentDirectory(messageType: FlyCommon.MessageType) -> Foundation.URL
   public static func getFilePathInDocuments(forFile fileName: Swift.String, messageType: FlyCommon.MessageType) -> Swift.String
   public static func saveImagesInGallery(localPath: Swift.String)
@@ -620,6 +655,15 @@ extension FlyCommon.FlyUtils {
   public static func getUserName(jid: Swift.String, name: Swift.String, nickName: Swift.String, contactType: FlyCommon.ContactType) -> Swift.String
   public static func getUserName(name: Swift.String, nickName: Swift.String) -> Swift.String
   public static func getFormattedMobileNumber(mobileNumber: Swift.String) -> Swift.String
+  public static func getEncryptedFileName(path: Swift.String?) -> Swift.String?
+  public static func setAppName(appName: Swift.String)
+  public static func encryptLoginParamsData(password: Swift.String = FlyDefaults.myXmppPassword) -> Swift.String?
+  public static func getUTCTimeInMillis() -> Swift.Double
+}
+extension Foundation.Date {
+  public var millisecondsSince1970: Swift.Double {
+    get
+  }
 }
 public enum ChatType : Swift.String, Swift.CustomStringConvertible {
   case singleChat
@@ -648,6 +692,7 @@ public enum ChatType : Swift.String, Swift.CustomStringConvertible {
   @objc public var mediaProgressStatus: Swift.Int
   public var mediaUploadStatus: FlyCommon.MediaUploadStatus
   public var mediaDownloadStatus: FlyCommon.MediaDownloadStatus
+  @objc public var mediaFileKey: Swift.String
   @objc override dynamic public init()
   @objc deinit
 }
@@ -715,6 +760,12 @@ public struct ProfileStatus {
 @objc @_inheritsConvenienceInitializers public class CallUsersModel : ObjectiveC.NSObject {
   @objc override dynamic public init()
   @objc deinit
+}
+public struct LoginData : Swift.Codable {
+  public init()
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(_ password: Swift.String, _ currentTimeStamp: Swift.Double)
 }
 public enum MessageType : Swift.String, Swift.CustomStringConvertible {
   case text
@@ -947,6 +998,11 @@ public struct FlyEncryption {
   public func encrypt(string: Swift.String) -> Foundation.Data?
   public func decrypt(data: Foundation.Data?) -> Swift.String?
   public func crypt(data: Foundation.Data?, option: CommonCrypto.CCOperation) -> Foundation.Data?
+  public static func encryptFile(at path: Foundation.URL, fileName: Swift.String) -> (Foundation.URL?, Swift.String?)
+  public static func decryptFile(at path: Foundation.URL, fileName: Swift.String, key: Swift.String) -> (Foundation.URL?, Swift.String?)
+}
+extension Foundation.Data {
+  public func write(withName name: Swift.String, path: Foundation.URL) -> Foundation.URL
 }
 @objc @_inheritsConvenienceInitializers @objcMembers public class ReplyParentChatMessage : ObjectiveC.NSObject {
   @objc public var messageId: Swift.String
@@ -1042,6 +1098,7 @@ public struct Media : Swift.Codable {
   public var mid: Swift.String?
   public var duration: Swift.Int32?
   public var file_size: Swift.Int32
+  public var file_key: Swift.String?
   public var file_type: Swift.String?
   public var file_url: Swift.String
   public var thumb_image: Swift.String
@@ -1057,7 +1114,7 @@ public struct Media : Swift.Codable {
   public var webHeight: Swift.Int
   public var androidWidth: Swift.Int?
   public var androidHeight: Swift.Int?
-  public init(mid: Swift.String, duration: Swift.Int32, file_size: Swift.Int32, file_type: Swift.String, file_url: Swift.String, thumb_image: Swift.String, caption: Swift.String, fileName: Swift.String, local_path: Swift.String, mediaDownloadStatus: Swift.Int, mediaUploadStatus: Swift.Int, progressStatus: Swift.Int, is_uploading: Swift.Int, is_downloaded: Swift.Int, webWidth: Swift.Int, webHeight: Swift.Int, androidWidth: Swift.Int, androidHeight: Swift.Int)
+  public init(mid: Swift.String, duration: Swift.Int32, file_size: Swift.Int32, file_key: Swift.String, file_type: Swift.String, file_url: Swift.String, thumb_image: Swift.String, caption: Swift.String, fileName: Swift.String, local_path: Swift.String, mediaDownloadStatus: Swift.Int, mediaUploadStatus: Swift.Int, progressStatus: Swift.Int, is_uploading: Swift.Int, is_downloaded: Swift.Int, webWidth: Swift.Int, webHeight: Swift.Int, androidWidth: Swift.Int, androidHeight: Swift.Int)
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
 }
@@ -1133,8 +1190,15 @@ public struct FlyConstants {
   public static let profileIV: Swift.String
   public static let isMobileNumberLogin: Swift.String
   public static let isLive: Swift.String
+  public static let enableFileEncryption: Swift.String
+  public static let hideNotificationContent: Swift.String
+  public static let lastNotificationId: Swift.String
   public static let messageTimeCountThirteen: Swift.Int
   public static let messageTimeCountTwelve: Swift.Int
+  public static var userDefaultsIV: Swift.String
+  public static var appName: Swift.String
+  public static var callMediaServer: Swift.String
+  public static var callIceServers: Swift.String
   public struct ErrorMessage {
     public static let internetNotAvailable: Swift.String
     public static let invalidJid: Swift.String

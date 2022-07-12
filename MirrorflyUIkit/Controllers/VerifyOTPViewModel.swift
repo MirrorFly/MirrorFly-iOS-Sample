@@ -53,7 +53,7 @@ class VerifyOTPViewModel : NSObject
         print(deviceToken, mobileNumber)
         voipToken = voipToken.isEmpty ? deviceToken : voipToken
 
-        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: true) { isSuccess, flyError, flyData in
+        try! ChatManager.registerApiService(for: "918778850904", deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: true) { isSuccess, flyError, flyData in
             var data = flyData
             if isSuccess {
                 completionHandler(data, nil)
