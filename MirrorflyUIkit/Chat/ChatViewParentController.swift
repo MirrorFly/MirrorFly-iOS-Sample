@@ -312,13 +312,13 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         }
     }
     
+    /**
+     * to configure delegates
+     * to initialize
+     */
     func configureDefaults() {
         audioRecorder?.delegate = self
         audioPlayer?.delegate = self
-        FlyMessenger.shared.messageEventsDelegate = self
-        chatManager.messageEventsDelegate = self
-        chatManager.connectionDelegate = self
-        chatManager.typingStatusDelegate = self
         networkMonitor()
     }
     
@@ -329,9 +329,7 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         print("ChatViewParentController ABC viewWillAppear")
         handleBackgroundAndForground()
         getLastSeen()
-        if ismarkMessagesAsRead == true {
-            markMessagessAsRead()
-        }
+        markMessagessAsRead()
         headerView.isHidden = false
         navigationController?.setNavigationBarHidden(false, animated: animated)
         setUpHeaderView()
@@ -384,6 +382,11 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         ContactManager.shared.profileDelegate = self
         GroupManager.shared.groupDelegate = self
         ChatManager.shared.adminBlockDelegate = self
+        chatManager.messageEventsDelegate = self
+        FlyMessenger.shared.messageEventsDelegate = self
+        chatManager.connectionDelegate = self
+        chatManager.typingStatusDelegate = self
+        ChatManager.setOnGoingChatUser(jid: getProfileDetails.jid)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -398,6 +401,10 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         ContactManager.shared.profileDelegate = nil
         GroupManager.shared.groupDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
+        ChatManager.shared.messageEventsDelegate = nil
+        FlyMessenger.shared.messageEventsDelegate = nil
+        chatManager.connectionDelegate = nil
+        chatManager.typingStatusDelegate = nil
     }
     
     @IBAction func cancelButtonTapped(_ sender: UIButton) {
@@ -537,6 +544,9 @@ extension ChatViewParentController {
     
     // This method append new message on UI when new message is received.
     private func appendNewMessage(message: ChatMessage) {
+        if isMessageExist(messageId: message.messageId) {
+            return
+        }
         var lastSection = 0
         DispatchQueue.main.async{
             if  self.chatMessages.count == 0 {
@@ -560,7 +570,7 @@ extension ChatViewParentController {
 // MARK - Base setup
 extension ChatViewParentController {
     func setUpUI() {
-        chatManager.messageEventsDelegate = self
+        getProfileDetails = ChatManager.profileDetaisFor(jid: getProfileDetails.jid)
         setupTableviewLongPressGesture()
         setProfile()
         chatTableView.dataSource = self
@@ -914,8 +924,9 @@ extension ChatViewParentController {
         self.growingTextViewHandler?.resizeTextView(true)
         handleSendButton()
         self.resizeMessageTextView()
-        ChatManager.sendTypingStatus(to: getProfileDetails.jid, chatType: getProfileDetails.profileChatType)
-        
+        if let isNotEmpty =  messageTextView?.text.isNotEmpty,  isNotEmpty {
+            ChatManager.sendTypingStatus(to: getProfileDetails.jid, chatType: getProfileDetails.profileChatType)
+        }
     }
     
     func resizeMessageTextView() {
@@ -944,7 +955,9 @@ extension ChatViewParentController {
             chatTextView?.translatesAutoresizingMaskIntoConstraints = true
             chatTextView?.sizeToFit()
         }
-        ChatManager.sendTypingStatus(to: getProfileDetails.jid, chatType: getProfileDetails.profileChatType)
+        if let isNotEmpty =  messageTextView?.text.isNotEmpty,  isNotEmpty{
+            ChatManager.sendTypingStatus(to: getProfileDetails.jid, chatType: getProfileDetails.profileChatType)
+        }
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -1709,7 +1722,7 @@ extension ChatViewParentController {
             // User selected an asset. Do something with it. Perhaps begin processing/upload?
             if  let assetName = asset.value(forKey: "filename") as? String {
                 let fileExtension = URL(fileURLWithPath: assetName).pathExtension
-                if fileExtension.lowercased() == "png" || fileExtension.lowercased() == "jpg" || fileExtension.lowercased() == "jpeg" || fileExtension.lowercased() == "gif" {
+                if ChatUtils.checkImageFileFormat(format: fileExtension) {
                     var imageSize = strongSelf.getImageSize(asset: asset)
                     imageSize = imageSize/(1024*1024)
                     print("image size: ",imageSize)
@@ -1783,7 +1796,7 @@ extension ChatViewParentController {
 
                                     if  let  image = UIImage(data: data) {
                                         var imageDetail: ImageData? = ImageData(image: image, caption: nil, isVideo: false, isSlowMotion: false)
-                                        if fileExtension.lowercased() == "png" || fileExtension.lowercased() == "jpg" || fileExtension.lowercased() == "jpeg" || fileExtension.lowercased() == "gif" {
+                                        if ChatUtils.checkImageFileFormat(format: fileExtension){
                                             arrayOfImages.append(imageDetail ?? ImageData(image: nil, caption: "", isVideo: false, videoUrl: nil, isSlowMotion: false))
                                         } else {
                                             imageDetail = nil
@@ -1829,6 +1842,7 @@ extension ChatViewParentController {
         guard let imageData = compressedImage else {
             return
         }
+        view.endEditing(true)
         let imageName  = FlyConstants.image + FlyUtils.generateUniqueId() + MessageExtension.image.rawValue
         if let (localPath,imageKey)  = FlyUtils.saveInDirectory(with: imageData , fileName: imageName, messageType: .image), let imageLocalPath = localPath, let key = imageKey {
             let imageUrl = URL(fileURLWithPath: imageLocalPath)
@@ -2122,6 +2136,7 @@ extension ChatViewParentController {
             contcatInfo.groupID = getProfileDetails.jid
             contcatInfo.currentGroupName = getProfileDetails.name
             contcatInfo.delegate = self
+            contcatInfo.groupInfoDelegate = self
             view.endEditing(true)
         }
     }
@@ -3713,14 +3728,15 @@ extension ChatViewParentController {
     
     func sendVideoMessage (videoDetail: ImageData,jid: String?, completionHandler :  @escaping (ChatMessage) -> Void) {
         selectedIndexs.removeAll()
+        let tempReplyMessageId = replyMessageId
+        view.endEditing(true)
         loadVideoData(phAsset: videoDetail.videoUrl!, slowMotionVideoUrl: videoDetail.slowMotionVideoUrl) { [weak self] videoData in
-            
             guard let videoData = videoData else {
                 return
             }
             let videoName  = FlyConstants.video + FlyUtils.generateUniqueId() + MessageExtension.video.rawValue
             if let videoLocalPath  = FlyUtils.saveInDirectory(with: videoData , fileName: videoName, messageType: .video)?.0 {
-                FlyMessenger.sendVideoMessage(toJid: self?.getProfileDetails.jid ?? "", videoFileName: videoName, videoFileUrl: videoLocalPath, localFilePath: videoLocalPath, videoCaption: videoDetail.caption, replyMessageId: self?.replyMessageId){ isSuccess,error,message in
+                FlyMessenger.sendVideoMessage(toJid: self?.getProfileDetails.jid ?? "", videoFileName: videoName, videoFileUrl: videoLocalPath, localFilePath: videoLocalPath, videoCaption: videoDetail.caption, replyMessageId: tempReplyMessageId){ isSuccess,error,message in
                     if let chatMessage = message {
                         chatMessage.mediaChatMessage?.mediaUploadStatus = .not_uploaded
                         chatMessage.mediaChatMessage?.mediaCaptionText = videoDetail.caption ?? ""
@@ -4338,9 +4354,7 @@ extension ChatViewParentController {
     }
     
     func getParticipants() {
-        if GroupManager.shared.isSyncNeeded(groupJid: getProfileDetails.jid){
-            GroupManager.shared.getParticipants(groupJID: getProfileDetails.jid)
-        }
+        GroupManager.shared.getParticipants(groupJID: getProfileDetails.jid)
     }
     
     func setGroupMemberInHeader() {
@@ -5024,7 +5038,6 @@ extension ChatViewParentController : RefreshProfileInfo {
             getProfileDetails = profileDetails
             setProfile()
             setGroupMemberInHeader()
-            getMessages()
         }
     }
 }
@@ -5065,5 +5078,11 @@ extension ChatViewParentController {
             }
         }
         
+    }
+}
+
+extension ChatViewParentController : GroupInfoDelegate {
+    func didComefromGroupInfo() {
+        getMessages()
     }
 }

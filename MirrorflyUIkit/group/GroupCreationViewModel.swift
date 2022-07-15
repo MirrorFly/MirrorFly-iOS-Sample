@@ -89,7 +89,7 @@ class GroupCreationViewModel : NSObject {
         return participantJid
     }
     
-    func removeExistingParticipants(groupID: String, contacts: [ProfileDetails]) -> [ProfileDetails]? {
+    func removeExistingParticipants(groupID: String, contacts: [ProfileDetails]) -> [ProfileDetails] {
         
         var contactsList = contacts
         

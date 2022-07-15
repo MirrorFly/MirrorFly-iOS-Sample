@@ -69,7 +69,7 @@ class MainTabBarController: UITabBarController{
 extension MainTabBarController : ConnectionEventDelegate {
     func onConnected() {
         if FlyDefaults.isFriendsListSyncPending {
-            ContactManager.shared.getFriendsList(fromServer: true){isSuccess,_,_ in
+            ContactManager.shared.getRegisteredUsers(fromServer: true){isSuccess,_,_ in
                 FlyDefaults.isFriendsListSyncPending = !isSuccess
             }
         }

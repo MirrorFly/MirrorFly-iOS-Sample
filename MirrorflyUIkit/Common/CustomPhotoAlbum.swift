@@ -36,7 +36,6 @@ class CustomPhotoAlbum {
         }) { success, _ in
             if success {
                 self.assetCollection = self.fetchAssetCollectionForAlbum(currentFolderName: currentFolder)
-                self.saveImage(image: image, currentFolder: currentFolder, assetsCollection: self.assetCollection)
             }
         }
         return PHAssetCollection()

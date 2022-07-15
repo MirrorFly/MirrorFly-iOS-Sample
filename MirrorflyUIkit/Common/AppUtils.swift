@@ -11,6 +11,7 @@ import AVKit
 import Photos
 import FlyCommon
 import SDWebImage
+import FlyCore
 
 class AppUtils: NSObject {
     
@@ -228,11 +229,11 @@ extension UIImageView {
             if let error =  responseError as? NSError{
                 if let errorCode = error.userInfo[SDWebImageErrorDownloadStatusCodeKey] as? Int {
                     if errorCode == 401{
-                        ApiService.shared.refreshToken { isSuccess, error, data in
+                        FlyMessenger.refreshToken { [weak self] isSuccess, error, data in
                             if isSuccess{
-                                self.loadFlyImage(imageURL: imageURL, name: name, chatType : chatType)
+                                self?.loadFlyImage(imageURL: imageURL, name: name, chatType : chatType)
                             }else{
-                                self.image = placeholder
+                                self?.image = placeholder
                             }
                         }
                     }else{

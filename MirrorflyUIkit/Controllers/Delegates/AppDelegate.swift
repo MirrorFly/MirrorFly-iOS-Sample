@@ -20,7 +20,7 @@ import RxSwift
 import Contacts
 
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let LICENSE_KEY = "G5B6e9WkmK5WsEmypM3Zcl1CoackIA"
+let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
 let XMPP_PORT = 5222
 let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
@@ -63,6 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         ChatManager.deleteMediaFromDevice(delete: true)
         
         FlyDefaults.isMobileNumberLogin = IS_MOBILE_NUMBER_LOGIN
+        FlyDefaults.webLoginUrl = WEB_LOGIN_URL
         if ENABLE_CONTACT_SYNC{
             startObservingContactChanges()
         }
@@ -125,6 +126,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         ChatManager.setMediaEncryption(isEnable: false)
         ChatManager.hideNotificationContent(hide: false)
         FlyUtils.setAppName(appName: APP_NAME)
+        VOIPManager.sharedInstance.updateDeviceToken()
         return true
     }
     
@@ -202,7 +204,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         }
         print("#token appDelegate \(token)")
         print("#token application DT => \(token)")
-        FlyCallUtils.sharedInstance.setConfigUserDefaults(token, withKey: "updatedTokenAPNS")
+        VOIPManager.sharedInstance.saveAPNSToken(token: token)
         Utility.saveInPreference(key: googleToken, value: token)
         VOIPManager.sharedInstance.updateDeviceToken()
     }
@@ -242,7 +244,7 @@ extension AppDelegate : PKPushRegistryDelegate {
         let deviceTokenString = pushCredentials.token.reduce("") { $0 + String(format: "%02X", $1) }
         print("#token pushRegistry VT => \(deviceTokenString)")
         print(deviceTokenString)
-        FlyCallUtils.sharedInstance.setConfigUserDefaults(deviceTokenString, withKey: "updatedTokenVOIP")
+        VOIPManager.sharedInstance.saveVOIPToken(token: deviceTokenString)
         Utility.saveInPreference(key: voipToken, value: deviceTokenString)
         VOIPManager.sharedInstance.updateDeviceToken()
     }

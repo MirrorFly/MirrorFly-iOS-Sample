@@ -289,7 +289,7 @@
                         <constraint firstAttribute="bottom" secondItem="Gra-ab-Qvu" secondAttribute="bottom" constant="5" id="xPS-Oq-8RS"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hgF-ZN-9aj">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hgF-ZN-9aj">
                     <rect key="frame" x="0.0" y="101" width="392" height="49"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="IRE-XM-Xv9">

@@ -10,6 +10,7 @@ import FlyCommon
 import SDWebImage
 import AVKit
 import Contacts
+import RxSwift
 
 class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
    
@@ -48,19 +49,52 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     private var messageTxt: String?
     var tappedProfile : ProfileDetails? = nil
     
+    var totalPages = 2
+    var totalUsers = 0
+    var nextPage = 1
+    var searchTotalPages = 2
+    var searchTotalUsers = 0
+    var searchNextPage = 1
+    var isLoadingInProgress = false
+    var searchTerm = emptyString()
+    let disposeBag = DisposeBag()
+    let searchSubject = PublishSubject<String>()
+    var internetObserver = PublishSubject<Bool>()
+    var isFirstPageLoaded = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         contactViewModel =  ContactViewModel()
         recentChatViewModel = RecentChatViewModel()
-        if FlyDefaults.isTrialLicense{
-            ProfileViewModel().contactSync()
-        }
         setupTableviewLongPressGesture()
         handleBackgroundAndForground()
         configTableView()
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        searchSubject.throttle(.milliseconds(25), scheduler: MainScheduler.instance).distinctUntilChanged().subscribe { [weak self] term in
+            self?.searchTerm = term
+            self?.filteredContactList.removeAll()
+            self?.recentChatTableView?.reloadData()
+            self?.getUsersList(pageNo: 1, pageSize: 20, searchTerm: term)
+        } onError: { error in } onCompleted: {} onDisposed: {}.disposed(by: disposeBag)
+        internetObserver.throttle(.seconds(4), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
+            switch event {
+            case .next(let data):
+                print("#contact next ")
+                guard let self = self else{
+                    return
+                }
+                if data {
+                    self.resumeLoading()
+                }
+            case .error(let error):
+                print("#contactSync error \(error.localizedDescription)")
+            case .completed:
+                print("#contactSync completed")
+            }
+            
+        }.disposed(by: disposeBag)
     }
     
     @objc private func keyboardWillShow(notification: NSNotification) {
@@ -75,10 +109,15 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),name:Notification.Name(NetStatus.networkNotificationObserver),object: nil)
         navigationController?.setNavigationBarHidden(true, animated: animated)
         configureDefaults()
         getRecentChatList()
-        getContactList()
+        if ENABLE_CONTACT_SYNC{
+            getContactList()
+        }else{
+            resetDataAndFetchUsersList()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -86,6 +125,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         ContactManager.shared.profileDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
         GroupManager.shared.groupDelegate = nil
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -108,6 +148,9 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func willCometoForeground() {
         profilePopupContainer?.isHidden = true
+        if !ENABLE_CONTACT_SYNC && isSearchEnabled{
+            resetDataAndFetchUsersList()
+        }
     }
     
     private func configTableView() {
@@ -428,7 +471,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             case 0:
                 return getRecentChat.count > 0 ? chatTitle.appending(" (\(getRecentChat.count))") : (filteredContactList.count > 0) ? contactTitle.appending(" (\(filteredContactList.count))") : ""
             case 1:
-                return filteredContactList.count > 0 ? contactTitle.appending(" (\(filteredContactList.count))") : ""
+                return filteredContactList.count > 0 ? contactTitle.appending(" (\( ENABLE_CONTACT_SYNC ? filteredContactList.count : searchTotalUsers ))") : ""
             case 2:
                 return contactTitle.appending(" (\(filteredContactList.count))")
             default:
@@ -563,36 +606,48 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if( isCellLongPressed ?? false) {
-            if let cell = tableView.cellForRow(at: indexPath) as? RecentChatTableViewCell {
-                if( longPressCount >= 1) {
-                    if selectionRecentChatList.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 {
-                        cell.contentView.backgroundColor = Color.recentChatSelectionColor
-                        longPressCount += 1
-                        getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
-                        selectionRecentChatList.insert(getRecentChat[indexPath.row], at: 0)
-                        selectionCountLabel?.text = String(longPressCount)
-                    } else {
+        if isSearchEnabled && indexPath.section == 1 || isSearchEnabled && indexPath.section == 2{
+            if filteredContactList.count >= indexPath.row{
+                ContactManager.shared.saveUser(profileDetails: filteredContactList[indexPath.row])
+                openContactChat(index: indexPath)
+            }
+        }else{
+            if( isCellLongPressed ?? false) {
+                if let cell = tableView.cellForRow(at: indexPath) as? RecentChatTableViewCell {
+                    if( longPressCount >= 1) {
+                        if selectionRecentChatList.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 {
+                            cell.contentView.backgroundColor = Color.recentChatSelectionColor
+                            longPressCount += 1
+                            getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
+                            selectionRecentChatList.insert(getRecentChat[indexPath.row], at: 0)
+                            selectionCountLabel?.text = String(longPressCount)
+                        } else {
                             recentChatTableView?.delegate?.tableView!(tableView, didDeselectRowAt: indexPath)
+                        }
+                    } else {
+                        hideMultipleSelectionView()
                     }
-                } else {
-                    hideMultipleSelectionView()
                 }
             }
-        }
-        if !(isCellLongPressed ?? false) {
-            if !getRecentChat.isEmpty && getRecentChat[indexPath.row].profileType == .groupChat && getRecentChat[indexPath.row].isBlockedByAdmin {
-                showGroupBlockedView()
-            } else if isSearchEnabled == true {
-                openContactChat(index: indexPath)
-            } else {
-                openChat(index: indexPath.row)
+            if !(isCellLongPressed ?? false) {
+                if !getRecentChat.isEmpty && getRecentChat[indexPath.row].profileType == .groupChat && getRecentChat[indexPath.row].isBlockedByAdmin {
+                    showGroupBlockedView()
+                } else if isSearchEnabled == true {
+                    if !ENABLE_CONTACT_SYNC{
+                        if filteredContactList.count >= indexPath.row{
+                            ContactManager.shared.saveUser(profileDetails: filteredContactList[indexPath.row])
+                        }
+                    }
+                    openContactChat(index: indexPath)
+                } else {
+                    openChat(index: indexPath.row)
+                }
             }
+            if selectionRecentChatList.count == 0 {
+                hideMultipleSelectionView()
+            }
+            showHideDeleteButton()
         }
-        if selectionRecentChatList.count == 0 {
-            hideMultipleSelectionView()
-        }
-        showHideDeleteButton()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -719,6 +774,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 profileDetails.name = profile.profileName
                 profileDetails.nickName = profile.nickName
                 profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
+                profileDetails.profileChatType = profile.profileType
                 vc?.getProfileDetails = profileDetails
                 vc?.replyMessagesDelegate = self
                 vc?.replyMessageObj = replyMessageObj
@@ -732,6 +788,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 profileDetails.name = profile.name
                 profileDetails.nickName = profile.nickName
                 profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
+                profileDetails.image = profile.image
                 vc?.getProfileDetails = profileDetails
                 let color = getColor(userName: profile.name)
                 vc?.replyMessagesDelegate = self
@@ -878,19 +935,31 @@ extension RecentChatViewController: UISearchBarDelegate {
                 return (name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
                 recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
             })
-            filteredContactList = searchText.trim().isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
-                let name = getUserName(jid: contact.jid,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
-                return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil
-            })
+            if ENABLE_CONTACT_SYNC{
+                filteredContactList = searchText.trim().isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
+                    let name = getUserName(jid: contact.jid,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
+                    return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                })
+            }else{
+                let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !searchString.isEmpty || self.searchTerm != searchString{
+                    resetParams()
+                    searchSubject.onNext(searchString.lowercased())
+                }
+            }
+            
             
         } else {
             isSearchEnabled = false
             getRecentChatList()
             filteredContactList = []
+            recentChatTableView?.tableFooterView = nil
         }
         
         recentChatTableView?.reloadData()
-        showHideEmptyMessage()
+        if ENABLE_CONTACT_SYNC{
+            showHideEmptyMessage()
+        }
     }
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
@@ -1087,7 +1156,9 @@ extension RecentChatViewController : ProfileEventsDelegate {
     func usersProfilesFetched() {
         print("RecentChatViewController usersProfilesFetched")
         getRecentChatList()
-        getContactList()
+        if ENABLE_CONTACT_SYNC{
+            getContactList()
+        }
         setProfile()
     }
     
@@ -1323,5 +1394,145 @@ extension RecentChatViewController {
     
     func checkGroupExistInRecntChat(groupJid : String) -> Bool{
         return getRecentChat.filter ({$0.jid == groupJid}).first != nil
+    }
+}
+
+extension RecentChatViewController : UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if ENABLE_CONTACT_SYNC{
+            return
+        }
+        let position  = scrollView.contentOffset.y
+         if position > (recentChatTableView?.contentSize.height ?? 300)-200 - scrollView.frame.size.height {
+             if isPaginationCompleted(){
+                 print("#fetch Pagination Done")
+                 return
+             }
+             recentChatTableView?.tableFooterView = createTableFooterView()
+            if !isLoadingInProgress{
+                isLoadingInProgress = true
+                getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
+            }
+        }
+    }
+    
+    public func getUsersList(pageNo : Int = 1, pageSize : Int =  40, searchTerm : String){
+        print("#fetch request \(pageNo) \(pageSize) \(searchTerm) ")
+        if pageNo == 1 {
+            recentChatTableView?.tableFooterView = createTableFooterView()
+            noNewMsgText?.isHidden = true
+        }
+        if !NetStatus.shared.isConnected{
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            return
+        }
+        isLoadingInProgress = true
+        ContactManager.shared.getUsersList(pageNo: pageNo, pageSize: pageSize, search: searchTerm) { [weak self] isSuccess, flyError, flyData in
+            guard let self = self else {
+                return
+            }
+            if isSuccess{
+                var data = flyData
+                var profilesCount = 0
+                if pageNo == 1{
+                    self.isFirstPageLoaded = true
+                }
+                if let profileArray = data.getData() as? [ProfileDetails]{
+                    self.removeDuplicates(profileDetails: profileArray)
+                    if pageNo == 1{
+                        self.filteredContactList.removeAll()
+                    }
+                    self.filteredContactList.append(contentsOf: profileArray)
+                    profilesCount = profileArray.count
+                }
+                    if profilesCount >= pageSize{
+                        self.searchNextPage += 1
+                    }
+                    self.searchTotalPages = data["totalPages"] as? Int ?? 1
+                    self.searchTotalUsers = data["totalRecords"] as? Int ?? 1
+                    print("#fetch response search total => \(self.searchTotalPages) nextPage => \(self.searchNextPage) searchTotoalUsers => \(self.searchTotalUsers) profilesCount => \(profilesCount) searchTerm => \(self.searchTerm)")
+                self.recentChatTableView?.tableFooterView = nil
+                self.recentChatTableView?.reloadData()
+                self.showHideEmptyMessage()
+            }else{
+                if !NetworkReachability.shared.isConnected{
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }else{
+                    var data = flyData
+                    if let message = data.getMessage() as? String{
+                        print("#error \(message)")
+                    }
+                }
+            }
+            self.isLoadingInProgress = false
+        }
+    }
+    
+    public func isPaginationCompleted() -> Bool {
+        if (searchTotalPages < searchNextPage) || filteredContactList.count == searchTotalUsers {
+            return true
+        }
+        return false
+    }
+    
+    public func resetDataAndFetchUsersList(){
+        filteredContactList.removeAll()
+        if !isSearchEnabled {
+            return
+        }
+        resetParams()
+        recentChatTableView?.reloadData()
+        getUsersList(pageNo: 1, pageSize: 20, searchTerm: searchTerm)
+    }
+    
+    public func resetParams(){
+        totalPages = 2
+        totalUsers = 1
+        nextPage = 1
+        searchTotalPages = 2
+        searchTotalUsers = 1
+        searchNextPage = 1
+        isLoadingInProgress = false
+        isFirstPageLoaded = false
+    }
+    
+    public func createTableFooterView() -> UIView{
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 64))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        return footerView
+    }
+    
+    @objc func networkChange(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            let isNetworkAvailable = notification.userInfo?[NetStatus.isNetworkAvailable] as? Bool ?? false
+            self?.internetObserver.on(.next(isNetworkAvailable))
+        }
+        
+    }
+    
+    func  resumeLoading()  {
+        if !ENABLE_CONTACT_SYNC{
+            if isLoadingInProgress || !isPaginationCompleted() {
+                print("#internet nextPage => \(self.nextPage)")
+                self.getUsersList(pageNo: self.searchTerm.isEmpty ? self.nextPage : self.searchNextPage, pageSize: 20, searchTerm: self.searchTerm)
+            }
+        }
+    }
+    
+    func removeDuplicates(profileDetails : [ProfileDetails])  {
+        let userIds = profileDetails.compactMap{$0.jid}
+        filteredContactList.removeAll { pd in
+            userIds.contains(pd.jid)
+        }
+    }
+    
+    public func saveUserToDatabase(jid : String){
+        if let index = filteredContactList.firstIndex { pd in pd.jid == jid}{
+            ContactManager.shared.saveUser(profileDetails: filteredContactList[index], saveAs: .live)
+        }
     }
 }

@@ -280,4 +280,35 @@ class ChatUtils {
     public static func isMessagesAvailableFor(jid : String) -> Bool {
         return ChatManager.isMessagesAvailableFor(jid: jid)
     }
+    
+    static func checkImageFileFormat(format : String) -> Bool{
+        debugPrint("ChatUtils Image Format === \(format)")
+        if format.isEmpty {
+            return false
+        }
+        
+        switch format.lowercased() {
+        case "png":
+            return true
+        case "jpg":
+            return true
+        case "jpeg":
+            return true
+        case "gif":
+            return true
+        case "heic":
+            return true
+        case "heics":
+            return true
+        case "heif":
+            return true
+        case "heifs":
+            return true
+        case "hevc":
+            return true
+        default:
+            return false
+        }
+    }
+
 }

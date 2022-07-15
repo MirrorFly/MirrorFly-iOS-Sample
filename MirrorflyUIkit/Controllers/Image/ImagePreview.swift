@@ -52,7 +52,7 @@ class ImagePreview: UIViewController {
     }
     
     func getImages() {
-        imageAray  =  FlyMessenger.getMediaMessagesOf(jid: jid).filter({$0.mediaChatMessage?.messageType == .image || $0.messageType == .video})
+        imageAray  =  FlyMessenger.getMediaMessagesOf(jid: jid).filter({($0.mediaChatMessage?.messageType == .image || $0.messageType == .video) && ($0.mediaChatMessage?.mediaDownloadStatus == .downloaded || $0.mediaChatMessage?.mediaUploadStatus == .uploaded)})
         if imageAray.count > 0 {
             if let selelctedImage = imageAray.filter({$0.mediaChatMessage?.messageType == .image || $0.messageType == .video}).first(where: { $0.messageId == messageId }) {
                 imageIndex = imageAray.firstIndex(of: selelctedImage) ?? 0

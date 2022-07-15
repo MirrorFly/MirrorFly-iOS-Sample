@@ -8,6 +8,7 @@ import Foundation
 import MobileCoreServices
 import Network
 import Swift
+import UniformTypeIdentifiers
 import _Concurrency
 @objc @_inheritsConvenienceInitializers public class FlyForwardManager : ObjectiveC.NSObject {
   public static let shared: FlyNetwork.FlyForwardManager
@@ -52,6 +53,7 @@ public protocol WebLoginDelegate {
   public func uploadFile(message: FlyCommon.ChatMessage, completion: ((Swift.Bool) -> Swift.Void)? = nil)
   public func cancelUploadTask(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
   public func downloadFile(message: FlyCommon.ChatMessage, completionHandler: ((Swift.Bool) -> ())? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
+  public func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func cancelDownloadTask(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
   public func cancelAllTask()
   @objc deinit
@@ -78,5 +80,6 @@ extension FlyNetwork.FlyNetworkController {
   public func sendContactUsInfo(title: Swift.String, description: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func reportMessge(reportMessage: FlyCommon.ReportMessage, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func sendDeleteMyAccontData(reason: Swift.String, feedback: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func getUsersList(pageNo: Swift.Int, size: Swift.Int, searchTerm: Swift.String = emptyString(), completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
 }

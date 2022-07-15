@@ -226,7 +226,7 @@ class ImageEditController: UIViewController {
             if let strongSelf = self {
             if  let assetName = asset.value(forKey: "filename") as? String {
                 let fileExtension = URL(fileURLWithPath: assetName).pathExtension
-                if fileExtension.lowercased() == "png" || fileExtension.lowercased() == "jpg" || fileExtension.lowercased() == "jpeg" || fileExtension.lowercased() == "gif" {
+                if ChatUtils.checkImageFileFormat(format: fileExtension) {
                         strongSelf.selectedAssets.append(asset)
                 } else if asset.mediaType == PHAssetMediaType.video {
                     strongSelf.selectedAssets.append(asset)
@@ -310,7 +310,7 @@ class ImageEditController: UIViewController {
             if asset.mediaType == PHAssetMediaType.image {
                 if let data = data {
                     if  let  img = UIImage(data: data) {
-                        if fileExtension.lowercased() == "png" || fileExtension.lowercased() == "jpg" || fileExtension.lowercased() == "jpeg" || fileExtension.lowercased() == "gif" {
+                        if ChatUtils.checkImageFileFormat(format: fileExtension) {
                             let imageDetail: ImageData = ImageData(image: img, caption: nil, isVideo: false, videoUrl: nil, isSlowMotion: false)
                             arrayOfImages.append(imageDetail)
                         }
