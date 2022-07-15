@@ -86,9 +86,11 @@ class ApiService
         return AF.request(request).validate()
     }
     
+
     func refreshToken(completionHandler : @escaping FlyCompletionHandler) {
         ChatManager.refreshToken(completionHandler: completionHandler)
     }
+
 
     func refreshRequest(url:String, headers:HTTPHeaders?, method: HTTPMethod , params: [String: String],  completionHandler : @escaping FlyCompletionHandler) {
         

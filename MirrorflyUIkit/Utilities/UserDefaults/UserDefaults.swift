@@ -7,6 +7,7 @@
 
 import UIKit
 import FlyCommon
+import FlyCore
 import Alamofire
 import CommonCrypto
 import FlyCore
@@ -180,7 +181,7 @@ class Utility: NSObject{
                                         }
                                     }
                                 }else if response.response?.statusCode == 401{
-                                    refreshToken { isSuccess in
+                                    FlyMessenger.refreshToken {  isSuccess,error,data  in
                                         if isSuccess {
                                             self.download(token: token, profileImage: profileImage, uniqueId: uniqueId,name: name,colorCode: colorCode,frameSize: frameSize,fontSize: fontSize, completion: completion)
                                         }
@@ -196,12 +197,13 @@ class Utility: NSObject{
         }
         
     }
-    
+
     public class func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
         ChatManager.refreshToken { isSuccess, error, data in
             onCompletion(isSuccess)
         }
     }
+
     
     public class func color(fromHexString hexString: String?) -> UIColor? {
         if (hexString?.count ?? 0) != 0 {

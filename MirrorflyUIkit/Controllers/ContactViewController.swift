@@ -9,6 +9,7 @@ import FlyCommon
 import SDWebImage
 import FlyCall
 import Contacts
+import RxSwift
 
 class ContactViewController: UIViewController {
     @IBOutlet weak var profilePopupContainer: UIView!
@@ -64,6 +65,21 @@ class ContactViewController: UIViewController {
     }()
     private var contactViewModel : ContactViewModel!
     
+    
+    var totalPages = 2
+    var totalUsers = 0
+    var nextPage = 1
+    var searchTotalPages = 2
+    var searchTotalUsers = 0
+    var searchNextPage = 1
+    var isLoadingInProgress = false
+    var searchTerm = emptyString()
+    let disposeBag = DisposeBag()
+    let searchSubject = PublishSubject<String>()
+    var internetObserver = PublishSubject<Bool>()
+    var isFirstPageLoaded = false
+    var networkLabel : UILabel? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -93,9 +109,39 @@ class ContactViewController: UIViewController {
                 self.title = "Participants"
             }
         }
+        searchSubject.throttle(.milliseconds(25), scheduler: MainScheduler.instance).distinctUntilChanged().subscribe { [weak self] term in
+            self?.searchTerm = term
+            self?.allContacts.removeAll()
+            self?.contacts.removeAll()
+            self?.contactList.reloadData()
+            self?.getUsersList(pageNo: 1, pageSize: 20, searchTerm: term)
+        } onError: { error in } onCompleted: {} onDisposed: {}.disposed(by: disposeBag)
+        internetObserver.throttle(.seconds(4), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
+            switch event {
+            case .next(let data):
+                print("#contact next ")
+                guard let self = self else{
+                    return
+                }
+                if data {
+                    self.resumeLoading()
+                    self.networkLabel?.isHidden = true
+                }
+            case .error(let error):
+                print("#contactSync error \(error.localizedDescription)")
+            case .completed:
+                print("#contactSync completed")
+            }
+            
+        }.disposed(by: disposeBag)
+        networkLable(message: ErrorMessage.noInternet)
     }
     @objc override func willCometoForeground() {
-        getCotactFromLocal(fromServer: true)
+        if ENABLE_CONTACT_SYNC || !groupJid.isEmpty{
+            getCotactFromLocal(fromServer: true)
+        }else{
+            resetDataAndFetchUsersList()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,7 +159,12 @@ class ContactViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.methodOfReceivedNotification(notification:)), name: Notification.Name(Identifiers.ncContactRefresh), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
-        getCotactFromLocal(fromServer: false)
+        NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),name:Notification.Name(NetStatus.networkNotificationObserver),object: nil)
+        if ENABLE_CONTACT_SYNC || !groupJid.isEmpty{
+            getCotactFromLocal(fromServer: false)
+        }else{
+            resetDataAndFetchUsersList()
+        }
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
@@ -134,6 +185,7 @@ class ContactViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
         replyTagDelegate?.replyMessageObj(message: replyMessageObj, jid: replyJid ?? "", messageText: messageTxt ?? "")
         ContactManager.shared.profileDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
@@ -157,8 +209,6 @@ class ContactViewController: UIViewController {
         permissionDialogShowedOnViewDidLoad = true
         if ENABLE_CONTACT_SYNC && groupJid.isEmpty{
             showContactPermissionAlert()
-        }else{
-            refreshContacts()
         }
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         profilePopupContainer.addGestureRecognizer(tap)
@@ -218,8 +268,20 @@ class ContactViewController: UIViewController {
         print("#image getCotactFromLocal")
         var profileDetails = [ProfileDetails]()
         if groupJid.isEmpty{
-            if fromServer{
-                contactViewModel.getContacts(fromServer: true, removeContacts: callUsers) { [weak self] (profiles, error)  in
+            if ENABLE_CONTACT_SYNC{
+                if fromServer{
+                    contactViewModel.getContacts(fromServer: true, removeContacts: callUsers) { [weak self] (profiles, error)  in
+                        if error != nil {
+                            return
+                        }
+                        if  let  contactsList = profiles {
+                            profileDetails.append(contentsOf: contactsList)
+                            self?.reloadTableView(profileDetails: profileDetails)
+                            self?.refreshControl.endRefreshing()
+                        }
+                    }
+                }
+                contactViewModel.getContacts(fromServer: false,removeContacts: callUsers) { [weak self] (profiles, error)  in
                     if error != nil {
                         return
                     }
@@ -229,16 +291,8 @@ class ContactViewController: UIViewController {
                         self?.refreshControl.endRefreshing()
                     }
                 }
-            }
-            contactViewModel.getContacts(fromServer: false,removeContacts: callUsers) { [weak self] (profiles, error)  in
-                if error != nil {
-                    return
-                }
-                if  let  contactsList = profiles {
-                    profileDetails.append(contentsOf: contactsList)
-                    self?.reloadTableView(profileDetails: profileDetails)
-                    self?.refreshControl.endRefreshing()
-                }
+            }else{
+                resetDataAndFetchUsersList()
             }
         }else{
             var groupMembers =  GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupJid).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid && $0.profileDetail?.isBlockedByAdmin == false})
@@ -289,29 +343,33 @@ class ContactViewController: UIViewController {
         searchTxt.resignFirstResponder()
         searchTxt.setShowsCancelButton(false, animated: true)
         searchTxt.text = ""
-        contactViewModel.getContacts(fromServer: synced, removeContacts: callUsers) { [weak self] (profiles, error) in
-            guard let weakSelf = self else { return }
-            weakSelf.refreshControl.endRefreshing()
-            weakSelf.synced = true
-            if profiles?.count == 0 {
-                if  !weakSelf.isLocalCalled {
-                    weakSelf.isLocalCalled  = true
-                    weakSelf.refreshContacts()
-                }
-            }
-            if error == nil {
-                if  let  contactsList = profiles {
-                    weakSelf.allContacts.removeAll()
-                    weakSelf.contacts.removeAll()
-                    weakSelf.allContacts = contactsList.sorted { getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType).capitalized < getUserName(jid: $1.jid,name: $1.name, nickName: $1.nickName,contactType: $1.contactType).capitalized }
-                    weakSelf.contacts = weakSelf.allContacts
-                }
-            }
-           // weakSelf.randomColors = AppUtils.shared.setRandomColors(totalCount: weakSelf.contacts.count)
-            if error != nil {
-                weakSelf.contactList.reloadData()
+        if ENABLE_CONTACT_SYNC{
+            contactViewModel.getContacts(fromServer: synced, removeContacts: callUsers) { [weak self] (profiles, error) in
+                guard let weakSelf = self else { return }
                 weakSelf.refreshControl.endRefreshing()
+                weakSelf.synced = true
+                if profiles?.count == 0 {
+                    if  !weakSelf.isLocalCalled {
+                        weakSelf.isLocalCalled  = true
+                        weakSelf.refreshContacts()
+                    }
+                }
+                if error == nil {
+                    if  let  contactsList = profiles {
+                        weakSelf.allContacts.removeAll()
+                        weakSelf.contacts.removeAll()
+                        weakSelf.allContacts = contactsList.sorted { getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType).capitalized < getUserName(jid: $1.jid,name: $1.name, nickName: $1.nickName,contactType: $1.contactType).capitalized }
+                        weakSelf.contacts = weakSelf.allContacts
+                    }
+                }
+                // weakSelf.randomColors = AppUtils.shared.setRandomColors(totalCount: weakSelf.contacts.count)
+                if error != nil {
+                    weakSelf.contactList.reloadData()
+                    weakSelf.refreshControl.endRefreshing()
+                }
             }
+        }else{
+            resetDataAndFetchUsersList()
         }
     }
     
@@ -430,11 +488,20 @@ class ContactViewController: UIViewController {
 extension ContactViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
-        contacts = searchText.isEmpty ? allContacts : allContacts.filter { term in
-            return getUserName(jid: term.jid ,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(searchText.lowercased())
+        if ENABLE_CONTACT_SYNC{
+            contacts = searchText.isEmpty ? allContacts : allContacts.filter { term in
+                return getUserName(jid: term.jid ,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(searchText.lowercased())
+                self.contactList.reloadData()
+            }
+        }else{
+            let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !searchString.isEmpty || self.searchTerm != searchString{
+                resetParams()
+                searchSubject.onNext(searchString.lowercased())
+            }
         }
-        self.contactList.reloadData()
     }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
@@ -442,8 +509,13 @@ extension ContactViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         searchTxt.setShowsCancelButton(false, animated: true)
         searchTxt.text = ""
-        contacts = allContacts
-        self.contactList.reloadData()
+        searchTerm = emptyString()
+        if ENABLE_CONTACT_SYNC || !groupJid.isEmpty{
+            contacts = allContacts
+            self.contactList.reloadData()
+        }else{
+            resetDataAndFetchUsersList()
+        }
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -457,7 +529,10 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         if contacts.count > 0 {
             return contacts.count
         }else {
-            return 1
+            if ENABLE_CONTACT_SYNC || isFirstPageLoaded{
+                return 1
+            }
+            return 0
         }
     }
     
@@ -468,7 +543,6 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         if contacts.count > 0 && indexPath.row < contacts.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.contactCell) as! ContactCell
             cell.selectionStyle = .none
-            print("Contact XYZ \(contacts.count) \(indexPath.row)")
             let profile = contacts[indexPath.row]
             let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
             cell.profileButton.tag = indexPath.row
@@ -480,13 +554,25 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
             cell.checkBox.tag = indexPath.row
             cell.checkBox.isSelected = selectedProfilesJid.contains(profile.jid)
             cell.checkBox.isHidden = !isMultiSelect
-            cell.setTextColorWhileSearch(searchText: searchTxt.text ?? "", profile: profile)
+            cell.setTextColorWhileSearch(searchText: searchTerm, profile: profile)
             return cell
         }else {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.noContacts)
             cell?.textLabel?.font = UIFont.font15px_appMedium()
             cell?.textLabel?.textAlignment = .center
-            cell?.textLabel?.text = ErrorMessage.noContactsFound
+            if ENABLE_CONTACT_SYNC{
+                cell?.textLabel?.text = ErrorMessage.noContactsFound
+            }else{
+                if NetworkReachability.shared.isConnected{
+                    if isFirstPageLoaded{
+                        cell?.textLabel?.text = "No Contacts Found"
+                    }else{
+                        cell?.textLabel?.text = ""
+                    }
+                }else{
+                    cell?.textLabel?.text = "\(ErrorMessage.noInternet)"
+                }
+            }
             cell?.isUserInteractionEnabled = false
             return cell!
         }
@@ -540,6 +626,7 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         vc?.replyMessageObj = replyMessageObj
         vc?.replyMessagesDelegate = self
         vc?.messageText = messageTxt
+        ContactManager.shared.saveUser(profileDetails: profile, saveAs: .live)
         navigationController?.modalPresentationStyle = .fullScreen
         guard let viewController = vc else { return }
         navigationController?.pushViewController(viewController, animated: true)
@@ -598,7 +685,9 @@ extension ContactViewController : ProfileEventsDelegate {
     }
     
     func usersProfilesFetched() {
-        getCotactFromLocal(fromServer: false)
+        if ENABLE_CONTACT_SYNC{
+            getCotactFromLocal(fromServer: false)
+        }
     }
     
     func blockedThisUser(jid: String) {
@@ -661,7 +750,17 @@ extension ContactViewController : ProfileEventsDelegate {
     }
     
     func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
-        getCotactFromLocal(fromServer: false)
+        if ENABLE_CONTACT_SYNC{
+            getCotactFromLocal(fromServer: false)
+        }else{
+            allContacts.removeAll { pd in
+                pd.jid == jid
+            }
+            contacts.removeAll { pd in
+                pd.jid == jid
+            }
+            contactList.reloadData()
+        }
         if isMultiSelect{
             if selectedProfilesJid.contains(jid) {
                 selectedProfilesJid.remove(jid)
@@ -755,6 +854,187 @@ extension ContactViewController {
             self?.updateBottomButton()
             self?.contactList.reloadData()
         }
+    }
+}
+
+
+extension ContactViewController : UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if !groupJid.isEmpty{
+            return
+        }
+        let position  = scrollView.contentOffset.y
+         if position > contactList.contentSize.height-200 - scrollView.frame.size.height {
+             if isPaginationCompleted(){
+                 print("#fetch Pagination Done")
+                 return
+             }
+             contactList.tableFooterView = createTableFooterView()
+            if !isLoadingInProgress{
+                isLoadingInProgress = true
+                getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
+            }
+        }
+    }
+    
+    public func getUsersList(pageNo : Int = 1, pageSize : Int =  40, searchTerm : String){
+        print("#fetch request \(pageNo) \(pageSize) \(searchTerm) ")
+        if pageNo == 1 {
+            contactList.tableFooterView = createTableFooterView()
+        }
+        if !NetStatus.shared.isConnected{
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            if pageNo == 1{
+                networkLabel?.isHidden = false
+            }
+            return
+        }else{
+            networkLabel?.isHidden = true
+        }
+        isLoadingInProgress = true
+        ContactManager.shared.getUsersList(pageNo: pageNo, pageSize: pageSize, search: searchTerm) { [weak self] isSuccess, flyError, flyData in
+            guard let self = self else {
+                return
+            }
+            if isSuccess{
+                var data = flyData
+                var profilesCount = 0
+                if pageNo == 1{
+                    self.isFirstPageLoaded = true
+                }
+                if let profileArray = data.getData() as? [ProfileDetails]{
+                    self.removeDuplicates(profileDetails: profileArray)
+                    if searchTerm.isEmpty{
+                        if pageNo == 1{
+                            self.allContacts.removeAll()
+                            self.contacts.removeAll()
+                        }
+                        self.allContacts.append(contentsOf: profileArray)
+                        self.contacts.append(contentsOf: profileArray)
+                    }else{
+                        if pageNo == 1{
+                            self.contacts.removeAll()
+                        }
+                        self.contacts.append(contentsOf: profileArray)
+                    }
+                    self.contacts.removeAll { pd in
+                        self.callUsers.contains(pd.jid)
+                    }
+                    profilesCount = profileArray.count
+                }
+                if searchTerm.isEmpty{
+                    if profilesCount >= pageSize{
+                        self.nextPage += 1
+                    }
+                    self.totalPages = data["totalPages"] as? Int ?? 1
+                    self.totalUsers = data["totalRecords"] as? Int ?? 1
+                    print("#fetch response \(self.totalPages) \(self.nextPage) \(self.totalUsers) \(self.contacts.count) \(self.searchTerm)")
+                    print("#internet api nextPage => \(self.nextPage)")
+                }else{
+                    if profilesCount >= pageSize{
+                        self.searchNextPage += 1
+                    }
+                    self.searchTotalPages = data["totalPages"] as? Int ?? 1
+                    self.searchTotalUsers = data["totalRecords"] as? Int ?? 1
+                    print("#fetch response search total => \(self.searchTotalPages) nextPage => \(self.searchNextPage) searchTotoalUsers => \(self.searchTotalUsers) profilesCount => \(profilesCount) searchTerm => \(self.searchTerm)")
+                }
+                self.contactList.tableFooterView = nil
+                self.contactList.reloadData()
+            }else{
+                if !NetworkReachability.shared.isConnected{
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }else{
+                    var data = flyData
+                    if let message = data.getMessage() as? String{
+                        print("#error \(message)")
+                    }
+                }
+            }
+            self.isLoadingInProgress = false
+            self.refreshControl.endRefreshing()
+        }
+    }
+    
+    public func isPaginationCompleted() -> Bool {
+        if searchTerm.isEmpty{
+            if (totalPages < nextPage) || allContacts.count == totalUsers {
+                return true
+            }
+        }else{
+            if (searchTotalPages < searchNextPage) || contacts.count == searchTotalUsers {
+                return true
+            }
+        }
+        return false
+    }
+    
+    public func resetDataAndFetchUsersList(){
+        resetParams()
+        allContacts.removeAll()
+        contacts.removeAll()
+        contactList.reloadData()
+        getUsersList(pageNo: 1, pageSize: 20, searchTerm: searchTerm)
+    }
+    
+    public func resetParams(){
+        totalPages = 2
+        totalUsers = 1
+        nextPage = 1
+        searchTotalPages = 2
+        searchTotalUsers = 1
+        searchNextPage = 1
+        isLoadingInProgress = false
+        isFirstPageLoaded = false
+    }
+    
+    public func createTableFooterView() -> UIView{
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 64))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        return footerView
+    }
+    
+    @objc func networkChange(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            let isNetworkAvailable = notification.userInfo?[NetStatus.isNetworkAvailable] as? Bool ?? false
+            self?.internetObserver.on(.next(isNetworkAvailable))
+        }
+        
+    }
+    
+    func  resumeLoading()  {
+        if !ENABLE_CONTACT_SYNC && groupJid.isEmpty{
+            if isLoadingInProgress || !isPaginationCompleted() {
+                print("#internet nextPage => \(self.nextPage)")
+                self.getUsersList(pageNo: self.searchTerm.isEmpty ? self.nextPage : self.searchNextPage, pageSize: 20, searchTerm: self.searchTerm)
+            }
+        }
+    }
+    
+    func removeDuplicates(profileDetails : [ProfileDetails])  {
+        let userIds = profileDetails.compactMap{$0.jid}
+        contacts.removeAll { pd in
+            userIds.contains(pd.jid)
+        }
+    }
+    
+    func networkLable(message : String) {
+        let title = UILabel()
+        title.text = message
+        title.font =  UIFont.font14px_appRegular()
+        title.lineBreakMode = .byWordWrapping
+        title.numberOfLines = 0
+        title.textAlignment = .center
+        title.textColor = UIColor.darkGray
+        title.sizeToFit()
+        title.textAlignment = .center
+        title.center = CGPoint(x: self.view.bounds.midX,y: self.view.bounds.midY)
+        self.view.addSubview(title)
+        networkLabel = title
+        networkLabel?.isHidden = true
     }
 }
 

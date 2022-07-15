@@ -110,6 +110,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         }
         updateUI()
     }
+    //
     
     func checkForUserBlockingByAdmin() {
         if members.count == 0 {
@@ -117,6 +118,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         }
         var jidToCheck = ""
         if CallManager.isOneToOneCall() {
+
             let filteredJid = members.filter({$0.jid != FlyDefaults.myJid})
             if filteredJid.count > 0 {
                 jidToCheck = filteredJid[0].jid
@@ -126,6 +128,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         }
         
         
+
         if  ChatManager.isUserOrGroupBlockedByAdmin(jid: jidToCheck) {
             CallManager.disconnectCall()
             AppAlert.shared.showToast(message: CallManager.isOneToOneCall() ? thisUerIsNoLonger : groupNoLongerAvailable)
@@ -1276,8 +1279,12 @@ extension CallViewController : CallManagerDelegate {
             for JID in IncomingUser where JID != FlyDefaults.myJid{
                 print("#jid \(JID)")
                 if let contact = rosterManager.getContact(jid: JID.lowercased()){
-                    if contact.contactType == .unknown{
-                        userString.append((try? FlyUtils.getIdFromJid(jid: JID)) ?? "")
+                    if ENABLE_CONTACT_SYNC{
+                        if contact.contactType == .unknown{
+                            userString.append((try? FlyUtils.getIdFromJid(jid: JID)) ?? "")
+                        }else{
+                            userString.append(getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                        }
                     }else{
                         userString.append(getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
                     }
@@ -2155,7 +2162,7 @@ extension CallViewController {
         } else {
             outgoingCallView.viewHeight.constant = 100
             outgoingCallView.timerTop.constant = 0
-            outgoingCallView.imageHeight.constant = 0
+            outgoingCallView.imageHeight.constant = 100
         }
         outgoingCallView.nameTop.constant = 8
         outgoingCallView.imageTop.constant = 8

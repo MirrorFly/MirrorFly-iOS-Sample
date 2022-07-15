@@ -69,6 +69,8 @@ class QRCodeScanner: UIViewController {
         
         logoutImage.isUserInteractionEnabled = true
         logoutImage.addGestureRecognizer(UITapGestureRecognizer(target: self,action: #selector(logoutWebLogin(_:))))
+        
+        linkLabel.text = "Visit "+FlyDefaults.webLoginUrl+" on \n your computer and scan the QR code"
     }
     
     func checkForLogin() {

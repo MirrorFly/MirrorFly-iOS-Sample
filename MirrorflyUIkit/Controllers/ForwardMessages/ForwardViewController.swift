@@ -8,13 +8,14 @@
 import UIKit
 import FlyCore
 import FlyCommon
+import RxSwift
 
 protocol SendSelectecUserDelegate {
     func sendSelectedUsers(selectedUsers: [Profile],completion: @escaping (() -> Void))
 }
 
 class ForwardViewController: UIViewController {
-    @IBOutlet weak var forwardTableView: UITableView?
+    @IBOutlet weak var forwardTableView: UITableView!
     @IBOutlet weak var segmentControl: UISegmentedControl?
     @IBOutlet weak var searchBar: UISearchBar?
     @IBOutlet weak var descriptionLabel: UILabel?
@@ -42,8 +43,28 @@ class ForwardViewController: UIViewController {
     var refreshProfileDelegate: RefreshProfileInfo?
     var fromJid : String? = nil
     
+    var totalPages = 2
+    var totalUsers = 0
+    var nextPage = 1
+    var searchTotalPages = 2
+    var searchTotalUsers = 0
+    var searchNextPage = 1
+    var isLoadingInProgress = false
+    var searchTerm = emptyString()
+    let disposeBag = DisposeBag()
+    let searchSubject = PublishSubject<String>()
+    var internetObserver = PublishSubject<Bool>()
+    var selectedJids = [String]()
+    var loadingCompleted = false
+    var isFirstPageLoaded = false{
+       didSet {
+           print("value \(isFirstPageLoaded)")
+       }
+   }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        handleBackgroundAndForground()
         contactViewModel =  ContactViewModel()
         recentChatViewModel = RecentChatViewModel()
         configTableView()
@@ -52,6 +73,31 @@ class ForwardViewController: UIViewController {
         GroupManager.shared.groupDelegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        searchSubject.throttle(.milliseconds(25), scheduler: MainScheduler.instance).distinctUntilChanged().subscribe { [weak self] term in
+            self?.searchTerm = term
+            self?.filteredContactList.removeAll()
+            self?.allContactsList.removeAll()
+            self?.forwardTableView.reloadData()
+            self?.getUsersList(pageNo: 1, pageSize: 20, searchTerm: term)
+        } onError: { error in } onCompleted: {} onDisposed: {}.disposed(by: disposeBag)
+        internetObserver.throttle(.seconds(4), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
+            switch event {
+            case .next(let data):
+                print("#contact next ")
+                guard let self = self else{
+                    return
+                }
+                if data {
+                    self.resumeLoading()
+                }
+            case .error(let error):
+                print("#contactSync error \(error.localizedDescription)")
+            case .completed:
+                print("#contactSync completed")
+            }
+            
+        }.disposed(by: disposeBag)
+
     }
     
     @objc private func keyboardWillShow(notification: NSNotification) {
@@ -76,6 +122,9 @@ class ForwardViewController: UIViewController {
         forwardTableView?.register(nib, forCellReuseIdentifier: Identifiers.participantCell)
         let recentChatNib = UINib(nibName: Identifiers.recentChatCell, bundle: .main)
         forwardTableView?.register(recentChatNib, forCellReuseIdentifier: Identifiers.recentChatCell)
+        if let tv = forwardTableView{
+            tv.contentSize = CGSize(width: tv.frame.size.width, height: tv.contentSize.height);
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,6 +132,13 @@ class ForwardViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
         sendButton?.isEnabled = false
         sendButton?.alpha = 0.4
+        NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),name:Notification.Name(NetStatus.networkNotificationObserver),object: nil)
+    }
+    
+    @objc override func willCometoForeground() {
+        if !ENABLE_CONTACT_SYNC && segmentSelectedIndex == 0{
+            resetDataAndFetchUsersList()
+        }
     }
     
     //MARK: API Call
@@ -106,6 +162,7 @@ class ForwardViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
     }
     
     func getLastMesssage() -> [ChatMessage]? {
@@ -227,7 +284,20 @@ class ForwardViewController: UIViewController {
     
     private func showEmptyMessage() {
         emptyMessageView?.isHidden = false
-        descriptionLabel?.text = "No results found"
+        if segmentSelectedIndex == 0 && !ENABLE_CONTACT_SYNC {
+            if NetworkReachability.shared.isConnected{
+                if isFirstPageLoaded && loadingCompleted{
+                    descriptionLabel?.text = "No Contacts Found"
+                }else{
+                    descriptionLabel?.text = ""
+                }
+            }else{
+                descriptionLabel?.text = ErrorMessage.noInternet
+            }
+        }else{
+            descriptionLabel?.text = "No results found"
+        }
+        
     }
     
     private func showHideEmptyMessage(totalCount: Int?) {
@@ -258,6 +328,7 @@ class ForwardViewController: UIViewController {
         searchBar?.resignFirstResponder()
         searchBar?.setShowsCancelButton(false, animated: true)
         searchBar?.text = ""
+        searchTerm = emptyString()
         forwardTableView?.reloadData()
     }
 }
@@ -282,21 +353,21 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell) {
             switch segmentSelectedIndex {
-                case 0:
+            case 0:
                 let contactDetails = isSearchEnabled == true ? filteredContactList[indexPath.row] : allContactsList[indexPath.row]
                 cell.nameUILabel?.text = getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType)
                 cell.statusUILabel?.text = contactDetails.status
-                 let hashcode = contactDetails.name.hashValue
-                 let color = randomColors[abs(hashcode) % randomColors.count]
+                let hashcode = contactDetails.name.hashValue
+                let color = randomColors[abs(hashcode) % randomColors.count]
                 cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType)
-                cell.checkBoxImageView?.image = contactDetails.isSelected ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
-                cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", profileDetail: contactDetails)
+                cell.checkBoxImageView?.image = selectedJids.contains(contactDetails.jid) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
+                cell.setTextColorWhileSearch(searchText: searchTerm, profileDetail: contactDetails)
                 cell.statusUILabel?.isHidden = false
                 cell.removeButton?.isHidden = true
                 cell.removeIcon?.isHidden = true
                 cell.hideLastMessageContentInfo()
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? filteredContactList.count : allContactsList.count)
-                case 1:
+            case 1:
                 let recentChatDetails = isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false })[indexPath.row] : getAllRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row]
                 let hashcode = recentChatDetails.profileName.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
@@ -306,9 +377,9 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 cell.removeButton?.isHidden = true
                 cell.removeIcon?.isHidden = true
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).count : getAllRecentChat.filter({$0.profileType == .groupChat}).count)
-                case 2:
+            case 2:
                 showHideEmptyMessage(totalCount: 0)
-                case 3:
+            case 3:
                 let recentChatDetails = isSearchEnabled == true ? getRecentChat[indexPath.row] : getAllRecentChat[indexPath.row]
                 let hashcode = recentChatDetails.profileName.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
@@ -323,7 +394,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 cell.removeButton?.isHidden = true
                 cell.removeIcon?.isHidden = true
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.count : getAllRecentChat.count)
-                default:
+            default:
                 break
             }
             return cell
@@ -340,10 +411,12 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 profile.profileName = filteredContactList[indexPath.row].name
                 profile.jid = filteredContactList[indexPath.row].jid
                 profile.isSelected = !(profile.isSelected ?? false)
-                if selectedMessages.filter({$0.jid == filteredContactList[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
-                    getRecentChat.filter({$0.jid == filteredContactList[indexPath.row].jid}).first?.isSelected = true
+                saveUserToDatabase(jid: profile.jid)
+                if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
+                    getRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
                     filteredContactList[indexPath.row].isSelected = true
                     selectedMessages.append(profile)
+                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
                 } else if selectedMessages.filter({$0.jid == filteredContactList[indexPath.row].jid}).count > 0 {
                     selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == filteredContactList[indexPath.row].jid {
@@ -351,6 +424,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                                 getRecentChat.filter({$0.jid == filteredContactList[indexPath.row].jid}).first?.isSelected = false
                                 filteredContactList[indexPath.row].isSelected = false
                                 selectedMessages.remove(at: index)
+                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
                             }
                         }
                     })
@@ -363,10 +437,12 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 profile.profileName = allContactsList[indexPath.row].name
                 profile.jid = allContactsList[indexPath.row].jid
                 profile.isSelected = !(profile.isSelected ?? false)
-                if selectedMessages.filter({$0.jid == allContactsList[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
-                    getAllRecentChat.filter({$0.jid == allContactsList[indexPath.row].jid}).first?.isSelected = true
+                saveUserToDatabase(jid: profile.jid)
+                if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
+                    getAllRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
                     allContactsList[indexPath.row].isSelected = true
                     selectedMessages.append(profile)
+                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
                 } else if selectedMessages.filter({$0.jid == allContactsList[indexPath.row].jid}).count > 0 {
                     selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == allContactsList[indexPath.row].jid {
@@ -374,6 +450,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                                 getAllRecentChat.filter({$0.jid == allContactsList[indexPath.row].jid}).first?.isSelected = false
                                 allContactsList[indexPath.row].isSelected = false
                                 selectedMessages.remove(at: index)
+                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
                             }
                         }
                     })
@@ -389,10 +466,12 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 profile.profileName = getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].profileName
                 profile.jid = getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
                 profile.isSelected = !(profile.isSelected ?? false)
+                saveUserToDatabase(jid: profile.jid)
                 if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
                     getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = true
                     getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
                     selectedMessages.append(profile)
+                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
                 } else if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count > 0 {
                     selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
@@ -400,6 +479,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                                 getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = false
                                 getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = false
                                 selectedMessages.remove(at: index)
+                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
                             }
                         }
                     })
@@ -412,10 +492,12 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 profile.profileName = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].profileName
                 profile.jid = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
                 profile.isSelected = !(profile.isSelected ?? false)
+                saveUserToDatabase(jid: profile.jid)
                 if selectedMessages.filter({$0.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
                     getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = true
                     getAllRecentChat.filter({$0.jid ==  getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
                     selectedMessages.append(profile)
+                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
                 } else if selectedMessages.filter({$0.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count > 0 {
                     selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
@@ -423,6 +505,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                                 getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = false
                                 getAllRecentChat.filter({$0.jid ==  getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = false
                                 selectedMessages.remove(at: index)
+                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
                             }
                         }
                     })
@@ -440,23 +523,26 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 profile.profileName = getRecentChat[indexPath.row].profileName
                 profile.jid = getRecentChat[indexPath.row].jid
                 profile.isSelected = !(profile.isSelected ?? false)
-                    if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 && selectedMessages.count < 5 {
-                        getRecentChat[indexPath.row].isSelected = true
-                        filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = true
-                        selectedMessages.append(profile)
-                    } else if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count > 0 {
-                        selectedMessages.enumerated().forEach({ (index,item) in
+                saveUserToDatabase(jid: profile.jid)
+                if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 && selectedMessages.count < 5 {
+                    getRecentChat[indexPath.row].isSelected = true
+                    filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = true
+                    selectedMessages.append(profile)
+                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                } else if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count > 0 {
+                    selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == getRecentChat[indexPath.row].jid {
                             if index <= selectedMessages.count {
                                 getRecentChat[indexPath.row].isSelected = false
                                 filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = false
                                 selectedMessages.remove(at: index)
+                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
                             }
                         }
-                        })
-                    } else {
-                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
-                    }
+                    })
+                } else {
+                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                }
                 forwardTableView?.reloadRows(at: [indexPath], with: .none)
             case false:
                 var profile = Profile()
@@ -467,6 +553,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     getAllRecentChat[indexPath.row].isSelected = true
                     allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = true
                     selectedMessages.append(profile)
+                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
                 } else if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count > 0 {
                     selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == getAllRecentChat[indexPath.row].jid {
@@ -474,6 +561,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                                 getAllRecentChat[indexPath.row].isSelected = false
                                 allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = false
                                 selectedMessages.remove(at: index)
+                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
                             }
                         }
                     })
@@ -493,6 +581,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
 // SearchBar Delegate Method
 extension ForwardViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print("#SEarch \(searchText)")
         if searchText.trim().count > 0 {
             searchedText = searchText
             isSearchEnabled = true
@@ -500,15 +589,33 @@ extension ForwardViewController: UISearchBarDelegate {
                 return (recentChat.profileName.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
                 (recentChat.lastMessageContent.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false)
             })
-            filteredContactList = searchedText.isEmpty ? allContactsList : allContactsList.filter({ contact -> Bool in
-                return contact.name.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
-            })
-            handleEmptyViewWhileSearch()
+            if ENABLE_CONTACT_SYNC || segmentSelectedIndex != 0 {
+                filteredContactList = searchedText.isEmpty ? allContactsList : allContactsList.filter({ contact -> Bool in
+                    return contact.name.capitalized.range(of: searchedText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                })
+                handleEmptyViewWhileSearch()
+            }else{
+                let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !searchString.isEmpty || self.searchTerm != searchString{
+                    resetParams()
+                    self.showHideEmptyMessage(totalCount: 0)
+                    searchSubject.onNext(searchString.lowercased())
+                }
+            }
         } else {
             searchedText = emptyString()
             isSearchEnabled = false
             getRecentChatList()
-            getContactList()
+            if ENABLE_CONTACT_SYNC{
+                self.searchTerm = emptyString()
+                getContactList()
+            }else{
+                if self.searchTerm != searchText{
+                    resetParams()
+                    self.showHideEmptyMessage(totalCount: 0)
+                    searchSubject.onNext(emptyString())
+                }
+            }
         }
         forwardTableView?.reloadData()
     }
@@ -519,6 +626,9 @@ extension ForwardViewController: UISearchBarDelegate {
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         refreshMessages()
+        if !ENABLE_CONTACT_SYNC{
+            resetDataAndFetchUsersList()
+        }
         segmentControlView?.isHidden = false
     }
     
@@ -531,34 +641,39 @@ extension ForwardViewController: UISearchBarDelegate {
 // getChatList Method
 extension ForwardViewController {
     private func getContactList() {
-        contactViewModel?.getContacts(fromServer: false) { [weak self] (contacts, error)  in
+        if ENABLE_CONTACT_SYNC {
+            contactViewModel?.getContacts(fromServer: false) { [weak self] (contacts, error)  in
                 if error != nil {
                     return
                 }
-            if let weakSelf = self {
-                if  let  contactsList = contacts {
-                    weakSelf.allContactsList.removeAll()
-                    weakSelf.filteredContactList.removeAll()
-                    weakSelf.allContactsList = contactsList
-                    weakSelf.allContactsList = weakSelf.allContactsList.sorted { $0.name.capitalized < $1.name.capitalized }
-                    
-                    weakSelf.allContactsList.enumerated().forEach { (index,contact) in
-                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
-                            weakSelf.allContactsList[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                if let weakSelf = self {
+                    if  let  contactsList = contacts {
+                        weakSelf.allContactsList.removeAll()
+                        weakSelf.filteredContactList.removeAll()
+                        weakSelf.allContactsList = contactsList
+                        weakSelf.allContactsList = weakSelf.allContactsList.sorted { $0.name.capitalized < $1.name.capitalized }
+                        
+                        weakSelf.allContactsList.enumerated().forEach { (index,contact) in
+                            if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                                weakSelf.allContactsList[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                            }
                         }
-                    }
-                    
-                    weakSelf.filteredContactList.enumerated().forEach { (index,contact) in
-                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
-                            weakSelf.filteredContactList[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                        
+                        weakSelf.filteredContactList.enumerated().forEach { (index,contact) in
+                            if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                                weakSelf.filteredContactList[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                            }
                         }
+                        weakSelf.forwardTableView?.reloadData()
+                        
                     }
-                    weakSelf.forwardTableView?.reloadData()
-                    
                 }
             }
+            handleEmptyViewWhileSearch()
+        }else{
+            resetDataAndFetchUsersList()
         }
-        handleEmptyViewWhileSearch()
+        
     }
     
     func getRecentChatList() {
@@ -607,7 +722,10 @@ extension ForwardViewController : ProfileEventsDelegate {
     
     func usersProfilesFetched() {
         DispatchQueue.main.async { [weak self] in
-            self?.loadChatList()
+            if ENABLE_CONTACT_SYNC{
+                self?.getContactList()
+            }
+            self?.getRecentChatList()
             if let uiSearchBar = self?.searchBar, self?.isSearchEnabled ?? false{
                 self?.searchBar(uiSearchBar, textDidChange: self?.searchedText ?? emptyString())
             }
@@ -931,4 +1049,184 @@ extension ForwardViewController {
         }
         
     }
+}
+
+extension ForwardViewController : UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if segmentSelectedIndex != 0 {
+            return
+        }
+        let position  = scrollView.contentOffset.y
+         if position > forwardTableView.contentSize.height-200 - scrollView.frame.size.height {
+             if isPaginationCompleted(){
+                 print("#fetch Pagination Done")
+                 return
+             }
+            forwardTableView.tableFooterView = createTableFooterView()
+            if !isLoadingInProgress{
+                isLoadingInProgress = true
+                getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
+            }
+        }
+    }
+    
+    public func isPaginationCompleted() -> Bool {
+        if searchTerm.isEmpty{
+            if (totalPages < nextPage) || allContactsList.count == totalUsers || loadingCompleted  {
+                return true
+            }
+        }else{
+            if (searchTotalPages < searchNextPage) || filteredContactList.count == searchTotalUsers || loadingCompleted  {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    public func getUsersList(pageNo : Int = 1, pageSize : Int =  40, searchTerm : String){
+        print("#fetch request \(pageNo) \(pageSize) \(searchTerm) \(isFirstPageLoaded)")
+        if pageNo == 1{
+            isFirstPageLoaded = false
+            forwardTableView.tableFooterView = createTableFooterView()
+        }
+        if !NetStatus.shared.isConnected{
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            return
+        }
+        isLoadingInProgress = true
+        ContactManager.shared.getUsersList(pageNo: pageNo, pageSize: pageSize, search: searchTerm) { [weak self] isSuccess, flyError, flyData in
+            guard let self = self else {
+                return
+            }
+            if isSuccess{
+                var data = flyData
+                var profilesCount = 0
+                if pageNo == 1{
+                    self.isFirstPageLoaded = true
+                }
+                if let profileArray = data.getData() as? [ProfileDetails]{
+                    self.removeDuplicates(profileDetails: profileArray)
+                    self.setSelectedUsers(users: profileArray)
+                    if searchTerm.isEmpty{
+                        if pageNo == 1{
+                            self.allContactsList.removeAll()
+                        }
+                        self.allContactsList.append(contentsOf: profileArray)
+                    }else{
+                        if pageNo == 1{
+                            self.filteredContactList.removeAll()
+                        }
+                        self.filteredContactList.append(contentsOf: profileArray)
+                    }
+                    profilesCount = profileArray.count
+                }
+                if searchTerm.isEmpty{
+                    if profilesCount >= pageSize{
+                        self.nextPage += 1
+                    }else{
+                        self.loadingCompleted = true
+                    }
+                    self.totalPages = data["totalPages"] as? Int ?? 1
+                    self.totalUsers = data["totalRecords"] as? Int ?? 1
+                    print("#fetch response \(self.totalPages) \(self.nextPage) \(self.totalUsers) \(self.allContactsList.count) \(self.searchTerm)")
+                }else{
+                    if profilesCount >= pageSize{
+                        self.searchNextPage += 1
+                    }else{
+                        self.loadingCompleted = true
+                    }
+                    self.searchTotalPages = data["totalPages"] as? Int ?? 1
+                    self.searchTotalUsers = data["totalRecords"] as? Int ?? 1
+                    print("#fetch response search \(pageNo) \(self.searchTotalPages) \(self.searchNextPage) \(self.searchTotalUsers) \(self.filteredContactList.count) \(self.searchTerm)")
+                }
+                self.forwardTableView.tableFooterView = nil
+                self.forwardTableView.reloadData()
+                self.showHideEmptyMessage(totalCount: self.searchTerm.isEmpty ? self.allContactsList.count : self.filteredContactList.count)
+            }else{
+                if !NetworkReachability.shared.isConnected{
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }else{
+                    var data = flyData
+                    if let message = data.getMessage() as? String{
+                        print(message)
+                    }
+                }
+            }
+            self.isLoadingInProgress = false
+        }
+    }
+    
+    public func resetParams(){
+        totalPages = 2
+        totalUsers = 1
+        nextPage = 1
+        searchTotalPages = 2
+        searchTotalUsers = 1
+        searchNextPage = 1
+        isLoadingInProgress = false
+        loadingCompleted = false
+        isFirstPageLoaded = false
+    }
+    
+    public func resetDataAndFetchUsersList(){
+        resetParams()
+        filteredContactList.removeAll()
+        allContactsList.removeAll()
+        forwardTableView.reloadData()
+        getUsersList(pageNo: 1, pageSize: 20, searchTerm: searchTerm)
+    }
+    
+    public func setSelectedUsers(users: [ProfileDetails]){
+        for item in allContactsList{
+            item.isSelected = selectedJids.contains(item.jid)
+        }
+    }
+    
+    public func saveUserToDatabase(jid : String){
+        if let index = allContactsList.firstIndex { pd in pd.jid == jid}, index > -1{
+            ContactManager.shared.saveUser(profileDetails: allContactsList[index], saveAs: .live)
+        } else if let index = filteredContactList.firstIndex { pd in pd.jid == jid}, index > -1{
+            ContactManager.shared.saveUser(profileDetails: filteredContactList[index], saveAs: .live)
+        }
+    }
+    
+    public func createTableFooterView() -> UIView{
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: forwardTableView.frame.size.width, height: 64))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        footerView.contentMode = .center
+        return footerView
+    }
+    
+    @objc func networkChange(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            let isNetworkAvailable = notification.userInfo?[NetStatus.isNetworkAvailable] as? Bool ?? false
+            self?.internetObserver.on(.next(isNetworkAvailable))
+        }
+        
+    }
+    
+    func  resumeLoading()  {
+        if !ENABLE_CONTACT_SYNC{
+            if isLoadingInProgress || !isPaginationCompleted() {
+                print("#internet nextPage => \(self.nextPage)")
+                self.getUsersList(pageNo: self.searchTerm.isEmpty ? self.nextPage : self.searchNextPage, pageSize: 20, searchTerm: self.searchTerm)
+            }
+        }
+    }
+    
+    func removeDuplicates(profileDetails : [ProfileDetails])  {
+        let userIds = profileDetails.compactMap{$0.jid}
+        filteredContactList.removeAll { pd in
+            userIds.contains(pd.jid)
+        }
+        allContactsList.removeAll { pd in
+            userIds.contains(pd.jid)
+        }
+    }
+    
 }

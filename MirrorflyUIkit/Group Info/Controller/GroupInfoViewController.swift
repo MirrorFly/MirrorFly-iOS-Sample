@@ -27,6 +27,10 @@ protocol RefreshProfileInfo {
     func refreshProfileDetails(profileDetails:ProfileDetails?)
 }
 
+protocol GroupInfoDelegate {
+    func didComefromGroupInfo()
+}
+
 class GroupInfoViewController: UIViewController {
     
     // MARK: Properties
@@ -34,6 +38,8 @@ class GroupInfoViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let groupInfoViewModel = GroupInfoViewModel()
+    
+    var groupInfoDelegate : GroupInfoDelegate? = nil
     
     var profileDetails : ProfileDetails?
     var groupID = ""
@@ -141,6 +147,7 @@ class GroupInfoViewController: UIViewController {
         if isGroupInfoUpdated {
             delegate?.refreshProfileDetails(profileDetails: profileDetails)
         }
+        groupInfoDelegate?.didComefromGroupInfo()
     }
     
     @objc
@@ -467,6 +474,7 @@ extension GroupInfoViewController: ContactImageCellDelegate {
             AppAlert.shared.showAlert(view: self, title: "Alert",
                                       message: "Kindly enter valid group name", buttonTitle: "OK")
         } else if groupName != currentGroupName {
+            startLoading(withText: pleaseWait)
             groupInfoViewModel.updateGroupName(groupID: groupID, groupName: groupName) {
                 [weak self] success, error, result  in
                 if success {
@@ -573,12 +581,16 @@ extension GroupInfoViewController: GroupInfoOptionsDelegate {
             controller.isFromGroupInfo = true
             let color = getColor(userName: profile.profileDetail?.name ?? "")
             controller.contactColor = color
+            groupInfoDelegate?.didComefromGroupInfo()
             navigationController?.modalPresentationStyle = .fullScreen
             navigationController?.pushViewController(controller, animated: true)
         }
     }
 }
 
+/**
+ * Delegate For managing Profile Events
+ */
 extension GroupInfoViewController: ProfileEventsDelegate {
     
     func userCameOnline(for jid: String) {
@@ -900,6 +912,7 @@ extension GroupInfoViewController: CropperViewControllerDelegate {
                     self?.setupConfiguration()
                     self?.refreshData()
                     AppAlert.shared.showToast(message: groupImageUpdateSuccess)
+                    self?.isGroupInfoUpdated = true
                 }
                 self?.stopLoading()
             }

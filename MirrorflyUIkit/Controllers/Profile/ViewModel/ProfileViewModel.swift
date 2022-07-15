@@ -46,7 +46,7 @@ class ProfileViewModel {
             self.profileCallback?(true, "")
         }
     }
-  
+    
     //MARK:- loginCompletionHandler
     func profileCompletionHandler(callBack: @escaping ProfileCallBack) {
         self.profileCallback = callBack
@@ -54,6 +54,7 @@ class ProfileViewModel {
     
     //MARK:- Contact sync
     func contactSync() {
+        return
         let  apiService =  ApiService()
         let params = ["licenseKey": FlyDefaults.licenseKey]
         let url = FlyDefaults.baseURL + "contacts/sandbox/" + syncContacts
@@ -65,7 +66,7 @@ class ProfileViewModel {
         print(params)
         apiService.post(withEndPoint: url, params: params, headers: headers).responseJSON { [weak self] (response) in
             if response.response?.statusCode == 401 {
-                apiService.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
+                FlyMessenger.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
                     if isSuccess {
                         self?.contactSync()
                     }
@@ -84,7 +85,7 @@ class ProfileViewModel {
                         }
                     }
                 }
-                ContactManager.shared.getFriendsList(fromServer: true) { isSuccess, error, data in }
+                ContactManager.shared.getRegisteredUsers(fromServer: true) { isSuccess, error, data in }
                 print("success \(responseDictionary)")
                 break
             case .failure(let error):

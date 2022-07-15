@@ -359,10 +359,10 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                     }
                 }
                 if callLog["callType"] as! String == "audio"{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio)
+                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString())
                 }
                 else{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video)
+                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video,groupId: callLog.groupId ?? emptyString())
                 }
             }else{
                 let userString = callLog["userList"] as? String ?? ""
@@ -376,10 +376,10 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                     }
                 }
                 if callLog["callType"] as! String == "audio"{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio)
+                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString())
                 }
                 else{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video)
+                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video, groupId: callLog.groupId ?? emptyString())
                 }
             }
         }
@@ -555,9 +555,9 @@ extension callLogViewController{
                 let _ : String
                 if let httpStatusCode = response.response?.statusCode {
                     if(httpStatusCode == 401){
-                        self.refreshToken { isSuccess in
+                        self.refreshToken { [weak self] isSuccess  in
                             if isSuccess {
-                                self.deleteCallLogs()
+                                self?.deleteCallLogs()
                             }
                         }
                     } else {
@@ -644,9 +644,9 @@ extension callLogViewController{
                 print("failure(error)",error)
                 if let httpStatusCode = response.response?.statusCode {
                     if(httpStatusCode == 401){
-                        self.refreshToken { isSuccess in
+                        self.refreshToken { [weak self] isSuccess  in
                             if isSuccess {
-                                self.getsyncedLogs()
+                                self?.getsyncedLogs()
                             }
                         }
                     } else {
@@ -762,9 +762,9 @@ extension callLogViewController{
                 let _ : String
                 if let httpStatusCode = response.response?.statusCode {
                     if(httpStatusCode == 401){
-                        self.refreshToken { isSuccess in
+                        self.refreshToken { [weak self] isSuccess  in
                             if isSuccess {
-                                self.postUnSyncedLogs()
+                                self?.postUnSyncedLogs()
                             }
                         }
                     } else {
@@ -774,16 +774,47 @@ extension callLogViewController{
         }
     }
     
+    
     func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
+
         VOIPManager.sharedInstance.refreshToken { isSuccess in
-            if isSuccess{
-                FlyCallUtils.sharedInstance.setConfigUserDefaults(FlyDefaults.authtoken, withKey: "token")
+           if isSuccess{
+               FlyCallUtils.sharedInstance.setConfigUserDefaults(FlyDefaults.authtoken, withKey: "token")
                 onCompletion(true)
             }else{
                 onCompletion(false)
             }
         }
     }
+
+    
+//    func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
+//        let username = FlyDefaults.myXmppUsername
+//        let password = FlyDefaults.myXmppPassword
+//        if username.count == 0 || password.count == 0 {
+//            return
+//        }
+//        let parameters = ["username" : username,
+//                          "password": password];
+//        let url = Utility.appendBaseURL(restEnd: "login")
+//        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil, interceptor: self, requestModifier: nil).validate().responseJSON { response in
+//            print(response.result)
+//            switch response.result {
+//            case .success(let result):
+//                if response.response?.statusCode == 200 {
+//                    guard let responseDictionary = result as? [String : Any]  else{
+//                        return
+//                    }
+//                    let data = responseDictionary["data"] as? [String: String] ?? [:]
+//                    let token = data["token"] ?? ""
+//                    FlyCallUtils.sharedInstance.setConfigUserDefaults(token, withKey: "token")
+//                }
+//                onCompletion(true)
+//            case .failure(_) :
+//                onCompletion(false)
+//            }
+//        }
+//    }
 }
 
 extension callLogViewController : ProfileEventsDelegate{

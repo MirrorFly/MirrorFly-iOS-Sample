@@ -34,7 +34,7 @@ class LanguageSelectionViewController: UIViewController {
     func fetchSupportedLanguages() {
         FlyTranslationManager.shared.supportedTranslationLanguages(TargetLanguageCode: "en", GooogleAPIKey: googleApiKey_Translation){ (languageList,isSuccess,errorMessage) in
             if isSuccess {
-                self.languageArray = languageList
+                self.languageArray = languageList.filter({$0.name != ""})
                 print("languageArray--->", self.languageArray)
             }
             else {

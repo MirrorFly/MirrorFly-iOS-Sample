@@ -211,9 +211,6 @@ extension ProfileViewController {
                             self?.statusLabel.text = self?.profileDetails?.status
                             DispatchQueue.main.async { [weak self] in
                                 self?.stopLoading()
-                                if FlyDefaults.isTrialLicense{
-                                    ProfileViewModel().contactSync()
-                                }
                             }
                         }
                     } else {

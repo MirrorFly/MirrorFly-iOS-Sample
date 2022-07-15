@@ -386,6 +386,11 @@ public struct MessageReceipt {
     set
     _modify
   }
+  @FlyCommon.SDKDefaults public static var webLoginUrl: Swift.String {
+    get
+    set
+    _modify
+  }
   @FlyCommon.SDKDefaults public static var roomId: Swift.String {
     get
     set
@@ -767,6 +772,16 @@ public struct LoginData : Swift.Codable {
   public func encode(to encoder: Swift.Encoder) throws
   public init(_ password: Swift.String, _ currentTimeStamp: Swift.Double)
 }
+public struct UserData {
+  public var email: Swift.String
+  public var image: Swift.String
+  public var mobileNumber: Swift.String
+  public var nickName: Swift.String
+  public var status: Swift.String
+  public var userId: Swift.String
+  public var isAdminBlocked: Swift.Bool
+  public init(email: Swift.String, image: Swift.String, mobileNumber: Swift.String, nickName: Swift.String, status: Swift.String, userId: Swift.String, isAdminBlocked: Swift.Bool)
+}
 public enum MessageType : Swift.String, Swift.CustomStringConvertible {
   case text
   case image
@@ -1000,6 +1015,8 @@ public struct FlyEncryption {
   public func crypt(data: Foundation.Data?, option: CommonCrypto.CCOperation) -> Foundation.Data?
   public static func encryptFile(at path: Foundation.URL, fileName: Swift.String) -> (Foundation.URL?, Swift.String?)
   public static func decryptFile(at path: Foundation.URL, fileName: Swift.String, key: Swift.String) -> (Foundation.URL?, Swift.String?)
+  public static func encryptDecryptData(key: Swift.String, data: Swift.String, encrypt: Swift.Bool, iv: Swift.String = FlyDefaults.profileIV) -> Swift.String
+  public static func htmlEncoding(content: Swift.String, isEncode: Swift.Bool) -> Swift.String?
 }
 extension Foundation.Data {
   public func write(withName name: Swift.String, path: Foundation.URL) -> Foundation.URL
@@ -1193,6 +1210,7 @@ public struct FlyConstants {
   public static let enableFileEncryption: Swift.String
   public static let hideNotificationContent: Swift.String
   public static let lastNotificationId: Swift.String
+  public static let webLoginUrl: Swift.String
   public static let messageTimeCountThirteen: Swift.Int
   public static let messageTimeCountTwelve: Swift.Int
   public static var userDefaultsIV: Swift.String

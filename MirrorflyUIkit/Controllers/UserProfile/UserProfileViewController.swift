@@ -107,14 +107,17 @@ class UserProfileViewController : UIViewController {
     }
     
     func setImage(imageURL: String,completionHandler:  @escaping (Bool?)-> Void) {
-        let apiService = ApiService()
+       //let apiService = ApiService()
         profileImage?.sd_imageIndicator = SDWebImageActivityIndicator.white
         let urlString = "\(FlyDefaults.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
         let url = URL(string: urlString)
         if url != URL(string: FlyDefaults.myProfileImageUrl) {
             profileImage?.sd_setImage(with: url) { image, error, cache, url in
                 if error != nil {
-                    apiService.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
+//                    FlyMessenger.refreshToken { isSuccess, error, data in
+//
+//                    }
+                    FlyMessenger.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
                            if isSuccess {
                                self?.profileImage?.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"), completed: { [weak self]image,error,_,imageUrl in
                                    self?.profileImage?.stopAnimating()

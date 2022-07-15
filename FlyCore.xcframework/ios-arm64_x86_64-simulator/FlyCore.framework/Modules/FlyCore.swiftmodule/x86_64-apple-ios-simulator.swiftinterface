@@ -83,7 +83,7 @@ extension FlyCore.ChatManager : FlyXmpp.XMPPConnectionDelegate {
   public func xmppDidDisconnected()
 }
 extension FlyCore.ChatManager : FlyXmpp.XMPPMessageDelegate {
-  public func processAndSaveDataFromPush(messageId: Swift.String, fromJid: Swift.String, toJid: Swift.String, body: Swift.String, time: Swift.String, groupJid: Swift.String = "", isCarbon: Swift.Bool = false) -> (Swift.String, FlyCommon.ChatMessage?)
+  public func processAndSaveDataFromPush(messageId: Swift.String, fromJid: Swift.String, toJid: Swift.String, body: Swift.String, time: Swift.String, groupJid: Swift.String = "", isCarbon: Swift.Bool = false, pd: FlyCommon.ProfileDetails? = nil) -> (Swift.String, FlyCommon.ChatMessage?)
   public func didReciveSingleChatCorbonMessage(messageId: Swift.String, from: Swift.String, to: Swift.String, body: Swift.String, time: Swift.String) -> Swift.String
   public func setOrUpdateFavourite(messageId: Swift.String, favourite: Swift.Bool, removeAllFavourite: Swift.Bool)
   public func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus)
@@ -262,6 +262,7 @@ public typealias FlySendMessageListener = (_ isSuccess: Swift.Bool, _ error: Fly
   public static func sendImageMessage(toJid: Swift.String, imageFile: Foundation.URL, base64Thumbanail: Swift.String, caption: Swift.String? = nil, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public static func sendImageMessage(toJid: Swift.String, imageFileName: Swift.String, imageFileSize: Swift.Double, imageFileUrl: Foundation.URL, imageFileLocalPath: Swift.String, base64Thumbnail: Swift.String, caption: Swift.String? = nil, replyMessageId: Swift.String? = nil, imageFileKey: Swift.String = emptyString(), sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   @objc public static func uploadFile(chatMessage: FlyCommon.ChatMessage, completion: ((Swift.Bool) -> Swift.Void)? = nil)
+  public static func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func downloadMediaRetry(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public static func uploadMediaRetry(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public static func sendVideoMessage(toJid: Swift.String, videoFileName: Swift.String, videoFileUrl: Swift.String, localFilePath: Swift.String, videoCaption: Swift.String? = nil, replyMessageId: Swift.String? = nil, videoFileKey: Swift.String = emptyString(), sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
@@ -307,15 +308,19 @@ extension FlyCore.ContactManager {
   public func unblockUser(for jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
   public func getUsersIBlocked(fetchFromServer: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func getUsersWhoBlockedMe(fetchFromServer: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func getBlockedUsers() -> ([Swift.String], [Swift.String])
 }
 extension FlyCore.ContactManager {
   public func updateMyProfile(for myProfile: FlyCommon.FlyProfile, isFromLocal: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
-  public func getFriendsList(fromServer: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func getRegisteredUsers(fromServer: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func getNonChatUsers() -> [FlyCommon.ProfileDetails]
   public func removeProfileImage(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func saveTempContact(userId: Swift.String, name: Swift.String = "") -> FlyCommon.ProfileDetails?
   public func sendContactUsInfo(title: Swift.String, description: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func deleteMyAccountRequest(reason: Swift.String, feedback: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func getUsersList(pageNo: Swift.Int = 1, pageSize: Swift.Int = 50, search: Swift.String = emptyString(), completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func saveUser(profileDetails: FlyCommon.ProfileDetails, saveAs: FlyCommon.ContactType = .unknown)
+  public func getAllUsers() -> [FlyCommon.ProfileDetails]
 }
 extension FlyCore.ContactManager : FlyXmpp.XMPPProfileDelegate {
   public func userRegisterUpdate(jid: Swift.String)

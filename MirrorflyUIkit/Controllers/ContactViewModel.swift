@@ -19,7 +19,7 @@ class ContactViewModel : NSObject
         if fromServer{
             syncContacts()
         }
-        ContactManager.shared.getFriendsList(fromServer: fromServer) {  isSuccess, flyError, flyData in
+        ContactManager.shared.getRegisteredUsers(fromServer: fromServer) {  isSuccess, flyError, flyData in
             var data  = flyData
             if isSuccess {
                 if  let  contactsList = data.getData() as? [ProfileDetails]  {

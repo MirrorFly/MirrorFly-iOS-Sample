@@ -44,7 +44,7 @@ class ContactCell: UITableViewCell {
             name?.textColor = Color.userNameTextColor
         }
         
-        if let range = profile.status.range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive])  {
+        if let range = profile.status.range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive]), ENABLE_CONTACT_SYNC  {
             let convertedRange = NSRange(range, in: profile.status.capitalized)
             let attributedString = NSMutableAttributedString(string: profile.status.capitalized)
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)

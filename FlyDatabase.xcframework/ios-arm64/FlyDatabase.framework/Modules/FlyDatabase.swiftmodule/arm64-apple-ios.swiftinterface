@@ -105,6 +105,7 @@ extension RealmSwift.Realm {
   public func removeRecentChatUser(groupId: Swift.String)
   public func deleteAllRecentChat()
   public func getUnreadMessageAndChatCount() -> (Swift.Int, Swift.Int)
+  public func migrateRecentChat()
   @objc override dynamic public init()
   @objc deinit
 }
@@ -134,6 +135,7 @@ extension RealmSwift.Realm {
   public func updateGroupSync(isSyncNeeded: Swift.Bool, groupJid: Swift.String)
   public func deleteContactsBy(type: FlyCommon.ContactType)
   public func deletedContactUpdate(jid: Swift.String) -> FlyCommon.ProfileDetails?
+  public func getAllAppContacts() -> [FlyCommon.ProfileDetails]
   @objc override dynamic public init()
   @objc deinit
 }
