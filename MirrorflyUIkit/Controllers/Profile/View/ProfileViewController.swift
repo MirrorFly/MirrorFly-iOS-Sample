@@ -516,6 +516,9 @@ extension ProfileViewController {
         }
         let cancelAction = UIAlertAction(title: cancel, style: .cancel)
         
+        cameraAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        galleryAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        cancelAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alertAction.addAction(cameraAction)
         alertAction.addAction(galleryAction)
         if(isImagePicked) {
@@ -550,6 +553,7 @@ extension ProfileViewController {
                     AppAlert.shared.showToast(message: ErrorMessage.noInternet)
                 }
             }
+            removeAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
             alertAction.addAction(removeAction)
         }
         alertAction.addAction(cancelAction)

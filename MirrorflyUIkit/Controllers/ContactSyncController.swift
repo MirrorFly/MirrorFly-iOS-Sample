@@ -158,12 +158,14 @@ class ContactSyncController: UIViewController {
                 }
             }
         }
+        continueAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alertController!.addAction(continueAction)
         let notNowAction = UIAlertAction(title: "Not now", style: .cancel) { [weak self] _ in
             FlyDefaults.isContactPermissionSkipped = true
             ContactSyncManager.shared.syncContacts(){ [weak self] (_, _, _)  in }
             self?.moveToDashboard()
         }
+        notNowAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alertController!.addAction(notNowAction)
         present(alertController!, animated: true)
     }

@@ -38,7 +38,7 @@ class NotificationService: UNNotificationServiceExtension {
             .buildAndInitialize()
         print("#push-api withContentHandler received")
         if payloadType == "media_call" {
-            NotificationExtensionSupport.shared.didReceiveNotificationRequest(request.content.mutableCopy() as? UNMutableNotificationContent,appName: FlyDefaults.appName, onCompletion: { [self] bestAttemptContent in
+            NotificationExtensionSupport.shared.didReceiveNotificationRequest(request.content.mutableCopy() as? UNMutableNotificationContent, appName: FlyDefaults.appName, onCompletion: { [self] bestAttemptContent in
                 if FlyDefaults.hideNotificationContent{
                     bestAttemptContent?.title = FlyDefaults.appName
                 }else{

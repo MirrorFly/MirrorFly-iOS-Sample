@@ -391,6 +391,11 @@ public struct MessageReceipt {
     set
     _modify
   }
+  @FlyCommon.SDKDefaults public static var lastLoginJid: Swift.String {
+    get
+    set
+    _modify
+  }
   @FlyCommon.SDKDefaults public static var roomId: Swift.String {
     get
     set
@@ -482,6 +487,22 @@ public enum MediaDownloadStatus : Swift.Int, Swift.CustomStringConvertible {
   public var rawValue: Swift.Int {
     get
   }
+}
+public struct LoginData : Swift.Codable {
+  public init()
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(_ password: Swift.String, _ currentTimeStamp: Swift.Double)
+}
+public struct UserData {
+  public var email: Swift.String
+  public var image: Swift.String
+  public var mobileNumber: Swift.String
+  public var nickName: Swift.String
+  public var status: Swift.String
+  public var userId: Swift.String
+  public var isAdminBlocked: Swift.Bool
+  public init(email: Swift.String, image: Swift.String, mobileNumber: Swift.String, nickName: Swift.String, status: Swift.String, userId: Swift.String, isAdminBlocked: Swift.Bool)
 }
 public enum ContactType : Swift.String, Swift.CustomStringConvertible {
   case live
@@ -765,22 +786,6 @@ public struct ProfileStatus {
 @objc @_inheritsConvenienceInitializers public class CallUsersModel : ObjectiveC.NSObject {
   @objc override dynamic public init()
   @objc deinit
-}
-public struct LoginData : Swift.Codable {
-  public init()
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
-  public init(_ password: Swift.String, _ currentTimeStamp: Swift.Double)
-}
-public struct UserData {
-  public var email: Swift.String
-  public var image: Swift.String
-  public var mobileNumber: Swift.String
-  public var nickName: Swift.String
-  public var status: Swift.String
-  public var userId: Swift.String
-  public var isAdminBlocked: Swift.Bool
-  public init(email: Swift.String, image: Swift.String, mobileNumber: Swift.String, nickName: Swift.String, status: Swift.String, userId: Swift.String, isAdminBlocked: Swift.Bool)
 }
 public enum MessageType : Swift.String, Swift.CustomStringConvertible {
   case text
@@ -1217,6 +1222,7 @@ public struct FlyConstants {
   public static var appName: Swift.String
   public static var callMediaServer: Swift.String
   public static var callIceServers: Swift.String
+  public static let lastLoginJid: Swift.String
   public struct ErrorMessage {
     public static let internetNotAvailable: Swift.String
     public static let invalidJid: Swift.String

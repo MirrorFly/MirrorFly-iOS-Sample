@@ -56,6 +56,9 @@ class VerifyOTPViewModel : NSObject
         try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: false) { isSuccess, flyError, flyData in
             var data = flyData
             if isSuccess {
+                if  data["newLogin"] as? Bool ?? false{
+                    CallLogManager().deleteCallLogs()
+                }
                 completionHandler(data, nil)
             }else{
                 let error = data.getMessage()

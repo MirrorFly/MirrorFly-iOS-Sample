@@ -595,6 +595,7 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         if isMultiSelect {
             if makeCall {
                 let profile = contacts[indexPath.row]
+                ContactManager.shared.saveUser(profileDetails: profile)
                 if (CallManager.getCallUsersList()?.count ?? 0) + selectedProfilesJid.count  == 7  && !selectedProfilesJid.contains(profile.jid!) {
                     AppAlert.shared.showAlert(view: self, title: "Alert", message: "Only upto 8 members are allowed for a call (including the caller)", buttonTitle: "Ok")
                 }else{

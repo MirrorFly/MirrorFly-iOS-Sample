@@ -38,11 +38,13 @@ class AppActionSheet : NSObject {
                 let alertAction = UIAlertAction(title: title, style: style) { (action) -> Void in
                     sheetCallBack(false, title)
                 }
+                alertAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
                 alertController.addAction(alertAction)
             }
             let cancel = UIAlertAction(title: cancelUppercase, style: .cancel, handler: { (action) -> Void in
                 sheetCallBack(true, cancelUppercase)
             })
+            cancel.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
             alertController.addAction(cancel)
             UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
         }

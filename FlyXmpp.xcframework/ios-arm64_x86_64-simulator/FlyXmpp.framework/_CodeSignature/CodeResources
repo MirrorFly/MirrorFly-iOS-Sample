@@ -14,7 +14,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		+VBIEzSo4yLVgJfwQc+h7FwkcY0=
+		yCth5DAojLaNFYaHmms0lWJHwlQ=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		E/303zyLHYxxF3qHhRr1UOz8wJg=
+		GvZ6VumT7ItSwjqeOGa+4Bikyxc=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		SGhclkriNMMN5HmgjDQzDK3yUsI=
+		Ki1j7rRtrFaxsY4fBjzwrcGOdPM=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -79,7 +79,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			n7xV6RRDKe/eolsrLZoG4wjfWxaO1MFFsyJH4PNe7lI=
+			reDPaquWlEn8X6mrb4Cm2iBCAkd5gpv7dI8hH5CL/Wo=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			d/Yh/s4cXa7sM1CCLTrmryJlpx2p0bYVyWT1xTTGuJA=
+			QMAFj0LbhNY9RHfYGOl+xTW21q8hQIc12MnKObHH+vE=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

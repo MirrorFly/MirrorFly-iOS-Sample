@@ -875,10 +875,15 @@ extension CallViewController {
         //showConfirmationAlertForCallSwitching
         alertController = UIAlertController.init(title: nil , message: "Are you sure you want to switch to Video Call", preferredStyle: .alert)
         let switchAction = UIAlertAction(title: "Switch", style: .default) { [weak self] (action) in
-            self?.isCallConversionRequestedByMe = true
-            self?.showAlertViewWithIndicator()
-            CallManager.requestVideoCallSwitch()
-            self?.VideoCallConversionTimer = Timer.scheduledTimer(timeInterval: 20, target: self ?? CallViewController.self, selector: #selector(self?.videoCallConversionTimer), userInfo: nil, repeats: false)
+            
+            CallManager.requestVideoCallSwitch { isSuccess in
+                if isSuccess {
+                    self?.isCallConversionRequestedByMe = true
+                    self?.showAlertViewWithIndicator()
+                    self?.VideoCallConversionTimer = Timer.scheduledTimer(timeInterval: 20, target: self ?? CallViewController.self, selector: #selector(self?.videoCallConversionTimer), userInfo: nil, repeats: false)
+                }
+            }
+            
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default) { [weak self] (action) in
