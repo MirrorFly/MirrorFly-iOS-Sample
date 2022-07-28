@@ -41,6 +41,7 @@ import _Concurrency
   public static func sendPendingReceiptMessages()
   public static func setMediaEncryption(isEnable: Swift.Bool)
   public func resetFlyDefaults()
+  public func resetSDKData()
   public static func hideNotificationContent(hide: Swift.Bool = false)
   public static func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func enableContactSync(isEnable: Swift.Bool)

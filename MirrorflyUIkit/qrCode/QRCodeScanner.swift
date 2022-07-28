@@ -43,7 +43,6 @@ class QRCodeScanner: UIViewController {
             scannerView?.delegate = self
         }
     }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()

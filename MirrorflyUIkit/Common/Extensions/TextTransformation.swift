@@ -47,8 +47,7 @@ extension String {
     }
     
     func fetchMessageDate(for lastMessageTime : Double) -> String {
-        let date = DateFormatterUtility.shared.convertMillisecondsToDateTime(milliSeconds: lastMessageTime)
-        let time = DateFormatterUtility.shared.convertMillisecondsToTime(milliSeconds: lastMessageTime)
+        let date = DateFormatterUtility.shared.convertMillisecondsToLocalDate(milliSeconds: lastMessageTime)
         var secondsAgo = Int(Date().timeIntervalSince(date))
         if secondsAgo < 0 {
             secondsAgo = secondsAgo * (-1)
@@ -62,7 +61,8 @@ extension String {
         let oneDay = 1 * day
         
         if secondsAgo < oneDay  {
-            return time.getTimeFormat()
+            let time = DateFormatterUtility.shared.convertMillisecondsToLocalTime(milliSeconds: lastMessageTime)
+            return  time
             
         } else if secondsAgo < twoDays {
             let day = secondsAgo/day

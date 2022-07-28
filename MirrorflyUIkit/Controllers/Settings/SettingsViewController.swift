@@ -60,10 +60,7 @@ class SettingsViewController : UIViewController {
                 self?.stopLoading()
                 Utility.saveInPreference(key: isProfileSaved, value: false)
                 Utility.saveInPreference(key: isLoggedIn, value: false)
-                ChatManager.disconnectXMPPConnection()
-                ChatManager.deleteAllGroupMembers()
-                ChatManager.deleteAllRecentChats()
-                ChatManager.deleteAllLocalMesssages()
+                ChatManager.disconnect()
                 var controller : OTPViewController?
                 if #available(iOS 13.0, *) {
                     controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")

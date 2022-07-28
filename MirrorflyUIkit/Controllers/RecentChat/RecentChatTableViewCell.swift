@@ -179,7 +179,7 @@ class RecentChatTableViewCell: UITableViewCell {
         }
         
         let messageTime = chatMessage?.messageChatType == .singleChat ? recentChatMessage.lastMessageTime : DateFormatterUtility.shared.getGroupMilliSeconds(milliSeconds: recentChatMessage.lastMessageTime)
-        
+      
         chatTimeLabel?.text = String().fetchMessageDate(for: messageTime)
         countLabel?.text = recentChatMessage.unreadMessageCount > 99 ? "99+" : String(recentChatMessage.unreadMessageCount)
         chatTimeLabel?.isHidden = false

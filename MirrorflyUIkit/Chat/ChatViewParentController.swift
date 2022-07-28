@@ -425,7 +425,8 @@ class ChatViewParentController: UIViewController,UITextViewDelegate,
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
             self?.dismiss(animated: true,completion: nil)
         }
-        
+        forwardAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        cancelAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alertController?.addAction(cancelAction)
         alertController?.addAction(forwardAction)
         //  let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
@@ -1481,30 +1482,40 @@ extension ChatViewParentController {
     
     func showOptions() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: camera, style: .default, handler: { [weak self] _ in
+        let cameraAction = UIAlertAction(title: camera, style: .default, handler: { [weak self] _ in
             self?.checkCameraPermissionAccess(sourceType: .camera)
-        }))
-        
-        alert.addAction(UIAlertAction(title: gallery, style: .default, handler: { [weak self] _ in
+        })
+        cameraAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        alert.addAction(cameraAction)
+        let photAction = UIAlertAction(title: gallery, style: .default, handler: { [weak self] _ in
             self?.checkForPhotoPermission()
-        }))
-        
-        alert.addAction(UIAlertAction(title: audio, style: .default, handler: {  [weak self] _ in
+        })
+        photAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        alert.addAction(photAction)
+        let audioAction = UIAlertAction(title: audio, style: .default, handler: {  [weak self] _ in
             self?.checkMicrophoneAccess(isOpenAudioFile: true)
-        }))
-        
-        alert.addAction(UIAlertAction(title: contact, style: .default, handler: { [weak self] _ in
+        })
+        audioAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        alert.addAction(audioAction)
+        let contactAction = UIAlertAction(title: contact, style: .default, handler: { [weak self] _ in
             self?.onContact()
-        }))
+        })
         
-        alert.addAction(UIAlertAction(title: location, style: .default, handler: { [weak self] _ in
+        contactAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        alert.addAction(contactAction)
+        
+        let locationAction = UIAlertAction(title: location, style: .default, handler: { [weak self] _ in
             self?.goToMap()
-        }))
+        })
         
-        alert.addAction(UIAlertAction(title: cancel, style: .cancel, handler: { (_) in
+        locationAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        alert.addAction(locationAction)
+        
+        let cancelAction = UIAlertAction(title: cancel, style: .cancel, handler: { (_) in
             
-        }))
-        
+        })
+        cancelAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        alert.addAction(cancelAction)
         present(alert, animated: true, completion: nil)
     }
     

@@ -354,9 +354,7 @@ extension AppDelegate : LogoutDelegate {
         Utility.saveInPreference(key: isProfileSaved, value: false)
         Utility.saveInPreference(key: isLoggedIn, value: false)
         ChatManager.disconnectXMPPConnection()
-        ChatManager.shared.clearAllTablesInDB()
         ChatManager.shared.resetFlyDefaults()
-        CallLogManager().deleteCallLogs()
         var controller : OTPViewController?
         if #available(iOS 13.0, *) {
             controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")

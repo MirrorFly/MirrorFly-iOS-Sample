@@ -32,6 +32,7 @@ class AppAlert: NSObject {
             view.dismiss(animated: true, completion: nil)
             self.onAlertAction?(0)
         }
+        okButton.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alert.addAction(okButton)
         DispatchQueue.main.async {
             view.present(alert, animated: true, completion: nil)
@@ -49,6 +50,7 @@ class AppAlert: NSObject {
             view.dismiss(animated: true, completion: nil)
             self.onAlertAction?(0)
         }
+        okButton.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alert.addAction(okButton)
         DispatchQueue.main.async {
             view.present(alert, animated: true, completion: nil)
@@ -67,7 +69,7 @@ class AppAlert: NSObject {
             self.onAlertAction?(0)
             view.dismiss(animated: true, completion: nil)
         }
-        
+        buttonOne.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         //Button Two Action
         let buttonTwo = UIAlertAction(title: buttonTwoTitle,
                                       style: UIAlertAction.Style.default)
@@ -75,7 +77,7 @@ class AppAlert: NSObject {
             (result : UIAlertAction) -> Void in
             self.onAlertAction?(1)
         }
-        
+        buttonTwo.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alert.addAction(buttonOne)
         alert.addAction(buttonTwo)
 

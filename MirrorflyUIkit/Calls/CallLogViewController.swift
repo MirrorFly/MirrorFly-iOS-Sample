@@ -628,6 +628,34 @@ extension callLogViewController{
                             print(callEndDouble)
                             newLog = callLogRealm.initWithCallID(roomID, fromJID: (dict as AnyObject).value(forKey: "fromUser") as? String , toJID: (dict as AnyObject).value(forKey: "toUser") as? String, callerDevice: "ios", callType: (dict as AnyObject).value(forKey: "callType") as? String , callingTime: (dict as AnyObject).value(forKey: "callTime") as! Double, callStartTime: callStartDouble, callEndTime: callEndDouble, callState: callStateFinal, callMode: (dict as AnyObject).value(forKey: "callMode") as! String , usersList: (dict as AnyObject).value(forKey: "userList") as! String, groupId: (dict as AnyObject).value(forKey: "group_id") as? String)
                         }
+                        
+                        if let usersString = (dict as AnyObject).value(forKey: "userList") as? String, usersString.contains(",") {
+                            var userList = usersString.components(separatedBy: ",")
+                            userList.removeAll { jid in
+                                jid == FlyDefaults.myJid
+                            }
+                            for item in userList{
+                                if ContactManager.shared.getUserProfileDetails(for: item) == nil{
+                                    print("#callFEtch for item \(item)")
+                                    try? ContactManager.shared.getUserProfile(for: item, fetchFromServer: true){ _, _, _ in }
+                                }
+                            }
+                        }
+                        
+                        if let groupid = (dict as AnyObject).value(forKey: "group_id") as? String, !groupid.isEmpty{
+                            if ContactManager.shared.getUserProfileDetails(for: groupid) == nil{
+                                print("#callFEtch group  \(groupid)")
+                               try? GroupManager.shared.getGroupProfile(groupJid: groupid, fetchFromServer: true) { _, _, _ in }
+                            }
+                        }else if let callMode =  (dict as AnyObject).value(forKey: "callMode") as? String , callMode == "onetoone" {
+                            var jidString = emptyString()
+                            if let fromUser = (dict as AnyObject).value(forKey: "fromUser") as? String , let toUser = (dict as AnyObject).value(forKey: "toUser") as? String{
+                                jidString = fromUser == FlyDefaults.myJid ? toUser : fromUser
+                                if ContactManager.shared.getUserProfileDetails(for: jidString) == nil{
+                                    print("#callFEtch onetoone  \(jidString)")
+                                    try? ContactManager.shared.getUserProfile(for: jidString, fetchFromServer: true){ _, _, _ in }
+                                }                            }
+                        }
                         // TODO: have to insert sessionStatus, inviteUserList
                         newLog?["isLogSync"] = true
                         callLogs.add(newLog as Any)
@@ -827,7 +855,7 @@ extension callLogViewController : ProfileEventsDelegate{
     }
     
     func userProfileFetched(for jid: String, profileDetails: ProfileDetails?) {
-            
+        callLogTableView.reloadData()
     }
     
     func myProfileUpdated() {

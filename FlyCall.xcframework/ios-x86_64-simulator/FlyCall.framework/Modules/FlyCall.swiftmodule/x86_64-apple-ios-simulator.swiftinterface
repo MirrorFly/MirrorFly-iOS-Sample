@@ -349,7 +349,7 @@ public protocol CallManagerDelegate {
   public class func isRemoteVideoMuted(_ userId: Swift.String) -> Swift.Bool
   @objc public class func setAppGroupContainerId(id: Swift.String)
   public class func switchCamera()
-  public class func requestVideoCallSwitch()
+  public class func requestVideoCallSwitch(onCompletion: @escaping (Swift.Bool) -> Swift.Void)
   public class func cancelVideoCallSwitch()
   public class func isCallConversionRequestAvailable() -> Swift.Bool
   public class func acceptVideoCallSwitchRequest()

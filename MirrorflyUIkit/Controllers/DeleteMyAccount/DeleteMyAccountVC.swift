@@ -72,7 +72,7 @@ class DeleteMyAccountVC: UIViewController, UITextFieldDelegate {
         if !mobileNumber.isEmpty{
     
             let accountCountryCode = FlyDefaults.myMobileNumber.replacingOccurrences(of: mobileNumber, with: "").replacingOccurrences(of: "+", with: "").replacingOccurrences(of: " ", with: "")
-            let accountNumber = FlyDefaults.myMobileNumber.replacingOccurrences(of: accountCountryCode, with: "").replacingOccurrences(of: "+", with: "").replacingOccurrences(of: " ", with: "")
+            let accountNumber = FlyDefaults.myMobileNumber.substring(from: accountCountryCode.count).replacingOccurrences(of: "+", with: "").replacingOccurrences(of: " ", with: "")
             
             
             if mobileNumber == accountNumber{

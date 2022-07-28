@@ -333,13 +333,9 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         textMessageTimeLabel?.isAccessibilityElement =  true
         textMessageTimeLabel?.accessibilityLabel = Utility.currentMillisecondsToTime(milliSec: timeStamp)
         textMessageTimeLabel?.text = Utility.currentMillisecondsToTime(milliSec: timeStamp)
-        let convertTimeStamp = timeStamp / 1000
-        let date2 = Date(timeIntervalSince1970: (Double(convertTimeStamp) / 1000.0))
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeStyle = .short
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        let str = utcToLocal(dateStr:dateFormatter.string(from: date2))
-       textMessageTimeLabel?.text = str
+        textMessageTimeLabel?.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
+        
+        
         self.isAccessibilityElement = true
         self.accessibilityLabel = message?.messageId
         favouriteImageView?.accessibilityLabel = message?.messageId
