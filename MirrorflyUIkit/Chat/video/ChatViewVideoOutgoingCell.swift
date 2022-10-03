@@ -54,14 +54,19 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     @IBOutlet weak var forwardButton: UIButton?
     @IBOutlet weak var quickFwdBtn: UIButton?
     
+    @IBOutlet weak var videoTimeStackView: UIStackView!
     @IBOutlet weak var captionHolder: UIView!
     var message : ChatMessage?
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     var selectedForwardMessage: [SelectedForwardMessage]? = []
     var sendMediaMessages: [ChatMessage]? = []
+    var imageGeasture: UITapGestureRecognizer!
+    
     
     @IBOutlet weak var captionLabelTime: UILabel!
     @IBOutlet weak var captionStatus: UIImageView!
+    
+    var isFromBack: Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -81,6 +86,9 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         progressLoader?.primaryColor = .white
         progressLoader?.secondaryColor = .clear
         progressLoader?.determinateAnimationDuration = 0
+        
+        imageGeasture = UITapGestureRecognizer()
+        imageContainer?.addGestureRecognizer(imageGeasture)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -116,7 +124,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+        if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .failed || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
             quickfwdView?.isHidden = true
             quickFwdBtn?.isHidden = true
             isAllowSwipe = false
@@ -136,7 +144,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
            mediaLocationMapView?.isHidden = true
            if replyMessage?.mediaChatMessage != nil {
                messageTypeIcon?.isHidden = false
-              
+               
                switch replyMessage?.mediaChatMessage?.messageType {
                case .image:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderCamera" : "receiverCamera")
@@ -149,7 +157,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                    replyWithoutMediaCons?.isActive = false
                    replyWithMediaCOns?.isActive = true
                case .audio:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
+                   ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: message)
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
                    replyWithoutMediaCons?.isActive = true
@@ -162,6 +170,12 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                        mediaMessageImageView?.image = image
                        replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyWithoutMediaCons?.isActive = false
+                   replyWithMediaCOns?.isActive = true
+               case .document:
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
+                   checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaMessageImageView)
+                   replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    replyWithoutMediaCons?.isActive = false
                    replyWithMediaCOns?.isActive = true
                default:
@@ -245,11 +259,38 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             videoTimeLabel.text = ""
         }
         
+        if (message?.messageType == .image && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) {
+            if let localPath = message?.mediaChatMessage?.mediaFileName {
+                let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+                    let data = NSData(contentsOf: fileURL)
+                    let image = UIImage(data: data! as Data)
+                    imageContainer?.image = image
+                }
+            }
+            else {
+                if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer, base64String: thumImage)
+                }
+            }
+        }
+        else {
         if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
             ChatUtils.setThumbnail(imageContainer: imageContainer, base64String: thumImage)
         }
+        }
         
         mediaStatus(message: message)
+        
+        if message?.messageType == .image {
+            playButton.isHidden = true
+            videoTimeStackView.isHidden = true
+        }
+        else {
+            videoTimeStackView.isHidden = false
+        }
         
         messageStatus(message: message)
         
@@ -266,11 +307,28 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     func mediaStatus(message: ChatMessage?) {
         switch message?.mediaChatMessage?.mediaUploadStatus {
         case .not_uploaded:
+//            if isFromBack {
+//                isFromBack = false
+//                playButton.isHidden = true
+//                progressLoader?.isHidden = true
+//                progressView?.isHidden = true
+//                retryButton?.isHidden = false
+//                uploadView?.isHidden = false
+//            } else {
+                playButton.isHidden = true
+                progressLoader?.isHidden = true
+                progressView?.isHidden = true
+                retryButton?.isHidden = false
+                uploadView?.isHidden = false
+             //   progressLoader.transition(to: .indeterminate)
+           // }
+            
+        case .failed:
             playButton.isHidden = true
             progressLoader?.isHidden = true
+            progressView?.isHidden = true
             retryButton?.isHidden = false
             uploadView?.isHidden = false
-            progressView?.isHidden = true
             
         case .uploading:
             let progrss = message?.mediaChatMessage?.mediaProgressStatus ?? 0
@@ -309,9 +367,11 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     func messageStatus(message: ChatMessage?) {
         switch message?.messageStatus {
         case .notAcknowledged:
-        self.msgStatus.image = UIImage.init(named: ImageConstant.ic_hour)
-        self.msgStatus.accessibilityLabel = notAcknowledged.localized
-        break
+            self.msgStatus.image = UIImage.init(named: ImageConstant.ic_hour)
+            self.msgStatus.accessibilityLabel = notAcknowledged.localized
+            self.captionStatus.image = UIImage.init(named: ImageConstant.ic_hour)
+            self.captionStatus.accessibilityLabel = notAcknowledged.localized
+            break
         case .sent:
             self.msgStatus.image = UIImage.init(named: ImageConstant.ic_hour)
             self.msgStatus.accessibilityLabel = sent.localized

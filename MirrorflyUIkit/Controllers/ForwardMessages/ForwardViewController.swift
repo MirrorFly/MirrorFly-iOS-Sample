@@ -165,6 +165,17 @@ class ForwardViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
     }
     
+    func checkMemberOfGroup(index: Int,recentChat: RecentChat) -> Bool? {
+        if recentChat.profileType == .groupChat && !isParticipantExist(index: index).doesExist {
+            return true
+        }
+        return false
+    }
+    
+    func isParticipantExist(index: Int) -> (doesExist : Bool, message : String) {
+        return GroupManager.shared.isParticiapntExistingIn(groupJid:  getRecentChat[index].jid, participantJid: FlyDefaults.myJid)
+    }
+    
     func getLastMesssage() -> [ChatMessage]? {
         var chatMessage: [ChatMessage] = []
         let filteredObj = isSearchEnabled == true ? getRecentChat.filter({$0.lastMessageType == .video || $0.lastMessageType == .image}) : getAllRecentChat.filter({$0.lastMessageType == .video || $0.lastMessageType == .image})
@@ -200,7 +211,15 @@ class ForwardViewController: UIViewController {
                 let array = isSearchEnabled == true ? filteredContactList : allContactsList
                 array.enumerated().forEach { (index,element) in
                     if element.jid == profile?.jid {
-                        vc?.contactColor =  randomColors[index] ?? .gray
+                        let hashcode = profile?.name.hashValue
+                        if let hash = hashcode {
+                            let color = randomColors[abs(hash) % randomColors.count]
+                            vc?.contactColor =  color ?? .gray //randomColors[index]
+                        }
+                        else {
+                            vc?.contactColor = .gray
+                        }
+                        
                     }
                 }
             case 1:
@@ -350,16 +369,25 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    private func getBlocked(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlocked ?? false
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell) {
             switch segmentSelectedIndex {
             case 0:
                 let contactDetails = isSearchEnabled == true ? filteredContactList[indexPath.row] : allContactsList[indexPath.row]
+                if getBlocked(jid: contactDetails.jid) {
+                    cell.contentView.alpha = 0.6
+                } else {
+                    cell.contentView.alpha = 1.0
+                }
                 cell.nameUILabel?.text = getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType)
                 cell.statusUILabel?.text = contactDetails.status
                 let hashcode = contactDetails.name.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
-                cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType)
+                cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType, jid: contactDetails.jid)
                 cell.checkBoxImageView?.image = selectedJids.contains(contactDetails.jid) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
                 cell.setTextColorWhileSearch(searchText: searchTerm, profileDetail: contactDetails)
                 cell.statusUILabel?.isHidden = false
@@ -372,15 +400,21 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 let hashcode = recentChatDetails.profileName.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
                 cell.setRecentChatDetails(recentChat: recentChatDetails, color: color ?? .gray)
-                cell.hideLastMessageContentInfo()
+                cell.showLastMessageContentInfo()
                 cell.statusUILabel?.isHidden = false
                 cell.removeButton?.isHidden = true
                 cell.removeIcon?.isHidden = true
+                cell.statusUILabel?.text = recentChatDetails.lastMessageContent + (recentChatDetails.lastMessageType?.rawValue ?? "")
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).count : getAllRecentChat.filter({$0.profileType == .groupChat}).count)
             case 2:
                 showHideEmptyMessage(totalCount: 0)
             case 3:
                 let recentChatDetails = isSearchEnabled == true ? getRecentChat[indexPath.row] : getAllRecentChat[indexPath.row]
+                if getBlocked(jid: recentChatDetails.jid) {
+                    cell.contentView.alpha = 0.6
+                } else {
+                    cell.contentView.alpha = 1.0
+                }
                 let hashcode = recentChatDetails.profileName.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
                 cell.setRecentChatDetails(recentChat: recentChatDetails, color: color ?? .gray)
@@ -388,7 +422,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 if recentChatDetails.profileType == .singleChat {
                     cell.statusUILabel?.text = recentChatDetails.lastMessageType == .text ? recentChatDetails.lastMessageContent : recentChatDetails.lastMessageType?.rawValue
                 } else {
-                    cell.statusUILabel?.text = recentChatDetails.lastMessageContent
+                    cell.statusUILabel?.text = recentChatDetails.lastMessageContent + (recentChatDetails.lastMessageType?.rawValue ?? "")
                 }
                 cell.statusUILabel?.isHidden = false
                 cell.removeButton?.isHidden = true
@@ -407,6 +441,10 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
         case 0:
             switch isSearchEnabled  {
             case true:
+                if getBlocked(jid: filteredContactList[indexPath.row].jid) {
+                    showBlockUnblockConfirmationPopUp(jid: filteredContactList[indexPath.row].jid, name: filteredContactList[indexPath.row].nickName)
+                    return
+                }
                 var profile = Profile()
                 profile.profileName = filteredContactList[indexPath.row].name
                 profile.jid = filteredContactList[indexPath.row].jid
@@ -433,6 +471,10 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 }
                 forwardTableView?.reloadRows(at: [indexPath], with: .none)
             case false:
+                if getBlocked(jid: allContactsList[indexPath.row].jid) {
+                    showBlockUnblockConfirmationPopUp(jid: allContactsList[indexPath.row].jid, name: allContactsList[indexPath.row].nickName)
+                    return
+                }
                 var profile = Profile()
                 profile.profileName = allContactsList[indexPath.row].name
                 profile.jid = allContactsList[indexPath.row].jid
@@ -462,8 +504,12 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
         case 1:
             switch isSearchEnabled  {
             case true:
+                if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
+                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                    return
+                }
                 var profile = Profile()
-                profile.profileName = getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].profileName
+                profile.profileName = getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row].profileName
                 profile.jid = getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
                 profile.isSelected = !(profile.isSelected ?? false)
                 saveUserToDatabase(jid: profile.jid)
@@ -472,7 +518,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
                     selectedMessages.append(profile)
                     selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count > 0 {
+                } else if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row].jid}).count > 0 {
                     selectedMessages.enumerated().forEach({ (index,item) in
                         if item.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
                             if index <= selectedMessages.count {
@@ -488,6 +534,10 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 }
                 forwardTableView?.reloadRows(at: [indexPath], with: .none)
             case false:
+                if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
+                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                    return
+                }
                 var profile = Profile()
                 profile.profileName = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].profileName
                 profile.jid = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
@@ -519,6 +569,14 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
         case 3:
             switch isSearchEnabled  {
             case true:
+                if checkMemberOfGroup(index: indexPath.row, recentChat: getRecentChat[indexPath.row]) == true {
+                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                    return
+                }
+                if getBlocked(jid: getRecentChat[indexPath.row].jid) {
+                    showBlockUnblockConfirmationPopUp(jid: getRecentChat[indexPath.row].jid, name: getRecentChat[indexPath.row].nickName)
+                    return
+                }
                 var profile = Profile()
                 profile.profileName = getRecentChat[indexPath.row].profileName
                 profile.jid = getRecentChat[indexPath.row].jid
@@ -545,6 +603,14 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 }
                 forwardTableView?.reloadRows(at: [indexPath], with: .none)
             case false:
+                if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
+                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                    return
+                }
+                if getBlocked(jid: getAllRecentChat[indexPath.row].jid) {
+                    showBlockUnblockConfirmationPopUp(jid: getAllRecentChat[indexPath.row].jid,name: getAllRecentChat[indexPath.row].nickName)
+                    return
+                }
                 var profile = Profile()
                 profile.profileName = getAllRecentChat[indexPath.row].profileName
                 profile.jid = getAllRecentChat[indexPath.row].jid
@@ -752,11 +818,11 @@ extension ForwardViewController : ProfileEventsDelegate {
     }
     
     func userBlockedMe(jid: String) {
-        
+        loadChatList()
     }
     
     func userUnBlockedMe(jid: String) {
-        
+        loadChatList()
     }
     
     func hideUserLastSeen() {
@@ -1229,4 +1295,54 @@ extension ForwardViewController : UIScrollViewDelegate {
         }
     }
     
+}
+
+extension ForwardViewController {
+    private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
+        //showConfirmationAlert
+        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(getProfileDetails?.nickName ?? "")?" : "Block \(self.getProfileDetails?.nickName ?? "")?", preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
+            self?.dismiss(animated: true,completion: nil)
+        }
+        let blockAction = UIAlertAction(title: getBlocked(jid: jid) ? ChatActions.unblock.rawValue : ChatActions.block.rawValue, style: .default) { [weak self] (action) in
+            if !(self?.getBlocked(jid: jid) ?? false) {
+                self?.blockUser(jid:jid, name: name)
+            } else {
+                self?.UnblockUser(jid:jid, name: name)
+            }
+        }
+        alertViewController.addAction(cancelAction)
+        alertViewController.addAction(blockAction)
+        alertViewController.preferredAction = cancelAction
+        present(alertViewController, animated: true)
+    }
+    
+    //MARK: BlockUser
+    private func blockUser(jid: String?,name: String?) {
+        do {
+            try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
+                executeOnMainThread { [weak self] in
+                    self?.loadChatList()
+                    AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                }
+            }
+        } catch let error as NSError {
+            print("block user error: \(error)")
+        }
+    }
+    
+    //MARK: UnBlockUser
+    private func UnblockUser(jid: String?,name: String?) {
+        do {
+            try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
+                executeOnMainThread { [weak self] in
+                    self?.loadChatList()
+                    AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                }
+            }
+        } catch let error as NSError {
+            print("block user error: \(error)")
+        }
+    }
 }

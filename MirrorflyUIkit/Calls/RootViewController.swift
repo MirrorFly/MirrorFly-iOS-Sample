@@ -136,10 +136,35 @@ extension RootViewController : CallManagerDelegate {
 extension RootViewController {
     
     public func initCallSDK(){
-        try! CallManager.initCallSDK()
+        
         if callViewController == nil {
             callViewController = UIStoryboard(name: "Call", bundle: nil).instantiateViewController(withIdentifier: "CallViewController") as? CallViewController
         }
+        
+        do {
+            try CallManager.initCallSDK()
+        }
+        catch(let error ) {
+            var iceServerList = [RTCIceServer]()
+            let iceServer = RTCIceServer.init(urlStrings: ["turn:stun.contus.us:3478"], username: "contus", credential: "SAE@admin")
+            iceServerList.append(iceServer)
+            let iceServer1 = RTCIceServer.init(urlStrings: ["stun:stun.l.google.com:19302"], username: "", credential: "")
+            iceServerList.append(iceServer1)
+            
+            
+            try! CallSDK.Builder.setUserId(id: FlyDefaults.myJid)
+                .setDomainBaseUrl(baseUrl: BASE_URL)
+                .setSignalSeverUrl(url: SOCKETIO_SERVER_HOST)
+                .setJanusSeverUrl(url: JANUS_URL)
+                .setAppGroupContainerID(containerID: CONTAINER_ID)
+                .setICEServersList(iceServers: iceServerList)
+                .setCallDelegate(delegate: RootViewController.sharedInstance)
+                .setCallViewController(viewController: callViewController!)
+                .buildAndInitialize()
+            
+            
+        }
+        
         CallManager.setCallViewController(callViewController!)
         CallManager.setCallEventsDelegate(delegate:  RootViewController.sharedInstance)
         

@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.695832127329-qno5q17plh1tdbif57jtf05sakmb9o08</string>
+				<string>com.googleusercontent.apps.795200382606-1nkgsrm42trtrob0fknbau4drrjseqsp</string>
 			</array>
 		</dict>
 	</array>
@@ -44,25 +44,26 @@
 	<array>
 		<string>comgooglemaps</string>
 		<string>comgooglemaps-x-callback</string>
+		<string>file</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>MirrorFly uses your camera to take photos and for video calls.</string>
+	<string>We need this permission to capture and share photos and videos to your friends as well as to make video calls to your friends within MirrorFly</string>
 	<key>NSContactsUsageDescription</key>
-	<string>MirrorFly uses your contacts to find users you know. we do not store your contacts on the server.</string>
+	<string>This app relies on read access to your contacts. We require access to this permission to find your contacts in our database and suggest people you know. We will not store any contact info in our database if they are not a part of our platform. For further info read our privacy policy.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>MirrorFly needs access to your location in order to share your current loction.</string>
+	<string>We need this permission to share your location to your friends within MirrorFly</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>MirrorFly needs access to your location in order to share your current loction.</string>
+	<string>We need this permission to share your location to your friends within MirrorFly</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>MirrorFly needs access to your location in order to share your current loction.</string>
+	<string>We need this permission to share your location to your friends within MirrorFly</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Mirrorfly needs microphone access for uploading audios and videos</string>
+	<string>We need this permission to send recorded voice messages to your friends and to make calls within MirrorFly</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This lets you save photo in your photo library</string>
+	<string>We need this permission to share your photos and videos to your friends from your photo library within MirrorFly</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow UI kit to access photos, media and files on your device ?</string>
+	<string>We need this permission to share your photos and videos to your friends from your photo library within MirrorFly</string>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

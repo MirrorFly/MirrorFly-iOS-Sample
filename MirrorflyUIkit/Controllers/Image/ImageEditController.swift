@@ -14,7 +14,7 @@ import FlyCommon
 import GrowingTextViewHandler_Swift
 
 protocol EditImageDelegate: class {
-    func selectedImages(images: [ImageData])
+    func sendMedia(media : [MediaData])
 }
 
 class ImageEditController: UIViewController {
@@ -35,6 +35,7 @@ class ImageEditController: UIViewController {
     
     var growingTextViewHandler:GrowingTextViewHandler?
     public var imageAray = [ImageData]()
+    public var mediaData = [MediaData]()
     public var selectedAssets = [PHAsset]()
     var imageEditIndex = Int()
     var botmImageIndex = Int()
@@ -42,36 +43,60 @@ class ImageEditController: UIViewController {
     var profileName = ""
     var captionText: String?
     public var iscamera = false
+    var mediaProcessed = [String]()
+    
+    let backgroundQueue = DispatchQueue.init(label: "mediaQueue")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         captionTxt?.inputAccessoryView = UIView()
         captionTxt?.inputAccessoryView?.tintColor = .clear
-        checkForSlowMotionVideo()
         keyboardView = captionTxt?.inputAccessoryView
+        DispatchQueue.main.async { [weak self] in
+            self?.startLoading(withText: "Processing")
+        }
+        backgroundQueue.async { [weak self] in
+            _ = self?.getAssetsImageInfo(assets: self!.selectedAssets)
+        }
         setupUI()
     }
     
     private func checkForSlowMotionVideo() {
         imageAray.enumerated().forEach { (index, imageData) in
             if imageData.isVideo {
-                if let phAsset = imageData.videoUrl {
-                    PHCachingImageManager().requestAVAsset(forVideo: phAsset, options: nil) { [weak self] (asset, audioMix, args) in
-                        if let avComposition = asset as? AVComposition {
-                            DispatchQueue.main.async {
+                if let phAsset = imageData.phAsset {
+                    print("#media iteration  \(index)")
+                    MediaUtils.processVideo(phAsset: phAsset) { [weak self]  phAsset, status, url, isSlowMo  in
+                        switch status {
+                        case .processing:
+                            DispatchQueue.main.async { [weak self] in
                                 self?.startLoading(withText: processingVideo)
                             }
-                            ChatUtils.compressSlowMotionVideo(asset: avComposition, onCompletion: { isSuccess, url in
-                                DispatchQueue.main.async {
+                            break
+                        case .success:
+                            if let processedURL = url {
+                                self?.imageAray[index].processedVideoURL = processedURL
+                                self?.imageAray[index].isSlowMotion = isSlowMo
+                            }
+                            let unProcessedvideos = self?.imageAray.filter { item in
+                                item.isVideo
+                            }.filter { item in
+                                item.processedVideoURL == nil
+                            }
+                            DispatchQueue.main.async { [weak self] in
+                                print("#media unProcessedvideos count \(unProcessedvideos?.count ?? 0)")
+                                if (unProcessedvideos?.count ?? -1) == 0{
                                     self?.stopLoading()
                                 }
-                                if isSuccess {
-                                    if let tempUrl = url {
-                                        self?.imageAray[index].slowMotionVideoUrl = tempUrl
-                                        self?.imageAray[index].isSlowMotion = true
-                                    }
-                                }
-                            })
+                            }
+                            break
+                        case .failed:
+                            fallthrough
+                        @unknown default:
+                            DispatchQueue.main.async { [weak self] in
+                                self?.stopLoading()
+                            }
                         }
                     }
                 }
@@ -133,13 +158,13 @@ class ImageEditController: UIViewController {
     }
     
     private func showHideDeleteView() {
-        deleteViw.isHidden = imageAray.count == 1 ? true : false
+        deleteViw.isHidden = selectedAssets.count == 1 ? true : false
     }
     
     private func showHideAddMoreOption() {
-        addMoreButton?.isUserInteractionEnabled = imageAray.count == 5 ? false : true
-        addMoreButton?.alpha = imageAray.count == 5 ? 0.4 : 1.0
-        addImage?.alpha = imageAray.count == 5 ? 0.4 : 1.0
+        addMoreButton?.isUserInteractionEnabled = selectedAssets.count == 5 ? false : true
+        addMoreButton?.alpha = selectedAssets.count == 5 ? 0.4 : 1.0
+        addImage?.alpha = selectedAssets.count == 5 ? 0.4 : 1.0
     }
     
     @objc func appMovedToBackground() {
@@ -156,13 +181,80 @@ class ImageEditController: UIViewController {
     
     @IBAction func sendAction(_ sender: Any) {
         view.endEditing(true)
-        navigationController?.popViewController(animated: true)
         if let captionText = captionTxt {
             captionTxt?.resignFirstResponder()
             textViewDidEndEditing(captionText)
         }
         DispatchQueue.main.async { [weak self] in
-            self?.delegate?.selectedImages(images: self?.imageAray ?? [])
+            self?.startLoading( withText: "Compressing 1 of \((self?.imageAray.count ?? 0)!)")
+        }
+        print("#media : ImageEditController sendAction \(imageAray.count)")
+        mediaProcessed = imageAray.compactMap({ data in
+            data.fileName
+        })
+        mediaData.removeAll()
+        backgroundQueue.async{ [weak self] in
+            self?.imageAray.enumerated().forEach { (index, item) in
+                print("#media : ImageEditController \(index) \(item.caption)  \(item.fileName) \(item.mediaType) \(item.fileSize) ")
+                if item.isVideo{
+                    if let processedVideoURL = item.processedVideoURL, !item.inProgress{
+                        print("#media size before \(item.fileSize)")
+                        self?.imageAray[index].inProgress = true
+                        MediaUtils.compressVideo(videoURL:processedVideoURL) { [weak self] isSuccess, url, fileName, fileKey, fileSize , duration in
+                            if let compressedURL = url{
+                                print("#media size before \(item.fileSize)")
+                                self?.imageAray[index].isCompressed = true
+                                _ = self?.mediaProcessed.popLast()
+                                var media = MediaData()
+                                media.mediaType = .video
+                                media.fileURL = compressedURL
+                                media.fileName = fileName
+                                media.fileSize = fileSize
+                                media.fileKey = fileKey
+                                media.duration = duration
+                                media.base64Thumbnail = self?.imageAray[index].base64Image ?? emptyString()
+                                media.caption = self?.imageAray[index].caption ?? emptyString()
+                                self?.mediaData.append(media)
+                                self?.backToConversationScreen()
+                            }
+                        }
+                    }
+                }else{
+                    print("#media size before \(item.fileSize)")
+                    if let (data, fileName ,localFilePath,fileKey,fileSize) = MediaUtils.compressImage(imageData : item.mediaData!){
+                        print("#media size after \(fileSize)")
+                        self?.imageAray[index].isCompressed = true
+                        var media = MediaData()
+                        media.mediaType = .image
+                        media.fileURL = localFilePath
+                        media.fileName = fileName
+                        media.fileSize = fileSize
+                        media.fileKey = fileKey
+                        media.base64Thumbnail = self?.imageAray[index].base64Image ?? emptyString()
+                        media.caption = self?.imageAray[index].caption ?? emptyString()
+                        self?.mediaData.append(media)
+                    }
+                    
+                    _ =  self?.mediaProcessed.popLast()
+                    self?.backToConversationScreen()
+                }
+                
+            }
+        }
+    }
+    
+    
+    public func backToConversationScreen(){
+        DispatchQueue.main.async { [weak self] in
+            print("#media : ImageEditController backToConversationScreen  \(self!.imageAray.count)")
+            self?.stopLoading()
+            if self?.mediaProcessed.isEmpty ?? false{
+                self?.navigationController?.popViewController(animated: true)
+//                self?.delegate?.selectedImages(images: self?.imageAray ?? [])
+                self?.delegate?.sendMedia(media: self?.mediaData ?? [])
+            }else{
+                self?.startLoading(withText: "Compressing \((self?.imageAray.filter{$0.isCompressed == true}.count ?? 1) + 1) of \((self?.imageAray.count ?? 0)!)")
+            }
         }
     }
     
@@ -176,6 +268,7 @@ class ImageEditController: UIViewController {
             self.refresh()
             self.showHideDeleteView()
             self.showHideAddMoreOption()
+            self.setCaption()
         })
         self.botomCollection.reloadData()
         }
@@ -224,50 +317,49 @@ class ImageEditController: UIViewController {
         presentImagePicker(imagePicker, select: { [weak self] (asset) in
             // User selected an asset. Do something with it. Perhaps begin processing/upload?
             if let strongSelf = self {
-            if  let assetName = asset.value(forKey: "filename") as? String {
-                let fileExtension = URL(fileURLWithPath: assetName).pathExtension
-                if ChatUtils.checkImageFileFormat(format: fileExtension) {
+                if  let assetName = asset.value(forKey: "filename") as? String {
+                    let fileExtension = URL(fileURLWithPath: assetName).pathExtension
+                    if ChatUtils.checkImageFileFormat(format: fileExtension) {
                         strongSelf.selectedAssets.append(asset)
-                } else if asset.mediaType == PHAssetMediaType.video {
-                    strongSelf.selectedAssets.append(asset)
-                } else {
-                    AppAlert.shared.showToast(message: fileformat_NotSupport)
+                    } else if asset.mediaType == PHAssetMediaType.video {
+                        strongSelf.selectedAssets.append(asset)
+                    } else {
+                        AppAlert.shared.showToast(message: fileformat_NotSupport)
+                    }
                 }
             }
-        }
             if imagePicker.selectedAssets.count > 4 {
                 AppAlert.shared.showToast(message: ErrorMessage.restrictedMoreImages)
             }
         }, deselect: { [weak self] (asset) in
             // User deselected an asset. Cancel whatever you did when asset was selected.
-        if let strongSelf = self {
-            strongSelf.selectedAssets.enumerated().forEach { index , element in
-                if element == asset {
-                    strongSelf.selectedAssets.remove(at: index)
+            if let strongSelf = self {
+                strongSelf.selectedAssets.enumerated().forEach { index , element in
+                    if element == asset {
+                        strongSelf.selectedAssets.remove(at: index)
+                    }
                 }
             }
-        }
         }, cancel: { (assets) in
             // User canceled selection.
         }, finish: { [weak self] (assets) in
             if let strongSelf = self {
-            // User finished selection assets.
-            let imgagesAry = strongSelf.getAssetThumbnail(assets: strongSelf.selectedAssets)
                 strongSelf.imageAray.removeAll()
-            for image in imgagesAry {
-                let isVideo = image.isVideo
-                let videoUrl = isVideo ? image.videoUrl : nil
-                let imgData: ImageData = ImageData(image: image.image, caption: nil, isVideo: isVideo, videoUrl: videoUrl, isSlowMotion: false)
-                strongSelf.imageAray.append(imgData)
-                strongSelf.topCollection?.reloadData()
-            if !strongSelf.iscamera {
-                strongSelf.botomCollection.reloadData()
-            }
-                strongSelf.setDefault()
-                strongSelf.showHideDeleteView()
-                strongSelf.showHideAddMoreOption()
-            }
-            self?.checkForSlowMotionVideo()
+                DispatchQueue.main.async { [weak self] in
+                    self?.startLoading(withText: "Processing")
+                }
+                self?.backgroundQueue.async { [weak self] in
+                    _ = self?.getAssetsImageInfo(assets: assets)
+                    DispatchQueue.main.async {
+                        if !strongSelf.iscamera {
+                            strongSelf.botomCollection.reloadData()
+                        }
+                        strongSelf.setDefault()
+                        strongSelf.showHideDeleteView()
+                        strongSelf.showHideAddMoreOption()
+                    }
+                }
+                
             }
         })
     }
@@ -311,7 +403,7 @@ class ImageEditController: UIViewController {
                 if let data = data {
                     if  let  img = UIImage(data: data) {
                         if ChatUtils.checkImageFileFormat(format: fileExtension) {
-                            let imageDetail: ImageData = ImageData(image: img, caption: nil, isVideo: false, videoUrl: nil, isSlowMotion: false)
+                            let imageDetail: ImageData = ImageData(image: img, caption: nil, isVideo: false, phAsset: nil, isSlowMotion: false)
                             arrayOfImages.append(imageDetail)
                         }
                     }
@@ -319,7 +411,7 @@ class ImageEditController: UIViewController {
             } else if asset.mediaType == PHAssetMediaType.video {
                 if let data = data {
                   if  let  image = UIImage(data: data) {
-                      let imageDetail: ImageData = ImageData(image: image, caption: nil, isVideo: true, videoUrl: asset, isSlowMotion: false)
+                      let imageDetail: ImageData = ImageData(image: image, caption: nil, isVideo: true, phAsset: asset, isSlowMotion: false)
                     arrayOfImages.append(imageDetail)
                     }
                 }
@@ -445,7 +537,7 @@ extension ImageEditController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func setCaption() {
-        if imageEditIndex <= imageAray.count {
+        if imageEditIndex <= imageAray.count && !(imageAray.isEmpty) {
             let imgDetail = imageAray[imageEditIndex]
             if let caption = imgDetail.caption, caption != "" {
                 captionTxt?.text = imgDetail.caption
@@ -547,7 +639,7 @@ extension ImageEditController {
         let index = sender.tag
         print("indexPath.row: \(index)")
         let imageDetail = imageAray[index]
-        playVideo(view: self, phAsset: imageDetail.videoUrl)
+        playVideo(view: self, phAsset: imageDetail.phAsset)
     }
     
     func playVideo (view:UIViewController, phAsset: PHAsset?) {
@@ -582,6 +674,38 @@ extension ImageEditController {
                 }
             }
         }
+    }
+    
+    func getAssetsImageInfo(assets: [PHAsset]){
+        var isSuccess = true
+        if assets.count > 0 {
+            for asset in assets {
+                if isSuccess {
+                    if let (fileName, data, size, image, thumbImage,isVideo) = MediaUtils.getAssetsImageInfo(asset: asset), let fileExtension =  URL(string: fileName)?.pathExtension{
+                        if isVideo {
+                            print("#media : ImageEditController getAssetsImageInfo VIDEO \(fileName) ")
+                            imageAray.append(ImageData(image: image, caption: nil, isVideo: true, phAsset: asset, isSlowMotion: false, mediaData : data,fileName : fileName, base64Image : MediaUtils.convertImageToBase64(img: thumbImage) ,fileExtension : fileExtension,fileSize: size))
+                        }else{
+                            if MediaUtils.checkMediaFileFormat(format:fileExtension){
+                                print("#media : ImageEditController getAssetsImageInfo IMAGE \(fileName) ")
+                                imageAray.append(ImageData(image: image, caption: nil, isVideo: false, isSlowMotion: false,mediaData : data, fileName : fileName, base64Image : MediaUtils.convertImageToBase64(img: thumbImage), fileExtension : fileExtension, fileSize: size))
+                            }
+                        }
+                    }
+                }else {
+                    imageAray.removeAll()
+                    break
+                }
+            }
+            checkForSlowMotionVideo()
+            DispatchQueue.main.async { [weak self] in
+                print("#media : ImageEditController reload collectionviews")
+                self?.stopLoading()
+                self?.topCollection?.reloadData()
+                self?.botomCollection.reloadData()
+            }
+        }
+        
     }
 }
 

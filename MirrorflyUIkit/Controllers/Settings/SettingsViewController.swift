@@ -10,7 +10,6 @@ import UIKit
 import FlyCore
 import FlyCommon
 
-
 class SettingsViewController : UIViewController {
     @IBOutlet weak var tblSettings : UITableView!
     @IBOutlet weak var lblVersion: UILabel!

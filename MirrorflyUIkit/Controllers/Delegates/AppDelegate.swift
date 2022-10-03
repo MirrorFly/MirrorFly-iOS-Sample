@@ -18,6 +18,9 @@ import PushKit
 import FlyCall
 import RxSwift
 import Contacts
+import CallKit
+
+
 
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
@@ -33,7 +36,16 @@ let IS_MOBILE_NUMBER_LOGIN = true
 let APP_NAME = "UiKit"
 
 
+
 let isMigrationDone = "isMigrationDone"
+
+#if DEBUG
+
+let ISEXPORT = false
+#else
+let ISEXPORT = true
+#endif
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
@@ -42,7 +54,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     let contactSyncSubject = PublishSubject<Bool>()
     var contactSyncSubscription : Disposable? = nil
     
+    var postNotificationdidEnterBackground : NotificationCenter? = nil
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        if !Utility.getBoolFromPreference(key: isMigrationDone) {
+//            resetData()
+//        }
         
         let groupConfig = try? GroupConfig.Builder.enableGroupCreation(groupCreation: true)
             .onlyAdminCanAddOrRemoveMembers(adminOnly: true)
@@ -61,6 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         ChatManager.setSignalServer(signalServerUrl: SOCKETIO_SERVER_HOST)
         ChatManager.setMaximumPinningForRecentChat(maxPinChat: 4)
         ChatManager.deleteMediaFromDevice(delete: true)
+        
         
         FlyDefaults.isMobileNumberLogin = IS_MOBILE_NUMBER_LOGIN
         FlyDefaults.webLoginUrl = WEB_LOGIN_URL
@@ -156,10 +174,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
         print("#appDelegate applicationDidEnterBackground")
+        postNotificationdidEnterBackground = NotificationCenter.default
+        postNotificationdidEnterBackground?.post(name: Notification.Name(didEnterBackground), object: nil)
+
         if (FlyDefaults.isLoggedIn) {
             ChatManager.disconnectXMPPConnection()
         }

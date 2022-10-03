@@ -294,7 +294,7 @@
                         <outlet property="headerView" destination="tYR-ZY-lng" id="1bI-bs-eWy"/>
                         <outlet property="lastSeenLabel" destination="1qq-YJ-Avs" id="yTa-pb-7wV"/>
                         <outlet property="longPressCountLabel" destination="OAA-V3-Wea" id="4rv-fx-1HZ"/>
-                        <outlet property="menuButton" destination="Grz-AT-BAL" id="IBE-TL-Q8z"/>
+                        <outlet property="menuButton" destination="Grz-AT-BAL" id="PzN-Nn-qrn"/>
                         <outlet property="multiSelectionView" destination="RJu-Nd-zCH" id="iPu-Pc-ir0"/>
                         <outlet property="replyButton" destination="a6k-9A-SgI" id="gaU-iX-L4r"/>
                         <outlet property="tableViewBottomConstraint" destination="LmH-9A-xE9" id="2Yy-ia-Y3x"/>

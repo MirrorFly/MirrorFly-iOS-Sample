@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
+// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCall
 import AVFAudio
 import AVFoundation
@@ -164,13 +164,6 @@ public enum CallMode : Swift.String {
     set
   }
 }
-public protocol FlyCallControllerDelegate : ObjectiveC.NSObjectProtocol {
-}
-@objc @_inheritsConvenienceInitializers public class FlyCallController : ObjectiveC.NSObject {
-  public var delegate: FlyCall.FlyCallControllerDelegate?
-  @objc override dynamic public init()
-  @objc deinit
-}
 @objc @_hasMissingDesignatedInitializers public class PeerConnectionClient : ObjectiveC.NSObject {
   @objc deinit
 }
@@ -264,6 +257,13 @@ public enum CallState : Swift.String {
   @objc override dynamic public init()
   @objc deinit
 }
+public protocol FlyCallControllerDelegate : ObjectiveC.NSObjectProtocol {
+}
+@objc @_inheritsConvenienceInitializers public class FlyCallController : ObjectiveC.NSObject {
+  public var delegate: FlyCall.FlyCallControllerDelegate?
+  @objc override dynamic public init()
+  @objc deinit
+}
 public struct AudioDevice {
   public var name: Swift.String
   public var id: Swift.String
@@ -316,6 +316,12 @@ public enum CALLSTATUS : Swift.String {
     get
   }
 }
+public protocol MobileCallActionDelegate {
+  func whileIncoming()
+  func didCallAnswered()
+  func whileDialing()
+  func didCallDisconnected()
+}
 public protocol CallManagerDelegate {
   func getDisplayName(IncomingUser: [Swift.String])
   func getGroupName(_ groupId: Swift.String)
@@ -342,6 +348,7 @@ public protocol CallManagerDelegate {
   public class func setIceServers(_ iceServersList: [WebRTC.RTCIceServer])
   public class func setCallViewController(_ callUIController: UIKit.UIViewController)
   public class func setCallEventsDelegate(delegate: FlyCall.CallManagerDelegate?)
+  public class func setMobileCallActionDelegate(delegate: FlyCall.MobileCallActionDelegate?)
   public class func disconnectCall()
   public class func setViewToPresentController(rootViewController: UIKit.UIViewController)
   public class func getViewControllerThatPresented() -> UIKit.UIViewController?
@@ -374,6 +381,7 @@ public protocol CallManagerDelegate {
   public class func getReconnectingUsersList() -> [Swift.String]?
   public class func getCallStatus(userId: Swift.String) -> FlyCall.CALLSTATUS?
   public class func getUserName(userId: Swift.String) -> Swift.String
+  public class func isAlreadyOnAnotherCall() -> Swift.Bool
   public class func getLocalUserId() -> Swift.String?
   public class func isCallOnHold() -> Swift.Bool
   public class func setIsCallOnHold(isCallOnHold: Swift.Bool)
@@ -398,9 +406,11 @@ extension FlyCall.CallManager {
   public class func getContactNames(IncomingUserName: [Swift.String])
   public class func muteVideo(_ isMute: Swift.Bool)
   public class func isVideoMuted() -> Swift.Bool
+  public class func getMuteStatus(jid: Swift.String, isAudioStatus: Swift.Bool) -> Swift.Bool
   public class func isAudioMuted() -> Swift.Bool
   public class func getRemoteVideoTrack(jid: Swift.String) -> WebRTC.RTCVideoTrack?
   @objc dynamic public class func isOngoingCall() -> Swift.Bool
+  @objc dynamic public class func checkForActiveCall() -> Swift.Bool
 }
 extension FlyCall.CallManager {
   public class func startVideoCapture()

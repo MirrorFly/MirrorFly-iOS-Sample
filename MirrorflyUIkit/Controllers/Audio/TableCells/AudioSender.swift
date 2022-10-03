@@ -69,7 +69,10 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         autioDuration?.font = UIFont.font8px_appLight()
         audioView?.roundCorners(corners: [.topLeft, .topRight], radius: 8.0)
         timeView?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft], radius: 8.0)
-        audioPlaySlider?.setThumbImage( UIImage(named: ImageConstant.ic_slider_white), for: UIControl.State.normal)
+        var thumbImage = UIImage(named: ImageConstant.ic_slider_white)
+        let size = getCGSize(width: 15, height: 15)
+        thumbImage = thumbImage?.scaleToSize(newSize: size)
+        audioPlaySlider?.setThumbImage( thumbImage, for: UIControl.State.normal)
         audioPlaySlider?.minimumValue = 0
         audioPlaySlider?.maximumValue = 100
         audioSenderIcon?.image = UIImage(named: ImageConstant.ic_music)
@@ -125,7 +128,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         if message?.isCarbonMessage == true {
-            if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+            if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
                 fwdViw?.isHidden = true
                 fwdBtn?.isHidden = true
                 isAllowSwipe = false
@@ -135,7 +138,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 isAllowSwipe = true
             }
         } else {
-            if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+            if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .failed || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
                 fwdViw?.isHidden = true
                 fwdBtn?.isHidden = true
                 isAllowSwipe = false
@@ -146,6 +149,12 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             }
         }
         
+        if message?.mediaChatMessage?.audioType == AudioType.recording {
+            audioSenderIcon?.image = UIImage(named: ImageConstant.ic_audio_recorded)
+        } else {
+            audioSenderIcon?.image = UIImage(named: ImageConstant.ic_music)
+        }
+        
         // Reply view elements and its data
        if(message!.isReplyMessage) {
            replyView?.isHidden = false
@@ -153,8 +162,13 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
            mediaLocationMap?.isHidden = true
            userTextLabel?.text = getReplymessage
-           if message?.replyParentChatMessage?.mediaChatMessage != nil {
-               switch message?.replyParentChatMessage?.mediaChatMessage?.messageType {
+           if replyMessage?.mediaChatMessage?.messageType == .document {
+               mediaImageView?.contentMode = .scaleAspectFit
+           } else {
+               mediaImageView?.contentMode = .scaleAspectFill
+           }
+           if replyMessage?.mediaChatMessage != nil {
+               switch replyMessage?.mediaChatMessage?.messageType {
                case .image:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderCamera" : "receiverCamera")
                    if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
@@ -168,7 +182,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                    replyWithoutMediaCons?.isActive = false
                case .audio:
                    let duration = Int(message?.replyParentChatMessage?.mediaChatMessage?.mediaDuration ?? 0)
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
+                   ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: nil, replyParentMessage: message?.replyParentChatMessage)
                    userTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : message?.replyParentChatMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
                    messageTypeIconView?.isHidden = false
                    replyWithMediaCons?.isActive = false
@@ -184,13 +198,22 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                    }
                    replyWithMediaCons?.isActive = true
                    replyWithoutMediaCons?.isActive = false
+               case .document:
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
+                   userTextLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName.capitalized
+                   replyWithMediaCons?.isActive = true
+                   replyWithoutMediaCons?.isActive = false
+                   checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaImageView)
+                   mediaImageView?.isHidden = false
+                   replyWithMediaCons?.isActive = true
+                   replyWithoutMediaCons?.isActive = false
                default:
                    messageTypeIconView?.isHidden = true
                    replyWithMediaCons?.isActive = false
                    replyWithoutMediaCons?.isActive = true
                }
                
-           } else if message?.replyParentChatMessage?.locationChatMessage != nil {
+           } else if replyMessage?.locationChatMessage != nil {
                mediaLocationMap?.isHidden = false
                userTextLabel?.text = "Location"
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
@@ -212,7 +235,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                    var marker = GMSMarker(position: position)
                    marker.map = mediaLocationMap
                }
-           } else if message?.replyParentChatMessage?.contactChatMessage != nil {
+           } else if replyMessage?.contactChatMessage != nil {
                let replyTextMessage = "Contact: \(message?.replyParentChatMessage?.contactChatMessage?.contactName ?? "")"
                userTextLabel?.attributedText = ChatUtils.setAttributeString(name: message?.replyParentChatMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
@@ -238,6 +261,14 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         ChatUtils.setSenderBubbleBackground(imageView: bubbleImageView)
         if message?.isCarbonMessage == false {
             if message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded {
+                uploadCancel?.isHidden = false
+                playIcon?.isHidden = true
+                playButton?.isHidden = true
+                uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: ImageConstant.ic_upload)
+                updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
+                audioPlaySlider?.isUserInteractionEnabled = false
+                nicoProgressBar?.isHidden = true
+            } else if message?.mediaChatMessage?.mediaUploadStatus == .failed {
                 uploadCancel?.isHidden = false
                 playIcon?.isHidden = true
                 playButton?.isHidden = true
@@ -273,6 +304,14 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             }
         } else {
             if message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded {
+                uploadCancel?.isHidden = false
+                playIcon?.isHidden = true
+                playButton?.isHidden = true
+                uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: "download")
+                updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
+                audioPlaySlider?.isUserInteractionEnabled = false
+                nicoProgressBar?.isHidden = false
+            } else if message?.mediaChatMessage?.mediaDownloadStatus == .failed {
                 uploadCancel?.isHidden = false
                 playIcon?.isHidden = true
                 playButton?.isHidden = true
@@ -355,14 +394,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         player.stop()
         stopDisplayLink()
     }
-    
-    @IBAction func audioPlaySiderAction(_ sender: Any) {
-        print("sliderValueChanged \(audioPlaySlider?.value ?? 0)")
-        if audioCallBack != nil {
-            audioCallBack!(audioPlaySlider?.value ?? 0)
-        }
-    }
-    
+
     func startUpload() {
         uploadCancel?.isHidden = false
         playIcon?.isHidden = true
@@ -371,7 +403,6 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         updateCancelButton?.isHidden = false
         audioPlaySlider?.isUserInteractionEnabled = false
         nicoProgressBar?.isHidden = false
-        nicoProgressBar?.transition(to: .indeterminate)
     }
     
     func stopUpload() {

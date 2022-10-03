@@ -170,7 +170,7 @@ extension NewGroupViewController {
         AppPermissions.shared.checkCameraPermissionAccess(permissionCallBack: { [weak self] authorizationStatus in
             switch authorizationStatus {
             case .denied:
-                AppPermissions.shared.presentCameraSettings(instance: self as Any)
+                AppPermissions.shared.presentSettingsForPermission(permission: .camera, instance: self as Any)
                 break
             case .restricted:
                 break

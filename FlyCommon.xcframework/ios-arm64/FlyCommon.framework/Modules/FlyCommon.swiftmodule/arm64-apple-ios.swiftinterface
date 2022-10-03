@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
+// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
 // swift-module-flags: -target arm64-apple-ios12.1 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCommon
 import AVFoundation
 import CommonCrypto
@@ -121,6 +121,15 @@ public struct OfflineActionModel : Swift.Codable {
   @objc public var contactPhoneNumbers: [Swift.String : Swift.Bool]
   @objc override dynamic public init()
   @objc deinit
+}
+public enum AudioType : Swift.String {
+  case recording
+  case file
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
 }
 public struct AdminBlock {
   public init()
@@ -465,6 +474,7 @@ public enum MediaUploadStatus : Swift.Int, Swift.CustomStringConvertible {
   case uploading
   case uploaded
   case not_available
+  case failed
   public var description: Swift.String {
     get
   }
@@ -479,6 +489,7 @@ public enum MediaDownloadStatus : Swift.Int, Swift.CustomStringConvertible {
   case downloading
   case downloaded
   case not_available
+  case failed
   public var description: Swift.String {
     get
   }
@@ -487,22 +498,6 @@ public enum MediaDownloadStatus : Swift.Int, Swift.CustomStringConvertible {
   public var rawValue: Swift.Int {
     get
   }
-}
-public struct LoginData : Swift.Codable {
-  public init()
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
-  public init(_ password: Swift.String, _ currentTimeStamp: Swift.Double)
-}
-public struct UserData {
-  public var email: Swift.String
-  public var image: Swift.String
-  public var mobileNumber: Swift.String
-  public var nickName: Swift.String
-  public var status: Swift.String
-  public var userId: Swift.String
-  public var isAdminBlocked: Swift.Bool
-  public init(email: Swift.String, image: Swift.String, mobileNumber: Swift.String, nickName: Swift.String, status: Swift.String, userId: Swift.String, isAdminBlocked: Swift.Bool)
 }
 public enum ContactType : Swift.String, Swift.CustomStringConvertible {
   case live
@@ -569,6 +564,17 @@ public struct QrCodeLoginResponse : Swift.Codable {
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
 }
+public struct MediaData {
+  public init()
+  public var fileName: Swift.String!
+  public var fileURL: Foundation.URL!
+  public var fileSize: Swift.Double
+  public var duration: Swift.Double
+  public var base64Thumbnail: Swift.String
+  public var fileKey: Swift.String
+  public var mediaType: FlyCommon.MediaType
+  public var caption: Swift.String
+}
 public struct CountryInfo : Swift.Codable {
   public var name: Swift.String?
   public var dial_code: Swift.String?
@@ -611,9 +617,8 @@ public struct CountryInfo : Swift.Codable {
 public struct FlyUtils {
   public static let replyMessageId: Swift.String
   public static let downloadedVideoAlbum: Swift.String
-  public static let uploadedVideoAlbum: Swift.String
+  public static let uploadedImageVideoAlbum: Swift.String
   public static let downloadImage: Swift.String
-  public static let uploadImage: Swift.String
   public static func setAppGroupContainerId(id: Swift.String)
   public static func getJid(from uniqueId: Swift.String) throws -> Swift.String
   public static func getIdFromJid(jid: Swift.String) throws -> Swift.String
@@ -647,12 +652,13 @@ public struct FlyUtils {
   public static func separateString(str: Swift.String, chars: Swift.String, aryIndx: Swift.Int) -> Swift.String
   public static func getJidWithoutResource(jid: Swift.String) throws -> Swift.String
   public static func generateUniqueId() -> Swift.String
-  public static func verifyUrl(urlString: Swift.String?) -> Swift.Bool
+  public static func openURL(_ urlString: Swift.String) -> Swift.Bool
   public static func getFileName(forJID: Swift.String?, uniqueString: Swift.String?, uploadExtension: Swift.String?) -> Swift.String?
   public static func saveInDirectory(with data: Foundation.Data, fileName: Swift.String, messageType: FlyCommon.MessageType) -> (Swift.String?, Swift.String?)?
   public static func attachmentsDocumentDirectory(messageType: FlyCommon.MessageType) -> Foundation.URL
   public static func getFilePathInDocuments(forFile fileName: Swift.String, messageType: FlyCommon.MessageType) -> Swift.String
   public static func saveImagesInGallery(localPath: Swift.String)
+  public static func checkIfFileExistsIn(url: Foundation.URL) -> Swift.Bool
   public static func convertToBase64(fileData: Foundation.Data) -> Swift.String
   public static func getWebImageSize(imageSize: CoreGraphics.CGSize) -> (CoreGraphics.CGSize)
   public static func getMobileImageSize(imageSize: CoreGraphics.CGSize) -> (CoreGraphics.CGSize)
@@ -677,7 +683,7 @@ public struct FlyUtils {
 extension FlyCommon.FlyUtils {
   public static func getGroupContainerIDPath() -> Foundation.URL?
   public static func getDBFilePath() -> Foundation.URL?
-  public static func printTime()
+  public static func printTime() -> Swift.String
   public static func getUserName(jid: Swift.String, name: Swift.String, nickName: Swift.String, contactType: FlyCommon.ContactType) -> Swift.String
   public static func getUserName(name: Swift.String, nickName: Swift.String) -> Swift.String
   public static func getFormattedMobileNumber(mobileNumber: Swift.String) -> Swift.String
@@ -690,6 +696,9 @@ extension Foundation.Date {
   public var millisecondsSince1970: Swift.Double {
     get
   }
+}
+extension Foundation.URL {
+  public func mimeType() -> Swift.String
 }
 public enum ChatType : Swift.String, Swift.CustomStringConvertible {
   case singleChat
@@ -719,6 +728,7 @@ public enum ChatType : Swift.String, Swift.CustomStringConvertible {
   public var mediaUploadStatus: FlyCommon.MediaUploadStatus
   public var mediaDownloadStatus: FlyCommon.MediaDownloadStatus
   @objc public var mediaFileKey: Swift.String
+  public var audioType: FlyCommon.AudioType
   @objc override dynamic public init()
   @objc deinit
 }
@@ -762,6 +772,16 @@ public protocol FlyCommonControllerDelegate : ObjectiveC.NSObjectProtocol {
   @objc public init(jid: Swift.String)
   @objc deinit
 }
+public enum AudioStatus : Swift.String {
+  case playing
+  case stoped
+  case paused
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
 @_hasMissingDesignatedInitializers final public class NetStatus {
   public static let shared: FlyCommon.NetStatus
   public static let networkNotificationObserver: Swift.String
@@ -775,6 +795,67 @@ public protocol FlyCommonControllerDelegate : ObjectiveC.NSObjectProtocol {
   @objc deinit
   final public func startMonitoring()
   final public func stopMonitoring()
+}
+public enum MediaType {
+  case image
+  case video
+  case audio
+  case document
+  public static func == (a: FlyCommon.MediaType, b: FlyCommon.MediaType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum MediaQuality {
+  case best
+  case high
+  case medium
+  case low
+  case uncompressed
+  public static func == (a: FlyCommon.MediaQuality, b: FlyCommon.MediaQuality) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum MediaStatus : Swift.String, Swift.CustomStringConvertible {
+  case processing
+  case success
+  case failed
+  public var description: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class MediaUtils {
+  public static func checkFileExtension(pathExension: Swift.String) -> Swift.Bool
+  public static func getPHAssetFileName(asset: Photos.PHAsset) -> Swift.String?
+  public static func processVideo(phAsset: Photos.PHAsset, completion: @escaping (_ phasset: Photos.PHAsset, _ status: FlyCommon.MediaStatus, _ url: Foundation.URL?, Swift.Bool) -> Swift.Void)
+  public static func getAssetsImageInfo(asset: Photos.PHAsset) -> (Swift.String, Foundation.Data, Swift.Double, UIKit.UIImage, UIKit.UIImage, Swift.Bool)?
+  public static func checkMediaFileFormat(format: Swift.String) -> Swift.Bool
+  public static func compressVideo(videoURL: Foundation.URL, mediaQuality: FlyCommon.MediaQuality = .medium, onComplete: @escaping (Swift.Bool, Foundation.URL?, Swift.String, Swift.String, Swift.Double, Swift.Double) -> Swift.Void)
+  public static func convertVideoToData(phAsset: Photos.PHAsset, completion: @escaping (Foundation.Data?) -> ())
+  public static func convertFileToDataFor(url: Foundation.URL?, completion: @escaping (Foundation.Data?) -> ())
+  public static func isVideoAsset(asset: Photos.PHAsset) -> Swift.Bool
+  public static func isImageAsset(asset: Photos.PHAsset) -> Swift.Bool
+  public static func base64ToImage(_ base64String: Swift.String) -> UIKit.UIImage?
+  public static func convertImageToBase64(img: UIKit.UIImage) -> Swift.String
+  public static func convertImageToBase64String(img: UIKit.UIImage) -> Swift.String
+  public static func compressCapturedImage(_ image: UIKit.UIImage?, andWidth width: CoreGraphics.CGFloat, andHeight height: CoreGraphics.CGFloat) -> UIKit.UIImage?
+  public static func encryptFile(localParentPath: Foundation.URL, fileName: Swift.String, messageType: FlyCommon.MessageType) -> (Foundation.URL, Swift.String)?
+  public static func getMediaPathFor(fileName: Swift.String, messageType: FlyCommon.MessageType) -> Foundation.URL?
+  public static func attachmentsDocumentDirectory(messageType: FlyCommon.MessageType) -> Foundation.URL?
+  public static func compressImage(imageData: Foundation.Data, mediaQuality: FlyCommon.MediaQuality = .medium) -> (Foundation.Data, Swift.String, Foundation.URL, Swift.String, Swift.Double)?
+  public static func processAudio(url: Foundation.URL, maxSizeInMB: Swift.Double = 30.0, onComplete: @escaping (Swift.Bool, Swift.String, Foundation.URL?, Swift.Double, Swift.Double, Swift.String) -> Swift.Void)
+  public static func processDocument(url: Foundation.URL, maxSizeInMB: Swift.Double = 20.0, onComplete: @escaping (Swift.Bool, Foundation.URL?, Swift.Double, Swift.String, Swift.String) -> Swift.Void)
+  public static func getMediaDuration(url: Foundation.URL) -> Swift.Double
+  public static func isVideoLimit(asset: Photos.PHAsset, videoLimit: Swift.Int64) -> Swift.Bool
+  @objc deinit
 }
 public struct ProfileStatus {
   public init()
@@ -872,6 +953,7 @@ public struct FlyProfile {
   public var audioTrackTime: Swift.Float?
   public var isRetryButtonDisabled: Swift.Bool?
   public var isDeletedUser: Swift.Bool?
+  public var audioStatus: FlyCommon.AudioStatus
   @objc override dynamic public init()
   @objc deinit
 }
@@ -1026,6 +1108,22 @@ public struct FlyEncryption {
 extension Foundation.Data {
   public func write(withName name: Swift.String, path: Foundation.URL) -> Foundation.URL
 }
+public struct LoginData : Swift.Codable {
+  public init()
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(_ password: Swift.String, _ currentTimeStamp: Swift.Double)
+}
+public struct UserData {
+  public var email: Swift.String
+  public var image: Swift.String
+  public var mobileNumber: Swift.String
+  public var nickName: Swift.String
+  public var status: Swift.String
+  public var userId: Swift.String
+  public var isAdminBlocked: Swift.Bool
+  public init(email: Swift.String, image: Swift.String, mobileNumber: Swift.String, nickName: Swift.String, status: Swift.String, userId: Swift.String, isAdminBlocked: Swift.Bool)
+}
 @objc @_inheritsConvenienceInitializers @objcMembers public class ReplyParentChatMessage : ObjectiveC.NSObject {
   @objc public var messageId: Swift.String
   @objc public var chatUserJid: Swift.String
@@ -1043,6 +1141,15 @@ extension Foundation.Data {
   @objc public var mediaChatMessage: FlyCommon.MediaChatMessage?
   public var isDeletedUser: Swift.Bool?
   @objc override dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class FlyLogWriter {
+  public static var sharedInstance: FlyCommon.FlyLogWriter
+  public func writeText(_ str: Swift.String)
+  public func getLogFileURL() -> Foundation.URL
+  public func getVCFFileURL() -> Foundation.URL
+  public func deleteLogFiles()
+  public func generateVCFFileFrom(contactInfoArray: [FlyCommon.ContactInfo])
   @objc deinit
 }
 @objc public enum MessageStatus : Swift.Int, Swift.CustomStringConvertible {
@@ -1130,13 +1237,13 @@ public struct Media : Swift.Codable {
   public var mediaDownloadStatus: Swift.Int?
   public var mediaUploadStatus: Swift.Int?
   public var progressStatus: Swift.Int?
-  public var is_uploading: Swift.Int?
   public var is_downloaded: Swift.Int?
   public var webWidth: Swift.Int
   public var webHeight: Swift.Int
   public var androidWidth: Swift.Int?
   public var androidHeight: Swift.Int?
-  public init(mid: Swift.String, duration: Swift.Int32, file_size: Swift.Int32, file_key: Swift.String, file_type: Swift.String, file_url: Swift.String, thumb_image: Swift.String, caption: Swift.String, fileName: Swift.String, local_path: Swift.String, mediaDownloadStatus: Swift.Int, mediaUploadStatus: Swift.Int, progressStatus: Swift.Int, is_uploading: Swift.Int, is_downloaded: Swift.Int, webWidth: Swift.Int, webHeight: Swift.Int, androidWidth: Swift.Int, androidHeight: Swift.Int)
+  public var audioType: Swift.String?
+  public init(mid: Swift.String, duration: Swift.Int32, file_size: Swift.Int32, file_key: Swift.String, file_type: Swift.String, file_url: Swift.String, thumb_image: Swift.String, caption: Swift.String, fileName: Swift.String, local_path: Swift.String, mediaDownloadStatus: Swift.Int, mediaUploadStatus: Swift.Int, progressStatus: Swift.Int, is_uploading: Swift.Int, is_downloaded: Swift.Int, webWidth: Swift.Int, webHeight: Swift.Int, androidWidth: Swift.Int, androidHeight: Swift.Int, audioType: Swift.String)
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
 }
@@ -1257,6 +1364,7 @@ public struct FlyConstants {
     public static let invalidMessageId: Swift.String
     public static let groupNoLongerAvailable: Swift.String
     public static let thisUserIsNoLonger: Swift.String
+    public static let fileSizeIsLarge: Swift.String
   }
   public struct SuccessMessage {
     public static let profileFetch: Swift.String
@@ -1302,6 +1410,9 @@ extension FlyCommon.OfflineActionType : Swift.RawRepresentable {}
 extension FlyCommon.MessageType : Swift.Equatable {}
 extension FlyCommon.MessageType : Swift.Hashable {}
 extension FlyCommon.MessageType : Swift.RawRepresentable {}
+extension FlyCommon.AudioType : Swift.Equatable {}
+extension FlyCommon.AudioType : Swift.Hashable {}
+extension FlyCommon.AudioType : Swift.RawRepresentable {}
 extension FlyCommon.MediaUploadStatus : Swift.Equatable {}
 extension FlyCommon.MediaUploadStatus : Swift.Hashable {}
 extension FlyCommon.MediaUploadStatus : Swift.RawRepresentable {}
@@ -1314,6 +1425,16 @@ extension FlyCommon.ContactType : Swift.RawRepresentable {}
 extension FlyCommon.ChatType : Swift.Equatable {}
 extension FlyCommon.ChatType : Swift.Hashable {}
 extension FlyCommon.ChatType : Swift.RawRepresentable {}
+extension FlyCommon.AudioStatus : Swift.Equatable {}
+extension FlyCommon.AudioStatus : Swift.Hashable {}
+extension FlyCommon.AudioStatus : Swift.RawRepresentable {}
+extension FlyCommon.MediaType : Swift.Equatable {}
+extension FlyCommon.MediaType : Swift.Hashable {}
+extension FlyCommon.MediaQuality : Swift.Equatable {}
+extension FlyCommon.MediaQuality : Swift.Hashable {}
+extension FlyCommon.MediaStatus : Swift.Equatable {}
+extension FlyCommon.MediaStatus : Swift.Hashable {}
+extension FlyCommon.MediaStatus : Swift.RawRepresentable {}
 extension FlyCommon.Utils.validationError : Swift.Equatable {}
 extension FlyCommon.Utils.validationError : Swift.Hashable {}
 extension FlyCommon.FileType : Swift.Equatable {}

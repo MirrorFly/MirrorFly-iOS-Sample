@@ -156,7 +156,7 @@ extension GroupCreationPreviewController : UITableViewDelegate, UITableViewDataS
             cell.nameUILabel?.text = getUserName(jid : profileDetail.jid,name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType)
             cell.statusUILabel?.text = profileDetail.status
             let color = ChatUtils.getColorForUser(userName: profileDetail.name)
-            cell.setImage(imageURL: profileDetail.image, name: getUserName(jid: profileDetail.jid, name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType), color: color, chatType: profileDetail.profileChatType)
+            cell.setImage(imageURL: profileDetail.image, name: getUserName(jid: profileDetail.jid, name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType), color: color, chatType: profileDetail.profileChatType, jid: profileDetail.jid)
             cell.checkBoxImageView?.isHidden = true
             cell.removeButton?.isUserInteractionEnabled = true
             cell.removeButton?.isHidden = true

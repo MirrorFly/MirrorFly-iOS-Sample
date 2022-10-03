@@ -17,7 +17,6 @@ let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let IS_LIVE = false
 let APP_NAME = "UiKit"
 
-
 class NotificationService: UNNotificationServiceExtension {
     
     var contentHandler: ((UNNotificationContent) -> Void)?

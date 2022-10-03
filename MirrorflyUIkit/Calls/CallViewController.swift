@@ -15,6 +15,7 @@ import Alamofire
 import PulsingHalo
 import AVKit
 import Toaster
+import RxSwift
 
 enum CallMode : String{
     case Incoming
@@ -95,6 +96,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     var speakingDictionary  = Dictionary<String, Int>()
     var isLocalViewSwitched = false
     var groupId : String = ""
+    var switchVideoViews = PublishSubject<Bool>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,10 +107,18 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         isTapped = false
         outgoingCallView.addParticipantBtn.isHidden = true
         if let heightFormatter = NumberFormatter().number(from: Utility.getStringFromPreference(key: "safeAreaHeight")), let widthFormatter =  NumberFormatter().number(from: Utility.getStringFromPreference(key:  "safeAreaWidth")) {
-            safeAreaHeight = CGFloat(truncating: heightFormatter)
-            safeAraeWidth = CGFloat(truncating: widthFormatter)
+            safeAreaHeight = CGFloat(Double( Utility.getStringFromPreference(key: "safeAreaHeight"))!)
+            safeAraeWidth = CGFloat(Double(Utility.getStringFromPreference(key:  "safeAreaWidth"))!)
         }
         updateUI()
+        switchVideoViews.throttle(.milliseconds(200), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
+            if CallManager.isOneToOneCall() && CallManager.isCallConnected(){
+                self?.removeOneToOneCallTracks()
+                self?.isLocalViewSwitched = !(self?.isLocalViewSwitched ?? false)
+                self?.oneToOneVideoViewTransforms()
+                self?.addAndRenderOneToOneCallTracks()
+            }
+        }
     }
     //
     
@@ -311,7 +321,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if membersJid.count == 1{
             returnToCall.image = UIImage(named: "Default Avatar_ic")
             if let contact = rosterManager.getContact(jid: membersJid[0].lowercased()){
-                returnToCall.loadFlyImage(imageURL: contact.image, name: getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                returnToCall.loadFlyImage(imageURL: contact.image, name: getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType), jid: contact.jid)
             }
         }else{
             returnToCall.image = UIImage(named: "ic_groupPlaceHolder")
@@ -399,7 +409,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         setMuteStatusText()
         if CallManager.isCallConnected(){
             isOnCall = true
-            outgoingCallView.OutgoingRingingStatusLabel.text = "Connected"
+            outgoingCallView.OutgoingRingingStatusLabel.text = getStatusOfOneToOneCall()
             outgoingCallView.addParticipantBtn.isHidden = false
            enableButtons(buttons: outgoingCallView?.videoButton, isEnable: true)
         }else{
@@ -416,7 +426,12 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         ChatManager.shared.connectionDelegate = self
         CallManager.delegate = self
         AudioManager.shared().audioManagerDelegate = self
-        outgoingCallView.OutgoingRingingStatusLabel.text = getCurrentCallStatusAsString()
+        if CallManager.isOneToOneCall(){
+                outgoingCallView.OutgoingRingingStatusLabel.text = getStatusOfOneToOneCall()
+        }else{
+            outgoingCallView.OutgoingRingingStatusLabel.text = getCurrentCallStatusAsString()
+        }
+       
         if isOnCall {
             outgoingCallView.localVideoView.addGestureRecognizer(panGesture)
         }else{
@@ -463,7 +478,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
                 showGroupCallUI()
             }
         }
-        if CallManager.isCallConnected() && (myCallStatus == .connected || myCallStatus == .reconnected){
+        if CallManager.isCallConnected() && (myCallStatus == .connected || myCallStatus == .reconnected || myCallStatus == .onHold){
             self.outgoingCallView.addParticipantBtn.isHidden = false
         }else{
             self.outgoingCallView.addParticipantBtn.isHidden = true
@@ -525,7 +540,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if let outgoingCallView = outgoingCallView{
             outgoingCallView.localVideoView.removeGestureRecognizer(panGesture)
             outgoingCallView.OutgoingRingingStatusLabel.isHidden = status.isEmpty
-            outgoingCallView.OutgoingRingingStatusLabel.text = status
+            outgoingCallView.OutgoingRingingStatusLabel.text = CallManager.isCallConnected() ? CallStatus.connected.rawValue : status
             if show {
                 self.outgoingCallView.AttendingBottomView.isHidden = true
                 self.outgoingCallView.callAgainView.isHidden = false
@@ -553,6 +568,10 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     @objc func videoButtonTapped(sender:UIButton) {
         print("isVideoMuted \(isVideoMuted)")
+        
+        if CallManager.isCallOnHold(){
+            return
+        }
         
         if CallManager.isOneToOneCall() && CallManager.getCallType() == .Audio {
             callConversionPopup()
@@ -594,6 +613,10 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     
     @objc func callAgainBtnTapped(sender:UIButton) {
+        if CallManager.isAlreadyOnAnotherCall(){
+            AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
+            return
+        }
         CallManager.disconnectCall()
         myCallStatus = .calling
         showHideCallAgainView(show: false, status: "Trying to connect")
@@ -633,6 +656,9 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     }
     
     @objc func AudioButtonTapped(sender:UIButton) {
+        if CallManager.isCallOnHold(){
+            return
+        }
         isAudioMuted.toggle()
         members.last?.isAudioMuted = isAudioMuted
         delegate?.onAudioMute(status: isAudioMuted)
@@ -760,6 +786,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         outgoingCallView.outGoingAudioCallImageView.transform = CGAffineTransform(translationX: 0, y: 0)
         getContactNames()
         if CallManager.isCallConnected() {
+            outgoingCallView.OutgoingRingingStatusLabel.text = (CallManager.isCallConnected() && !CallManager.isOneToOneCall()) ? CallStatus.connected.rawValue :  getStatusOfOneToOneCall()
             setMuteStatusText()
             outgoingCallView.addParticipantBtn.isHidden = false
         }
@@ -772,7 +799,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             if let contact = rosterManager.getContact(jid: membersJid[0].lowercased()){
                 outgoingCallView?.outGoingAudioCallImageView.image = UIImage.init(named: "Default Avatar_ic")
                 outgoingCallView?.OutGoingPersonLabel.text = getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
-                outgoingCallView.outGoingAudioCallImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                outgoingCallView.outGoingAudioCallImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType), jid: contact.jid)
             }else{
                 outgoingCallView?.outGoingAudioCallImageView.image = UIImage.init(named: "Default Avatar_ic")
             }
@@ -820,6 +847,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         outgoingCallView?.remoteVideoView.isHidden = true
         getContactNames()
         outgoingCallView?.audioMuteStackView.isHidden = true
+        outgoingCallView.OutgoingRingingStatusLabel.text = CallManager.isCallConnected() ? CallStatus.connected.rawValue : getCurrentCallStatusAsString()
         collectionView?.reloadData()
     }
     
@@ -1025,7 +1053,10 @@ extension CallViewController : UICollectionViewDelegate , UICollectionViewDataSo
         let groupCell = self.collectionView.dequeueReusableCell(withReuseIdentifier: GroupCallCell.identifier, for: indexPath) as! GroupCallCell
         let member = members[indexPath.row]
         let isLastRow = (indexPath.row == members.count - 1)
-        let callStatus =  isLastRow ? .connected : convertCallStatus(status: CallManager.getCallStatus(userId: member.jid))
+        let callStatus =  isLastRow ? (CallManager.getCallStatus(userId: member.jid) == .ON_HOLD  ? .onHold : .connected) : convertCallStatus(status: CallManager.getCallStatus(userId: member.jid))
+        if member.jid == FlyDefaults.myJid && CallManager.getCallStatus(userId: member.jid) == .ON_HOLD{
+            _ = updateCallStatus(jid: member.jid, status: .onHold)
+        }
         groupCell.contentView.backgroundColor = UIColor(hexString: member.color)
         groupCell.profileImage.isHidden = false
         groupCell.profileImage.contentMode = .scaleAspectFill
@@ -1070,7 +1101,7 @@ extension CallViewController : UICollectionViewDelegate , UICollectionViewDataSo
             groupCell.profileName.text = member.name
             groupCell.videoView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         }
-        if (isLastRow  && member.callStatus == .reconnecting) || (!isLastRow && member.callStatus != .connected){
+        if (isLastRow  && member.callStatus == .reconnecting) || (!isLastRow && member.callStatus != .connected) || member.callStatus == .onHold || (isLastRow && CallManager.isCallOnHold()){
             groupCell.profileImage.isHidden = false
             groupCell.foreGroundView.isHidden = false
             groupCell.callActionsView.isHidden = true
@@ -1167,6 +1198,10 @@ extension CallViewController : UICollectionViewDelegate , UICollectionViewDataSo
 extension CallViewController : CallViewControllerDelegate {
     
     func onVideoMute(status:Bool) {
+    
+        if CallManager.isCallOnHold(){
+            return
+        }
         print("#mute status \(status)")
         CallManager.muteVideo(status)
         members.last?.isVideoMuted = status
@@ -1397,6 +1432,7 @@ extension CallViewController : CallManagerDelegate {
                     self?.outgoingCallView.imageHeight.constant = 0
                 }
             case .CONNECTED:
+                print("#callStatus onCallStatus ==== \(userId) Connected")
                 if ((self?.audioPlayer) != nil) {
                     if ((self?.audioPlayer?.isPlaying) != nil) {
                         self?.audioPlayer?.stop()
@@ -1410,7 +1446,7 @@ extension CallViewController : CallManagerDelegate {
                 }
                 print("#call CONNECTED : \(userId)")
                 self?.myCallStatus = .connected
-                _ = self?.updateCallStatus(jid: FlyDefaults.myJid, status: .connected)
+                _ = self?.updateCallStatus(jid:  userId.isEmpty ? FlyDefaults.myJid : userId, status: .connected)
                 self?.showHideCallAgainView(show: false, status: "Connected")
 
                 self?.enableButtons(buttons:self?.outgoingCallView?.videoButton, isEnable: true)
@@ -1437,14 +1473,20 @@ extension CallViewController : CallManagerDelegate {
                     if self?.checkIfGroupCallUiIsVisible() ?? false { self?.showGroupCallUI() }
                     _ = self?.requestForVideoTrack(jid: userId)
                     _ = self?.updateMuteStatus(jid: userId, isMute: false, isAudio: CallManager.getCallType() == .Audio)
-                    self?.addUpdateCallUsersWithStatus(userJid: userId, status: .connected, reload: true)
+                    if CallManager.getCallStatus(userId:  userId.isEmpty ? FlyDefaults.myJid : userId ) == .ON_HOLD{
+                        self?.addUpdateCallUsersWithStatus(userJid: userId, status: .onHold, reload: true)
+                    }else{
+                        self?.addUpdateCallUsersWithStatus(userJid: userId, status: .connected, reload: true)
+                    }
                     self?.outgoingCallView?.audioMuteStackView.isHidden = true
                 }
                 if let ocv = self?.outgoingCallView{
                     ocv.removeGestureRecognizer(self!.tapGesture)
                     ocv.addGestureRecognizer(self!.tapGesture)
                 }
-                self?.updateCallTimerDuration()
+                if CallManager.isCallConnected(){
+                    self?.updateCallTimerDuration()
+                }
                 self?.isOnCall = true
                 let audioMuteStatus = CallManager.isRemoteAudioMuted(userId)
                 let vidooMuteStatus = CallManager.isRemoteVideoMuted(userId)
@@ -1452,8 +1494,8 @@ extension CallViewController : CallManagerDelegate {
                 self?.onMuteStatusUpdated(muteEvent: (audioMuteStatus == true) ? MuteEvent.ACTION_REMOTE_AUDIO_MUTE : MuteEvent.ACTION_REMOTE_AUDIO_UN_MUTE, userId: userId)
                 self?.onMuteStatusUpdated(muteEvent: (vidooMuteStatus == true) ? MuteEvent.ACTION_REMOTE_VIDEO_MUTE : MuteEvent.ACTION_REMOTE_VIDEO_UN_MUTE , userId: userId)
             case .DISCONNECTED:
-                self?.myCallStatus = .disconnected
-                self?.isCallConnected = false
+//                self?.myCallStatus = .disconnected
+//                self?.isCallConnected = false
                 if userId.isEmpty {
                     self?.dismissWithDelay()
                 }else {
@@ -1462,9 +1504,44 @@ extension CallViewController : CallManagerDelegate {
                     }
                 }
             case .ON_HOLD:
-                print("")
+                self?.isOnCall = true
+                let userId = userId.isEmpty ? FlyDefaults.myJid : userId
+                var indexValue : Int? = nil
+                if let index =  self?.findIndexOfUser(jid: userId) {
+                    print("#callStatus onCallStatus ====  .ON_HOLD for \(userId) at \(index)  \(CallManager.isOneToOneCall())  \(self?.members.count)")
+                    indexValue = index
+                    self?.members[index].callStatus = .onHold
+                }
+                _ = self?.updateCallStatus(jid: userId, status: .onHold)
+                if CallManager.isOneToOneCall() && (self?.members.count == 2) {
+                    self?.outgoingCallView?.OutgoingRingingStatusLabel.text = CallStatus.onHold.rawValue
+                }else{
+                    self?.reloadCollectionViewForIndex(index: indexValue)
+                    self?.outgoingCallView?.OutgoingRingingStatusLabel.text =  CallStatus.connected.rawValue
+                }
             case .ON_RESUME:
-                print("")
+                self?.isOnCall = true
+                let userId = userId.isEmpty ? FlyDefaults.myJid : userId
+                var indexValue : Int? = nil
+                if userId == FlyDefaults.myJid{
+                    self?.myCallStatus = .connected
+                }
+                if let index =  self?.findIndexOfUser(jid: userId) {
+                    indexValue = index
+                    self?.members[index].callStatus = .connected
+                }
+                if CallManager.isOneToOneCall() && (self?.members.count == 2) {
+                    self?.outgoingCallView?.OutgoingRingingStatusLabel.text =  CallStatus.connected.rawValue
+                    self?.myCallStatus = .connected
+                }else{
+                    if !CallManager.getMuteStatus(jid: userId, isAudioStatus: false) && userId != FlyDefaults.myJid{
+                        print("#callStatusRE ON_RESUME If")
+                        self?.onCallAction(callAction: .ACTION_REMOTE_VIDEO_ADDED, userId: userId)
+                    }else{
+                        print("#callStatusRE ON_RESUME ELSE")
+                        self?.reloadCollectionViewForIndex(index: indexValue)
+                    }
+                }
             case .USER_JOINED:
                 print("")
             case .USER_LEFT:
@@ -1473,7 +1550,8 @@ extension CallViewController : CallManagerDelegate {
                 print("")
             case .CALL_TIME_OUT:
                 print("#call CALL_TIME_OUT  \(self?.isOnCall ?? false)")
-                if self?.isOnCall ?? false {
+                if (self?.isOnCall ?? false) || CallManager.isCallConnected() {
+                    self?.isOnCall = true
                     let timedOutUsers = self?.getUnavailableUsers(isTimeOut: true) ?? []
                     if (self?.members.count ?? 0) - timedOutUsers.count > 1 {
                         self?.removeUnavailableUsers(removedUsers: timedOutUsers)
@@ -1499,16 +1577,25 @@ extension CallViewController : CallManagerDelegate {
                     }
                 }
             case .RECONNECTED:
-                if (self?.isOnCall ?? false){
-                    self?.myCallStatus = .reconnected
-                }
-                self?.outgoingCallView?.addParticipantBtn?.isHidden = !CallManager.isCallConnected()
-                if CallManager.isOneToOneCall() {
-                    if CallManager.isCallConnected(){
-                        self?.outgoingCallView?.OutgoingRingingStatusLabel.isHidden = false
-                        self?.outgoingCallView?.OutgoingRingingStatusLabel.text = "Connected"
+                print("#callStatus onCallStatus ====  .RECONNECTED \(userId) \(CallManager.getCallStatus(userId: userId)?.rawValue) 1-1 => \(CallManager.isOneToOneCall())  \((self?.isOnCall ?? false))")
+                if CallManager.isOneToOneCall() && (self?.members.count == 2){
+                    if (self?.isOnCall ?? false){
+                        self?.myCallStatus =  self?.isCallOnHoldForOneToCall() ?? false ?  CallStatus.onHold : CallStatus.connected
                     }
                 }else{
+                    if (self?.isOnCall ?? false){
+                        self?.myCallStatus = .reconnected
+                    }
+                }
+                
+                self?.outgoingCallView?.addParticipantBtn?.isHidden = !CallManager.isCallConnected()
+                if CallManager.isOneToOneCall() && (self?.members.count == 2) {
+                    if CallManager.isCallConnected(){
+                        self?.outgoingCallView?.OutgoingRingingStatusLabel.isHidden = false
+                        self?.outgoingCallView?.OutgoingRingingStatusLabel.text = self?.getStatusOfOneToOneCall() ?? "Connected"
+                    }
+                }else{
+                    self?.outgoingCallView?.OutgoingRingingStatusLabel.text = CallStatus.connected.rawValue
                     if let index = self?.updateCallStatus(jid: userId, status: .connected) {
                         self?.reloadCollectionViewForIndex(index: index)
                     }
@@ -1773,7 +1860,12 @@ extension CallViewController {
                 return true
             }else {
                 if let index = findIndexOfUser(jid: jid) {
-                    members[index].callStatus = status
+                    if CallManager.getCallStatus(userId: jid) == .ON_HOLD{
+                        members[index].callStatus = .onHold
+                    }else{
+                        members[index].callStatus = status
+                    }
+                    
                 }
             }
         }
@@ -1899,9 +1991,14 @@ extension CallViewController {
     }
     
     func updateCallStatus(jid: String, status : CallStatus) -> Int? {
+        print("#callStatus CVC \(jid)  \(status.rawValue)")
         if let index = findIndexOfUser(jid: jid) {
             print("#call updateCallStatus \(jid) \(status.rawValue)")
-            members[index].callStatus = status
+            if CallManager.getCallStatus(userId: jid) == .ON_HOLD{
+                members[index].callStatus = .onHold
+            }else{
+                members[index].callStatus = status
+            }
             return index
         }
         return nil
@@ -1910,7 +2007,7 @@ extension CallViewController {
     func reloadCollectionViewForIndex(index: Int?) {
         DispatchQueue.main.async { [weak self] in
             if let itemIndex =  index, self?.collectionView?.numberOfItems(inSection: 0) ?? 0 > index ?? -1, self?.collectionView?.isHidden == false {
-                print("#reloadCollectionViewForIndex \(index) \(self?.members[index!].jid)")
+                print("#callStatus #reloadCollectionViewForIndex \(index) \(self?.members[index!].jid)")
                 let indexPath = IndexPath(item: itemIndex, section: 0)
                 self?.collectionView?.reloadItems(at: [indexPath])
             }
@@ -1929,6 +2026,8 @@ extension CallViewController {
                 return .reconnecting
             }else if status == .RECONNECTED {
                 return .reconnected
+            } else if status == .ON_HOLD {
+                return .onHold
             } else {
                 return .calling
             }
@@ -1957,7 +2056,6 @@ extension CallViewController {
                 if !isOnCall{
                    getContactNames()
                 }else if members.count == 2 {
-                    getContactNames()
                     if CallManager.getCallType() == .Video {
                         clearAllTrackViews()
                     }
@@ -1965,13 +2063,12 @@ extension CallViewController {
                     removeAllMembers()
                     collectionView?.isHidden = true
                     members.append(contentsOf: oneToOneUsers)
-                    if !members.first!.isVideoMuted &&  !members.last!.isVideoMuted {
-                        CallManager.setCallType(callType: .Video)
+                    if members.first!.isVideoMuted && members.last!.isVideoMuted {
+                        CallManager.setCallType(callType: .Audio)
                     }
                     if CallManager.getCallType() == .Audio {
                         CallManager.muteVideo(true)
                         updateOneToOneAudioCallUI()
-                        outgoingCallView.OutgoingRingingStatusLabel.text = "Connected"
                         if isTapped{
                             SingleTapGesturTapped(UITapGestureRecognizer())
                         }
@@ -1980,9 +2077,10 @@ extension CallViewController {
                         renderRemoteVideoView1to1()
                         renderLocalVideoView1to1()
                     }
-                    outgoingCallView.OutgoingRingingStatusLabel.text = CallManager.getCallStatus(userId: members.first!.jid)?.rawValue ?? "Trying to connect"
+                    outgoingCallView.OutgoingRingingStatusLabel.text = isCallOnHoldForOneToCall() ? CallStatus.onHold.rawValue : convertCallStatus(status: CallManager.getCallStatus(userId: (members.first?.jid)!) ?? .CALLING).rawValue
                     oneToOneUsers.removeAll()
                     setMuteStatusText()
+                    getContactNames()
                 } else if members.count < 2{
                     self.dismissWithDelay()
                 }
@@ -1991,6 +2089,7 @@ extension CallViewController {
             }else{
                 members.remove(at: userIndex)
                 getContactNames()
+                outgoingCallView.OutgoingRingingStatusLabel.text = CallStatus.connected.rawValue
             }
         }
     }
@@ -2094,6 +2193,7 @@ extension CallViewController {
     
     func dismissWithDelay(callStatus : String = "Disconnected"){
         self.groupId = ""
+        self.isOnCall = false
         speakingTimer?.invalidate()
         speakingTimer = nil
         audioDevicesAlertController?.dismiss(animated: true, completion: {
@@ -2112,7 +2212,7 @@ extension CallViewController {
         enableButtons(buttons: outgoingCallView?.videoButton, isEnable: false)
         CallManager.incomingUserJidArr.removeAll()
         outgoingCallView?.OutgoingRingingStatusLabel?.isHidden = false
-        outgoingCallView?.OutgoingRingingStatusLabel?.text = callStatus
+        outgoingCallView?.OutgoingRingingStatusLabel?.text = CallStatus.disconnected.rawValue
         outgoingCallView?.addParticipantBtn.isHidden = true
         enableDisableUserInteractionFor(view: outgoingCallView?.AttendingBottomView, isDisable: true)
         //        outgoingCallView?.OutgoingRingingStatusLabel?.blink()
@@ -2185,7 +2285,7 @@ extension CallViewController {
         case .connecting :
             status = "Connecting"
         case .connected :
-            status = "Connected"
+            status = CallManager.isCallConnected() ? "Connected" : status
         case .disconnected :
             status = "Disconnected"
         case .reconnecting :
@@ -2194,6 +2294,13 @@ extension CallViewController {
             status = "Connected"
         default:
             status = "Unavailable, Try again later"
+        }
+        
+        if !CallManager.isOneToOneCall() && CallManager.isCallConnected(){
+            return  CallStatus.connected.rawValue
+        }
+        if  isCallOnHoldForOneToCall(){
+            return CallStatus.onHold.rawValue
         }
         return status
     }
@@ -2218,6 +2325,22 @@ extension CallViewController {
             return member.callStatus ?? .calling
         }
         return .calling
+    }
+    
+    func getStatusOfOneToOneCall() -> String {
+        if CallManager.isOneToOneCall() && isCallOnHoldForOneToCall(){
+            return CallStatus.onHold.rawValue
+        }
+        return getCurrentCallStatusAsString()
+    }
+    
+    func isCallOnHoldForOneToCall() -> Bool {
+        if let firstUserJid = members.first?.jid , let firstStatus = CallManager.getCallStatus(userId: firstUserJid), let myStatus = CallManager.getCallStatus(userId: FlyDefaults.myJid) {
+            if firstStatus == .ON_HOLD || myStatus == .ON_HOLD{
+               return true
+            }
+        }
+        return false
     }
 }
 
@@ -2409,12 +2532,7 @@ extension CallViewController {
     }
     
     @objc func smallVideoTileTapped(_ sender: UITapGestureRecognizer) {
-        if CallManager.isOneToOneCall() && CallManager.isCallConnected(){
-            removeOneToOneCallTracks()
-            isLocalViewSwitched = !isLocalViewSwitched
-            oneToOneVideoViewTransforms()
-            addAndRenderOneToOneCallTracks()
-        }
+        switchVideoViews.onNext(true)
     }
 }
 
@@ -2460,11 +2578,11 @@ extension CallViewController : ProfileEventsDelegate{
     }
     
     func userBlockedMe(jid: String) {
-        
+        getContactNames()
     }
     
     func userUnBlockedMe(jid: String) {
-        
+        getContactNames()
     }
     
     func hideUserLastSeen() {

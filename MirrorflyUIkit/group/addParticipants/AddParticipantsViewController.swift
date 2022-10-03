@@ -82,6 +82,7 @@ class AddParticipantsViewController: UIViewController {
             }
             
         }.disposed(by: disposeBag)
+
     }
     
     @objc override func willCometoForeground() {
@@ -233,10 +234,20 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
         }
     }
     
+    private func getBlocked(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlocked ?? false
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if searchedParticipants.count > 0 {
+            
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.participantCell, for: indexPath) as? ParticipantCell)!
             let profileDetail = searchedParticipants[indexPath.row]
+            if getBlocked(jid: profileDetail.jid) {
+                cell.contentView.alpha = 0.6
+            } else {
+                cell.contentView.alpha = 1.0
+            }
             let name = getUserName(jid: profileDetail.jid,name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType)
             cell.nameUILabel?.text = name
             cell.statusUILabel?.text = profileDetail.status
@@ -244,7 +255,7 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
             let color = getColor(userName: name)
             cell.removeButton?.isHidden = true
             cell.removeIcon?.isHidden = true
-            cell.setImage(imageURL: profileDetail.image, name: name, color: color ?? .gray, chatType: profileDetail.profileChatType)
+            cell.setImage(imageURL: profileDetail.image, name: name, color: color ?? .gray, chatType: profileDetail.profileChatType,jid: profileDetail.jid)
             cell.checkBoxImageView?.image = GroupCreationData.participants.contains(where: {$0.jid == profileDetail.jid}) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
             cell.setTextColorWhileSearch(searchText: searchBar.text ?? "", profileDetail: profileDetail)
             cell.emptyView?.isHidden = true
@@ -268,6 +279,10 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchedParticipants.count > indexPath.row {
             let profileDetail = searchedParticipants[indexPath.row]
+            if getBlocked(jid: profileDetail.jid) {
+                showBlockUnblockConfirmationPopUp(jid: profileDetail.jid, name: profileDetail.nickName)
+                return
+            }
             let cell = tableView.cellForRow(at: indexPath) as! ParticipantCell
             ContactManager.shared.saveUser(profileDetails: profileDetail, saveAs: .live)
             let jid = profileDetail.jid ?? ""
@@ -524,6 +539,7 @@ extension AddParticipantsViewController : UIScrollViewDelegate {
         return footerView
     }
     
+    
     @objc func networkChange(_ notification: NSNotification) {
         DispatchQueue.main.async { [weak self] in
             let isNetworkAvailable = notification.userInfo?[NetStatus.isNetworkAvailable] as? Bool ?? false
@@ -616,11 +632,11 @@ extension AddParticipantsViewController : ProfileEventsDelegate{
     }
     
     func userBlockedMe(jid: String) {
-        
+        getContacts()
     }
     
     func userUnBlockedMe(jid: String) {
-        
+        getContacts()
     }
     
     func hideUserLastSeen() {
@@ -635,6 +651,57 @@ extension AddParticipantsViewController : ProfileEventsDelegate{
        getContacts()
         if GroupCreationData.participants.contains(where: {$0.jid == jid}) {
             GroupCreationData.participants = groupCreationViewModel.removeSelectedParticipantJid(selectedParticipants: GroupCreationData.participants, participant: profileDetails)
+        }
+    }
+}
+
+extension AddParticipantsViewController {
+
+    private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
+        //showConfirmationAlert
+        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(name ?? "")?" : "Block \(name ?? "")?", preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
+            self?.dismiss(animated: true,completion: nil)
+        }
+        let blockAction = UIAlertAction(title: getBlocked(jid: jid) ? ChatActions.unblock.rawValue : ChatActions.block.rawValue, style: .default) { [weak self] (action) in
+            if !(self?.getBlocked(jid: jid) ?? false) {
+                self?.blockUser(jid:jid, name: name)
+            } else {
+                self?.UnblockUser(jid:jid, name: name)
+            }
+        }
+        alertViewController.addAction(cancelAction)
+        alertViewController.addAction(blockAction)
+        alertViewController.preferredAction = cancelAction
+        present(alertViewController, animated: true)
+    }
+    
+    //MARK: BlockUser
+    private func blockUser(jid: String?,name: String?) {
+        do {
+            try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
+                executeOnMainThread { [weak self] in
+                    self?.getContacts()
+                    AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                }
+            }
+        } catch let error as NSError {
+            print("block user error: \(error)")
+        }
+    }
+    
+    //MARK: UnBlockUser
+    private func UnblockUser(jid: String?,name: String?) {
+        do {
+            try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
+                executeOnMainThread { [weak self] in
+                    self?.getContacts()
+                    AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                }
+            }
+        } catch let error as NSError {
+            print("block user error: \(error)")
         }
     }
 }

@@ -4,19 +4,19 @@
 //
 //  Created by User on 02/09/21.
 //
-
+ 
 import Foundation
 import UIKit
 import CoreLocation
 import MapKit
 import GoogleMaps
 import SwiftUI
-
-
+ 
+ 
 protocol LocationDelegate : NSObjectProtocol {
     func didSendPressed(latitude: Double, longitude: Double,jid: String?)
 }
-
+ 
 class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var googleMapView: GMSMapView!
@@ -30,10 +30,12 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
     var locationManager = CLLocationManager()
     var marker: GMSMarker?
     weak var locationDelegate: LocationDelegate?
-
+ 
     var latitude : Double?
     var longitude : Double?
     var isForView = false
+    var isMapZoomed = false
+    var mapZoomLevel: Float?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,9 +101,10 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
         self.googleMapView.delegate = self
         self.googleMapView?.isMyLocationEnabled = true
         self.googleMapView.settings.myLocationButton = true
+        mapZoomLevel = self.googleMapView.camera.zoom
     }
 }
-
+ 
 //MARK - Actions
 extension LocationViewController {
     @IBAction func onBack(_ sender: Any) {
@@ -126,6 +129,10 @@ extension LocationViewController {
        print("locationManager didUpdateLocations")
        if !isForView {
            let location = locationManager.location?.coordinate
+           print("locationManager didUpdateLocations \(String(describing: location?.latitude)) ** \(location?.longitude)")
+           latitude = location?.latitude
+           longitude = location?.longitude
+           setMarkerForLocationMsg()
            cameraMoveToLocation(toLocation: location)
            locationManager.stopUpdatingLocation()
        }
@@ -157,11 +164,12 @@ extension LocationViewController {
             break
         case .authorizedAlways, .authorizedWhenInUse, .authorized:
             if !isForView {
+                print("locationManager location permission")
                 locationManager.startUpdatingLocation()
             }
             break
         @unknown default:
-            locationManager.stopUpdatingLocation() 
+            locationManager.stopUpdatingLocation()
         }
     }
     
@@ -181,35 +189,56 @@ extension LocationViewController {
     }
     
     func cameraMoveToLocation(toLocation: CLLocationCoordinate2D?) {
-        if toLocation != nil {
-            googleMapView.camera = GMSCameraPosition.camera(withTarget: toLocation!, zoom: 15)
-     
-            getAddressFromCoordinates(pdblLatitude: Double(toLocation!.latitude), withLongitude: Double(toLocation!.longitude))
-        }
-    }
+          if toLocation != nil {
+              googleMapView.camera = GMSCameraPosition.camera(withTarget: toLocation!, zoom: 15)
+              if(isForView){
+              setMarkerForLocationMsg()
+              }
+              mapZoomLevel = self.googleMapView.camera.zoom
+              print("Location called at cameraMove \(toLocation!.latitude) ** \(toLocation!.latitude)")
+              getAddressFromCoordinates(pdblLatitude: Double(toLocation!.latitude), withLongitude: Double(toLocation!.longitude))
+          }
+          
+      }
+
     func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        if(!isForView){
         googleMapView.isMyLocationEnabled = true
+        let coordinate = position.target
+            print("Location called at idleA \(coordinate.latitude) ** \(coordinate.longitude)t")
+        getAddressFromCoordinates(pdblLatitude: coordinate.latitude, withLongitude: coordinate.longitude)
+        updateLocationoordinates(coordinates: coordinate)
+        }
     }
     
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-        googleMapView.isMyLocationEnabled = true
-        
-        if (gesture) {
-            mapView.selectedMarker = nil
+            isMapZoomed = false
+            googleMapView.isMyLocationEnabled = true
+            if (gesture) {
+                mapView.selectedMarker = nil
+            }
+    if(mapZoomLevel != mapView.camera.zoom){
+                isMapZoomed = true
+                mapZoomLevel = mapView.camera.zoom
+            }
         }
-    }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         mapView.isMyLocationEnabled = true
+        print("Location called at didTap")
         getAddressFromCoordinates(pdblLatitude: marker.position.latitude, withLongitude: marker.position.longitude)
         return false
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-        print("COORDINATE \(coordinate)") // when you tapped coordinate
-        getAddressFromCoordinates(pdblLatitude: coordinate.latitude, withLongitude: coordinate.longitude)
-        updateLocationoordinates(coordinates: coordinate)
-    }
+           print("COORDINATE \(coordinate)") // when you tapped coordinate
+   if(!isForView){
+       print("Location called at didTapAt")
+   getAddressFromCoordinates(pdblLatitude: coordinate.latitude, withLongitude: coordinate.longitude)
+           updateLocationoordinates(coordinates: coordinate)
+       }
+   }
+ 
     
     func updateLocationoordinates(coordinates:CLLocationCoordinate2D) {
         CATransaction.begin()
@@ -222,16 +251,30 @@ extension LocationViewController {
         mapView.isMyLocationEnabled = true
         mapView.selectedMarker = nil
         marker?.map = mapView
+        print("Location called at TapMyLocation")
         getAddressFromCoordinates(pdblLatitude: marker?.position.latitude ?? 0.0, withLongitude: marker?.position.longitude ?? 0.0)
         return false
     }
     
     //draggable ->>> marker move
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-        mapView.clear()
-        marker = GMSMarker(position: position.target)
-        marker?.map = mapView
-    }
+           if(isForView){
+               setMarkerForLocationMsg()
+           }
+           else{
+           if(!isMapZoomed){
+               mapView.clear()
+               marker = GMSMarker(position: position.target)
+               marker?.map = mapView
+           }
+           }
+       }
+       
+       func setMarkerForLocationMsg(){
+           marker = GMSMarker(position: CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!))
+           marker?.map = googleMapView
+       }
+
     
     func getAddressFromCoordinates(pdblLatitude: Double, withLongitude pdblLongitude: Double) {
         var center : CLLocationCoordinate2D = CLLocationCoordinate2D()
@@ -249,7 +292,7 @@ extension LocationViewController {
                         guard let pm = placemarks else {
                             return
                         }
-
+ 
                         if pm.count > 0 {
                             let pm = placemarks![0]
                             var addressString : String = ""
@@ -303,7 +346,7 @@ extension  LocationViewController {
             let cLLocationCoordinate2DMake = CLLocationCoordinate2DMake(latitude ?? 0.0 , longitude ?? 0.0)
             cameraMoveToLocation(toLocation: cLLocationCoordinate2DMake)
             googleMapView.animate(toLocation: cLLocationCoordinate2DMake)
-
+ 
         }
     }
     
@@ -319,3 +362,4 @@ extension  LocationViewController {
     }
 }
    
+

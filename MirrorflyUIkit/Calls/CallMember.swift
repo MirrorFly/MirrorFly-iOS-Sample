@@ -45,4 +45,5 @@ enum CallStatus : String {
     case reconnecting = "Reconnecting";
     case reconnected = "Reconnected";
     case tryagain = "Unavailable, Try again later"
+    case onHold = "Call on Hold"
 }

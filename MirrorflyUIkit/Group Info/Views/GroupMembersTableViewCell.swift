@@ -43,14 +43,14 @@ class GroupMembersTableViewCell: UITableViewCell {
         nameLabel.text = userName
         statusLabel.text = groupInfo.profileDetail?.status
         userImageView?.loadFlyImage(imageURL: imageURL, name: userName,
-                                    chatType: groupInfo.profileDetail?.profileChatType ?? .singleChat )
+                                    chatType: groupInfo.profileDetail?.profileChatType ?? .singleChat, jid: groupInfo.profileDetail?.jid ?? "")
         
         if groupInfo.memberJid == FlyDefaults.myJid {
             nameLabel.text = "You"
             nickNameLabel.text = ""
             userImageView?.loadFlyImage(imageURL: FlyDefaults.myImageUrl, name: "",
                                         chatType: groupInfo.profileDetail?.profileChatType ?? .singleChat,
-                                        uniqueId: FlyDefaults.myJid)
+                                        uniqueId: FlyDefaults.myJid, jid: groupInfo.profileDetail?.jid ?? "")
         }
         
         let profileDetails = groupInfoViewModel.checkContactType(participantJid: groupInfo.memberJid)

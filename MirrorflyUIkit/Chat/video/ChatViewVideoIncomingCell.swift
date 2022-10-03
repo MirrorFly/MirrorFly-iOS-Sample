@@ -67,6 +67,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     
     //Translated Outlet
     @IBOutlet weak var translatedCaptionLabel: UILabel!
+    var imageGeasture: UITapGestureRecognizer!
 
     
     var videoGesture: UITapGestureRecognizer!
@@ -93,6 +94,8 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         imageContainer.layer.cornerRadius = 5.0
         imageContainer.clipsToBounds = true
         emptyView.layer.cornerRadius = 5.0
+        imageGeasture = UITapGestureRecognizer()
+        imageContainer?.addGestureRecognizer(imageGeasture)
     }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -136,7 +139,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded ||  message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+        if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed ||  message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
             quickForwardView?.isHidden = true
             quickForwardButton?.isHidden = true
             isAllowSwipe = true
@@ -170,7 +173,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                    replyWithoutMediaCOns?.isActive = false
                    replyWithMediaCons?.isActive = true
                case .audio:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
+                   ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: message)
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
                    replyWithoutMediaCOns?.isActive = false
@@ -184,6 +187,13 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                        mediaImageView?.isHidden = false
                        replyTextLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyWithoutMediaCOns?.isActive = false
+                   replyWithMediaCons?.isActive = true
+                   
+               case .document:
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
+                   checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaImageView)
+                   replyTextLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName.capitalized
                    replyWithoutMediaCOns?.isActive = false
                    replyWithMediaCons?.isActive = true
                default:
@@ -275,8 +285,38 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         
         mediaStatus(message: message)
         
+        if message?.messageType == .image {
+            playButton.isHidden = true
+            videoTimingContainer.isHidden = true
+        }
+        else {
+            videoTimingContainer.isHidden = false
+        }
+        
+//        if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
+//            ChatUtils.setThumbnail(imageContainer: imageContainer, base64String: thumImage)
+//        }
+        if (message?.messageType == .image && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) {
+            if let localPath = message?.mediaChatMessage?.mediaFileName {
+                let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+                    let data = NSData(contentsOf: fileURL)
+                    let image = UIImage(data: data! as Data)
+                    imageContainer?.image = image
+                }
+            }
+            else {
+                if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
+                    ChatUtils.setThumbnail(imageContainer: imageContainer, base64String: thumImage)
+                }
+            }
+        }
+        else {
         if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
             ChatUtils.setThumbnail(imageContainer: imageContainer, base64String: thumImage)
+        }
         }
         
         guard let timeStamp =  message?.messageSentTime else {
@@ -307,6 +347,17 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             playButton.isHidden = true
             fileSizeLabel.isHidden = false
             progressLoader?.transition(to: .indeterminate)
+            if let fileSize = message?.mediaChatMessage?.mediaFileSize{
+                fileSizeLabel.text = "\(Units(bytes: Int64(fileSize)).getReadableUnit())"
+            }else {
+                fileSizeLabel.text = ""
+            }
+        case .failed:
+            downloadView.isHidden = false
+            downloadButton.isHidden = false
+            progressView.isHidden = true
+            playButton.isHidden = true
+            fileSizeLabel.isHidden = false
             if let fileSize = message?.mediaChatMessage?.mediaFileSize{
                 fileSizeLabel.text = "\(Units(bytes: Int64(fileSize)).getReadableUnit())"
             }else {

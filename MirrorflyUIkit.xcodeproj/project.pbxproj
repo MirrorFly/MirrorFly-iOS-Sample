@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18E3C1A0F923FB53D1F6877B /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C9379E25045A29003734B08 /* Pods_UiKitQa.framework */; };
 		3D12788F27A7AC6D00A34436 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */; };
 		3DB836EC282A459C00C32745 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA2F95626569FC70013F5E8 /* StringConstants.swift */; };
+		6FB3922A33342826DCCFAC18 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 912B0146317DDB3751C2D7F8 /* Pods_UiKitQaNotificationExtention.framework */; };
+		95EA8D2E3F1FBEF6A13726A5 /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F878B28630AFDCC798EDBC /* Pods_UiKitQa.framework */; };
 		CE084E462747687F005D304E /* DateFormatterUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE084E452747687F005D304E /* DateFormatterUtility.swift */; };
 		CE0B4FAC27A3E3E9005349EB /* ContactInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B4FAB27A3E3E9005349EB /* ContactInfoViewController.swift */; };
 		CE0B4FB027A3E44F005349EB /* ContactImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B4FAE27A3E44F005349EB /* ContactImageCell.swift */; };
@@ -24,20 +25,6 @@
 		CE0EE39927D8CAAE00C4823D /* GroupInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */; };
 		CE2FA0542812B38E004C0A85 /* ContactUsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2FA0532812B38E004C0A85 /* ContactUsController.swift */; };
 		CE31D80C274365BD0052FFFF /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE31D80B274365BD0052FFFF /* ChatViewModel.swift */; };
-		CE323A14288014E10096A8DD /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A0A288014DC0096A8DD /* FlyCall.xcframework */; };
-		CE323A15288014E10096A8DD /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A0A288014DC0096A8DD /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE323A16288014E20096A8DD /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A0C288014DC0096A8DD /* FlyCommon.xcframework */; };
-		CE323A17288014E20096A8DD /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A0C288014DC0096A8DD /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE323A18288014E40096A8DD /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A09288014DC0096A8DD /* FlyCore.xcframework */; };
-		CE323A19288014E40096A8DD /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A09288014DC0096A8DD /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE323A1A288014E60096A8DD /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A06288014DB0096A8DD /* FlyDatabase.xcframework */; };
-		CE323A1B288014E60096A8DD /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A06288014DB0096A8DD /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE323A1C288014E70096A8DD /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A08288014DC0096A8DD /* FlyNetwork.xcframework */; };
-		CE323A1D288014E70096A8DD /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A08288014DC0096A8DD /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE323A1E288014EA0096A8DD /* FlyTranslate.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A0B288014DC0096A8DD /* FlyTranslate.xcframework */; };
-		CE323A1F288014EA0096A8DD /* FlyTranslate.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A0B288014DC0096A8DD /* FlyTranslate.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE323A20288014ED0096A8DD /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A07288014DB0096A8DD /* FlyXmpp.xcframework */; };
-		CE323A21288014ED0096A8DD /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE323A07288014DB0096A8DD /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE40C5C426DDC0B5001F829F /* CountryPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5B826DDC0B4001F829F /* CountryPickerViewController.swift */; };
 		CE40C5C526DDC0B5001F829F /* ContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5B926DDC0B4001F829F /* ContactViewController.swift */; };
 		CE40C5C626DDC0B5001F829F /* ContactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5BA26DDC0B4001F829F /* ContactViewModel.swift */; };
@@ -123,8 +110,6 @@
 		CE968374274B950400701ADF /* NewGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE968373274B950400701ADF /* NewGroupViewController.swift */; };
 		CE9A65552754A997007DB23C /* NoResultFoundCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9A65532754A997007DB23C /* NoResultFoundCell.swift */; };
 		CE9A65562754A997007DB23C /* NoResultFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9A65542754A997007DB23C /* NoResultFoundCell.xib */; };
-		CE9DEFDD282E6F230088A4DE /* DeleteMyAccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9DEFDB282E6F230088A4DE /* DeleteMyAccountVC.swift */; };
-		CE9DEFDF282E6F230088A4DE /* DMAReasonVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9DEFDC282E6F230088A4DE /* DMAReasonVC.swift */; };
 		CE9EC7E126CA67BA0089D9EB /* AppAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EC7DA26CA67B90089D9EB /* AppAlert.swift */; };
 		CE9EC7E226CA67BA0089D9EB /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EC7DB26CA67B90089D9EB /* Identifiers.swift */; };
 		CE9EC7E326CA67BA0089D9EB /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EC7DC26CA67BA0089D9EB /* Color.swift */; };
@@ -185,8 +170,31 @@
 		CEA4FFB726DFBACD004A1268 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA4FFB626DFBACD004A1268 /* ViewController.swift */; };
 		CEA4FFB926DFBB42004A1268 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA4FFB826DFBB42004A1268 /* ProfileModel.swift */; };
 		CEA664EC26D5315A007B8774 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEA664EE26D5315A007B8774 /* Localizable.strings */; };
+		CEAAD17328ACF3EF002B8B6C /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAAD17228ACF3EF002B8B6C /* BaseViewController.swift */; };
 		CEABA5F527704731004CF761 /* ChatUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABA5F427704731004CF761 /* ChatUtils.swift */; };
+		CEAF528028337075001165A4 /* SenderDocumentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF527E28337075001165A4 /* SenderDocumentsTableViewCell.swift */; };
+		CEAF528128337075001165A4 /* SenderDocumentsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEAF527F28337075001165A4 /* SenderDocumentsTableViewCell.xib */; };
+		CEAF5286283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF5284283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift */; };
+		CEAF5287283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEAF5285283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib */; };
 		CEC08B7F27E24F41005E48C5 /* GoogleService-Qa-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEC08B7E27E24F41005E48C5 /* GoogleService-Qa-Info.plist */; };
+		CEC1039128E31CF3005CE5C1 /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038928E31CEF005CE5C1 /* FlyCore.xcframework */; };
+		CEC1039728E31CF3005CE5C1 /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038C28E31CF1005CE5C1 /* FlyCommon.xcframework */; };
+		CEC1039928E31CF3005CE5C1 /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038D28E31CF2005CE5C1 /* FlyXmpp.xcframework */; };
+		CEC1039B28E31CF3005CE5C1 /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038E28E31CF2005CE5C1 /* FlyCall.xcframework */; };
+		CEC1039E28E31D1A005CE5C1 /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038E28E31CF2005CE5C1 /* FlyCall.xcframework */; };
+		CEC1039F28E31D1A005CE5C1 /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038E28E31CF2005CE5C1 /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEC103A028E31D1B005CE5C1 /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038C28E31CF1005CE5C1 /* FlyCommon.xcframework */; };
+		CEC103A128E31D1B005CE5C1 /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038C28E31CF1005CE5C1 /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEC103A228E31D1D005CE5C1 /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038928E31CEF005CE5C1 /* FlyCore.xcframework */; };
+		CEC103A328E31D1D005CE5C1 /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038928E31CEF005CE5C1 /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEC103A428E31D1E005CE5C1 /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038A28E31CF0005CE5C1 /* FlyDatabase.xcframework */; };
+		CEC103A528E31D1E005CE5C1 /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038A28E31CF0005CE5C1 /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEC103A628E31D20005CE5C1 /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038B28E31CF1005CE5C1 /* FlyNetwork.xcframework */; };
+		CEC103A728E31D20005CE5C1 /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038B28E31CF1005CE5C1 /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEC103A828E31D22005CE5C1 /* FlyTranslate.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038F28E31CF3005CE5C1 /* FlyTranslate.xcframework */; };
+		CEC103A928E31D22005CE5C1 /* FlyTranslate.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038F28E31CF3005CE5C1 /* FlyTranslate.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEC103AA28E31D23005CE5C1 /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038D28E31CF2005CE5C1 /* FlyXmpp.xcframework */; };
+		CEC103AB28E31D23005CE5C1 /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEC1038D28E31CF2005CE5C1 /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEC2D48927A5AAA700AB107A /* ContactInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC2D48827A5AAA700AB107A /* ContactInfoViewModel.swift */; };
 		CECB992526CE71BF00B24448 /* SF-UI-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CECB992426CE71BF00B24448 /* SF-UI-Display-Bold.otf */; };
 		CECB992726CE71CB00B24448 /* SF-UI-Display-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = CECB992626CE71CB00B24448 /* SF-UI-Display-Heavy.otf */; };
@@ -196,6 +204,7 @@
 		CECB992F26CE720900B24448 /* SF-UI-Display-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CECB992E26CE720900B24448 /* SF-UI-Display-Semibold.otf */; };
 		CED0F3D926CBB355002E376A /* ActivityIndicatorClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED0F3D826CBB355002E376A /* ActivityIndicatorClass.swift */; };
 		CED0F3DB26CBB35E002E376A /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED0F3DA26CBB35E002E376A /* NetworkReachability.swift */; };
+		CED57CE82893B3EA000A456E /* AppAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED57CE72893B3EA000A456E /* AppAudioRecorder.swift */; };
 		CED5EE0827990D850071A109 /* WebSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED5EE0627990D850071A109 /* WebSettingsCell.swift */; };
 		CED5EE0927990D850071A109 /* WebSettingsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED5EE0727990D850071A109 /* WebSettingsCell.xib */; };
 		CED70D44274B6069005895ED /* CustomPhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED70D43274B6069005895ED /* CustomPhotoAlbum.swift */; };
@@ -203,6 +212,8 @@
 		CEE70879276893D90072A50F /* ForwardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE70877276893D90072A50F /* ForwardViewController.xib */; };
 		CEEC63BD2768C60B00FD3C35 /* ForwardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC63BB2768C60B00FD3C35 /* ForwardTableViewCell.swift */; };
 		CEEC63BE2768C60B00FD3C35 /* ForwardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEC63BC2768C60B00FD3C35 /* ForwardTableViewCell.xib */; };
+		CEEFC6F828AE7485009943DE /* DeleteMyAccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEFC6F628AE7485009943DE /* DeleteMyAccountVC.swift */; };
+		CEEFC6FA28AE7485009943DE /* DMAReasonVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEFC6F728AE7485009943DE /* DMAReasonVC.swift */; };
 		CEF1948D26FC9B3A0039FFF3 /* StatusHeaderLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF18FAA26F9A0210039FFF3 /* StatusHeaderLabel.swift */; };
 		CEF4371A27390C26008D0F39 /* Call.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEF4371927390C26008D0F39 /* Call.storyboard */; };
 		CEF4371C27390C60008D0F39 /* CallLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF4371B27390C60008D0F39 /* CallLogViewController.swift */; };
@@ -218,7 +229,6 @@
 		CEF4374B273BCA77008D0F39 /* UiKitQaNotificationExtention.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CEF43744273BCA76008D0F39 /* UiKitQaNotificationExtention.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CEFD043026CD25B90017287F /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = CEFD042F26CD25B90017287F /* countries.json */; };
 		CEFD043226CD3D4B0017287F /* CountryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFD043126CD3D4B0017287F /* CountryModel.swift */; };
-		F8C4EADD21C439EDB0846AD4 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC63FFF7B00EAAFACDAD4A29 /* Pods_UiKitQaNotificationExtention.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,29 +242,29 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CE159BB1286E214B00B6CA15 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				CE323A1F288014EA0096A8DD /* FlyTranslate.xcframework in Embed Frameworks */,
-				CE323A17288014E20096A8DD /* FlyCommon.xcframework in Embed Frameworks */,
-				CE323A15288014E10096A8DD /* FlyCall.xcframework in Embed Frameworks */,
-				CE323A1D288014E70096A8DD /* FlyNetwork.xcframework in Embed Frameworks */,
-				CE323A21288014ED0096A8DD /* FlyXmpp.xcframework in Embed Frameworks */,
-				CE323A1B288014E60096A8DD /* FlyDatabase.xcframework in Embed Frameworks */,
-				CE323A19288014E40096A8DD /* FlyCore.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CE8BC8E1280E9934007FF8C3 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEC1037C28E31879005CE5C1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CEC103A928E31D22005CE5C1 /* FlyTranslate.xcframework in Embed Frameworks */,
+				CEC103A128E31D1B005CE5C1 /* FlyCommon.xcframework in Embed Frameworks */,
+				CEC1039F28E31D1A005CE5C1 /* FlyCall.xcframework in Embed Frameworks */,
+				CEC103A728E31D20005CE5C1 /* FlyNetwork.xcframework in Embed Frameworks */,
+				CEC103AB28E31D23005CE5C1 /* FlyXmpp.xcframework in Embed Frameworks */,
+				CEC103A528E31D1E005CE5C1 /* FlyDatabase.xcframework in Embed Frameworks */,
+				CEC103A328E31D1D005CE5C1 /* FlyCore.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,11 +283,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		12437EB0852EC70DD7BCD5A0 /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
+		256571C102CF6F24EA6F2986 /* Pods-MirrorflyNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-MirrorflyNotificationExtention/Pods-MirrorflyNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
+		3BCF29C3DC0D946BB4C386EB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
 		3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
-		40805697EE02EA94ED6CA4AB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
-		43BB7FCE9738724025F198E7 /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
-		4C9379E25045A29003734B08 /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC63FFF7B00EAAFACDAD4A29 /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		54C4B404109D65B8F20EB089 /* Pods-MirrorflyNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-MirrorflyNotificationExtention/Pods-MirrorflyNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
+		69F878B28630AFDCC798EDBC /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		82EE9E178EE1FAFBE016D842 /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
+		912B0146317DDB3751C2D7F8 /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB445807F5954009092097D9 /* Pods_MirrorflyNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MirrorflyNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0677105F64E684F322780E1 /* Pods-Mirrorfly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirrorfly.debug.xcconfig"; path = "Target Support Files/Pods-Mirrorfly/Pods-Mirrorfly.debug.xcconfig"; sourceTree = "<group>"; };
 		CE084E452747687F005D304E /* DateFormatterUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterUtility.swift; sourceTree = "<group>"; };
 		CE0B4FAB27A3E3E9005349EB /* ContactInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactInfoViewController.swift; sourceTree = "<group>"; };
 		CE0B4FAE27A3E44F005349EB /* ContactImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactImageCell.swift; sourceTree = "<group>"; };
@@ -290,15 +305,10 @@
 		CE0B4FBE27A414E3005349EB /* ContactInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContactInfoCell.xib; sourceTree = "<group>"; };
 		CE0B757627AD0E7300331AE4 /* ContactSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSyncController.swift; sourceTree = "<group>"; };
 		CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoViewModel.swift; sourceTree = "<group>"; };
+		CE1FD791280F7A3D0075304E /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE1FD795280F7B3B0075304E /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2FA0532812B38E004C0A85 /* ContactUsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsController.swift; sourceTree = "<group>"; };
 		CE31D80B274365BD0052FFFF /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
-		CE323A06288014DB0096A8DD /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
-		CE323A07288014DB0096A8DD /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
-		CE323A08288014DC0096A8DD /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
-		CE323A09288014DC0096A8DD /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
-		CE323A0A288014DC0096A8DD /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
-		CE323A0B288014DC0096A8DD /* FlyTranslate.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyTranslate.xcframework; sourceTree = "<group>"; };
-		CE323A0C288014DC0096A8DD /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
 		CE40C5B826DDC0B4001F829F /* CountryPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryPickerViewController.swift; sourceTree = "<group>"; };
 		CE40C5B926DDC0B4001F829F /* ContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactViewController.swift; sourceTree = "<group>"; };
 		CE40C5BA26DDC0B4001F829F /* ContactViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactViewModel.swift; sourceTree = "<group>"; };
@@ -365,6 +375,17 @@
 		CE87E729280D6A8700E4A288 /* BlockedByAdminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedByAdminViewController.swift; sourceTree = "<group>"; };
 		CE8849E427A7C40700C5D7B2 /* ViewUserImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewUserImageController.swift; sourceTree = "<group>"; };
 		CE887BBB27672964002E62AF /* DeleteAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAlertViewController.swift; sourceTree = "<group>"; };
+		CE8BC8E6280EB466007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC912280EB9D8007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC91C280EBD8A007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC920280EC178007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC924280ED179007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC93E280EE2F0007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC942280EE384007FF8C3 /* Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC946280EE4DA007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC949280EE8CC007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC94C280EEB5C007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8BC94F280EED09007FF8C3 /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8C1AB126E6225C00433470 /* test-image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "test-image.jpg"; sourceTree = "<group>"; };
 		CE8D11F7275E02BC00EE89C1 /* GroupReceivedMessageHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupReceivedMessageHeader.swift; sourceTree = "<group>"; };
 		CE8DFD8D280E84A60043B6A8 /* UILabelExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtension.swift; sourceTree = "<group>"; };
@@ -383,8 +404,6 @@
 		CE968373274B950400701ADF /* NewGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupViewController.swift; sourceTree = "<group>"; };
 		CE9A65532754A997007DB23C /* NoResultFoundCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResultFoundCell.swift; sourceTree = "<group>"; };
 		CE9A65542754A997007DB23C /* NoResultFoundCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoResultFoundCell.xib; sourceTree = "<group>"; };
-		CE9DEFDB282E6F230088A4DE /* DeleteMyAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeleteMyAccountVC.swift; path = DeleteMyAccount/DeleteMyAccountVC.swift; sourceTree = "<group>"; };
-		CE9DEFDC282E6F230088A4DE /* DMAReasonVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DMAReasonVC.swift; path = DeleteMyAccount/DMAReasonVC.swift; sourceTree = "<group>"; };
 		CE9EC7DA26CA67B90089D9EB /* AppAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppAlert.swift; sourceTree = "<group>"; };
 		CE9EC7DB26CA67B90089D9EB /* Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		CE9EC7DC26CA67BA0089D9EB /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -402,6 +421,8 @@
 		CE9F7F0B26F2BB1B002BF24A /* IPImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPImage.swift; sourceTree = "<group>"; };
 		CE9FA02526F067D20082EFA5 /* RecentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentChatTableViewCell.swift; sourceTree = "<group>"; };
 		CE9FA02726F06BC70082EFA5 /* SearchRecentChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRecentChatTableViewCell.swift; sourceTree = "<group>"; };
+		CEA178D3274F8ABC00EAD2A3 /* FlyCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlyCommon.framework; path = MirrorflyUIkit/Framework/FlyCommon.framework; sourceTree = "<group>"; };
+		CEA178D4274F8ABC00EAD2A3 /* FlyCall.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FlyCall.framework; path = MirrorflyUIkit/Framework/FlyCall.framework; sourceTree = "<group>"; };
 		CEA22DB926F4A5D2002034C0 /* ContactDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetails.swift; sourceTree = "<group>"; };
 		CEA22DBC26F4A5F4002034C0 /* MenuItemWithIndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemWithIndexPath.swift; sourceTree = "<group>"; };
 		CEA22E0B26F4B54C002034C0 /* AppUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUtils.swift; sourceTree = "<group>"; };
@@ -447,8 +468,25 @@
 		CEA4FFB626DFBACD004A1268 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CEA4FFB826DFBB42004A1268 /* ProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		CEA664ED26D5315A007B8774 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CEAAD17228ACF3EF002B8B6C /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		CEAAD19328AD1D74002B8B6C /* DeleteMyAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteMyAccountVC.swift; sourceTree = "<group>"; };
+		CEAAD19428AD1D74002B8B6C /* DMAReasonVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DMAReasonVC.swift; sourceTree = "<group>"; };
 		CEABA5F427704731004CF761 /* ChatUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatUtils.swift; sourceTree = "<group>"; };
+		CEAF527E28337075001165A4 /* SenderDocumentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderDocumentsTableViewCell.swift; sourceTree = "<group>"; };
+		CEAF527F28337075001165A4 /* SenderDocumentsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderDocumentsTableViewCell.xib; sourceTree = "<group>"; };
+		CEAF5284283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverDocumentsTableViewCell.swift; sourceTree = "<group>"; };
+		CEAF5285283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReceiverDocumentsTableViewCell.xib; sourceTree = "<group>"; };
+		CEC08B6127E23B0D005E48C5 /* Mirrorfly-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mirrorfly-Info.plist"; path = "/Users/user/Desktop/UiKit/Mirrorfly-Info.plist"; sourceTree = "<absolute>"; };
+		CEC08B7227E23B9F005E48C5 /* MirrorflyNotificationExtention-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MirrorflyNotificationExtention-Info.plist"; path = "/Users/user/Desktop/UiKit/MirrorflyNotificationExtention-Info.plist"; sourceTree = "<absolute>"; };
+		CEC08B7427E243D9005E48C5 /* MirrorflyNotificationextention.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MirrorflyNotificationextention.entitlements; sourceTree = "<group>"; };
 		CEC08B7E27E24F41005E48C5 /* GoogleService-Qa-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Qa-Info.plist"; sourceTree = "<group>"; };
+		CEC1038928E31CEF005CE5C1 /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
+		CEC1038A28E31CF0005CE5C1 /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
+		CEC1038B28E31CF1005CE5C1 /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
+		CEC1038C28E31CF1005CE5C1 /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
+		CEC1038D28E31CF2005CE5C1 /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
+		CEC1038E28E31CF2005CE5C1 /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
+		CEC1038F28E31CF3005CE5C1 /* FlyTranslate.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyTranslate.xcframework; sourceTree = "<group>"; };
 		CEC2D48827A5AAA700AB107A /* ContactInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactInfoViewModel.swift; sourceTree = "<group>"; };
 		CECB98F426CE658D00B24448 /* Mirrorfly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirrorfly.entitlements; sourceTree = "<group>"; };
 		CECB98F526CE65EE00B24448 /* MirrorflyUIkitQa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MirrorflyUIkitQa.entitlements; sourceTree = "<group>"; };
@@ -460,6 +498,7 @@
 		CECB992E26CE720900B24448 /* SF-UI-Display-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Semibold.otf"; sourceTree = "<group>"; };
 		CED0F3D826CBB355002E376A /* ActivityIndicatorClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorClass.swift; sourceTree = "<group>"; };
 		CED0F3DA26CBB35E002E376A /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		CED57CE72893B3EA000A456E /* AppAudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAudioRecorder.swift; sourceTree = "<group>"; };
 		CED5EE0627990D850071A109 /* WebSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSettingsCell.swift; sourceTree = "<group>"; };
 		CED5EE0727990D850071A109 /* WebSettingsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebSettingsCell.xib; sourceTree = "<group>"; };
 		CED70D43274B6069005895ED /* CustomPhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPhotoAlbum.swift; sourceTree = "<group>"; };
@@ -467,6 +506,8 @@
 		CEE70877276893D90072A50F /* ForwardViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ForwardViewController.xib; sourceTree = "<group>"; };
 		CEEC63BB2768C60B00FD3C35 /* ForwardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardTableViewCell.swift; sourceTree = "<group>"; };
 		CEEC63BC2768C60B00FD3C35 /* ForwardTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ForwardTableViewCell.xib; sourceTree = "<group>"; };
+		CEEFC6F628AE7485009943DE /* DeleteMyAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteMyAccountVC.swift; sourceTree = "<group>"; };
+		CEEFC6F728AE7485009943DE /* DMAReasonVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DMAReasonVC.swift; sourceTree = "<group>"; };
 		CEF18FAA26F9A0210039FFF3 /* StatusHeaderLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusHeaderLabel.swift; sourceTree = "<group>"; };
 		CEF4371927390C26008D0F39 /* Call.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Call.storyboard; sourceTree = "<group>"; };
 		CEF4371B27390C60008D0F39 /* CallLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallLogViewController.swift; sourceTree = "<group>"; };
@@ -484,8 +525,9 @@
 		CEF43750273BCAB2008D0F39 /* NotificationExtentionQa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtentionQa.entitlements; sourceTree = "<group>"; };
 		CEFD042F26CD25B90017287F /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		CEFD043126CD3D4B0017287F /* CountryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryModel.swift; sourceTree = "<group>"; };
-		D0DD85E672E38AF434A76148 /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
-		F3364D2BC7D2C968302B973D /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
+		DBBEB878CE2F2523E2F9D036 /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
+		E7FC42C77FB9F72E55CE11D5 /* Pods_Mirrorfly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mirrorfly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECC271EF3F6AE2051534B0A0 /* Pods-Mirrorfly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirrorfly.release.xcconfig"; path = "Target Support Files/Pods-Mirrorfly/Pods-Mirrorfly.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -493,14 +535,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE323A1E288014EA0096A8DD /* FlyTranslate.xcframework in Frameworks */,
-				CE323A16288014E20096A8DD /* FlyCommon.xcframework in Frameworks */,
-				CE323A20288014ED0096A8DD /* FlyXmpp.xcframework in Frameworks */,
-				CE323A14288014E10096A8DD /* FlyCall.xcframework in Frameworks */,
-				CE323A1C288014E70096A8DD /* FlyNetwork.xcframework in Frameworks */,
-				CE323A18288014E40096A8DD /* FlyCore.xcframework in Frameworks */,
-				CE323A1A288014E60096A8DD /* FlyDatabase.xcframework in Frameworks */,
-				18E3C1A0F923FB53D1F6877B /* Pods_UiKitQa.framework in Frameworks */,
+				CEC103A828E31D22005CE5C1 /* FlyTranslate.xcframework in Frameworks */,
+				CEC103A028E31D1B005CE5C1 /* FlyCommon.xcframework in Frameworks */,
+				CEC103AA28E31D23005CE5C1 /* FlyXmpp.xcframework in Frameworks */,
+				CEC103A628E31D20005CE5C1 /* FlyNetwork.xcframework in Frameworks */,
+				CEC1039E28E31D1A005CE5C1 /* FlyCall.xcframework in Frameworks */,
+				95EA8D2E3F1FBEF6A13726A5 /* Pods_UiKitQa.framework in Frameworks */,
+				CEC103A228E31D1D005CE5C1 /* FlyCore.xcframework in Frameworks */,
+				CEC103A428E31D1E005CE5C1 /* FlyDatabase.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,7 +550,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8C4EADD21C439EDB0846AD4 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
+				CEC1039128E31CF3005CE5C1 /* FlyCore.xcframework in Frameworks */,
+				6FB3922A33342826DCCFAC18 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
+				CEC1039928E31CF3005CE5C1 /* FlyXmpp.xcframework in Frameworks */,
+				CEC1039B28E31CF3005CE5C1 /* FlyCall.xcframework in Frameworks */,
+				CEC1039728E31CF3005CE5C1 /* FlyCommon.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,18 +569,28 @@
 			path = UserProfile;
 			sourceTree = "<group>";
 		};
-		4396EE8CA94F505752CF1873 /* Frameworks */ = {
+		418B1E6BE4FB1EDA43ED8456 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE323A0A288014DC0096A8DD /* FlyCall.xcframework */,
-				CE323A0C288014DC0096A8DD /* FlyCommon.xcframework */,
-				CE323A09288014DC0096A8DD /* FlyCore.xcframework */,
-				CE323A06288014DB0096A8DD /* FlyDatabase.xcframework */,
-				CE323A08288014DC0096A8DD /* FlyNetwork.xcframework */,
-				CE323A0B288014DC0096A8DD /* FlyTranslate.xcframework */,
-				CE323A07288014DB0096A8DD /* FlyXmpp.xcframework */,
-				4C9379E25045A29003734B08 /* Pods_UiKitQa.framework */,
-				AC63FFF7B00EAAFACDAD4A29 /* Pods_UiKitQaNotificationExtention.framework */,
+				CE1FD795280F7B3B0075304E /* FlyTranslate.framework */,
+				CE1FD791280F7A3D0075304E /* FlyTranslate.framework */,
+				CE8BC94F280EED09007FF8C3 /* FlyTranslate.framework */,
+				CE8BC94C280EEB5C007FF8C3 /* FlyTranslate.framework */,
+				CE8BC949280EE8CC007FF8C3 /* FlyTranslate.framework */,
+				CE8BC946280EE4DA007FF8C3 /* FlyTranslate.framework */,
+				CE8BC942280EE384007FF8C3 /* Demo.framework */,
+				CE8BC93E280EE2F0007FF8C3 /* FlyTranslate.framework */,
+				CE8BC924280ED179007FF8C3 /* FlyTranslate.framework */,
+				CE8BC920280EC178007FF8C3 /* FlyTranslate.framework */,
+				CE8BC91C280EBD8A007FF8C3 /* FlyTranslate.framework */,
+				CE8BC912280EB9D8007FF8C3 /* FlyTranslate.framework */,
+				CE8BC8E6280EB466007FF8C3 /* FlyTranslate.framework */,
+				CEA178D4274F8ABC00EAD2A3 /* FlyCall.framework */,
+				CEA178D3274F8ABC00EAD2A3 /* FlyCommon.framework */,
+				E7FC42C77FB9F72E55CE11D5 /* Pods_Mirrorfly.framework */,
+				AB445807F5954009092097D9 /* Pods_MirrorflyNotificationExtention.framework */,
+				69F878B28630AFDCC798EDBC /* Pods_UiKitQa.framework */,
+				912B0146317DDB3751C2D7F8 /* Pods_UiKitQaNotificationExtention.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -542,10 +598,14 @@
 		6B19A949DEFF3996B7AA7823 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F3364D2BC7D2C968302B973D /* Pods-UiKitQa.debug.xcconfig */,
-				43BB7FCE9738724025F198E7 /* Pods-UiKitQa.release.xcconfig */,
-				40805697EE02EA94ED6CA4AB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
-				D0DD85E672E38AF434A76148 /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
+				C0677105F64E684F322780E1 /* Pods-Mirrorfly.debug.xcconfig */,
+				ECC271EF3F6AE2051534B0A0 /* Pods-Mirrorfly.release.xcconfig */,
+				256571C102CF6F24EA6F2986 /* Pods-MirrorflyNotificationExtention.debug.xcconfig */,
+				54C4B404109D65B8F20EB089 /* Pods-MirrorflyNotificationExtention.release.xcconfig */,
+				82EE9E178EE1FAFBE016D842 /* Pods-UiKitQa.debug.xcconfig */,
+				12437EB0852EC70DD7BCD5A0 /* Pods-UiKitQa.release.xcconfig */,
+				3BCF29C3DC0D946BB4C386EB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
+				DBBEB878CE2F2523E2F9D036 /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -634,8 +694,9 @@
 		CE40C5B726DDC09E001F829F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				CE9DEFDB282E6F230088A4DE /* DeleteMyAccountVC.swift */,
-				CE9DEFDC282E6F230088A4DE /* DMAReasonVC.swift */,
+				CEEFC6F628AE7485009943DE /* DeleteMyAccountVC.swift */,
+				CEEFC6F728AE7485009943DE /* DMAReasonVC.swift */,
+				CEAAD19228AD1D74002B8B6C /* DeleteMyAccount */,
 				CE6C986128045C06009D508E /* Language Selection */,
 				CE6C985728040039009D508E /* Chat Settings */,
 				CE2FA0522812B365004C0A85 /* ContactUs */,
@@ -669,14 +730,13 @@
 			isa = PBXGroup;
 			children = (
 				CE48C13026E1EBB10016AEFC /* CollectionCells */,
-				CE48C12F26E1EB540016AEFC /* TableviewCells */,
 				CE48C12B26E1EB410016AEFC /* ImageEditController.swift */,
 				CE51790F26E201D80077636C /* ImagePreview.swift */,
 			);
 			path = Image;
 			sourceTree = "<group>";
 		};
-		CE48C12F26E1EB540016AEFC /* TableviewCells */ = {
+		CE48C12F26E1EB540016AEFC /* Image Cells */ = {
 			isa = PBXGroup;
 			children = (
 				CE48C13726E1EBF10016AEFC /* SenderImageCell.swift */,
@@ -685,7 +745,7 @@
 				CE48C13C26E1F1B00016AEFC /* ReceiverImageCell.xib */,
 				CE62CD9B275E85E100E77310 /* BaseTableViewCell.swift */,
 			);
-			path = TableviewCells;
+			path = "Image Cells";
 			sourceTree = "<group>";
 		};
 		CE48C13026E1EBB10016AEFC /* CollectionCells */ = {
@@ -978,8 +1038,8 @@
 				CEF43745273BCA77008D0F39 /* NotificationExtention */,
 				CEA2F92626569C590013F5E8 /* Products */,
 				6B19A949DEFF3996B7AA7823 /* Pods */,
+				418B1E6BE4FB1EDA43ED8456 /* Frameworks */,
 				CE31D802274365020052FFFF /* Recovered References */,
-				4396EE8CA94F505752CF1873 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -995,6 +1055,15 @@
 		CEA2F92726569C590013F5E8 /* MirrorflyUIkit */ = {
 			isa = PBXGroup;
 			children = (
+				CEAAD17228ACF3EF002B8B6C /* BaseViewController.swift */,
+				CEC1038E28E31CF2005CE5C1 /* FlyCall.xcframework */,
+				CEC1038C28E31CF1005CE5C1 /* FlyCommon.xcframework */,
+				CEC1038928E31CEF005CE5C1 /* FlyCore.xcframework */,
+				CEC1038A28E31CF0005CE5C1 /* FlyDatabase.xcframework */,
+				CEC1038B28E31CF1005CE5C1 /* FlyNetwork.xcframework */,
+				CEC1038F28E31CF3005CE5C1 /* FlyTranslate.xcframework */,
+				CEC1038D28E31CF2005CE5C1 /* FlyXmpp.xcframework */,
+				CED57CE32893A7BC000A456E /* audioRecording */,
 				CE94E80326D9FA9800F2E3A7 /* GoogleService-Info.plist */,
 				CEA2F93D26569D8B0013F5E8 /* Plist */,
 				CEC08B8227E24FD8005E48C5 /* GooglePlist */,
@@ -1028,6 +1097,7 @@
 		CEA2F93D26569D8B0013F5E8 /* Plist */ = {
 			isa = PBXGroup;
 			children = (
+				CEC08B6127E23B0D005E48C5 /* Mirrorfly-Info.plist */,
 				CEA2F93626569C5C0013F5E8 /* MirrorflyUIkit-info.plist */,
 			);
 			path = Plist;
@@ -1227,7 +1297,9 @@
 			children = (
 				CEEC63BA2768C5F100FD3C35 /* ForwardCell */,
 				CEA3872F27510C4D00F35120 /* notificationCell */,
+				CE48C12F26E1EB540016AEFC /* Image Cells */,
 				CE8F53CD2743AD5B00B201F4 /* video */,
+				CEAF527D2833702C001165A4 /* Documents */,
 				CE56256526E2B3CF0020BDD3 /* Contact */,
 				CE56250826E0ED430020BDD3 /* Location */,
 				CEA4FEE726DF7419004A1268 /* ChatViewHeader.swift */,
@@ -1306,12 +1378,56 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		CEAAD19228AD1D74002B8B6C /* DeleteMyAccount */ = {
+			isa = PBXGroup;
+			children = (
+				CEAAD19328AD1D74002B8B6C /* DeleteMyAccountVC.swift */,
+				CEAAD19428AD1D74002B8B6C /* DMAReasonVC.swift */,
+			);
+			path = DeleteMyAccount;
+			sourceTree = "<group>";
+		};
+		CEAF527D2833702C001165A4 /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				CEAF52822833707E001165A4 /* Sender Documents */,
+				CEAF528328337090001165A4 /* Receiver Documents */,
+			);
+			path = Documents;
+			sourceTree = "<group>";
+		};
+		CEAF52822833707E001165A4 /* Sender Documents */ = {
+			isa = PBXGroup;
+			children = (
+				CEAF527E28337075001165A4 /* SenderDocumentsTableViewCell.swift */,
+				CEAF527F28337075001165A4 /* SenderDocumentsTableViewCell.xib */,
+			);
+			path = "Sender Documents";
+			sourceTree = "<group>";
+		};
+		CEAF528328337090001165A4 /* Receiver Documents */ = {
+			isa = PBXGroup;
+			children = (
+				CEAF5284283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift */,
+				CEAF5285283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib */,
+			);
+			path = "Receiver Documents";
+			sourceTree = "<group>";
+		};
 		CEC08B8227E24FD8005E48C5 /* GooglePlist */ = {
 			isa = PBXGroup;
 			children = (
 				CEC08B7E27E24F41005E48C5 /* GoogleService-Qa-Info.plist */,
 			);
 			path = GooglePlist;
+			sourceTree = "<group>";
+		};
+		CED57CE32893A7BC000A456E /* audioRecording */ = {
+			isa = PBXGroup;
+			children = (
+				CED57CE72893B3EA000A456E /* AppAudioRecorder.swift */,
+			);
+			path = audioRecording;
 			sourceTree = "<group>";
 		};
 		CED5EE0A27990D910071A109 /* WebSetting */ = {
@@ -1368,8 +1484,10 @@
 		CEF43745273BCA77008D0F39 /* NotificationExtention */ = {
 			isa = PBXGroup;
 			children = (
+				CEC08B7427E243D9005E48C5 /* MirrorflyNotificationextention.entitlements */,
 				CEF43750273BCAB2008D0F39 /* NotificationExtentionQa.entitlements */,
 				CEF43746273BCA77008D0F39 /* NotificationService.swift */,
+				CEC08B7227E23B9F005E48C5 /* MirrorflyNotificationExtention-Info.plist */,
 				CEF43748273BCA77008D0F39 /* Info.plist */,
 			);
 			path = NotificationExtention;
@@ -1390,16 +1508,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "UiKitQa" */;
 			buildPhases = (
-				D005A3EE3F016B4E9AE63055 /* [CP] Check Pods Manifest.lock */,
+				3DFAF987A53564554BF79C08 /* [CP] Check Pods Manifest.lock */,
 				CEA2F92126569C590013F5E8 /* Sources */,
 				CEA2F92226569C590013F5E8 /* Frameworks */,
 				CEA2F92326569C590013F5E8 /* Resources */,
 				CEF4374C273BCA77008D0F39 /* Embed App Extensions */,
 				CED4FB5C277DE60D008FAF15 /* ShellScript */,
 				CEC08B8327E25037005E48C5 /* Google Plist */,
-				CE159BB1286E214B00B6CA15 /* Embed Frameworks */,
-				E265F0B8D0D2BCF7197E7FEC /* [CP] Embed Pods Frameworks */,
-				8094B716029AEB8B9BDBA90B /* [CP] Copy Pods Resources */,
+				82363C0893954C404BD89760 /* [CP] Embed Pods Frameworks */,
+				F081A1D6691E28B6A924AF34 /* [CP] Copy Pods Resources */,
+				CEC1037C28E31879005CE5C1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1415,7 +1533,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "UiKitQaNotificationExtention" */;
 			buildPhases = (
-				FC3F065B348C7894388AE577 /* [CP] Check Pods Manifest.lock */,
+				BC099A4FEE5D2F5FC80838CE /* [CP] Check Pods Manifest.lock */,
 				CEF43740273BCA76008D0F39 /* Sources */,
 				CEF43741273BCA76008D0F39 /* Frameworks */,
 				CEF43742273BCA76008D0F39 /* Resources */,
@@ -1487,6 +1605,7 @@
 				CE56254A26E14E610020BDD3 /* ChatViewLocationOutgoingCell.xib in Resources */,
 				CEA387372751142E00F35120 /* NotificationCell.xib in Resources */,
 				CE8F53D52743AD7C00B201F4 /* ChatViewVideoIncomingCell.xib in Resources */,
+				CEAF5287283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib in Resources */,
 				CE6839F827D0E7440056DB8D /* GroupOptionsTableViewCell.xib in Resources */,
 				CECB992B26CE71DF00B24448 /* SF-UI-Display-Medium.otf in Resources */,
 				CE8FAC6C27269AA000C92634 /* AudioView.xib in Resources */,
@@ -1504,6 +1623,7 @@
 				CE48C13A26E1EBF20016AEFC /* SenderImageCell.xib in Resources */,
 				CEE70879276893D90072A50F /* ForwardViewController.xib in Resources */,
 				CE6C98602804053D009D508E /* ChatSettingsTableViewCell.xib in Resources */,
+				CEAF528128337075001165A4 /* SenderDocumentsTableViewCell.xib in Resources */,
 				CEA2F93526569C5C0013F5E8 /* LaunchScreen.storyboard in Resources */,
 				CECB992726CE71CB00B24448 /* SF-UI-Display-Heavy.otf in Resources */,
 				CE56257026E2B49D0020BDD3 /* ChatViewContactIncomingCell.xib in Resources */,
@@ -1537,61 +1657,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8094B716029AEB8B9BDBA90B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CEC08B8327E25037005E48C5 /* Google Plist */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Google Plist";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nPATH_TO_GOOGLE_PLISTS=\"${SRCROOT}/MirrorflyUIkit/GooglePlist\"\n\ncase \"${CONFIGURATION}\" in\n\n\"Debug\" | \"Release\" )\ncp -r \"$PATH_TO_GOOGLE_PLISTS/GoogleService-Qa-Info.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n*)\n;;\nesac\n";
-		};
-		CED4FB5C277DE60D008FAF15 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
-		};
-		D005A3EE3F016B4E9AE63055 /* [CP] Check Pods Manifest.lock */ = {
+		3DFAF987A53564554BF79C08 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1613,7 +1679,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E265F0B8D0D2BCF7197E7FEC /* [CP] Embed Pods Frameworks */ = {
+		82363C0893954C404BD89760 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1630,7 +1696,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FC3F065B348C7894388AE577 /* [CP] Check Pods Manifest.lock */ = {
+		BC099A4FEE5D2F5FC80838CE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1652,6 +1718,60 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		CEC08B8327E25037005E48C5 /* Google Plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Google Plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "PATH_TO_GOOGLE_PLISTS=\"${SRCROOT}/MirrorflyUIkit/GooglePlist\"\n\ncase \"${CONFIGURATION}\" in\n\n\"Debug\" | \"Release\" )\ncp -r \"$PATH_TO_GOOGLE_PLISTS/GoogleService-QA-Info.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n*)\n;;\nesac\n";
+		};
+		CED4FB5C277DE60D008FAF15 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
+		F081A1D6691E28B6A924AF34 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1667,6 +1787,7 @@
 				CE6839F727D0E7440056DB8D /* GroupOptionsTableViewCell.swift in Sources */,
 				CE40C5C826DDC0B5001F829F /* MainTabBarController.swift in Sources */,
 				CE8DFD8E280E84A60043B6A8 /* UILabelExtension.swift in Sources */,
+				CEAF528028337075001165A4 /* SenderDocumentsTableViewCell.swift in Sources */,
 				CE9EC7EF26CA71CE0089D9EB /* NotificationNameExtension.swift in Sources */,
 				CED0F3D926CBB355002E376A /* ActivityIndicatorClass.swift in Sources */,
 				CE9A65552754A997007DB23C /* NoResultFoundCell.swift in Sources */,
@@ -1674,12 +1795,13 @@
 				CE8F53D22743AD7C00B201F4 /* ChatViewVideoOutgoingCell.swift in Sources */,
 				CE6C9868280477E9009D508E /* LanguageSelectionTableViewCell.swift in Sources */,
 				CE51790E26E1FCE00077636C /* ImageDetail.swift in Sources */,
+				CED57CE82893B3EA000A456E /* AppAudioRecorder.swift in Sources */,
 				CE85EDFA274CF9AF002A6D50 /* ParticipantCell.swift in Sources */,
-				CE9DEFDD282E6F230088A4DE /* DeleteMyAccountVC.swift in Sources */,
 				CE31D80C274365BD0052FFFF /* ChatViewModel.swift in Sources */,
 				CEFD043226CD3D4B0017287F /* CountryModel.swift in Sources */,
 				CEA4FFAF26DFBA94004A1268 /* EditStatusTableViewCell.swift in Sources */,
 				CE8D11F8275E02BC00EE89C1 /* GroupReceivedMessageHeader.swift in Sources */,
+				CEAF5286283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift in Sources */,
 				CE4AF3A926F23AA3001EBB3B /* AudioSender.swift in Sources */,
 				CEA2F95326569FBE0013F5E8 /* FontExtension.swift in Sources */,
 				CE9EC7E426CA67BA0089D9EB /* APIList.swift in Sources */,
@@ -1701,6 +1823,7 @@
 				CE9ECA0E26CD93D10089D9EB /* ViewControllerExtension.swift in Sources */,
 				CE8849E527A7C40700C5D7B2 /* ViewUserImageController.swift in Sources */,
 				CE0B4FBB27A40CD7005349EB /* ViewAllMediaCell.swift in Sources */,
+				CEEFC6F828AE7485009943DE /* DeleteMyAccountVC.swift in Sources */,
 				CE8289A5274E160800D4531E /* GroupCreationPreviewController.swift in Sources */,
 				CE85EDF3274CD9C9002A6D50 /* GroupCreationData.swift in Sources */,
 				CE6C986328045C4D009D508E /* LanguageSelectionViewController.swift in Sources */,
@@ -1719,6 +1842,7 @@
 				CE8FAC6B27269AA000C92634 /* AudioView.swift in Sources */,
 				CE40C5C726DDC0B5001F829F /* RecentChatViewController.swift in Sources */,
 				CEA2F94526569F2F0013F5E8 /* APIService.swift in Sources */,
+				CEEFC6FA28AE7485009943DE /* DMAReasonVC.swift in Sources */,
 				CED5EE0827990D850071A109 /* WebSettingsCell.swift in Sources */,
 				CE8FAC642726980400C92634 /* ContactRefresh.swift in Sources */,
 				CE51797C26E25EC80077636C /* ImageConverter.swift in Sources */,
@@ -1734,6 +1858,7 @@
 				CE8F53D42743AD7C00B201F4 /* ChatViewVideoIncomingCell.swift in Sources */,
 				CE5B82D427F7379A00E2F8D8 /* ChatViewParentController.swift in Sources */,
 				CE9EC7ED26CA6AC90089D9EB /* LocalizeManager.swift in Sources */,
+				CEAAD17328ACF3EF002B8B6C /* BaseViewController.swift in Sources */,
 				CEA22F5A26F630AF002034C0 /* TextTransformation.swift in Sources */,
 				CE85EDF1274CA7A1002A6D50 /* AppPermissions.swift in Sources */,
 				CEF4371C27390C60008D0F39 /* CallLogViewController.swift in Sources */,
@@ -1748,7 +1873,6 @@
 				CE56257226E2B7400020BDD3 /* ChatContactViewController.swift in Sources */,
 				CE40C5CF26DDC0B5001F829F /* OTPViewModel.swift in Sources */,
 				CE40C5C626DDC0B5001F829F /* ContactViewModel.swift in Sources */,
-				CE9DEFDF282E6F230088A4DE /* DMAReasonVC.swift in Sources */,
 				CE9EC7E326CA67BA0089D9EB /* Color.swift in Sources */,
 				CEA4FF2026DF750B004A1268 /* ValueConstants.swift in Sources */,
 				CE9121162795484200B007E0 /* QRCodeScanner.swift in Sources */,
@@ -1972,7 +2096,7 @@
 		};
 		CEA2F93A26569C5C0013F5E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F3364D2BC7D2C968302B973D /* Pods-UiKitQa.debug.xcconfig */;
+			baseConfigurationReference = 82EE9E178EE1FAFBE016D842 /* Pods-UiKitQa.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1981,8 +2105,8 @@
 				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
+				CURRENT_PROJECT_VERSION = 240;
+				DEVELOPMENT_TEAM = 26VP8T9LM7;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2002,32 +2126,32 @@
 					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
 					"$(BUILT_PRODUCTS_DIR)/FlyCall",
 				);
-				MARKETING_VERSION = 5.4.0;
+				MARKETING_VERSION = 1.3.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Development Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Development Profile";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
 		};
 		CEA2F93B26569C5C0013F5E8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 43BB7FCE9738724025F198E7 /* Pods-UiKitQa.release.xcconfig */;
+			baseConfigurationReference = 12437EB0852EC70DD7BCD5A0 /* Pods-UiKitQa.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				Base_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/";
 				CODE_SIGN_ENTITLEMENTS = MirrorflyUIkit/MirrorflyUIkitQa.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
+				CURRENT_PROJECT_VERSION = 240;
+				DEVELOPMENT_TEAM = 26VP8T9LM7;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -2048,30 +2172,30 @@
 					"$(BUILT_PRODUCTS_DIR)/FlyXmpp",
 					"$(BUILT_PRODUCTS_DIR)/FlyCall",
 				);
-				MARKETING_VERSION = 5.4.0;
+				MARKETING_VERSION = 1.3.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Mirror Fly Qa Inhouse Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Development Profile";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
 		};
 		CEF4374D273BCA77008D0F39 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40805697EE02EA94ED6CA4AB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
+			baseConfigurationReference = 3BCF29C3DC0D946BB4C386EB /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
+				CURRENT_PROJECT_VERSION = 240;
+				DEVELOPMENT_TEAM = 26VP8T9LM7;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2087,12 +2211,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.4.0;
+				MARKETING_VERSION = 1.3.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification Dev Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Extension Development Profile";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -2102,15 +2226,15 @@
 		};
 		CEF4374E273BCA77008D0F39 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0DD85E672E38AF434A76148 /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
+			baseConfigurationReference = DBBEB878CE2F2523E2F9D036 /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G44VFA67ZG;
+				CURRENT_PROJECT_VERSION = 240;
+				DEVELOPMENT_TEAM = 26VP8T9LM7;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2126,11 +2250,11 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.4.0;
+				MARKETING_VERSION = 1.3.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DQA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mirrorfly.qa.notificationextention;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Qa Notification In house Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "MirrorFly Extension Development Profile";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

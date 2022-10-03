@@ -23,11 +23,10 @@ class ContactSyncController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        syncImage.isHidden = true
         NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)), name:  Notification.Name(NetStatus.networkNotificationObserver), object: nil)
         progressInfoLabel.text = ""
         userName.text = FlyDefaults.myName
-        
-        showPermissionDescripTion()
         
         internetObserver.throttle(.seconds(2), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
             switch event {
@@ -48,6 +47,15 @@ class ContactSyncController: UIViewController {
             }
             
         }.disposed(by: disposeBag)
+        
+        showPermissionDescripTion()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if  CNContactStore.authorizationStatus(for: .contacts) == .authorized && FlyDefaults.isContactPermissionSkipped == false{
+            alertController?.dismiss(animated: true)
+        }
     }
     
     @objc func networkChange(_ notification: NSNotification) {
@@ -82,9 +90,10 @@ class ContactSyncController: UIViewController {
             FlyDefaults.isContactPermissionDenied = false
         }else if authorizationStatus == .denied{
             FlyDefaults.isContactPermissionDenied = true
+            showGoToSettingsAlert()
         }
         FlyDefaults.isContactSyncNeeded = true
-        if NetworkReachability.shared.isConnected{
+        if NetStatus.shared.isConnected{
             executeOnMainThread {
                 self.syncProgressUiUpdate()
             }
@@ -158,14 +167,12 @@ class ContactSyncController: UIViewController {
                 }
             }
         }
-        continueAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alertController!.addAction(continueAction)
         let notNowAction = UIAlertAction(title: "Not now", style: .cancel) { [weak self] _ in
             FlyDefaults.isContactPermissionSkipped = true
             ContactSyncManager.shared.syncContacts(){ [weak self] (_, _, _)  in }
             self?.moveToDashboard()
         }
-        notNowAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
         alertController!.addAction(notNowAction)
         present(alertController!, animated: true)
     }
@@ -186,7 +193,7 @@ class ContactSyncController: UIViewController {
         }))
         alert.addAction(UIAlertAction(title: "Don't  Allow ", style: .cancel, handler: { (alert) -> Void in
             executeOnMainThread { [weak self] in
-                self?.startSyncingContacts()
+                self?.moveToDashboard()
             }
         }))
         present(alert, animated: true, completion: nil)

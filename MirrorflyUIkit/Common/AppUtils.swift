@@ -181,6 +181,12 @@ func executeOnMainThread( codeBlock: @escaping () -> Void) {
         codeBlock()
     }
 }
+
+func executeInBackground( codeBlock: @escaping () -> Void) {
+    DispatchQueue.global(qos: .background).async {
+        codeBlock()
+    }
+}
     
 func getUserName(jid : String, name : String , nickName : String, contactType : ContactType) -> String {
     FlyUtils.getUserName(jid: jid, name: name, nickName: nickName, contactType: contactType)
@@ -190,8 +196,71 @@ func getColor(userName : String) -> UIColor {
     return ChatUtils.getColorForUser(userName: userName)
 }
 
+func checkFileType(url: String, typeImageView: UIImageView!) {
+    guard let urlString = URL(string: url) else { return }
+    let urlExtension = urlString.pathExtension
+    
+   switch urlExtension {
+    case FileType.pdf.rawValue:
+        typeImageView.image = UIImage(named: "ic_pdf")
+    case FileType.doc.rawValue:
+        typeImageView.image = UIImage(named: "ic_doc")
+    case FileType.xls.rawValue:
+        typeImageView.image = UIImage(named: "ic_xls")
+    case FileType.xlsx.rawValue:
+        typeImageView.image = UIImage(named: "ic_xlxs")
+    case FileType.ppt.rawValue:
+        typeImageView.image = UIImage(named: "ic_ppt")
+    case FileType.pptx.rawValue:
+        typeImageView.image = UIImage(named: "ic_pptx")
+    case FileType.txt.rawValue:
+        typeImageView.image = UIImage(named: "ic_txt")
+    case FileType.zip.rawValue:
+        typeImageView.image = UIImage(named: "ic_zip")
+    case FileType.rar.rawValue:
+        typeImageView.image = UIImage(named: "ic_rar")
+    case FileType.csv.rawValue:
+        typeImageView.image = UIImage(named: "ic_csv")
+    case FileType.docx.rawValue:
+        typeImageView.image = UIImage(named: "ic_docx")
+   default:
+       break
+    }
+    print("urlExtension \(url)")
+}
+
+func checkFileType(urlExtension: String, typeImageView: UIImageView!) {
+   switch urlExtension {
+    case FileType.pdf.rawValue:
+        typeImageView.image = UIImage(named: "ic_pdf")
+    case FileType.doc.rawValue:
+        typeImageView.image = UIImage(named: "ic_doc")
+    case FileType.xls.rawValue:
+        typeImageView.image = UIImage(named: "ic_xls")
+    case FileType.xlsx.rawValue:
+        typeImageView.image = UIImage(named: "ic_xlxs")
+    case FileType.ppt.rawValue:
+        typeImageView.image = UIImage(named: "ic_ppt")
+    case FileType.pptx.rawValue:
+        typeImageView.image = UIImage(named: "ic_pptx")
+    case FileType.txt.rawValue:
+        typeImageView.image = UIImage(named: "ic_txt")
+    case FileType.zip.rawValue:
+        typeImageView.image = UIImage(named: "ic_zip")
+    case FileType.rar.rawValue:
+        typeImageView.image = UIImage(named: "ic_rar")
+    case FileType.csv.rawValue:
+        typeImageView.image = UIImage(named: "ic_csv")
+    case FileType.docx.rawValue:
+        typeImageView.image = UIImage(named: "ic_docx")
+   default:
+       break
+    }
+    print("urlExtension \(urlExtension)")
+}
+    
 func getPhoneNumberToUpdate(phoneNumber : String) -> String {
- 
+    
     if phoneNumber.isEmpty {
         return FlyDefaults.myMobileNumber
     }
@@ -199,12 +268,18 @@ func getPhoneNumberToUpdate(phoneNumber : String) -> String {
     var tempMobileNumber = phoneNumber
     tempMobileNumber = tempMobileNumber.contains("+") ? tempMobileNumber.replacingOccurrences(of: "+", with: "")  : tempMobileNumber
     tempMobileNumber = tempMobileNumber.contains(" ") ? tempMobileNumber.replacingOccurrences(of: " ", with: "") : tempMobileNumber
-
+    
     return tempMobileNumber
 }
 
+private func getIsBlockedByMe(jid: String) -> Bool {
+    return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+}
+
+
+
 extension UIImageView {
-    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown){
+    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown,jid: String){
         let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken
         let url = URL(string: urlString)
         var placeholder : UIImage?
@@ -212,17 +287,17 @@ extension UIImageView {
         case .groupChat:
             placeholder = UIImage(named: "smallGroupPlaceHolder")
         default:
-            
-            if uniqueId == FlyDefaults.myJid {
+            if uniqueId == FlyDefaults.myJid || contactType == .unknown || getIsBlockedByMe(jid: jid) {
                 placeholder = UIImage(named: "ic_profile_placeholder")
             } else {
                 let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
                 let ipimage = IPImage(text: trimmedName, radius: Double(self.frame.size.height), font: UIFont.font32px_appBold(),
                                       textColor: nil, color: getColor(userName: name))
                 placeholder = ipimage.generateInitialImage()
+                self.backgroundColor = ChatUtils.getColorForUser(userName: name)
             }
         }
-        if contactType == .deleted {
+        if contactType == .deleted || getIsBlockedByMe(jid: jid) {
             placeholder = UIImage(named: "ic_profile_placeholder")
         }
         self.sd_setImage(with: url, placeholderImage: placeholder, options: [.continueInBackground,.decodeFirstFrameOnly,.highPriority,.scaleDownLargeImages], progress: nil){ (image, responseError, isFromCache, imageUrl) in
@@ -231,7 +306,7 @@ extension UIImageView {
                     if errorCode == 401{
                         FlyMessenger.refreshToken { [weak self] isSuccess, error, data in
                             if isSuccess{
-                                self?.loadFlyImage(imageURL: imageURL, name: name, chatType : chatType)
+                                self?.loadFlyImage(imageURL: imageURL, name: name, chatType : chatType, jid: jid)
                             }else{
                                 self?.image = placeholder
                             }
@@ -246,4 +321,4 @@ extension UIImageView {
         }
     }
 }
-
+    

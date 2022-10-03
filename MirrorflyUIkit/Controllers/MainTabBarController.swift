@@ -61,7 +61,7 @@ class MainTabBarController: UITabBarController{
         profileData.status = FlyDefaults.myStatus
         profileData.image = FlyDefaults.myImageUrl
         
-        FlyDatabaseController.shared.rosterManager.saveContact(profileDetailsArray: [profileData], chatType: .singleChat, contactType: .live, saveAsTemp: false)
+        FlyDatabaseController.shared.rosterManager.saveContact(profileDetailsArray: [profileData], chatType: .singleChat, contactType: .live, saveAsTemp: false, calledBy: "")
     }
     
 }

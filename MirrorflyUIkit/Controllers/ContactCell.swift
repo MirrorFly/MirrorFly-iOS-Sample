@@ -8,6 +8,8 @@
 import UIKit
 import FlyCommon
 import SDWebImage
+import FlyCore
+
 class ContactCell: UITableViewCell {
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var status: UILabel!

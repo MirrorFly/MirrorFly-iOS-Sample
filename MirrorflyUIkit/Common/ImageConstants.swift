@@ -30,6 +30,7 @@ enum ImageConstant{
     static let ic_delivered = "ic_delivered"
     static let ic_audioUploadCancel = "ic_audioUploadCancel"
     static let ic_upload = "ic_upload"
+    static let ic_uploadCancel = "ic_download_cancel"
     
     static let ic_selected = "ic_selected"
     static let ic_unSelected = "ic_unSelected"
@@ -45,6 +46,9 @@ enum ImageConstant{
     static let ic_play = "ic_play"
     static let ic_audio_recording = "ic_audio_recording"
     static let ic_audio_record = "ic_audio_record"
+    static let ic_audio_receive = "ic_audio_receive"
+    static let ic_audio_recorded = "ic_audio_recorded"
+    static let ic_audio_filled = "ic_audio_filled"
     
     static let ic_checked = "checked"
     static let ic_check_box = "check_box"

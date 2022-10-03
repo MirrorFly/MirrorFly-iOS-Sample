@@ -14,6 +14,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     static var sharedAppDelegateVar: SceneDelegate? = nil
+    
+    var postNotificationdidEnterBackground : NotificationCenter? = nil
 
     @available(iOS 13.0, *)
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -87,6 +89,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
@@ -109,6 +112,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneDidEnterBackground(_ scene: UIScene) {
         print("#scene sceneDidEnterBackground")
+        postNotificationdidEnterBackground = NotificationCenter.default
+        postNotificationdidEnterBackground?.post(name: Notification.Name(didEnterBackground), object: nil)
         if Utility.getBoolFromPreference(key: isLoggedIn){
             ChatManager.disconnectXMPPConnection()
         }

@@ -409,7 +409,7 @@ class ContactViewController: UIViewController {
         if let profile =  tappedProfile{
             let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
             self.userName.text = name
-            userImage.loadFlyImage(imageURL: profile.image, name: name, chatType: profile.profileChatType)
+            userImage.loadFlyImage(imageURL: profile.image, name: name, chatType: profile.profileChatType, jid: profile.jid)
         }
     }
     
@@ -489,6 +489,7 @@ extension ContactViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
         if ENABLE_CONTACT_SYNC{
+            scrollToTableViewTop()
             contacts = searchText.isEmpty ? allContacts : allContacts.filter { term in
                 return getUserName(jid: term.jid ,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(searchText.lowercased())
                 self.contactList.reloadData()
@@ -519,7 +520,12 @@ extension ContactViewController: UISearchBarDelegate {
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        scrollToTableViewTop()
         searchTxt.setShowsCancelButton(true, animated: true)
+    }
+    
+    func scrollToTableViewTop() {
+        self.contactList?.setContentOffset(.zero, animated: false)
     }
 }
 
@@ -536,21 +542,34 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    private func getBlocked(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlocked ?? false
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if contacts.count > 0 && indexPath.row < contacts.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.contactCell) as! ContactCell
             cell.selectionStyle = .none
             let profile = contacts[indexPath.row]
+            if getBlocked(jid: profile.jid) && isMultiSelect {
+                cell.contentView.alpha = 0.6
+            } else {
+                cell.contentView.alpha = 1.0
+            }
             let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
             cell.profileButton.tag = indexPath.row
             cell.profileButton.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
             cell.name.text = name
             cell.status.text = profile.status
             let color = getColor(userName: name)
-            cell.profile.loadFlyImage(imageURL: profile.image, name: name)
+            cell.profile.loadFlyImage(imageURL: profile.image, name: name, jid: profile.jid)
+            if getIsBlockedByMe(jid: profile.jid) {
+                cell.profile.image = UIImage(named: "ic_profile_placeholder")
+            }
             cell.checkBox.tag = indexPath.row
             cell.checkBox.isSelected = selectedProfilesJid.contains(profile.jid)
             cell.checkBox.isHidden = !isMultiSelect
@@ -595,6 +614,10 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
         if isMultiSelect {
             if makeCall {
                 let profile = contacts[indexPath.row]
+                if getBlocked(jid: profile.jid) {
+                    showBlockUnblockConfirmationPopUp(jid: profile.jid, name: profile.nickName)
+                    return
+                }
                 ContactManager.shared.saveUser(profileDetails: profile)
                 if (CallManager.getCallUsersList()?.count ?? 0) + selectedProfilesJid.count  == 7  && !selectedProfilesJid.contains(profile.jid!) {
                     AppAlert.shared.showAlert(view: self, title: "Alert", message: "Only upto 8 members are allowed for a call (including the caller)", buttonTitle: "Ok")
@@ -644,6 +667,10 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
             selectectProfiles.append(profile)
             contactList.reloadData()
         }
+    }
+    
+    private func getIsBlockedByMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
     }
     
     func updateBottomButton() {
@@ -735,11 +762,11 @@ extension ContactViewController : ProfileEventsDelegate {
     }
     
     func userBlockedMe(jid: String) {
-        
+        getCotactFromLocal(fromServer: false)
     }
     
     func userUnBlockedMe(jid: String) {
-        
+        getCotactFromLocal(fromServer: false)
     }
     
     func hideUserLastSeen() {
@@ -787,6 +814,11 @@ extension ContactViewController {
     func makeFlyCall() {
         if isGroupBlockedByAdmin {
             AppAlert.shared.showToast(message: "\(groupNoLongerAvailable), can't make call")
+            return
+        }
+        
+        if CallManager.isAlreadyOnAnotherCall() && !isInvite{
+            AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
             return
         }
         
@@ -862,7 +894,7 @@ extension ContactViewController {
 extension ContactViewController : UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if !groupJid.isEmpty{
+        if !groupJid.isEmpty || ENABLE_CONTACT_SYNC{
             return
         }
         let position  = scrollView.contentOffset.y
@@ -1039,3 +1071,53 @@ extension ContactViewController : UIScrollViewDelegate {
     }
 }
 
+extension ContactViewController {
+
+    private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
+        //showConfirmationAlert
+        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(name ?? "")?" : "Block \(name ?? "")?", preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
+            self?.dismiss(animated: true,completion: nil)
+        }
+        let blockAction = UIAlertAction(title: getBlocked(jid: jid) ? ChatActions.unblock.rawValue : ChatActions.block.rawValue, style: .default) { [weak self] (action) in
+            if !(self?.getBlocked(jid: jid) ?? false) {
+                self?.blockUser(jid:jid, name: name)
+            } else {
+                self?.UnblockUser(jid:jid, name: name)
+            }
+        }
+        alertViewController.addAction(cancelAction)
+        alertViewController.addAction(blockAction)
+        alertViewController.preferredAction = cancelAction
+        present(alertViewController, animated: true)
+    }
+    
+    //MARK: BlockUser
+    private func blockUser(jid: String?,name: String?) {
+        do {
+            try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
+                executeOnMainThread { [weak self] in
+                    self?.getCotactFromLocal(fromServer: false)
+                    AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                }
+            }
+        } catch let error as NSError {
+            print("block user error: \(error)")
+        }
+    }
+    
+    //MARK: UnBlockUser
+    private func UnblockUser(jid: String?,name: String?) {
+        do {
+            try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
+                executeOnMainThread { [weak self] in
+                    self?.getCotactFromLocal(fromServer: false)
+                    AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                }
+            }
+        } catch let error as NSError {
+            print("block user error: \(error)")
+        }
+    }
+}
