@@ -38,18 +38,21 @@ def uikit_pods
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
 
+  
+
 end
 
 def notification_pods
 
   pod 'libPhoneNumber-iOS' #, '~> 0.8'
-  pod 'Alamofire' #, '~> 5.3'
-  # Pods for FlyCall
-  pod 'SocketRocket'
-  pod 'Socket.IO-Client-Swift' , '~> 15.2.0' # To communicte Socket I/O server
-  pod 'GoogleWebRTC' # WebRTC for Calls
-  pod 'RealmSwift', '10.20.1'
-  pod 'XMPPFramework/Swift'
+   pod 'Alamofire' #, '~> 5.3'
+   # Pods for FlyCall
+   pod 'SocketRocket'
+   pod 'Socket.IO-Client-Swift' , '~> 15.2.0' # To communicte Socket I/O server
+   pod 'GoogleWebRTC' # WebRTC for Calls
+   pod 'RealmSwift', '10.20.1'
+   pod 'XMPPFramework/Swift'
+ 
 end
 
 target 'UiKitQa' do
@@ -59,6 +62,7 @@ end
 target 'UiKitQaNotificationExtention' do
   notification_pods
 end
+
 
 
 post_install do |installer|

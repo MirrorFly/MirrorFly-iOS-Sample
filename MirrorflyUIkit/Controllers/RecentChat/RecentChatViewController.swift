@@ -109,9 +109,9 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),name:Notification.Name(NetStatus.networkNotificationObserver),object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),
+                                               name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        configureDefaults()
         getRecentChatList()
         if ENABLE_CONTACT_SYNC{
             getContactList()
@@ -120,30 +120,30 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        chatManager.connectionDelegate = self
+        ContactManager.shared.profileDelegate = self
+        chatManager.messageEventsDelegate = self
+        FlyMessenger.shared.messageEventsDelegate = self
+        GroupManager.shared.groupDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        chatManager.connectionDelegate = nil
         ContactManager.shared.profileDelegate = nil
-        ChatManager.shared.adminBlockDelegate = nil
+        ChatManager.shared.messageEventsDelegate = nil
+        FlyMessenger.shared.messageEventsDelegate = nil
         GroupManager.shared.groupDelegate = nil
+        ChatManager.shared.adminBlockDelegate = nil
         NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        ContactManager.shared.profileDelegate = self
-        ChatManager.shared.adminBlockDelegate = self
-        GroupManager.shared.groupDelegate = self
-    }
-    
-    func configureDefaults() {
-        FlyMessenger.shared.messageEventsDelegate = self
-        chatManager.messageEventsDelegate = self
-        chatManager.connectionDelegate = self
     }
     
     override func willCometoForeground() {
@@ -305,7 +305,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         AppPermissions.shared.checkCameraPermissionAccess(permissionCallBack: { [weak self] authorizationStatus in
             switch authorizationStatus {
             case .denied:
-                AppPermissions.shared.presentCameraSettings(instance: self as Any)
+                AppPermissions.shared.presentSettingsForPermission(permission: .camera, instance: self as Any)
                 break
             case .restricted:
                 break
@@ -928,6 +928,7 @@ extension RecentChatViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
         if searchText.trim().count > 0 {
             isSearchEnabled = true
+            scrollToTableViewTop()
             hideMultipleSelectionView()
             clearSelectedColor()
             getRecentChat = searchText.trim().isEmpty ? getAllRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
@@ -935,20 +936,19 @@ extension RecentChatViewController: UISearchBarDelegate {
                 return (name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
                 recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
             })
-            if ENABLE_CONTACT_SYNC{
+            if ENABLE_CONTACT_SYNC {
                 filteredContactList = searchText.trim().isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
                     let name = getUserName(jid: contact.jid,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
                     return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil
                 })
-            }else{
+            } else {
                 let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
                 if !searchString.isEmpty || self.searchTerm != searchString{
                     resetParams()
                     searchSubject.onNext(searchString.lowercased())
                 }
             }
-            
-            
+           
         } else {
             isSearchEnabled = false
             getRecentChatList()
@@ -961,16 +961,23 @@ extension RecentChatViewController: UISearchBarDelegate {
             showHideEmptyMessage()
         }
     }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         refreshRecentChatMessages()
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        scrollToTableViewTop()
         getRecentChatList()
         searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
+    func scrollToTableViewTop() {
+        self.recentChatTableView?.setContentOffset(.zero, animated: false)
     }
 }
 
@@ -997,7 +1004,7 @@ extension RecentChatViewController {
                     userImage?.contentMode = .scaleAspectFill
                 }
                 userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
-            }else if isDeletedUser {
+            }else if isDeletedUser || getisBlockedMe(jid: profile.jid) {
                 userImage?.backgroundColor =  Color.groupIconBackgroundGray
                 userImage?.sd_setImage(with: nil, placeholderImage: UIImage(named: "ic_profile_placeholder") ?? UIImage())
             }else {
@@ -1006,6 +1013,10 @@ extension RecentChatViewController {
                 userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
             }
         }
+    }
+    
+    private func getBlocked(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlocked ?? false
     }
     
     func getOverallUnreadCount() {
@@ -1064,6 +1075,10 @@ extension RecentChatViewController {
         }
     }
     
+    private func getisBlockedMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
     private func clearChatList() {
         getRecentChat.removeAll()
         getAllRecentChat.removeAll()
@@ -1096,6 +1111,7 @@ extension RecentChatViewController : MessageEventsDelegate {
     }
     
     func onMessageStatusUpdated(messageId: String, chatJid: String, status: MessageStatus) {
+        print("onMessageStatusUpdated \(messageId) \(chatJid) \(status)")
         getRecentChatList()
     }
     
@@ -1170,9 +1186,13 @@ extension RecentChatViewController : ProfileEventsDelegate {
     
     func usersBlockedMeListFetched(jidList: [String]) {}
     
-    func userBlockedMe(jid: String) {}
+    func userBlockedMe(jid: String) {
+        setProfile()
+    }
     
-    func userUnBlockedMe(jid: String) {}
+    func userUnBlockedMe(jid: String) {
+        setProfile()
+    }
     
     func hideUserLastSeen() {}
     

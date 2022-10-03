@@ -48,6 +48,11 @@ extension UIView {
         self.layer.borderWidth = borderWidth
         self.layer.borderColor = borderColor
     }
+    
+    public var viewWidth: CGFloat {
+        return self.frame.size.width
+    }
+   
 }
 
 class CustomTabBar : UITabBar {
@@ -90,4 +95,8 @@ extension UIWindow {
         }
         return top
     }
+}
+
+public func getCGSize(width: Int, height: Int) -> CGSize {
+   return CGSize(width: 15, height: 15)
 }

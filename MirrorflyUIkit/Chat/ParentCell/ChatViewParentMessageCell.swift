@@ -181,9 +181,9 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                    replyVIewWithMediaCons?.isActive = true
                    replyViewWithoutMediaCons?.isActive = false
                case .audio:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
                    mediaImageView?.isHidden = true
                    messageIconView?.isHidden = false
+                   ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: nil, replyParentMessage: message?.replyParentChatMessage)
                    let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
                    replyVIewWithMediaCons?.isActive = false
@@ -198,6 +198,17 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                        messageIconView?.isHidden = false
                        replyTextLabel?.text = !(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized
                    }
+                   replyVIewWithMediaCons?.isActive = true
+                   replyViewWithoutMediaCons?.isActive = false
+                   
+                   //// - Need to check thumbnail image
+               case .document:
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
+                   checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaImageView)
+                   mediaImageView?.contentMode = .scaleAspectFill
+                   mediaImageView?.isHidden = false
+                   messageIconView?.isHidden = false
+                   replyTextLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName.capitalized
                    replyVIewWithMediaCons?.isActive = true
                    replyViewWithoutMediaCons?.isActive = false
                default:

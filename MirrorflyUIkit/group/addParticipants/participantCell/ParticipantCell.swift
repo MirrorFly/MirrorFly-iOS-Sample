@@ -8,6 +8,7 @@
 import UIKit
 import FlyCommon
 import SDWebImage
+import FlyCore
 
 class ParticipantCell: UITableViewCell {
 
@@ -54,8 +55,12 @@ class ParticipantCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setImage(imageURL: String, name: String, color: UIColor, chatType : ChatType) {
-        contactImageView?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType)
+    func setImage(imageURL: String, name: String, color: UIColor, chatType : ChatType,jid: String) {
+        if !getisBlockedMe(jid: jid) {
+            contactImageView?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType, jid: jid)
+        } else {
+            contactImageView?.image = UIImage(named: ImageConstant.ic_profile_placeholder)!
+        }
     }
     
     func getPlaceholder(name: String , color: UIColor)->UIImage {
@@ -63,6 +68,10 @@ class ParticipantCell: UITableViewCell {
         let ipimage = IPImage(text: trimmedName, radius: Double(contactImageView?.frame.size.height ?? 0.0), font: UIFont.font32px_appBold(), textColor: nil, color: color)
         let placeholder = ipimage.generateInitialImage()
         return placeholder ?? #imageLiteral(resourceName: "ic_profile_placeholder")
+    }
+    
+    private func getisBlockedMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
     }
     
     func setTextColorWhileSearch(searchText: String,profileDetail: ProfileDetails) {
@@ -85,7 +94,7 @@ class ParticipantCell: UITableViewCell {
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
             placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder)!
-        }else if recentChat.isDeletedUser{
+        }else if recentChat.isDeletedUser || getisBlockedMe(jid: recentChat.jid) {
             placeHolder = UIImage(named: ImageConstant.ic_profile_placeholder)!
         }else {
             placeHolder = getPlaceholder(name: name, color: color)
@@ -104,6 +113,9 @@ class ParticipantCell: UITableViewCell {
             contactImageView?.sd_setImage(with: nil, placeholderImage: UIImage(named: ImageConstant.ic_profile_placeholder)!)
             checkBoxImageView?.isHidden = true
         }
+        if getisBlockedMe(jid: recentChat.jid) {
+            contactImageView?.sd_setImage(with: nil, placeholderImage: UIImage(named: ImageConstant.ic_profile_placeholder)!)
+        }
         removeButton?.isHidden = true
         statusUILabel?.isHidden = false
         statusImage?.isHidden = (recentChat.isLastMessageSentByMe == true) ? false : true
@@ -120,7 +132,13 @@ class ParticipantCell: UITableViewCell {
             case .location:
                 receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rclocation)
             case .audio:
-                receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rcaudio)
+                if let chatMessage = ChatManager.getMessageOfId(messageId: recentChat.lastMessageId) {
+                    if chatMessage.mediaChatMessage?.audioType == AudioType.recording {
+                        ChatUtils.setIconForAudio(imageView: receiverMessageTypeImageView, chatMessage: chatMessage)
+                    } else {
+                        receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rcaudio)
+                    }
+                }
             case .video:
                 receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rcvideo)
             case .document:

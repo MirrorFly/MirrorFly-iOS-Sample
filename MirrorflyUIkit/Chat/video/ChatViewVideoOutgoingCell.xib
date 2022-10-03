@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -551,6 +551,7 @@
                 <outlet property="uploadView" destination="cgk-Kn-Ed8" id="KG0-bn-t0j"/>
                 <outlet property="userTitleLabel" destination="Uud-1M-vf4" id="vzB-Gd-kzD"/>
                 <outlet property="videoTimeLabel" destination="oSO-gP-PzB" id="aeY-ND-BDs"/>
+                <outlet property="videoTimeStackView" destination="XKf-Gz-d8V" id="BLB-US-r24"/>
             </connections>
             <point key="canvasLocation" x="115.21739130434783" y="174.77678571428569"/>
         </tableViewCell>

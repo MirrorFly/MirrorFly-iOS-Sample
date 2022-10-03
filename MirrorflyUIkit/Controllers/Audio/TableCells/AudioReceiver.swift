@@ -48,6 +48,10 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var bubbleLeadingCons: NSLayoutConstraint?
     @IBOutlet weak var forwardButton: UIButton?
 
+    @IBOutlet weak var senderNameContainer: UIView?
+    @IBOutlet weak var senderNameLabel: UILabel?
+    @IBOutlet weak var bubbleImageViewTopConstraint: NSLayoutConstraint!
+    
     var selectedForwardMessage: [SelectedForwardMessage]? = []
     var message : ChatMessage?
     var refreshDelegate: RefreshBubbleImageViewDelegate?
@@ -71,7 +75,10 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         timeView?.clipsToBounds = true
         audioView?.roundCorners(corners: [.topLeft, .topRight], radius: 8.0)
         timeView?.roundCorners(corners: [.topLeft, .topRight, .bottomRight], radius: 8.0)
-        slider?.setThumbImage( UIImage(named: ImageConstant.ic_slider), for: UIControl.State.normal)
+        var thumbImage = UIImage(named: ImageConstant.ic_slider)
+        let size = getCGSize(width: 15, height: 15)
+        thumbImage = thumbImage?.scaleToSize(newSize: size)
+        slider?.setThumbImage(thumbImage, for: UIControl.State.normal)
         slider?.minimumValue = 0
         slider?.maximumValue = 100
         audioReceiverImage?.image = UIImage(named: ImageConstant.ic_music)
@@ -127,7 +134,14 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-    if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+        if message?.messageChatType == .groupChat {
+            senderNameLabel?.text = ChatUtils.getGroupSenderName(messsage: message)
+        } else {
+            senderNameLabel?.isHidden = true
+            senderNameContainer?.isHidden = true
+        }
+        
+    if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
             fwdViw?.isHidden = true
             fwdBtn?.isHidden = true
             isAllowSwipe = true
@@ -137,6 +151,12 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             isAllowSwipe = true
         }
         
+        if message?.mediaChatMessage?.audioType == AudioType.recording {
+            audioReceiverImage?.image = UIImage(named: ImageConstant.ic_audio_recorded)
+        } else {
+            audioReceiverImage?.image = UIImage(named: ImageConstant.ic_music)
+        }
+        
         // Reply view elements and its data
        if(message?.isReplyMessage ?? false) {
            replyView?.isHidden = false
@@ -144,8 +164,8 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
            mapView?.isHidden = true
            replyTextLabel?.text = getReplymessage
-           if message?.replyParentChatMessage?.mediaChatMessage != nil {
-               switch message?.replyParentChatMessage?.mediaChatMessage?.messageType {
+           if replyMessage?.mediaChatMessage != nil {
+               switch replyMessage?.mediaChatMessage?.messageType {
                case .image:
                    messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderCamera" : "receiverCamera")
                    if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
@@ -158,7 +178,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
                    replyWithMediaCons?.isActive = true
                    replyWithOutMediaCons?.isActive = false
                case .audio:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderAudio" : "receiverAudio")
+                   ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: nil, replyParentMessage: message?.replyParentChatMessage)
                    let duration = Int(message?.replyParentChatMessage?.mediaChatMessage?.mediaDuration ?? 0)
                    replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : message?.replyParentChatMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
                    messageTypeIconView?.isHidden = false
@@ -175,13 +195,20 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
                    }
                    replyWithMediaCons?.isActive = true
                    replyWithOutMediaCons?.isActive = false
+               case .document:
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
+                   replyTextLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName.capitalized
+                   checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaMessageImageView)
+                   messageTypeIconView?.isHidden = false
+                   replyWithMediaCons?.isActive = true
+                   replyWithOutMediaCons?.isActive = false
                default:
                    messageTypeIconView?.isHidden = true
                    replyWithMediaCons?.isActive = true
                    replyWithOutMediaCons?.isActive = false
                }
                
-           } else if message?.replyParentChatMessage?.locationChatMessage != nil {
+           } else if replyMessage?.locationChatMessage != nil {
                mapView?.isHidden = false
                replyTextLabel?.text = "Location"
                mapView?.isUserInteractionEnabled = false
@@ -205,7 +232,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
                }
                replyWithMediaCons?.isActive = true
                replyWithOutMediaCons?.isActive = false
-           } else if message?.replyParentChatMessage?.contactChatMessage != nil {
+           } else if replyMessage?.contactChatMessage != nil {
                replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: message?.replyParentChatMessage?.contactChatMessage?.contactName)
                messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                messageTypeIconView?.isHidden = false
@@ -236,6 +263,14 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             audioDuration?.text = "\(duration.msToSeconds.minuteSecondMS)"
         switch message?.mediaChatMessage?.mediaDownloadStatus {
         case .not_downloaded:
+            download?.image = UIImage(named: ImageConstant.ic_download)
+            download?.isHidden = false
+            playImage?.isHidden = true
+            nicoProgressBar?.isHidden = true
+            playBtn?.isHidden = true
+            downloadButton?.isHidden = false
+            slider?.isUserInteractionEnabled = false
+        case .failed:
             download?.image = UIImage(named: ImageConstant.ic_download)
             download?.isHidden = false
             playImage?.isHidden = true
@@ -301,8 +336,8 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             self?.download?.isHidden = false
             self?.playImage?.isHidden = true
             self?.nicoProgressBar?.isHidden = false
-            self?.nicoProgressBar?.transition(to: .indeterminate)
             self?.slider?.isUserInteractionEnabled = false
+            self?.nicoProgressBar?.transition(to: .indeterminate)
         }
     }
     

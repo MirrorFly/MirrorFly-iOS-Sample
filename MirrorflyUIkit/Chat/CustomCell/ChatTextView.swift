@@ -26,6 +26,22 @@ class ChatTextView: UIView, UITextViewDelegate {
     @IBOutlet weak var contactNameLabel: UILabel?
     @IBOutlet weak var cannotSendMessageView: UIView?
     @IBOutlet weak var blockedMessageLabel: UILabel!
+    
+    @IBOutlet weak var audioHiddenRecordButton: UIButton!
+    @IBOutlet weak var audioRecordView: UIView?
+    @IBOutlet weak var audioRecordButton: UIButton!
+    @IBOutlet weak var audioRecordingInfoView: UIView!
+    @IBOutlet weak var audioDurationMicIcon: UIButton!
+    @IBOutlet weak var audioDurationLabel: UILabel!
+    @IBOutlet weak var audioCancelButton: UIButton!
+    @IBOutlet weak var audioSlideCancelView: UIStackView!
+    @IBOutlet weak var audioSendButton: UIButton!
+    @IBOutlet weak var audioDurationLeading: NSLayoutConstraint!
+    @IBOutlet weak var audioDurionMicLeading: NSLayoutConstraint!
+    @IBOutlet weak var audioSlideViewTrailing: NSLayoutConstraint!
+    @IBOutlet weak var audioButton: UIButton!
+    @IBOutlet weak var audioSlideViewWidth: NSLayoutConstraint!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -48,9 +64,9 @@ class ChatTextView: UIView, UITextViewDelegate {
         titleLabel?.text = message.isMessageSentByMe ? "You" : getUserName(jid: message.senderUserJid, name: message.senderUserName, nickName: message.senderNickName, contactType: contactType)
         messageTypeImage?.isHidden = message.messageType == .text ? true : false
         if message.messageType != .text {
-        let thumbImage = message.mediaChatMessage?.mediaThumbImage ?? ""
-        let converter = ImageConverter()
-        let image =  converter.base64ToImage(thumbImage)
+            let thumbImage = message.mediaChatMessage?.mediaThumbImage ?? ""
+            let converter = ImageConverter()
+            let image =  converter.base64ToImage(thumbImage)
             mediaMessageImageView?.image = image
             mediaMessageImageView?.isHidden = false
         } else {
@@ -58,11 +74,11 @@ class ChatTextView: UIView, UITextViewDelegate {
         }
         switch message.messageType {
         case .text:
-            messageTypeLabel?.text =  message.messageTextContent
+            messageTypeLabel?.text = message.messageTextContent
             messageTypeWidthCons?.constant = 0
             spacierView?.isHidden = true
         case .image:
-            messageTypeLabel?.text =  !(message.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? message.mediaChatMessage?.mediaCaptionText : "Photo"
+            messageTypeLabel?.text = !(message.mediaChatMessage?.mediaCaptionText.isEmpty ?? false) ? message.mediaChatMessage?.mediaCaptionText : "Photo"
             messageTypeWidthCons?.constant = 13
             spacierView?.isHidden = false
         case .audio:
@@ -77,8 +93,13 @@ class ChatTextView: UIView, UITextViewDelegate {
             contactNameLabel?.text = message.contactChatMessage?.contactName
             messageTypeWidthCons?.constant = 13
             spacierView?.isHidden = false
+        case .document:
+            let mediaFileName = message.mediaChatMessage?.mediaFileName.capitalized
+            messageTypeLabel?.text = mediaFileName
+            messageTypeWidthCons?.constant = 13
+            spacierView?.isHidden = false
         default:
-            messageTypeLabel?.text =  message.messageType.rawValue.capitalized
+            messageTypeLabel?.text = message.messageType.rawValue.capitalized
             messageTypeWidthCons?.constant = 12
             spacierView?.isHidden = false
         }
@@ -89,14 +110,21 @@ class ChatTextView: UIView, UITextViewDelegate {
         case .video:
             messageTypeImage?.image = UIImage(named: "senderVideo")
         case .audio:
-            messageTypeImage?.image = UIImage(named: "audio")
+            if message.mediaChatMessage?.audioType == AudioType.file {
+                messageTypeImage?.image = UIImage(named: "audio")
+            } else {
+                messageTypeImage?.image = UIImage(named: ImageConstant.ic_audio_filled)
+            }
         case .contact:
             messageTypeImage?.image = UIImage(named: "senderContact")
         case .location:
             messageTypeImage?.image = UIImage(named: "map")
+        case .document:
+            checkFileType(url: message.mediaChatMessage?.mediaLocalStoragePath ?? "", typeImageView: messageTypeImage)
         default:
             break
         }
+        
         if message.locationChatMessage != nil {
             mapView?.isHidden = false
             guard let latitude = message.locationChatMessage?.latitude else {
@@ -108,8 +136,7 @@ class ChatTextView: UIView, UITextViewDelegate {
             
             mapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
             
-            DispatchQueue.main.async
-            { [self] in
+            DispatchQueue.main.async { [self] in
                 // 2. Perform UI Operations.
                 let position = CLLocationCoordinate2DMake(latitude,longitude)
                 let marker = GMSMarker(position: position)

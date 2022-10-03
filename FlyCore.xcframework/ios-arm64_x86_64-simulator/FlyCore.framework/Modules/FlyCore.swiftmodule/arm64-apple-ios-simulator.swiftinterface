@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
+// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
 // swift-module-flags: -target arm64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCore
 import AVFoundation
 import Contacts
@@ -219,8 +219,6 @@ public enum ContactSyncState : Swift.String {
   public func isTrialLicense(isTrial: Swift.Bool) -> FlyCore.ChatSDK
   @available(*, deprecated, message: "No longer needed to call this method will be handled in register api ")
   public func setEncryptionIVs(messageIV: Swift.String, profileIV: Swift.String) -> FlyCore.ChatSDK
-  @available(*, deprecated, message: "Use the ChatManager.enableContactSync() instead")
-  public func enableContactSync(isEnable: Swift.Bool) -> FlyCore.ChatSDK
   @available(*, deprecated, message: "Use the ChatManager.setMaximumPinningForRecentChat() instead")
   public func setMaximumPinningForRecentChat(maxPinChat: Swift.Int = 4) -> FlyCore.ChatSDK
   @available(*, deprecated, message: "Use the ChatManager.deleteMediaFromDevice() instead")
@@ -260,15 +258,14 @@ public typealias FlySendMessageListener = (_ isSuccess: Swift.Bool, _ error: Fly
   @objc public static func getMediaMessagesOf(jid: Swift.String) -> [FlyCommon.ChatMessage]
   @objc public static func getMessagesUsingIds(messageIds: [Swift.String]) -> [FlyCommon.ChatMessage]
   @objc public static func getMessageOfId(messageId: Swift.String) -> FlyCommon.ChatMessage?
-  public static func sendImageMessage(toJid: Swift.String, imageFile: Foundation.URL, base64Thumbanail: Swift.String, caption: Swift.String? = nil, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
-  public static func sendImageMessage(toJid: Swift.String, imageFileName: Swift.String, imageFileSize: Swift.Double, imageFileUrl: Foundation.URL, imageFileLocalPath: Swift.String, base64Thumbnail: Swift.String, caption: Swift.String? = nil, replyMessageId: Swift.String? = nil, imageFileKey: Swift.String = emptyString(), sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
-  @objc public static func uploadFile(chatMessage: FlyCommon.ChatMessage, completion: ((Swift.Bool) -> Swift.Void)? = nil)
+  public static func sendImageMessage(toJid: Swift.String, mediaData: FlyCommon.MediaData, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
+  @objc public static func uploadFile(chatMessage: FlyCommon.ChatMessage)
   public static func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func downloadMediaRetry(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public static func uploadMediaRetry(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
-  public static func sendVideoMessage(toJid: Swift.String, videoFileName: Swift.String, videoFileUrl: Swift.String, localFilePath: Swift.String, videoCaption: Swift.String? = nil, replyMessageId: Swift.String? = nil, videoFileKey: Swift.String = emptyString(), sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
-  public static func sendDocumentMessage(toJid: Swift.String, fileUrl: Swift.String, caption: Swift.String? = nil, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
-  public static func sendAudioMessage(toJid: Swift.String, audioFile: Foundation.URL, audioDuration: Swift.Double, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
+  public static func sendVideoMessage(toJid: Swift.String, mediaData: FlyCommon.MediaData, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
+  public static func sendDocumentMessage(toJid: Swift.String, mediaData: FlyCommon.MediaData, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
+  public static func sendAudioMessage(toJid: Swift.String, mediaData: FlyCommon.MediaData, replyMessageId: Swift.String? = nil, isRecorded: Swift.Bool, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public static func sendAudioMessage(toJid: Swift.String, audioFileSize: Swift.Double, audioFileUrl: Swift.String, audioFileLocalPath: Swift.String, audioFileName: Swift.String, audioDuration: Swift.Double, replyMessageId: Swift.String? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   @objc deinit
 }

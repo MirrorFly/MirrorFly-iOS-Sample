@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
+// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyNetwork
 import CommonCrypto
 import FlyCommon
@@ -50,12 +50,15 @@ public protocol WebLoginDelegate {
   public static let shared: FlyNetwork.MediaManager
   public var flyMediaDelegate: FlyNetwork.FlyMediaDelegate?
   @objc override dynamic public init()
-  public func uploadFile(message: FlyCommon.ChatMessage, completion: ((Swift.Bool) -> Swift.Void)? = nil)
+  public func uploadFile(message: FlyCommon.ChatMessage)
   public func cancelUploadTask(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
   public func downloadFile(message: FlyCommon.ChatMessage, completionHandler: ((Swift.Bool) -> ())? = nil, sendMessageListener: @escaping (_ isSuccess: Swift.Bool, _ error: FlyCommon.FlyError?, _ chatMessage: FlyCommon.ChatMessage?) -> Swift.Void)
   public func refreshToken(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func cancelDownloadTask(message: FlyCommon.ChatMessage, sendMessageListener: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
   public func cancelAllTask()
+  public func processNextUpload(messageId: Swift.String)
+  public func validateAndAppendMedia(message: FlyCommon.ChatMessage)
+  public func upload(message: FlyCommon.ChatMessage)
   @objc deinit
 }
 public protocol FlyNetworkControllerDelegate : ObjectiveC.NSObjectProtocol {

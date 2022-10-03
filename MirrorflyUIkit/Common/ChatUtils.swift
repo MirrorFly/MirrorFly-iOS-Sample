@@ -310,5 +310,38 @@ class ChatUtils {
             return false
         }
     }
+    
+    static func setIconForAudio(imageView : UIImageView?, chatMessage : ChatMessage?, replyParentMessage : ReplyParentChatMessage? = nil) {
+        if let imageView = imageView, let message = chatMessage {
+            if message.mediaChatMessage?.audioType == AudioType.recording {
+                imageView.image = UIImage(named: ImageConstant.ic_audio_filled)
+            } else {
+                imageView.image = UIImage(named: message.isMessageSentByMe ? "senderAudio" : "receiverAudio")
+            }
+        } else if let imageView = imageView, let message = replyParentMessage {
+            if message.mediaChatMessage?.audioType == AudioType.recording {
+                imageView.image = UIImage(named: ImageConstant.ic_audio_filled)
+            } else {
+                imageView.image = UIImage(named: message.isMessageSentByMe ? "senderAudio" : "receiverAudio")
+            }
+        }
+    }
+    
+    static func getAudiofileDuration(mediaFileName : String) -> TimeInterval? {
+        let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Audio", isDirectory: true)
+        let fileURL: URL = folderPath.appendingPathComponent(mediaFileName)
+        if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+            do {
+                let data = try Data(contentsOf: fileURL)
+                let audioPlayer = try AVAudioPlayer(data: data as Data)
+                return audioPlayer.duration
+            } catch {
+                return nil
+            }
+        }
+        return nil
+    }
+    
 
 }

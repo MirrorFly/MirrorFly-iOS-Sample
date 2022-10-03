@@ -253,10 +253,11 @@ extension UserProfileViewController {
                 }
             }
             ContactManager.shared.updateMyProfile(for: myProfile, isFromLocal: isImagePicked) { [weak self] isSuccess, flyError, flyData in
+                self?.stopLoading()
                 var data  = flyData
                 if isSuccess {
                     if isRemovedProfileImage == false {
-                       AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
+                        AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
                     }
                     self?.getProfile()
                     Utility.saveInPreference(key: isProfileSaved, value: true)

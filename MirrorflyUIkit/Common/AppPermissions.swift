@@ -8,6 +8,13 @@
 import Foundation
 import Photos
 import UIKit
+import CloudKit
+
+enum Permission : String, CaseIterable {
+    case camera = "camera"
+    case microPhone = "microPhone"
+    case gallery = "gallery"
+}
 
 class AppPermissions {
     
@@ -85,28 +92,39 @@ class AppPermissions {
             recordPermission(.denied)
             break
         case AVAudioSession.RecordPermission.undetermined:
-            print("Request permission here")
             AVAudioSession.sharedInstance().requestRecordPermission({ granted in
-                recordPermission(.granted)
+                if granted {
+                    recordPermission(.granted)
+                } else {
+                    recordPermission(.denied)
+                }
+              
             })
         @unknown default:
             recordPermission(.undetermined)
         }
     }
     
-    func presentCameraSettings(instance : Any) {
-        let alert = UIAlertController(title: "", message: cameraAccessDenied.localized, preferredStyle: UIAlertController.Style.alert)
-        (instance as? UIViewController)?.present(alert, animated: true, completion:nil)
-        if let setting = URL(string: UIApplication.openSettingsURLString),
-            UIApplication.shared.canOpenURL(setting) {
-            alert.addAction(UIAlertAction(title: settings.localized, style: .default) { action in
+    func presentSettingsForPermission(permission : Permission, instance : Any) {
+        var permissionMessage = ""
+        if permission == .camera {
+            permissionMessage = cameraAccessDenied.localized
+        } else if permission == .microPhone {
+            permissionMessage = microPhoneAccessDenied.localized
+        }
+        executeOnMainThread {
+            let alert = UIAlertController(title: "", message: permissionMessage, preferredStyle: UIAlertController.Style.alert)
+            (instance as? UIViewController)?.present(alert, animated: true, completion:nil)
+            if let setting = URL(string: UIApplication.openSettingsURLString),
+               UIApplication.shared.canOpenURL(setting) {
+                alert.addAction(UIAlertAction(title: settings.localized, style: .default) { action in
                     UIApplication.shared.open(setting)
                 })
-         }
-        alert.addAction(UIAlertAction(title: cancel.localized, style: .cancel) { [weak self] action in
-           
-        })
+            }
+            alert.addAction(UIAlertAction(title: cancel.localized, style: .cancel) { [weak self] action in
+                
+            })
+        }
     }
-    
     
 }

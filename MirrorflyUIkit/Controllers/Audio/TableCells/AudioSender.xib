@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -254,14 +254,11 @@
                                                 <rect key="frame" x="85" y="55.5" width="437" height="10"/>
                                                 <subviews>
                                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="mha-LY-byC">
-                                                        <rect key="frame" x="-2" y="-5" width="441" height="21"/>
+                                                        <rect key="frame" x="-2" y="-15" width="441" height="41"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="20" id="h9N-OM-Phq"/>
+                                                            <constraint firstAttribute="height" constant="40" id="h9N-OM-Phq"/>
                                                         </constraints>
                                                         <color key="minimumTrackTintColor" name="BackgroundColor"/>
-                                                        <connections>
-                                                            <action selector="audioPlaySiderAction:" destination="KGk-i7-Jjw" eventType="valueChanged" id="5yG-cP-afk"/>
-                                                        </connections>
                                                     </slider>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

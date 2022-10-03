@@ -107,6 +107,10 @@ enum Identifiers {
     static let ChatSettingsTableViewCell = "ChatSettingsTableViewCell"
     static let LanguageSelectionTableViewCell = "LanguageSelectionTableViewCell"
     static let LanguageSelectionViewController = "LanguageSelectionViewController"
+    
+    /// MARK: Documents Cells
+    static let senderDocumenCell = "SenderDocumentsTableViewCell"
+    static let receiverDocumentCell = "ReceiverDocumentsTableViewCell"
 }
 
 //MARK: - Storyboards

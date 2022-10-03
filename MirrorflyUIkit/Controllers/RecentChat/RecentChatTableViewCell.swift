@@ -8,6 +8,7 @@
 import UIKit
 import FlyCommon
 import SDWebImage
+import FlyCore
 
 class RecentChatTableViewCell: UITableViewCell {
     @IBOutlet weak var profileImageButton: UIButton?
@@ -47,7 +48,7 @@ class RecentChatTableViewCell: UITableViewCell {
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
             placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
-        }else if recentChat.isDeletedUser {
+        }else if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
             placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
         }else{
             placeHolder = getPlaceholder(name: name, color: color)
@@ -55,10 +56,14 @@ class RecentChatTableViewCell: UITableViewCell {
         profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
     }
     
+    private func getIsBlockedByMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
     func setSingleChatImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
         var placeHolder = UIImage()
         placeHolder = getPlaceholder(name: name, color: color)
-        if recentChat.isDeletedUser {
+        if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
             placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
             profileImageView?.sd_setImage(with: nil, placeholderImage: placeHolder)
         }else if imageURL.isNotEmpty {
@@ -198,7 +203,11 @@ class RecentChatTableViewCell: UITableViewCell {
             case .location:
                 receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rclocation)
             case .audio:
-                receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rcaudio)
+                if chatMessage?.mediaChatMessage?.audioType == AudioType.recording {
+                    ChatUtils.setIconForAudio(imageView: receiverMessageTypeImageView, chatMessage: chatMessage)
+                } else {
+                    receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rcaudio)
+                }
             case .video:
                 receiverMessageTypeImageView?.image = UIImage(named: ImageConstant.ic_rcvideo)
             case .document:
@@ -246,8 +255,10 @@ class RecentChatTableViewCell: UITableViewCell {
         switch recentChatMessage.lastMessageType {
         case .text:
             break
-        case .video, .image,.audio,.contact,.location,.document:
+        case .video, .image,.audio,.contact,.location:
             userMessageLabel?.text = (chatMessage?.mediaChatMessage?.mediaCaptionText.trim().isNotEmpty ?? false) ? chatMessage?.mediaChatMessage?.mediaCaptionText : recentChatMessage.lastMessageType?.rawValue.capitalized
+        case .document:
+            userMessageLabel?.text = "Document"
         default:
             break
         }

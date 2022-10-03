@@ -45,6 +45,7 @@ let error = "Error"
 let cameraAccessDenied = "MirrorFlyUIkit does not have access to your camera. To enable access, tap Settings and turn on Camera"
 let libraryAccessDenied = "MirrorFlyUIkit does not have access to your Photo Library. To enable access, tap Settings and turn on Photo Library"
 let galleryAccessDenied = "MirrorFlyUIkit does not have access to your photos. To enable access, tap Settings and turn on Photos"
+let microPhoneAccessDenied = "MirrorFlyUIkit does not have access to your microphone. To enable access, tap Settings and turn on microphone"
 let needAccess = "Need Camera Access"
 let settings = "Settings"
 let allowCamera = "Allow Camera"
@@ -220,6 +221,7 @@ let isText = "is"
 let groupNoLongerAvailable = "This group is no longer available"
 let youCantSendMessagesToThiGroup = "You can't send messages to this group because you're no longer a participant."
 let thisUerIsNoLonger = "This user is no longer available"
+let youCantSelectTheGroup = "You're no longer a participant in this group"
 
 //MARK: QRCodeScanner
 let qrCodeErrorMessage = "Scanning Failed. Please try again"
@@ -250,6 +252,11 @@ let noMessgesToReport = "No messges to Report"
 let unableToReportDeletedUser = "Cannot report deleted user"
 let unableToReportDeletedUserMessage =  "Cannot report deleted user's message"
 
+let didEnterBackground = "DidEnterBackground"
+let recordingReachedMaximumTime = "You can record maximum 300 seconds for audio recording"
+let recordingIsTooSmall = "Recorded audio time is too short"
+let cannotRecordAudioDuringCall = "Can’t record audio during a phone call"
+
 // Error messages
 public struct ErrorMessage {
     
@@ -268,6 +275,7 @@ public struct ErrorMessage {
     public static let restrictedforwardUsers = NSLocalizedString("You can only forward with up to 5 users or groups", comment: "")
     public static let checkYourInternet = NSLocalizedString("Please check your internet connection", comment: "")
     public static let fileSizeLarge = NSLocalizedString("File size is too large", comment: "")
+    public static let largeVideoFile = NSLocalizedString("File size is too large. Try uploading file size below 30MB", comment: "")
     public static let numberDoesntMatch =  NSLocalizedString("mobileNumberDoesntMatch", comment: "")
 }
 // Error messages
@@ -295,6 +303,8 @@ enum CreateGroupOptions : String, CaseIterable {
 
 enum ChatActions : String, CaseIterable {
     case report = "Report"
+    case block = "Block"
+    case unblock = "Unblock"
 }
 
 enum GroupReportActions : String, CaseIterable {

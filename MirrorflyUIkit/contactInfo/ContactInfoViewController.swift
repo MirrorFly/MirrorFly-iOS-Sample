@@ -71,7 +71,7 @@ class ContactInfoViewController: ViewController {
         let indexPath = IndexPath(row: 0, section: 0)
         if let cell = contactInfoTableView?.cellForRow(at: indexPath) as? ContactImageCell {
             let blockedByAdmin = profileDetails?.isBlockedByAdmin ?? false
-            if (profileDetails?.contactType == .deleted || blockedByAdmin) {
+            if (profileDetails?.contactType == .deleted || blockedByAdmin || getBlocked()) || getisBlockedMe() {
                 cell.onlineStatus?.text = emptyString()
                 cell.onlineStatus?.isHidden = true
             }else{
@@ -79,6 +79,14 @@ class ContactInfoViewController: ViewController {
                 cell.onlineStatus?.isHidden = false
             }
         }
+    }
+    
+    private func getBlocked() -> Bool {
+        return ChatManager.getContact(jid: contactJid)?.isBlocked ?? false
+    }
+    
+    private func getisBlockedMe() -> Bool {
+        return ChatManager.getContact(jid: contactJid)?.isBlockedMe ?? false
     }
     
     private func refreshData() {
@@ -113,7 +121,7 @@ class ContactInfoViewController: ViewController {
     }
     
     @objc func didTapImage(sender : Any) {
-        if let isBlocked = profileDetails?.isBlockedByAdmin, isBlocked {
+        if let isBlocked = profileDetails?.isBlockedByAdmin, isBlocked || getisBlockedMe() {
             AppAlert.shared.showToast(message: thisUerIsNoLonger)
             return
         }
@@ -178,15 +186,15 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             
             let isBlockedByAdmin = profileDetails?.isBlockedByAdmin ?? false
             
-            if profileDetails?.contactType == .deleted || isBlockedByAdmin{
+            if profileDetails?.contactType == .deleted || isBlockedByAdmin || getisBlockedMe() {
                 cell.userImage?.image = UIImage(named: "ic_profile_placeholder") ?? UIImage()
                 cell.userImage?.contentMode = .center
                 cell.userImage?.backgroundColor = UIColor.darkGray
                 cell.onlineStatus?.text = ""
             }else{
                 placeholder = ChatUtils.getPlaceholder(name: name, userColor: ChatUtils.getColorForUser(userName: name), userImage: cell.userImage ?? UIImageView())
-                cell.userImage?.backgroundColor = ChatUtils.getColorForUser(userName: name)
-                cell.userImage?.loadFlyImage(imageURL: imageUrl, name: name ?? "", chatType: profileDetails?.profileChatType ?? .singleChat)
+
+                cell.userImage?.loadFlyImage(imageURL: imageUrl, name: name , chatType: profileDetails?.profileChatType ?? .singleChat,contactType: ContactType(rawValue: (profileDetails?.contactType.rawValue) ?? "") ?? .unknown, jid: profileDetails?.jid ?? "")
             }
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapImage(sender:)))
             cell.userImage?.isUserInteractionEnabled = true
@@ -306,11 +314,11 @@ extension ContactInfoViewController : ProfileEventsDelegate {
     }
     
     func userBlockedMe(jid: String) {
-        
+        getLastSeen()
     }
     
     func userUnBlockedMe(jid: String) {
-        
+        getLastSeen()
     }
     
     func hideUserLastSeen() {
@@ -376,7 +384,7 @@ extension ContactInfoViewController : AdminBlockDelegate {
 extension ContactInfoViewController {
     @objc func didTapReport(_ sender: UITapGestureRecognizer) {
         
-        if let isBlockedByAdmin = profileDetails?.isBlockedByAdmin, isBlockedByAdmin {
+        if let isBlockedByAdmin = profileDetails?.isBlockedByAdmin, isBlockedByAdmin || getBlocked() {
             AppAlert.shared.showToast(message: thisUerIsNoLonger)
             return  
         }
