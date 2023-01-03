@@ -57,6 +57,22 @@ class ContactCell: UITableViewCell {
         }
     }
     
+    func setLastContentTextColor(searchText: String,profile: ProfileDetails) {
+        if let range = profile.status.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]), ENABLE_CONTACT_SYNC  {
+            let convertedRange = NSRange(range, in: profile.status.capitalized)
+            let attributedString = NSMutableAttributedString(string: profile.status.capitalized)
+            attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
+            if profile.isBlockedMe {
+                status?.text = ""
+            } else {
+                status?.attributedText = attributedString
+            }
+        } else {
+            status?.text = profile.isBlockedMe ? "" : profile.status
+            status?.textColor = Color.userStatusTextColor
+        }
+    }
+        
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         

@@ -8,8 +8,17 @@
 import Foundation
 import UIKit
 import FlyCall
+import FlyCommon
+import FlyCore
 
+public protocol MessageDelegate {
+    func whileUpdatingMessageStatus(messageId: String, chatJid: String, status: MessageStatus)
+    func whileUpdatingTheirProfile(for jid: String, profileDetails: ProfileDetails)
+}
 
+public protocol RefreshChatDelegate {
+    func refresh()
+}
 
 class BaseViewController : UIViewController {
     
@@ -33,8 +42,56 @@ class BaseViewController : UIViewController {
     func disableIdleTimer(disable : Bool) {
         UIApplication.shared.isIdleTimerDisabled = disable
     }
+    
+    func keyboardShowHide() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        print("keyboardWillShow")
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        print("keyboardWillHide")
+    }
+    
+    func requestLogout() {
+        startLoading(withText: pleaseWait)
+        
+        ChatManager.logoutApi { [weak self] isSuccess, flyError, flyData in
+            
+            if isSuccess {
+                FlyDefaults.appLockPassword = ""
+                FlyDefaults.appLockenable = false
+                FlyDefaults.hideLastSeen = false
+                self?.stopLoading()
+                Utility.saveInPreference(key: isProfileSaved, value: false)
+                Utility.saveInPreference(key: isLoggedIn, value: false)
+                ChatManager.disconnect()
+                var controller : OTPViewController?
+                if #available(iOS 13.0, *) {
+                    controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")
+                } else {
+                   
+                    controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OTPViewController") as? OTPViewController
+                }
+                let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+                if let navigationController = window?.rootViewController  as? UINavigationController, let otpViewController = controller {
+                    navigationController.popToRootViewController(animated: false)
+                    navigationController.pushViewController(otpViewController, animated: false)
+                }
+                
+
+            }else{
+                print("Logout api error : \(String(describing: flyError))")
+                self?.stopLoading()
+            }
+        }
+    }
 
 }
+
 
 /**
  * General call action Delegate to detect from mobile (other applications)

@@ -16,18 +16,15 @@ class DMAReasonVC: UIViewController {
     @IBOutlet weak var feedbackField: UITextField!
     @IBOutlet weak var dmaBtn: UIButton!
     var alertController : UIAlertController? = nil
-    var selectedRow = -1
+    var selectedRow = 0
     
-    let reasons = ["I am changing my device",
-                   "I am changing my phone number",
-                   "Weiilla is missing a feature",
-                   "Weiilla is not working",
-                   "Other"]
+    let reasons = ["I am changing my device", "I am changing my phone number", "MirrorFly is missing a feature", "MirrorFly is not working", "Other"]
     
     let pickerView = UIPickerView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpStatusBar()
         feedbackField.delegate = self
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -61,6 +58,9 @@ class DMAReasonVC: UIViewController {
                 ContactManager.shared.deleteMyAccountRequest(reason: reason, feedback: feedBack) { isSuccess, error, data in
                     let message = data["message"] as? String ?? ""
                     if isSuccess{
+                        FlyDefaults.appLockPassword = ""
+                        FlyDefaults.appLockenable = false
+                        FlyDefaults.hideLastSeen = false
                         Utility.saveInPreference(key: firstTimeSandboxContactSyncDone, value: false)
                         AppAlert.shared.showToast(message: "Your Mirrorfly account has been deleted.")
                     }else{
@@ -114,10 +114,9 @@ extension DMAReasonVC : UITextFieldDelegate{
     }
     
     @objc func doneButtonClicked(_ sender: Any) {
-        if selectedRow > -1 {
+        
             dmaBtn.isHidden = false
             reasonField.text = reasons[selectedRow]
             reasonField.resignFirstResponder()
         }
-    }
 }

@@ -54,6 +54,7 @@ class GroupCreationPreviewController: UIViewController {
     
     func configure() {
         searchedParticipants = GroupCreationData.participants
+        searchedParticipants = searchedParticipants.sorted(by: { getUserName(jid : $0.jid, name: $0.name, nickName: $0.nickName, contactType: $0.contactType).lowercased() < getUserName(jid : $1.jid, name: $1.name, nickName: $1.nickName, contactType: $1.contactType).lowercased() })
     }
     
     @objc private func keyboardWillShow(notification: NSNotification) {
@@ -86,7 +87,7 @@ class GroupCreationPreviewController: UIViewController {
         }
         startLoading(withText: pleaseWait)
         groupCreationViewModel.createGroup(groupCallBack: { [weak self] isSuccess, message in
-            self?.showSuccessOrFailure(isSuccess: isSuccess)
+            self?.showSuccessOrFailure(isSuccess: isSuccess, message: message)
         })
     }
     
@@ -98,7 +99,7 @@ class GroupCreationPreviewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    func showSuccessOrFailure(isSuccess : Bool) {
+    func showSuccessOrFailure(isSuccess : Bool, message: String) {
         print("showSuccessOrFailure \(isSuccess)")
         stopLoading()
         if isSuccess {
@@ -107,14 +108,22 @@ class GroupCreationPreviewController: UIViewController {
             groupCreationDeletgate?.onGroupCreated()
             navigateToRecentChat()
         } else {
-            AppAlert.shared.showAlert(view: self, title: alert, message: groupCreatedFailure, buttonOneTitle: okButton, buttonTwoTitle: retry)
             
-            AppAlert.shared.onAlertAction = { [weak self] (result) ->
-                Void in
-                if result == 1 {
-                    self?.createGroup()
-                } else if result == 0{
-                   
+            if(message.contains("403")){
+                let message = AppUtils.shared.getErrorMessage(description: message)
+                AppAlert.shared.showAlert(view: self, title: alert, message: message, buttonTitle: okButton)
+            }
+            else{
+                
+                AppAlert.shared.showAlert(view: self, title: alert, message: groupCreatedFailure, buttonOneTitle: okButton, buttonTwoTitle: retry)
+                
+                AppAlert.shared.onAlertAction = { [weak self] (result) ->
+                    Void in
+                    if result == 1 {
+                        self?.createGroup()
+                    } else if result == 0{
+                       
+                    }
                 }
             }
         }

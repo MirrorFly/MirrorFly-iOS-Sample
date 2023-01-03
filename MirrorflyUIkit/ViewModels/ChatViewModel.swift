@@ -42,7 +42,33 @@ RecentChatViewModel  {
             completionHandler(false)
         }
     }
-    
+
+    func getPinChat(jid: String, isPin: Bool, completionHandler:  @escaping (Bool?)-> Void) {
+        if !jid.isEmpty {
+            ChatManager.updateRecentChatPinStatus(jid: jid, pinRecentChat: isPin)
+            completionHandler(true)
+        } else {
+            completionHandler(false)
+        }
+    }
+
+    func getMuteChat(jid: String, isMute: Bool, completionHandler:  @escaping (Bool?)-> Void) {
+        if !jid.isEmpty {
+            ChatManager.updateChatMuteStatus(jid: jid, muteStatus: isMute)
+            completionHandler(true)
+        } else {
+            completionHandler(false)
+        }
+    }
+
+    func getArchiveChat(jids: [String], isArchive: Bool, completionHandler : @escaping FlyCompletionHandler) {
+        if jids.count > 0 {
+            ChatManager.updateArchiveUnArchiveChat(jids, isArchive) { isSuccess, error, data in
+                completionHandler(isSuccess, error, data)
+            }
+        }
+    }
+
     func getGroupDetails(groupJid : String) -> ProfileDetails? {
         return GroupManager.shared.getAGroupFromLocal(groupJid: groupJid)
     }
@@ -50,6 +76,11 @@ RecentChatViewModel  {
     func getRecentChat(jid : String)-> RecentChat?{
         return ChatManager.getRechtChat(jid: jid)
     }
+}
+
+struct SelectedMessages {
+    var isSelected: Bool = false
+    var chatMessage: ChatMessage = ChatMessage()
 }
 
 struct SelectedForwardMessage {

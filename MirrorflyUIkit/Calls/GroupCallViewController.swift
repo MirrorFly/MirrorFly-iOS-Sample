@@ -6,17 +6,15 @@
 //
 
 import UIKit
-import RealmSwift
 import FlyCall
 import FlyDatabase
 import FlyCommon
-import Alamofire
 import FlyCore
 
 class GroupCallViewController: UIViewController {
     
     @IBOutlet weak var imgOneLeading: NSLayoutConstraint!
-    var callLog = RealmCallLog()
+    var callLog: CallLog!
     let rosterManager = RosterManager()
     var callUserProfiles = [ProfileDetails]()
     var groupCallName = String()
@@ -41,8 +39,7 @@ class GroupCallViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(callLog)
-        let userString = callLog["userList"] as? String ?? ""
-        var userList = userString.components(separatedBy: ",")
+        var userList = callLog.userList
         userList.removeAll { jid in
             jid == FlyDefaults.myJid
         }
@@ -82,16 +79,16 @@ class GroupCallViewController: UIViewController {
             loadImagesForMutiUserCall()
         }
         
-        if callLog["callType"] as! String == "audio"{
+        if callLog.callType == .Audio {
             callInitiateBtn.setImage(UIImage.init(named: "audio_call"), for: .normal)
-        }else {
+        } else {
             callInitiateBtn.setImage(UIImage.init(named: "VideoType"), for: .normal)
         }
-        if callLog["callState"] as! String == "Inco as! StringmingCall"{
+        if callLog.callState == .IncomingCall {
             callStateImg.image = UIImage.init(named: "incomingCall")
-        }else if callLog["callState"] as! String == "OutgoingCall"{
+        } else if callLog.callState == .OutgoingCall {
             callStateImg.image = UIImage.init(named: "outGoing")
-        }else{
+        } else {
             callStateImg.image = UIImage.init(named: "missedCall")
         }
         groupCallNameLbl.text = groupCallName
@@ -119,31 +116,11 @@ class GroupCallViewController: UIViewController {
     }
     
     @IBAction func deleteAction(_ sender: Any) {
-        let url = Utility.appendBaseURL(restEnd: "users/callLogs")
-        var headers: HTTPHeaders = ["Content-Type": "application/json", "Accept": "application/json"]
-        var parametersDictionary: [String : Any]?
-        
-        parametersDictionary = [
-            "roomId": [callLog["callId"]]
-        ]
-        
-        let authToken = FlyCallUtils.sharedInstance.getConfigUserDefault(forKey: "token") as? String ?? ""
-        if authToken.count > 0 {
-            headers.add(name: "Authorization", value: authToken)
-        }
-        AF.request(URL(string: url)!,method: .delete,parameters:parametersDictionary ,encoding: JSONEncoding.default,headers: headers).validate(statusCode: 200..<300).responseJSON { [self] response in
-            print(response.result)
-            switch response.result {
-            case .success(_):
-                if response.response?.statusCode == 200 {
-                    callLogManager.deleteSingleCallLogs(callLog:callLog)
-                    self.navigationController?.popViewController(animated: true)
-                }else {
-                }
-            case .failure(_) :
-                let _ : String
-                if let httpStatusCode = response.response?.statusCode {
-                }
+        callLogManager.deleteCallLog(callLogId: callLog.callLogId) { isSuccess, error, data in
+            print(isSuccess)
+            print(data)
+            if isSuccess {
+                self.navigationController?.popViewController(animated: true)
             }
         }
     }
@@ -153,8 +130,7 @@ class GroupCallViewController: UIViewController {
             AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
             return
         }
-        let userString = callLog["userList"] as? String ?? ""
-        let fullNameArr = userString.components(separatedBy: ",")
+        let fullNameArr = callLog.userList
         var callUserProfiles = [ProfileDetails]()
         for JID in fullNameArr{
             if let contact = rosterManager.getContact(jid: JID){
@@ -163,22 +139,30 @@ class GroupCallViewController: UIViewController {
                 }
             }
         }
-        if callLog["callType"] as! String == "audio"{
-            RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString())
-        }
-        else{
-            RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video, groupId: callLog.groupId ?? emptyString())
+        if callLog.callType == .Audio {
+            RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString(), onCompletion: { isSuccess, message in
+                if(!isSuccess){
+                    let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                    AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                }
+            })
+        } else {
+            RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video, groupId: callLog.groupId ?? emptyString(), onCompletion: { isSuccess, message in
+                if(!isSuccess){
+                    let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                    AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                }
+            })
         }
     }
     
     func loadImagesForMutiUserCall(){
-        let userString = callLog["userList"] as? String ?? ""
-        var userList = userString.components(separatedBy: ",")
+        var userList = callLog.userList
         userList.removeAll { jid in
             jid == FlyDefaults.myJid
         }
         
-        if contactJidArr.count == 2{
+        if contactJidArr.count == 2 {
             imgTwo.isHidden = true
             imgOneLeading.constant = 10
             imgThree.isHidden = true
@@ -304,8 +288,7 @@ extension GroupCallViewController : ProfileEventsDelegate {
     }
     
     func usersProfilesFetched() {
-        let userString = callLog["userList"] as? String ?? ""
-        var userList = userString.components(separatedBy: ",")
+        var userList = callLog.userList
         userList.removeAll { jid in
             jid == FlyDefaults.myJid
         }

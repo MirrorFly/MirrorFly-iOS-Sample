@@ -9,6 +9,7 @@ import UIKit
 import FlyCore
 import FlyCommon
 import RxSwift
+import Toaster
 
 protocol SendSelectecUserDelegate {
     func sendSelectedUsers(selectedUsers: [Profile],completion: @escaping (() -> Void))
@@ -38,7 +39,7 @@ class ForwardViewController: UIViewController {
     var pageDismissClosure:(()-> ())?
     var selectedUserDelegate: SendSelectecUserDelegate? = nil
     var getProfileDetails: ProfileDetails?
-    var forwardMessages: [SelectedForwardMessage] = []
+    var forwardMessages: [SelectedMessages] = []
     var searchedText : String = emptyString()
     var refreshProfileDelegate: RefreshProfileInfo?
     var fromJid : String? = nil
@@ -69,8 +70,7 @@ class ForwardViewController: UIViewController {
         recentChatViewModel = RecentChatViewModel()
         configTableView()
         loadChatList()
-        FlyMessenger.shared.messageEventsDelegate = self
-        GroupManager.shared.groupDelegate = self
+        setUpStatusBar()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         searchSubject.throttle(.milliseconds(25), scheduler: MainScheduler.instance).distinctUntilChanged().subscribe { [weak self] term in
@@ -108,6 +108,20 @@ class ForwardViewController: UIViewController {
     
     @objc private func keyboardWillHide(notification: NSNotification) {
         forwardTableView?.contentInset = .zero
+    }
+    
+    func checkMessageValidation(messages: [String]) {
+        var isMessageExist: [String] = []
+        forwardMessages.forEach { forwardMessage in
+            isMessageExist += messages.filter({$0 == forwardMessage.chatMessage.messageId})
+        }
+        if isMessageExist.count > 0 {
+            DispatchQueue.main.async { [weak self] in
+                AppAlert.shared.showToast(message: "Your selected message is no longer available")
+                self?.pageDismissClosure?()
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
     }
     
     // MARK: ConfigTableView
@@ -151,12 +165,17 @@ class ForwardViewController: UIViewController {
         super.viewDidAppear(animated)
         ContactManager.shared.profileDelegate = self
         ChatManager.shared.adminBlockDelegate = self
+        ChatManager.shared.messageEventsDelegate = self
+        FlyMessenger.shared.messageEventsDelegate = self
+        GroupManager.shared.groupDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.messageEventsDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
+        FlyMessenger.shared.messageEventsDelegate = nil
         navigationController?.isNavigationBarHidden = true
     }
     
@@ -236,10 +255,10 @@ class ForwardViewController: UIViewController {
                         vc?.contactColor =  randomColors[index] ?? .gray
                     }
                 }
-              break
-            case 2:
                 break
             case 3:
+                break
+            case 2:
                 let recentChat = isSearchEnabled == true ? getRecentChat.filter({$0.isSelected == true}).first : getAllRecentChat.filter({$0.isSelected == true}).first
                 let profile = ProfileDetails(jid: recentChat?.jid ?? "")
                 profile.name =  recentChat?.profileName ?? ""
@@ -271,17 +290,17 @@ class ForwardViewController: UIViewController {
             })
         } else {
             DispatchQueue.main.async { [weak self] in
+                self?.startLoading(withText: "Sending")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self?.navigationController?.popViewController(animated: true)
                     self?.stopLoading()
+                    self?.selectedUserDelegate?.sendSelectedUsers(selectedUsers: self?.selectedMessages ?? [],completion: { [weak self] in
+                        if let messageIds = self?.forwardMessages.map({$0.chatMessage.messageId}) {
+                            let jids = self?.selectedMessages.map({$0.jid})
+                            FlyMessenger.composeForwardMessage(messageIds: messageIds, toJidList: jids ?? [])
+                            self?.navigationController?.popViewController(animated: true)
+                        }
+                    })
                 }
-                self?.selectedUserDelegate?.sendSelectedUsers(selectedUsers: self?.selectedMessages ?? [],completion: { [weak self] in
-                    self?.startLoading(withText: "Sending")
-                    if let messageIds = self?.forwardMessages.map({$0.chatMessage.messageId}) {
-                        let jids = self?.selectedMessages.map({$0.jid})
-                        FlyMessenger.composeForwardMessage(messageIds: messageIds, toJidList: jids ?? [])
-                    }
-                })
             }
         }
     }
@@ -291,10 +310,12 @@ class ForwardViewController: UIViewController {
         forwardTableView?.reloadData()
         handleEmptyViewWhileSearch()
         // temporarily show empty message by default
-        if segmentSelectedIndex == 2 {
-            showEmptyMessage()
-            descriptionLabel?.text = "No broadcast available"
-        }
+//        if segmentSelectedIndex == 2 {
+//            showEmptyMessage()
+//            descriptionLabel?.text = "No broadcast available"
+//        }
+        
+        self.forwardTableView.tableFooterView?.isHidden = (segmentSelectedIndex != 0 && isLoadingInProgress) ? true : false
     }
     
     private func hideEmptyMessage() {
@@ -334,8 +355,6 @@ class ForwardViewController: UIViewController {
         case 1:
             showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).count : getAllRecentChat.filter({$0.profileType == .groupChat}).count)
         case 2:
-            showHideEmptyMessage(totalCount: 0)
-        case 3:
             showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.count : getAllRecentChat.count)
         default:
             break
@@ -350,6 +369,24 @@ class ForwardViewController: UIViewController {
         searchTerm = emptyString()
         forwardTableView?.reloadData()
     }
+    
+    func networkMonitor() {
+        if !NetworkReachability.shared.isConnected {
+            executeOnMainThread { [weak self] in
+                self?.sendButton?.isEnabled = false
+            }
+        }
+        NetworkReachability.shared.netStatusChangeHandler = { [weak self] in
+            print("networkMonitor \(NetworkReachability.shared.isConnected)")
+            if !NetworkReachability.shared.isConnected {
+                executeOnMainThread {
+                    self?.sendButton?.isEnabled = false
+                }
+            } else {
+                self?.sendButton?.isEnabled = true
+            }
+        }
+    }
 }
 
 // TableViewDelegate
@@ -360,9 +397,9 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
             return isSearchEnabled == true ? filteredContactList.count : allContactsList.count
         case 1:
             return isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).count : getAllRecentChat.filter({$0.profileType == .groupChat}).count
-        case 2:
-           return 0
         case 3:
+           return 0
+        case 2:
             return isSearchEnabled == true ? getRecentChat.count : getAllRecentChat.count
         default:
             return 0
@@ -387,7 +424,8 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 cell.statusUILabel?.text = contactDetails.status
                 let hashcode = contactDetails.name.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
-                cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType, jid: contactDetails.jid)
+                cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType), color: color ?? .gray, profile: contactDetails)
+                //cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType, jid: contactDetails.jid)
                 cell.checkBoxImageView?.image = selectedJids.contains(contactDetails.jid) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
                 cell.setTextColorWhileSearch(searchText: searchTerm, profileDetail: contactDetails)
                 cell.statusUILabel?.isHidden = false
@@ -404,11 +442,16 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 cell.statusUILabel?.isHidden = false
                 cell.removeButton?.isHidden = true
                 cell.removeIcon?.isHidden = true
-                cell.statusUILabel?.text = recentChatDetails.lastMessageContent + (recentChatDetails.lastMessageType?.rawValue ?? "")
+                if recentChatDetails.lastMessageType == .text || recentChatDetails.lastMessageType == .notification {
+                    cell.statusUILabel?.text = recentChatDetails.lastMessageContent
+                } else  {
+                    cell.receiverMessageTypeView?.isHidden = false
+                    cell.statusUILabel?.text = recentChatDetails.lastMessageContent + (recentChatDetails.lastMessageType?.rawValue ?? "")
+                }
                 showHideEmptyMessage(totalCount: isSearchEnabled == true ? getRecentChat.filter({$0.profileType == .groupChat}).count : getAllRecentChat.filter({$0.profileType == .groupChat}).count)
-            case 2:
-                showHideEmptyMessage(totalCount: 0)
             case 3:
+                showHideEmptyMessage(totalCount: 0)
+            case 2:
                 let recentChatDetails = isSearchEnabled == true ? getRecentChat[indexPath.row] : getAllRecentChat[indexPath.row]
                 if getBlocked(jid: recentChatDetails.jid) {
                     cell.contentView.alpha = 0.6
@@ -419,9 +462,10 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 let color = randomColors[abs(hashcode) % randomColors.count]
                 cell.setRecentChatDetails(recentChat: recentChatDetails, color: color ?? .gray)
                 cell.showLastMessageContentInfo()
-                if recentChatDetails.profileType == .singleChat {
-                    cell.statusUILabel?.text = recentChatDetails.lastMessageType == .text ? recentChatDetails.lastMessageContent : recentChatDetails.lastMessageType?.rawValue
-                } else {
+                if recentChatDetails.lastMessageType == .text || recentChatDetails.lastMessageType == .notification {
+                    cell.statusUILabel?.text = recentChatDetails.lastMessageContent
+                } else  {
+                    cell.receiverMessageTypeView?.isHidden = false
                     cell.statusUILabel?.text = recentChatDetails.lastMessageContent + (recentChatDetails.lastMessageType?.rawValue ?? "")
                 }
                 cell.statusUILabel?.isHidden = false
@@ -437,210 +481,220 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch segmentSelectedIndex {
-        case 0:
-            switch isSearchEnabled  {
-            case true:
-                if getBlocked(jid: filteredContactList[indexPath.row].jid) {
-                    showBlockUnblockConfirmationPopUp(jid: filteredContactList[indexPath.row].jid, name: filteredContactList[indexPath.row].nickName)
-                    return
-                }
-                var profile = Profile()
-                profile.profileName = filteredContactList[indexPath.row].name
-                profile.jid = filteredContactList[indexPath.row].jid
-                profile.isSelected = !(profile.isSelected ?? false)
-                saveUserToDatabase(jid: profile.jid)
-                if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
-                    getRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
-                    filteredContactList[indexPath.row].isSelected = true
-                    selectedMessages.append(profile)
-                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == filteredContactList[indexPath.row].jid}).count > 0 {
-                    selectedMessages.enumerated().forEach({ (index,item) in
-                        if item.jid == filteredContactList[indexPath.row].jid {
-                            if index <= selectedMessages.count {
-                                getRecentChat.filter({$0.jid == filteredContactList[indexPath.row].jid}).first?.isSelected = false
-                                filteredContactList[indexPath.row].isSelected = false
-                                selectedMessages.remove(at: index)
-                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
+        if !NetworkReachability.shared.isConnected {
+            self.sendButton?.isEnabled = false
+            self.sendButton?.alpha = 0.4
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+        } else {
+            switch segmentSelectedIndex {
+            case 0:
+                switch isSearchEnabled  {
+                case true:
+                    if getBlocked(jid: filteredContactList[indexPath.row].jid) {
+                        let contactDetails = filteredContactList[indexPath.row]
+                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType))
+                        return
+                    }
+                    var profile = Profile()
+                    profile.profileName = filteredContactList[indexPath.row].name
+                    profile.jid = filteredContactList[indexPath.row].jid
+                    profile.isSelected = !(profile.isSelected ?? false)
+                    saveUserToDatabase(jid: profile.jid)
+                    if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
+                        getRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
+                        filteredContactList[indexPath.row].isSelected = true
+                        selectedMessages.append(profile)
+                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                    } else if selectedMessages.filter({$0.jid == filteredContactList[indexPath.row].jid}).count > 0 {
+                        selectedMessages.enumerated().forEach({ (index,item) in
+                            if item.jid == filteredContactList[indexPath.row].jid {
+                                if index <= selectedMessages.count {
+                                    getRecentChat.filter({$0.jid == filteredContactList[indexPath.row].jid}).first?.isSelected = false
+                                    filteredContactList[indexPath.row].isSelected = false
+                                    selectedMessages.remove(at: index)
+                                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                                }
                             }
-                        }
-                    })
-                } else {
-                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
-                }
-                forwardTableView?.reloadRows(at: [indexPath], with: .none)
-            case false:
-                if getBlocked(jid: allContactsList[indexPath.row].jid) {
-                    showBlockUnblockConfirmationPopUp(jid: allContactsList[indexPath.row].jid, name: allContactsList[indexPath.row].nickName)
-                    return
-                }
-                var profile = Profile()
-                profile.profileName = allContactsList[indexPath.row].name
-                profile.jid = allContactsList[indexPath.row].jid
-                profile.isSelected = !(profile.isSelected ?? false)
-                saveUserToDatabase(jid: profile.jid)
-                if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
-                    getAllRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
-                    allContactsList[indexPath.row].isSelected = true
-                    selectedMessages.append(profile)
-                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == allContactsList[indexPath.row].jid}).count > 0 {
-                    selectedMessages.enumerated().forEach({ (index,item) in
-                        if item.jid == allContactsList[indexPath.row].jid {
-                            if index <= selectedMessages.count {
-                                getAllRecentChat.filter({$0.jid == allContactsList[indexPath.row].jid}).first?.isSelected = false
-                                allContactsList[indexPath.row].isSelected = false
-                                selectedMessages.remove(at: index)
-                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                    }
+                    forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                case false:
+                    if getBlocked(jid: allContactsList[indexPath.row].jid) {
+                        let contactDetails = allContactsList[indexPath.row]
+                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType))
+                        return
+                    }
+                    var profile = Profile()
+                    profile.profileName = allContactsList[indexPath.row].name
+                    profile.jid = allContactsList[indexPath.row].jid
+                    profile.isSelected = !(profile.isSelected ?? false)
+                    saveUserToDatabase(jid: profile.jid)
+                    if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
+                        getAllRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
+                        allContactsList[indexPath.row].isSelected = true
+                        selectedMessages.append(profile)
+                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                    } else if selectedMessages.filter({$0.jid == allContactsList[indexPath.row].jid}).count > 0 {
+                        selectedMessages.enumerated().forEach({ (index,item) in
+                            if item.jid == allContactsList[indexPath.row].jid {
+                                if index <= selectedMessages.count {
+                                    getAllRecentChat.filter({$0.jid == allContactsList[indexPath.row].jid}).first?.isSelected = false
+                                    allContactsList[indexPath.row].isSelected = false
+                                    selectedMessages.remove(at: index)
+                                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                                }
                             }
-                        }
-                    })
-                } else {
-                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                    }
+                    forwardTableView?.reloadRows(at: [indexPath], with: .none)
                 }
-                forwardTableView?.reloadRows(at: [indexPath], with: .none)
+            case 1:
+                switch isSearchEnabled  {
+                case true:
+                    if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
+                        AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                        return
+                    }
+                    var profile = Profile()
+                    profile.profileName = getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row].profileName
+                    profile.jid = getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
+                    profile.isSelected = !(profile.isSelected ?? false)
+                    saveUserToDatabase(jid: profile.jid)
+                    if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
+                        getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = true
+                        getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
+                        selectedMessages.append(profile)
+                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                    } else if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row].jid}).count > 0 {
+                        selectedMessages.enumerated().forEach({ (index,item) in
+                            if item.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
+                                if index <= selectedMessages.count {
+                                    getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = false
+                                    getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = false
+                                    selectedMessages.remove(at: index)
+                                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                                }
+                            }
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                    }
+                    forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                case false:
+                    if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
+                        AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                        return
+                    }
+                    var profile = Profile()
+                    profile.profileName = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].profileName
+                    profile.jid = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
+                    profile.isSelected = !(profile.isSelected ?? false)
+                    saveUserToDatabase(jid: profile.jid)
+                    if selectedMessages.filter({$0.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
+                        getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = true
+                        getAllRecentChat.filter({$0.jid ==  getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
+                        selectedMessages.append(profile)
+                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                    } else if selectedMessages.filter({$0.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count > 0 {
+                        selectedMessages.enumerated().forEach({ (index,item) in
+                            if item.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
+                                if index <= selectedMessages.count {
+                                    getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = false
+                                    getAllRecentChat.filter({$0.jid ==  getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = false
+                                    selectedMessages.remove(at: index)
+                                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                                }
+                            }
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                    }
+                    forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                }
+            case 3:
+                break
+            case 2:
+                switch isSearchEnabled  {
+                case true:
+                    if checkMemberOfGroup(index: indexPath.row, recentChat: getRecentChat[indexPath.row]) == true {
+                        AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                        return
+                    }
+                    if getBlocked(jid: getRecentChat[indexPath.row].jid) {
+                        let contactDetails = getRecentChat[indexPath.row]
+                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: contactDetails.nickName)
+                        return
+                    }
+                    var profile = Profile()
+                    profile.profileName = getRecentChat[indexPath.row].profileName
+                    profile.jid = getRecentChat[indexPath.row].jid
+                    profile.isSelected = !(profile.isSelected ?? false)
+                    saveUserToDatabase(jid: profile.jid)
+                    if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 && selectedMessages.count < 5 {
+                        getRecentChat[indexPath.row].isSelected = true
+                        filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = true
+                        selectedMessages.append(profile)
+                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                    } else if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count > 0 {
+                        selectedMessages.enumerated().forEach({ (index,item) in
+                            if item.jid == getRecentChat[indexPath.row].jid {
+                                if index <= selectedMessages.count {
+                                    getRecentChat[indexPath.row].isSelected = false
+                                    filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = false
+                                    selectedMessages.remove(at: index)
+                                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                                }
+                            }
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                    }
+                    forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                case false:
+                    if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
+                        AppAlert.shared.showToast(message: youCantSelectTheGroup)
+                        return
+                    }
+                    if getBlocked(jid: getAllRecentChat[indexPath.row].jid) {
+                        let contactDetails = getAllRecentChat[indexPath.row]
+                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: contactDetails.nickName)
+                        return
+                    }
+                    var profile = Profile()
+                    profile.profileName = getAllRecentChat[indexPath.row].profileName
+                    profile.jid = getAllRecentChat[indexPath.row].jid
+                    profile.isSelected = !(profile.isSelected ?? false)
+                    if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
+                        getAllRecentChat[indexPath.row].isSelected = true
+                        allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = true
+                        selectedMessages.append(profile)
+                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                    } else if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count > 0 {
+                        selectedMessages.enumerated().forEach({ (index,item) in
+                            if item.jid == getAllRecentChat[indexPath.row].jid {
+                                if index <= selectedMessages.count {
+                                    getAllRecentChat[indexPath.row].isSelected = false
+                                    allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = false
+                                    selectedMessages.remove(at: index)
+                                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                                }
+                            }
+                        })
+                    } else {
+                        AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
+                    }
+                    forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                }
+            default:
+                break
             }
-        case 1:
-            switch isSearchEnabled  {
-            case true:
-                if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
-                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
-                    return
-                }
-                var profile = Profile()
-                profile.profileName = getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row].profileName
-                profile.jid = getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
-                profile.isSelected = !(profile.isSelected ?? false)
-                saveUserToDatabase(jid: profile.jid)
-                if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
-                    getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = true
-                    getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
-                    selectedMessages.append(profile)
-                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == getRecentChat.filter({$0.profileType == .groupChat && $0.isBlockedByAdmin == false})[indexPath.row].jid}).count > 0 {
-                    selectedMessages.enumerated().forEach({ (index,item) in
-                        if item.jid == getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
-                            if index <= selectedMessages.count {
-                                getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = false
-                                getRecentChat.filter({$0.jid ==  getRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = false
-                                selectedMessages.remove(at: index)
-                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                            }
-                        }
-                    })
-                } else {
-                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
-                }
-                forwardTableView?.reloadRows(at: [indexPath], with: .none)
-            case false:
-                if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
-                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
-                    return
-                }
-                var profile = Profile()
-                profile.profileName = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].profileName
-                profile.jid = getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid
-                profile.isSelected = !(profile.isSelected ?? false)
-                saveUserToDatabase(jid: profile.jid)
-                if selectedMessages.filter({$0.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
-                    getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = true
-                    getAllRecentChat.filter({$0.jid ==  getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = true
-                    selectedMessages.append(profile)
-                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).count > 0 {
-                    selectedMessages.enumerated().forEach({ (index,item) in
-                        if item.jid == getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid {
-                            if index <= selectedMessages.count {
-                                getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].isSelected = false
-                                getAllRecentChat.filter({$0.jid ==  getAllRecentChat.filter({$0.profileType == .groupChat})[indexPath.row].jid}).first?.isSelected = false
-                                selectedMessages.remove(at: index)
-                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                            }
-                        }
-                    })
-                } else {
-                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
-                }
-                forwardTableView?.reloadRows(at: [indexPath], with: .none)
-            }
-        case 2:
-            break
-        case 3:
-            switch isSearchEnabled  {
-            case true:
-                if checkMemberOfGroup(index: indexPath.row, recentChat: getRecentChat[indexPath.row]) == true {
-                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
-                    return
-                }
-                if getBlocked(jid: getRecentChat[indexPath.row].jid) {
-                    showBlockUnblockConfirmationPopUp(jid: getRecentChat[indexPath.row].jid, name: getRecentChat[indexPath.row].nickName)
-                    return
-                }
-                var profile = Profile()
-                profile.profileName = getRecentChat[indexPath.row].profileName
-                profile.jid = getRecentChat[indexPath.row].jid
-                profile.isSelected = !(profile.isSelected ?? false)
-                saveUserToDatabase(jid: profile.jid)
-                if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 && selectedMessages.count < 5 {
-                    getRecentChat[indexPath.row].isSelected = true
-                    filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = true
-                    selectedMessages.append(profile)
-                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count > 0 {
-                    selectedMessages.enumerated().forEach({ (index,item) in
-                        if item.jid == getRecentChat[indexPath.row].jid {
-                            if index <= selectedMessages.count {
-                                getRecentChat[indexPath.row].isSelected = false
-                                filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = false
-                                selectedMessages.remove(at: index)
-                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                            }
-                        }
-                    })
-                } else {
-                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
-                }
-                forwardTableView?.reloadRows(at: [indexPath], with: .none)
-            case false:
-                if checkMemberOfGroup(index: indexPath.row, recentChat: getAllRecentChat[indexPath.row]) == true {
-                    AppAlert.shared.showToast(message: youCantSelectTheGroup)
-                    return
-                }
-                if getBlocked(jid: getAllRecentChat[indexPath.row].jid) {
-                    showBlockUnblockConfirmationPopUp(jid: getAllRecentChat[indexPath.row].jid,name: getAllRecentChat[indexPath.row].nickName)
-                    return
-                }
-                var profile = Profile()
-                profile.profileName = getAllRecentChat[indexPath.row].profileName
-                profile.jid = getAllRecentChat[indexPath.row].jid
-                profile.isSelected = !(profile.isSelected ?? false)
-                if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
-                    getAllRecentChat[indexPath.row].isSelected = true
-                    allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = true
-                    selectedMessages.append(profile)
-                    selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                } else if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count > 0 {
-                    selectedMessages.enumerated().forEach({ (index,item) in
-                        if item.jid == getAllRecentChat[indexPath.row].jid {
-                            if index <= selectedMessages.count {
-                                getAllRecentChat[indexPath.row].isSelected = false
-                                allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = false
-                                selectedMessages.remove(at: index)
-                                selectedJids = selectedMessages.compactMap { profile in profile.jid }
-                            }
-                        }
-                    })
-                } else {
-                    AppAlert.shared.showToast(message: ErrorMessage.restrictedforwardUsers)
-                }
-                forwardTableView?.reloadRows(at: [indexPath], with: .none)
-            }
-        default:
-            break
+            sendButton?.isEnabled = selectedMessages.count == 0 ? false : true
+            sendButton?.alpha = selectedMessages.count == 0 ? 0.4 : 1.0
         }
-        sendButton?.isEnabled = selectedMessages.count == 0 ? false : true
-        sendButton?.alpha = selectedMessages.count == 0 ? 0.4 : 1.0
     }
 }
 
@@ -935,7 +989,7 @@ func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
                 NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
                 forwardTableView?.reloadData()
             }
-    case 3:
+    case 2:
         let profileDatas =  isSearchEnabled == true ? getRecentChat : getAllRecentChat
         if profileDatas.count > 0, let profileData = profileDatas.first  {
             if isSearchEnabled == true {
@@ -1032,7 +1086,7 @@ extension ForwardViewController : GroupEventsDelegate {
 
 // MessageEventDelegate
 extension ForwardViewController : MessageEventsDelegate {
-  
+   
     func onMessageTranslated(message: ChatMessage, jid: String) {
         
     }
@@ -1055,9 +1109,13 @@ extension ForwardViewController : MessageEventsDelegate {
         
     }
     
-    func onMessagesClearedOrDeleted(messageIds: Array<String>) {}
+    func onMessagesClearedOrDeleted(messageIds: Array<String>) {
+        loadChatList()
+    }
     
-    func onMessagesDeletedforEveryone(messageIds: Array<String>) {}
+    func onMessagesDeletedforEveryone(messageIds: Array<String>) {
+        checkMessageValidation(messages: messageIds)
+    }
     
     func showOrUpdateOrCancelNotification() {}
     
@@ -1066,7 +1124,11 @@ extension ForwardViewController : MessageEventsDelegate {
     func setOrUpdateFavourite(messageId: String, favourite: Bool, removeAllFavourite: Bool) {}
     
     func onMessageReceived(message: ChatMessage, chatJid: String) {
-        refreshMessages()
+        if isSearchEnabled == false {
+            loadChatList()
+        } else {
+            refreshMessages()
+        }
     }
 }
 
@@ -1085,7 +1147,8 @@ extension ForwardViewController : AdminBlockDelegate {
         if isBlocked && messages.count > 0 {
             self.navigationController?.navigationBar.isHidden = false
             self.navigationController?.popToRootViewController(animated: true)
-            executeOnMainThread {
+            executeOnMainThread { [weak self] in
+                self?.stopLoading()
                 AppAlert.shared.showToast(message: groupNoLongerAvailable)
             }
         }
@@ -1120,9 +1183,15 @@ extension ForwardViewController {
 extension ForwardViewController : UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if ENABLE_CONTACT_SYNC {
+            return
+        }
+        
         if segmentSelectedIndex != 0 {
             return
         }
+        
         let position  = scrollView.contentOffset.y
          if position > forwardTableView.contentSize.height-200 - scrollView.frame.size.height {
              if isPaginationCompleted(){
@@ -1300,7 +1369,7 @@ extension ForwardViewController : UIScrollViewDelegate {
 extension ForwardViewController {
     private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
         //showConfirmationAlert
-        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(getProfileDetails?.nickName ?? "")?" : "Block \(self.getProfileDetails?.nickName ?? "")?", preferredStyle: .alert)
+        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(name)?" : "Block \(name)?", preferredStyle: .alert)
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
             self?.dismiss(animated: true,completion: nil)

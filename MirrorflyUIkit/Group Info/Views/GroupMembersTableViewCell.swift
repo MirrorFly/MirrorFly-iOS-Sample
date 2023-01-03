@@ -65,6 +65,13 @@ class GroupMembersTableViewCell: UITableViewCell {
         } else {
             adminLabel.text = ""
         }
+        
+        let blockedMe = profileDetails?.isBlockedMe ?? false
+        
+        if profileDetails?.contactType == .deleted || blockedMe {
+            userImageView?.image = UIImage(named: "ic_profile_placeholder") ?? UIImage()
+            statusLabel.text = ""
+        }
     }
     
     func getPlaceholder(name: String, color: UIColor) -> UIImage {

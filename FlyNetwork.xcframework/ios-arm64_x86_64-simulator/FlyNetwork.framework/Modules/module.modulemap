@@ -6,6 +6,6 @@ framework module FlyNetwork {
 }
 
 module FlyNetwork.Swift {
-    header "FlyNetwork-Swift.h"
-    requires objc
+  header "FlyNetwork-Swift.h"
+  requires objc
 }

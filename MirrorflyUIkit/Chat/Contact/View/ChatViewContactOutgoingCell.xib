@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -194,7 +194,7 @@
                                                 <rect key="frame" x="48" y="22.5" width="181.5" height="25"/>
                                                 <accessibility key="accessibilityConfiguration">
                                                     <accessibilityTraits key="traits" none="YES"/>
-                                                    <bool key="isElement" value="NO"/>
+                                                    <bool key="isElement" value="YES"/>
                                                 </accessibility>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="180" id="cZL-XF-zgN"/>
@@ -203,9 +203,12 @@
                                                 <fontDescription key="fontDescription" name="SFUIDisplay-Semibold" family="SF UI Display" pointSize="14"/>
                                                 <color key="textColor" name="PrimaryTextColor3"/>
                                                 <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="sentContactName"/>
+                                                </userDefinedRuntimeAttributes>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="wXX-tK-nrd">
-                                                <rect key="frame" x="160" y="47.5" width="69.5" height="17.5"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="wXX-tK-nrd">
+                                                <rect key="frame" x="160" y="57" width="69.5" height="8"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_favouriteStar" translatesAutoresizingMaskIntoConstraints="NO" id="Uso-dP-GiD">
                                                         <rect key="frame" x="0.0" y="0.0" width="8" height="8"/>
@@ -230,19 +233,24 @@
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="04:30 PM" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K6y-Og-PJW">
                                                         <rect key="frame" x="26" y="0.0" width="43.5" height="8"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="10"/>
-                                                        <color key="textColor" red="0.91372549020000005" green="0.93725490199999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="Uso-dP-GiD" firstAttribute="centerY" secondItem="sSx-kB-paB" secondAttribute="centerY" id="KyK-Ka-OAM"/>
+                                                </constraints>
                                             </stackView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <bool key="isElement" value="YES"/>
+                                        </accessibility>
                                         <constraints>
                                             <constraint firstItem="wXX-tK-nrd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="k4H-Ih-aQf" secondAttribute="leading" constant="10" id="77P-67-4Pq"/>
                                             <constraint firstAttribute="trailing" secondItem="wXX-tK-nrd" secondAttribute="trailing" constant="10" id="Tme-6Z-gKz"/>
                                             <constraint firstItem="IRI-D9-uVR" firstAttribute="leading" secondItem="cPI-WP-rli" secondAttribute="trailing" constant="10" id="Vfs-wT-DWV"/>
                                             <constraint firstAttribute="trailing" secondItem="IRI-D9-uVR" secondAttribute="trailing" constant="10" id="a0Y-IQ-g94"/>
-                                            <constraint firstItem="wXX-tK-nrd" firstAttribute="top" secondItem="IRI-D9-uVR" secondAttribute="bottom" id="awZ-RL-TeY"/>
                                             <constraint firstItem="cPI-WP-rli" firstAttribute="centerY" secondItem="k4H-Ih-aQf" secondAttribute="centerY" id="edl-EA-RIG"/>
                                             <constraint firstItem="cPI-WP-rli" firstAttribute="leading" secondItem="k4H-Ih-aQf" secondAttribute="leading" constant="8" id="efv-tb-ixq"/>
                                             <constraint firstItem="cPI-WP-rli" firstAttribute="top" secondItem="k4H-Ih-aQf" secondAttribute="top" constant="20" id="f6G-ZF-LWU"/>
@@ -255,6 +263,7 @@
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                 <integer key="value" value="8"/>
                                             </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="sentContactMessage"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>

@@ -8,7 +8,7 @@ import FlyCore
 import FlyCommon
 import AVKit
 
-class ImagePreview: UIViewController {
+class ImagePreview: UIViewController  {
     
     @IBOutlet weak var imageList: UICollectionView!
     @IBOutlet weak var videoPlayButton: UIButton?
@@ -18,6 +18,8 @@ class ImagePreview: UIViewController {
     var imageIndex = 0
     var jid = ""
     var messageId = String()
+    var currentIndexPath: IndexPath = IndexPath()
+    var refreshDataDelegate:RefreshMessagesDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,12 +30,14 @@ class ImagePreview: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        ChatManager.shared.messageEventsDelegate = self
         navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
+        ChatManager.shared.messageEventsDelegate = nil
     }
     
     func setupUI() {
@@ -52,7 +56,7 @@ class ImagePreview: UIViewController {
     }
     
     func getImages() {
-        imageAray  =  FlyMessenger.getMediaMessagesOf(jid: jid).filter({($0.mediaChatMessage?.messageType == .image || $0.messageType == .video) && ($0.mediaChatMessage?.mediaDownloadStatus == .downloaded || $0.mediaChatMessage?.mediaUploadStatus == .uploaded)})
+        imageAray  =  FlyMessenger.getMediaMessagesOf(jid: jid).filter({($0.mediaChatMessage?.messageType == .image || $0.messageType == .video) && ($0.mediaChatMessage?.mediaDownloadStatus == .downloaded || $0.mediaChatMessage?.mediaUploadStatus == .uploaded) && $0.isMessageRecalled == false && $0.isMessageDeleted == false})
         if imageAray.count > 0 {
             if let selelctedImage = imageAray.filter({$0.mediaChatMessage?.messageType == .image || $0.messageType == .video}).first(where: { $0.messageId == messageId }) {
                 imageIndex = imageAray.firstIndex(of: selelctedImage) ?? 0
@@ -127,14 +131,17 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var cell:ImageCell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.imageCell, for: indexPath) as! ImageCell
-        let imgeDetail = imageAray[indexPath.row]
-        if imgeDetail.messageType == .image || imgeDetail.messageType == .video {
-            cell.videoPlayButton?.isHidden = imgeDetail.messageType == .video ? false : true
-            cell.videoPlayButton?.tag = indexPath.row
-            cell.videoPlayButton?.addTarget(self, action: #selector(didTapPlayButton(sender:)),
-                                       for: .touchUpInside)
-            cell.cellImage.contentMode = .scaleAspectFit
-            cell = cell.getCellFor(imgeDetail, at: indexPath)!
+        if imageAray.count > indexPath.row {
+            let imgeDetail = imageAray[indexPath.row]
+            currentIndexPath = indexPath
+            if imgeDetail.messageType == .image || imgeDetail.messageType == .video {
+                cell.videoPlayButton?.isHidden = imgeDetail.messageType == .video ? false : true
+                cell.videoPlayButton?.tag = indexPath.row
+                cell.videoPlayButton?.addTarget(self, action: #selector(didTapPlayButton(sender:)),
+                                                for: .touchUpInside)
+                cell.cellImage.contentMode = .scaleAspectFit
+                cell = cell.getCellFor(imgeDetail, at: indexPath)!
+            }
         }
         return cell
     }
@@ -152,5 +159,58 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
         guard let indexPath = imageList.indexPathForItem(at: visiblePoint) else { return }
         imageIndex = indexPath.row
         setTitle()
+    }
+}
+
+extension ImagePreview : MessageEventsDelegate {
+   
+    func onMessageReceived(message: FlyCommon.ChatMessage, chatJid: String) {
+        
+    }
+    
+    func onMessageStatusUpdated(messageId: String, chatJid: String, status: FlyCommon.MessageStatus) {
+        
+    }
+    
+    func onMediaStatusUpdated(message: FlyCommon.ChatMessage) {
+        
+    }
+    
+    func onMediaStatusFailed(error: String, messageId: String) {
+        
+    }
+    
+    func onMediaProgressChanged(message: FlyCommon.ChatMessage, progressPercentage: Float) {
+        
+    }
+    
+    func onMessagesClearedOrDeleted(messageIds: Array<String>) {
+        
+    }
+    
+    func onMessagesDeletedforEveryone(messageIds: Array<String>) {
+        messageIds.forEach { messageId in
+            if imageAray[currentIndexPath.row].messageId == messageId {
+                imageAray.remove(at: currentIndexPath.row)
+                refreshDataDelegate?.refreshMessages()
+                imageList?.reloadData()
+            }
+        }
+    }
+    
+    func showOrUpdateOrCancelNotification() {
+        
+    }
+    
+    func onMessagesCleared(toJid: String) {
+        
+    }
+    
+    func setOrUpdateFavourite(messageId: String, favourite: Bool, removeAllFavourite: Bool) {
+        
+    }
+    
+    func onMessageTranslated(message: FlyCommon.ChatMessage, jid: String) {
+        
     }
 }

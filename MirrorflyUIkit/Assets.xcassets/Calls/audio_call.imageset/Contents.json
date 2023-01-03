@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "audio_call.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "audio_call@2x.png",
+      "filename" : "call 3x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "audio_call@3x.png",
+      "filename" : "call 99 4x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -39,6 +39,14 @@ public final class NetworkReachability {
             monitor.currentPath.usesInterfaceType($0.type) }.first?.type
     }
     
+    public var isCellular: Bool {
+            guard let monitor = monitor else { return false }
+            return monitor.currentPath.usesInterfaceType(.cellular)
+        }
+    public var isWifi: Bool {
+            guard let monitor = monitor else { return false }
+            return monitor.currentPath.usesInterfaceType(.wifi)
+        }
     
     var availableInterfacesTypes: [NWInterface.InterfaceType]? {
         guard let monitor = monitor else { return nil }

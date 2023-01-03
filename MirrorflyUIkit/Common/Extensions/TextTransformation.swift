@@ -9,6 +9,34 @@ import Foundation
 import UIKit
 
 extension String {
+    
+    func fetchMessageDateHeader(for lastMessageTime : Double) -> String {
+        let calendar = Calendar.current
+        let date =  DateFormatterUtility.shared.convertMillisecondsToLocalDate(milliSeconds: lastMessageTime)
+        
+        if calendar.isDateInToday(date) {
+            return "TODAY".localized
+        } else if calendar.isDateInYesterday(date) {
+            return "YESTERDAY".localized
+        } else {
+            let currentWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: Date())
+            let datesWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: date)
+            if currentWeek == datesWeek {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEE"
+                formatter.locale = Locale(identifier: "en_US")
+                let strDate: String = formatter.string(from: date)
+                return strDate.capitalized
+            } else {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "d MMM, yyyy"
+                formatter.locale = Locale(identifier: "en_US")
+                let strDate: String = formatter.string(from: date)
+                return strDate.capitalized
+            }
+        }
+    }
+    
     func fetchMessageDateHeader(for date : Date) -> String {
         
         var secondsAgo = Int(Date().timeIntervalSince(date))

@@ -53,11 +53,15 @@ class VerifyOTPViewModel : NSObject
         print(deviceToken, mobileNumber)
         voipToken = voipToken.isEmpty ? deviceToken : voipToken
 
-        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: false) { isSuccess, flyError, flyData in
+        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: ISEXPORT) { isSuccess, flyError, flyData in
             var data = flyData
             if isSuccess {
                 if  data["newLogin"] as? Bool ?? false{
                     CallLogManager().deleteCallLogs()
+                    Utility.saveInPreference(key: "clLastPageNumber", value: "1")
+                    Utility.saveInPreference(key: "clLastTotalPages", value: "0")
+                    Utility.saveInPreference(key: "clLastTotalRecords", value: "0")
+
                 }
                 completionHandler(data, nil)
             }else{

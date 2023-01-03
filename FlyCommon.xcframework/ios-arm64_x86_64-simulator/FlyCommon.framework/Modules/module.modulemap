@@ -6,6 +6,6 @@ framework module FlyCommon {
 }
 
 module FlyCommon.Swift {
-    header "FlyCommon-Swift.h"
-    requires objc
+  header "FlyCommon-Swift.h"
+  requires objc
 }

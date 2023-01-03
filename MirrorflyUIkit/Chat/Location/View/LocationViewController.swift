@@ -113,8 +113,11 @@ extension LocationViewController {
     
     @IBAction func onSend(_ sender: Any) {
         emptyViewingData()
-        self.navigationController?.popViewController(animated: true)
-        locationDelegate?.didSendPressed(latitude: marker?.position.latitude ?? 0.0, longitude: marker?.position.longitude ?? 0.0, jid: "")
+        navigationController?.popViewController(animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+            self?.locationDelegate?.didSendPressed(latitude: self?.marker?.position.latitude ?? 0.0,
+                                                   longitude: self?.marker?.position.longitude ?? 0.0, jid: "")
+        }
     }
     
     func goPrevious() {

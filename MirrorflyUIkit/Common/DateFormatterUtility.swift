@@ -21,6 +21,17 @@ class DateFormatterUtility: NSObject {
         return dateFormatter.string(from: dateVar)
     }
     
+    func milliSecondsToMessageInfoDateFormat(milliSec: Double) -> String {
+        let dateVar = Date.init(timeIntervalSince1970: milliSec/1000000)
+        let dateFormatter = DateFormatter()
+         
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.dateFormat = "dd MMM, hh:mm a"
+        dateFormatter.amSymbol = "am"
+        dateFormatter.pmSymbol = "pm"
+        return dateFormatter.string(from: dateVar)
+    }
+    
     func currentMillisecondsToLocalDateAndTime(milliSec: Double) -> Date{
         let dateVar = Date.init(timeIntervalSince1970: milliSec/1000000)
         let dateFormatter = DateFormatter()
@@ -42,13 +53,12 @@ class DateFormatterUtility: NSObject {
     }
     
     func convertMillisecondsToLocalDate(milliSeconds: Double)  -> Date {
-        let date = Date(timeIntervalSince1970: milliSeconds/1000000)
+        let date = Date(timeIntervalSince1970: TimeInterval(milliSeconds/1000000))
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yyyy"
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
         let strDate = dateFormatter.string(from: date)
-        
         dateFormatter.timeZone = TimeZone.current
+        dateFormatter.calendar = Calendar.current
         guard let str = dateFormatter.date(from: strDate) else {
             return Date()
         }
@@ -74,6 +84,72 @@ class DateFormatterUtility: NSObject {
         dateFormatter.timeZone = TimeZone.current
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate.lowercased()
+    }
+    
+    func convertToMilliseconds(milliSeconds: Double)  -> String {
+        let date = Date(timeIntervalSince1970: milliSeconds/1000000)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy hh:mm:ss a"
+        dateFormatter.locale = NSLocale.current
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+    
+        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:NSLocale.current)!
+        if formatter.contains("a") {
+            //phone is set to 12 hours format
+            dateFormatter.dateFormat = "hh:mm a"
+        } else {
+            //phone is set to 24 hours format
+            dateFormatter.dateFormat = "HH:mm"
+        }
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.timeZone = TimeZone.current
+        let formattedDate = dateFormatter.string(from: date)
+        return formattedDate.lowercased()
+    }
+    
+    
+    func convertMillisecondsdToTime(milliSeconds: Double)  -> Date {
+        let timeStamp = milliSeconds / 1000
+        let date2 = Date(timeIntervalSince1970: (Double(timeStamp) / 1000.0))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm:ss"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        guard let str = utcToLocalTime(dateStr:dateFormatter.string(from: date2)) else {
+            return Date()
+        }
+        return dateFormatter.date(from: str) ?? Date()
+        
+    }
+    
+    func getCurrentTimeSeconds() -> Double {
+        let date = Date()
+        let calendar = Calendar.current
+        let second = calendar.component(.second, from: date)
+        return Double(second)
+    }
+
+    func getTimeSeconds(millSeconds : Double) -> Double {
+        let calendar = Calendar.current
+        let second = calendar.component(.second, from: millSeconds.dateFromMilliseconds())
+        return Double(second)
+    }
+    
+    func getTimeFormatWithoutLowerCase(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        let locale = NSLocale.current
+        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)!
+        if formatter.contains("a") {
+            //phone is set to 12 hours format
+            dateFormatter.dateFormat = "hh:mm a"
+        } else {
+            //phone is set to 24 hours format
+            dateFormatter.dateFormat = "HH:mm"
+        }
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.timeZone = TimeZone.current
+       // dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        let formattedDate = dateFormatter.string(from: date)
+        return formattedDate
     }
     
     func getTimeFormat(date: Date) -> String {
@@ -105,6 +181,14 @@ class DateFormatterUtility: NSObject {
             return Date()
         }
         return dateFormatter.date(from: str) ?? Date()
+    }
+    
+    func convertMillisecondsToDateTimeWithSeconds(milliSeconds: Double)  -> String {
+        let timeStamp = milliSeconds / 1000
+        let date2 = Date(timeIntervalSince1970: (Double(timeStamp) / 1000.0))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+        return dateFormatter.string(from: date2)
     }
     
     func getGroupMilliSeconds(milliSeconds : Double) -> Double {
@@ -194,6 +278,50 @@ class DateFormatterUtility: NSObject {
         return  dateFormatter.string(from: date2) + " " + time
     }
     
+    func getAPIDateFormat(millSec: Double) -> Bool {
+        var epocTime = TimeInterval(millSec)
+        var dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+        let myDate = Date(timeIntervalSince1970: epocTime)
+        return myDate.isTodayDate()
+    }
+    
+    func convertTimeToDate(millSec: Double) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm a"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+
+        let item = millSec.dateFromMilliseconds().getTimeFormat()
+        let date = dateFormatter.date(from: item)
+        print("Start: \(date)")
+        return date?.getTimeFormat() ?? ""
+    }
+    
+    func convertGroupMillisecondsToLocalDate(milliSeconds: Double)  -> Date {
+        let milli = getGroupMilliSeconds(milliSeconds: milliSeconds)
+        let date = Date(timeIntervalSince1970: milli/1000000)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let strDate = dateFormatter.string(from: date)
+        
+        dateFormatter.timeZone = TimeZone.current
+        guard let str = dateFormatter.date(from: strDate) else {
+            return Date()
+        }
+        return str
+    }
+    
 }
 
+extension Double {
+    func dateFromMilliseconds() -> Date {
+        return Date(timeIntervalSince1970: TimeInterval(self)/1000)
+    }
+}
+
+extension Date {
+    func isTodayDate() -> Bool {
+        return NSCalendar.current.isDateInToday(self)
+    }
+}
 

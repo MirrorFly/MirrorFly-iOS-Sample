@@ -74,8 +74,7 @@ class GroupCreationViewModel : NSObject {
         }
         
         try? GroupManager.shared.createGroup(groupName: groupName, participantJidList: participantJid, groupImageFileUrl: groupImageFileUrl, completionHandler: { isSuccess, flyError, flyData in
-            var data  = flyData
-            groupCallBack(isSuccess, data.getMessage() as? String ?? "")
+            groupCallBack(isSuccess, flyError?.description as? String ?? "")
         })
     }
     

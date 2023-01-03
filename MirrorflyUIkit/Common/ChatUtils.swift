@@ -25,6 +25,11 @@ class ChatUtils {
         imageView?.roundCorners(corners: [.topLeft,.bottomRight,.topRight], radius: 8)
     }
     
+    static func setBubbleBackground(view : UIView?) {
+        view?.backgroundColor = Color.deleteForEveryoneColor
+        view?.roundCorners(corners: [.topLeft,.bottomRight,.topRight], radius: 8)
+    }
+    
     static func getColorForUser(userName : String?) -> UIColor {
         if let name = userName, !name.isEmpty {
             var totalAsciiValue = 0
@@ -343,5 +348,31 @@ class ChatUtils {
         return nil
     }
     
+    static func setDeletedReplyMessage(chatMessage : ChatMessage?,  messageIconView: UIView?,  messageTypeIcon: UIImageView?, replyTextLabel: UILabel?, mediaImageView: UIImageView?, mediaImageViewWidthCons : NSLayoutConstraint?, replyMessageIconWidthCons : NSLayoutConstraint?, replyMessageIconHeightCons : NSLayoutConstraint?) {
+        if let isDeleted = chatMessage?.isMessageDeleted, isDeleted || chatMessage?.isMessageRecalled == true {
+            replyTextLabel?.text = "Original message not available"
+            messageIconView?.isHidden = true
+            messageTypeIcon?.isHidden = true
+            mediaImageView?.isHidden = true
+            mediaImageViewWidthCons?.constant = 0
+            replyMessageIconWidthCons?.constant = 0
+            replyMessageIconHeightCons?.isActive = false
+        }
+       
+    }
+    
+    static func checkForAutoDownload(messageTypeKey : String) -> Bool{
+        
+        if  FlyDefaults.autoDownloadEnable {
+            if NetworkReachability.shared.isCellular && FlyDefaults.autoDownloadMobile[messageTypeKey] ?? false {
+                return true
+            }
+            else if NetworkReachability.shared.isWifi && FlyDefaults.autoDownloadWifi[messageTypeKey] ?? false {
+                return true
+            }
+            
+        }
+        return false
+    }
 
 }

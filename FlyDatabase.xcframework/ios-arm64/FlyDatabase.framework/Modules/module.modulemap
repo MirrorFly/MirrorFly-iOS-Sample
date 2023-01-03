@@ -6,6 +6,6 @@ framework module FlyDatabase {
 }
 
 module FlyDatabase.Swift {
-    header "FlyDatabase-Swift.h"
-    requires objc
+  header "FlyDatabase-Swift.h"
+  requires objc
 }

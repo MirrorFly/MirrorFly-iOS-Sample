@@ -88,19 +88,19 @@ class EditStatusViewController: UIViewController {
         let keyboardInfo = notification.userInfo
         let keyboardFrameBegin = keyboardInfo?[UIResponder.keyboardFrameEndUserInfoKey]
         let keyboardFrameBeginRect = (keyboardFrameBegin as! NSValue).cgRectValue
-        DispatchQueue.main.async {
-            self.editStatusViewBottom.constant = keyboardFrameBeginRect.size.height
-            self.editStatusScrollView.isScrollEnabled = false
-            self.view.layoutIfNeeded()
-        }
+        self.editStatusViewBottom.constant = keyboardFrameBeginRect.size.height
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        self.editStatusScrollView.contentInset = contentInset
+        self.editStatusScrollView.isScrollEnabled = false
+        self.view.layoutIfNeeded()
     }
     
     @objc private func keyboardDidHide(notification: Notification) {
-        DispatchQueue.main.async {
-            self.editStatusViewBottom.constant = 0
-            self.editStatusScrollView.isScrollEnabled = true
-            self.view.layoutIfNeeded()
-        }
+        self.editStatusViewBottom.constant = 0
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        self.editStatusScrollView.contentInset = contentInset
+        self.editStatusScrollView.isScrollEnabled = true
+        self.view.layoutIfNeeded()
     }
    
     func newStatusView() {

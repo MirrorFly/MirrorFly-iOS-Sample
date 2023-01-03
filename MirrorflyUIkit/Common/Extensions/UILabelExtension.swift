@@ -30,4 +30,18 @@ extension UILabel {
             let index = layoutManager.characterIndex(for: point, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             return index
         }
+    func setImage(image: UIImage, with text: String) {
+      let attachment = NSTextAttachment()
+      attachment.image = image
+      attachment.bounds = CGRect(x: 0, y: 0, width: 40, height: 30)
+      let attachmentStr = NSAttributedString(attachment: attachment)
+
+      let mutableAttributedString = NSMutableAttributedString()
+      mutableAttributedString.append(attachmentStr)
+
+      let textString = NSAttributedString(string: text, attributes: [.font: self.font])
+      mutableAttributedString.append(textString)
+
+      self.attributedText = mutableAttributedString
+    }
 }

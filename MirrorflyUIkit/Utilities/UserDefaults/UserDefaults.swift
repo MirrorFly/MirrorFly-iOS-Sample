@@ -77,23 +77,6 @@ class Utility: NSObject{
         return dateFormatter.string(from: dateVar)
     }
     
-    class func convertTime(timeStamp: Double) -> String {
-        let convertTimeStamp = timeStamp / 1000
-        let date2 = Date(timeIntervalSince1970: (Double(convertTimeStamp) / 1000.0))
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeStyle = .short
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-       let dateStr = dateFormatter.string(from: date2)
-        let dateFormatter1 = DateFormatter()
-        dateFormatter1.timeStyle = .short
-        dateFormatter1.timeZone = TimeZone(abbreviation: "UTC")
-        
-        if let date = dateFormatter1.date(from: dateStr) {
-            dateFormatter1.timeZone = TimeZone.current
-            return dateFormatter1.string(from: date)
-        }
-        return ""
-    }
     class func removeCharFromString(string: String, char: String) ->String {
         let strValue = string.replacingOccurrences(of: char, with: "", options: NSString.CompareOptions.literal, range: nil)
         return strValue

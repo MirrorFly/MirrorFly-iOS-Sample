@@ -527,7 +527,7 @@
         <!--Location View Controller-->
         <scene sceneID="Clb-Oh-zej">
             <objects>
-                <viewController storyboardIdentifier="CCFMapViewController" id="fOx-Bf-IYX" customClass="LocationViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LocationViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fOx-Bf-IYX" customClass="LocationViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MYk-o2-1fs">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1068,6 +1068,54 @@
             </objects>
             <point key="canvasLocation" x="913" y="54"/>
         </scene>
+        <!--Message Info View Controller-->
+        <scene sceneID="NXr-bN-Nrx">
+            <objects>
+                <viewController storyboardIdentifier="MessageInfoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="gKS-vL-MPK" customClass="MessageInfoViewController" customModule="Mirrorfly" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZQ6-dD-YAp">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="arD-Vm-yOJ">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <color key="backgroundColor" name="color_F2F2F2"/>
+                                <color key="barTintColor" name="color_F2F2F2"/>
+                                <items>
+                                    <navigationItem title="Message Info" id="1EP-2W-wiX">
+                                        <barButtonItem key="leftBarButtonItem" title="Item" image="backArrow" style="plain" id="jRG-jw-UNW">
+                                            <connections>
+                                                <action selector="didTapBack:" destination="gKS-vL-MPK" id="cpf-K5-Myh"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Ofo-lg-E05">
+                                <rect key="frame" x="0.0" y="108" width="414" height="754"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="8eo-RM-IPd"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="arD-Vm-yOJ" firstAttribute="leading" secondItem="8eo-RM-IPd" secondAttribute="leading" id="0OB-ij-f97"/>
+                            <constraint firstItem="8eo-RM-IPd" firstAttribute="trailing" secondItem="Ofo-lg-E05" secondAttribute="trailing" id="1Lf-85-PIr"/>
+                            <constraint firstItem="8eo-RM-IPd" firstAttribute="bottom" secondItem="Ofo-lg-E05" secondAttribute="bottom" id="4KX-yY-Mwk"/>
+                            <constraint firstItem="Ofo-lg-E05" firstAttribute="top" secondItem="arD-Vm-yOJ" secondAttribute="bottom" constant="20" id="8Wg-XP-rsA"/>
+                            <constraint firstItem="arD-Vm-yOJ" firstAttribute="trailing" secondItem="8eo-RM-IPd" secondAttribute="trailing" id="Ge0-za-IZZ"/>
+                            <constraint firstItem="arD-Vm-yOJ" firstAttribute="top" secondItem="8eo-RM-IPd" secondAttribute="top" id="WHE-Mz-yQi"/>
+                            <constraint firstItem="Ofo-lg-E05" firstAttribute="leading" secondItem="8eo-RM-IPd" secondAttribute="leading" id="p0f-Je-LqY"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="messageInfoTableView" destination="Ofo-lg-E05" id="cYW-cK-C0y"/>
+                        <outlet property="navigationBar" destination="arD-Vm-yOJ" id="xXV-JA-Asf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S0g-S9-cqA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1800" y="65"/>
+        </scene>
     </scenes>
     <designables>
         <designable name="C6I-tW-scf">
@@ -1078,6 +1126,7 @@
         <segue reference="6l1-Wa-z5C"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="backArrow" width="19.5" height="14"/>
         <image name="check_box" width="16" height="16"/>
         <image name="closeIcon" width="24" height="24"/>
         <image name="groupPlaceholder" width="96" height="60.5"/>
@@ -1117,6 +1166,9 @@
         </namedColor>
         <namedColor name="close_button_back">
             <color red="0.85882352941176465" green="0.85882352941176465" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="color_F2F2F2">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="group_info_name_back_color">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

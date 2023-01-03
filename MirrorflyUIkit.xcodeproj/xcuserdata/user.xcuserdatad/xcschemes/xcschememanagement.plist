@@ -4,17 +4,13 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Mirrorfly.xcscheme</key>
+		<key>Mirrorfly.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
 			<key>orderHint</key>
 			<integer>54</integer>
 		</dict>
-		<key>MirrorflyNotificationExtention.xcscheme</key>
+		<key>MirrorflyNotificationExtention.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
 			<key>orderHint</key>
 			<integer>55</integer>
 		</dict>

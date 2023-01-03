@@ -72,7 +72,7 @@ extension UIViewController {
         }
         
         tempProfileList.filter({$0.jid == jid}).first?.isBlockedByAdmin = isBlockedByAdmin
-        tempProfileList = tempProfileList.filter({!$0.isBlockedByAdmin})
+        tempProfileList = tempProfileList.filter({!$0.isBlockedByAdmin}).sorted { getUserName(jid: $0.jid, name: $0.name, nickName: $0.nickName, contactType: $0.contactType).capitalized < getUserName(jid: $1.jid, name: $1.name, nickName: $1.nickName, contactType: $1.contactType).capitalized }
         
         return tempProfileList
     }
@@ -129,12 +129,13 @@ extension UIViewController {
 // For reporting
 extension UIViewController {
     
-    func showConfirmDialogToReport(profileDetail : ProfileDetails?, completionHandler : @escaping (_ didTapReport : Bool) -> Void) {
+    func showConfirmDialogToReport(profileDetail : ProfileDetails?, isFromMessage : Bool = false, completionHandler : @escaping (_ didTapReport : Bool) -> Void) {
         guard let profileDetail = profileDetail else {
             return
         }
         let title = report + " " + getUserName(jid: profileDetail.jid, name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType) + "?"
-        AppAlert.shared.showAlert(view: self, title: title, message: reportLastFiveMessage, buttonOneTitle: cancelUppercase, buttonTwoTitle: report)
+        let message = isFromMessage ? reportMessage : (profileDetail.profileChatType == .groupChat ? reportGroupMessage : reportLastFiveMessage)
+        AppAlert.shared.showAlert(view: self, title: title, message: message, buttonOneTitle: cancelUppercase, buttonTwoTitle: report)
         AppAlert.shared.onAlertAction = { result in
             if result == 1 {
                 if NetworkReachability.shared.isConnected {
@@ -142,7 +143,6 @@ extension UIViewController {
                 } else {
                     AppAlert.shared.showToast(message: ErrorMessage.noInternet)
                 }
-               
             }
         }
     }
@@ -202,14 +202,19 @@ extension UIViewController {
         }
     }
     
-    func reportFromMessage(chatMessage : ChatMessage) {
+    func reportFromMessage(chatMessage : ChatMessage, profileDetail: ProfileDetails? = nil) {
         if !NetworkReachability.shared.isConnected {
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
             return
         }
-        startLoading(withText: pleaseWait)
-        ChatUtils.reportFrom(message: chatMessage) { [weak self] isSuccess in
-            self?.stopLoader(isSuccess: isSuccess)
+        
+        showConfirmDialogToReport(profileDetail: profileDetail, isFromMessage: true) { [weak self] didTapReport in
+            if didTapReport {
+                self?.startLoading(withText: pleaseWait)
+                ChatUtils.reportFrom(message: chatMessage) { [weak self] isSuccess in
+                    self?.stopLoader(isSuccess: isSuccess)
+                }
+            }
         }
     }
     

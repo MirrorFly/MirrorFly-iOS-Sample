@@ -177,23 +177,22 @@ class AddParticipantsViewController: UIViewController {
     
     func getContacts() {
         if ENABLE_CONTACT_SYNC{
-            groupCreationViewModel.getContacts(fromServer: false,
-                                               completionHandler: { [weak self] (profiles, error) in
+            groupCreationViewModel.getContacts(fromServer: false, completionHandler: { [weak self] (profiles, error) in
                 if error != nil {
                     return
                 }
                 
                 if self?.isFromGroupInfo == true {
-                    self?.participants = self?.groupCreationViewModel.removeExistingParticipants(groupID: self?.groupID ?? "", contacts: profiles ?? []) ?? []
+                    self?.participants = (self?.groupCreationViewModel.removeExistingParticipants(groupID: self?.groupID ?? "", contacts: profiles ?? []) ?? []).sorted{ getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType) < getUserName(jid: $1.jid,name: $1.name, nickName: $1.nickName, contactType: $1.contactType) }
                     self?.participantTableView.reloadData()
                 } else {
                     
-                    self?.participants = (profiles?.sorted{ $0.name.capitalized < $1.name.capitalized }) ?? []
-                    self?.searchedParticipants = (profiles?.sorted{ $0.name.capitalized < $1.name.capitalized }) ?? []
+                    self?.participants = (profiles?.sorted{ getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType) < getUserName(jid: $1.jid,name: $1.name, nickName: $1.nickName, contactType: $1.contactType) }) ?? []
+                    self?.searchedParticipants = (profiles?.sorted{ getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType) < getUserName(jid: $1.jid,name: $1.name, nickName: $1.nickName, contactType: $1.contactType) }) ?? []
                     self?.participantTableView.reloadData()
                 }
             })
-        }else{
+        } else {
             resetDataAndFetchUsersList()
         }
     }
@@ -255,7 +254,7 @@ extension AddParticipantsViewController : UITableViewDelegate, UITableViewDataSo
             let color = getColor(userName: name)
             cell.removeButton?.isHidden = true
             cell.removeIcon?.isHidden = true
-            cell.setImage(imageURL: profileDetail.image, name: name, color: color ?? .gray, chatType: profileDetail.profileChatType,jid: profileDetail.jid)
+            cell.setImage(imageURL: profileDetail.image, name: getUserName(jid: profileDetail.jid,name: profileDetail.name, nickName: profileDetail.nickName, contactType: profileDetail.contactType), color: color, profile: profileDetail)
             cell.checkBoxImageView?.image = GroupCreationData.participants.contains(where: {$0.jid == profileDetail.jid}) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
             cell.setTextColorWhileSearch(searchText: searchBar.text ?? "", profileDetail: profileDetail)
             cell.emptyView?.isHidden = true
@@ -400,6 +399,9 @@ extension AddParticipantsViewController : UIScrollViewDelegate {
     
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if ENABLE_CONTACT_SYNC{
+            return
+        }
         let position  = scrollView.contentOffset.y
          if position > participantTableView.contentSize.height-200 - scrollView.frame.size.height {
              if isPaginationCompleted(){

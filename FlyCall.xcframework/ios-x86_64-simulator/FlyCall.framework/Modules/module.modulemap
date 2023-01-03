@@ -6,6 +6,6 @@ framework module FlyCall {
 }
 
 module FlyCall.Swift {
-    header "FlyCall-Swift.h"
-    requires objc
+  header "FlyCall-Swift.h"
+  requires objc
 }

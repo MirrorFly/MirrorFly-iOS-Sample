@@ -40,6 +40,13 @@ extension UIView {
                self.layer.mask = maskLayer
            }
        }
+
+    func cornerRadius(radius: CGFloat, width: CGFloat, color: UIColor) {
+        self.layer.cornerRadius = radius
+        self.layer.masksToBounds = true
+        self.layer.borderColor = color.cgColor
+        self.layer.borderWidth = width
+    }
     
     // make view as circle view
     func makeCircleView(borderColor: CGColor,borderWidth: CGFloat) {

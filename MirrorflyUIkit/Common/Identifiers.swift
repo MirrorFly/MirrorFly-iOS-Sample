@@ -42,6 +42,14 @@ enum Identifiers {
     static let imageSender = "SenderImageCell"
     static let imageReceiverCell = "ReceiverImageCell"
     
+    //MARK: - APPLOCKPIN
+    static let appLockTableViewCell = "AppLockTableViewCell"
+    static let authenticationPINViewController = "AuthenticationPINViewController"
+    static let appLockPasswordViewController = "AppLockPasswordViewController"
+    static let changeAppLockViewController = "ChangeAppLockViewController"
+    static let pinEnteredCollectionViewCell = "PINenteredCollectionViewCell"
+    static let authenticationPINCollectionViewCell = "AuthenticationPINCollectionViewCell"
+    
     //MARK: - Audio
     static let audioSender = "AudioSender"
     static let audioReceiver = "AudioReceiver"
@@ -50,7 +58,7 @@ enum Identifiers {
     static let chatViewLocationIncomingCell = "ChatViewLocationIncomingCell"
     static let chatViewLocationOutgoingCell = "ChatViewLocationOutgoingCell"
     static let chatScreenToLocation = "ChatScreenToLocation"
-    
+    static let locationViewController = "LocationViewController"
     static let chatViewContactIncomingCell = "ChatViewContactIncomingCell"
     static let chatViewContactOutgoingCell = "ChatViewContactOutgoingCell"
     static let chatScreenToContact = "ChatScreenToContact"
@@ -59,6 +67,9 @@ enum Identifiers {
     //MARK: - Recent Chat
     static let recentChatCell =  "RecentChatCell"
     static let recentChatToChatScreen = "RecentChatToChatScreen"
+    static let ArchiveChatTableViewCell = "ArchiveChatTableViewCell"
+    static let ArchivedChatViewController = "ArchivedChatViewController"
+    static let ArchivedListTableViewCell = "ArchivedListTableViewCell"
     
     //MARK: - Profile Update
     
@@ -80,6 +91,14 @@ enum Identifiers {
     static let notificationCell = "NotificationCell"
     static let noResultFound = "NoResultFoundCell"
     
+    //MARK: Notification Tone
+    static let notificationSoundTableViewCell = "NotificationSoundTableViewCell"
+    static let notificationTableViewCell = "NotificationTableViewCell"
+    static let notificationAlertViewController = "NotificationAlertViewController"
+    static let notificationWebViewController = "NotificationWebViewController"
+    static let notificationTonesListViewController = "NotificationTonesListViewController"
+    static let notificationToneListCell = "NotificationToneListCell"
+    
     //MARK: ForwardMessage
     static let forwardCell = "ForwardTableViewCell"
     static let forwardVC = "ForwardViewController"
@@ -100,17 +119,31 @@ enum Identifiers {
     static let groupMembersTableViewCell = "GroupMembersTableViewCell"
     static let groupOptionsTableViewCell = "GroupOptionsTableViewCell"
     static let updateGroupInfoViewController = "UpdateGroupInfoViewController"
+    static let messageInfoViewController = "MessageInfoViewController"
     static let groupInfoOptionsViewController = "GroupInfoOptionsViewController"
     static let groupInfoOptionsTableViewCell = "GroupInfoOptionsTableViewCell"
     
     //MARK: ChatSettings
-    static let ChatSettingsTableViewCell = "ChatSettingsTableViewCell"
+    static let chatSettingsTableViewCell = "ChatSettingsTableViewCell"
+    static let clearAllChatTableViewCell = "ClearAllChatTableViewCell"
     static let LanguageSelectionTableViewCell = "LanguageSelectionTableViewCell"
     static let LanguageSelectionViewController = "LanguageSelectionViewController"
     
     /// MARK: Documents Cells
     static let senderDocumenCell = "SenderDocumentsTableViewCell"
     static let receiverDocumentCell = "ReceiverDocumentsTableViewCell"
+    
+    /// MARK: DeleteMessage Cells
+    static let deleteEveryOneCell = "DeleteForEveryOneViewCell"
+    static let deleteEveryOneReceiverCell = "DeleteForEveryOneReceiverCell"
+    
+    // MARK: Message Info
+    static let messageInfoDivider = "MessageInfoDivider"
+    static let singleMessageInfoCell = "SingleMessageInfoCell"
+    static let groupDividerCell = "GroupDividerCell"
+    static let groupHeaderCell = "GroupHeaderCell"
+    static let inforDeliveredCell = "DeliveredCell"
+    static let notDelivered = "NotDeliveredCell"
 }
 
 //MARK: - Storyboards

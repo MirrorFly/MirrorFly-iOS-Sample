@@ -24,6 +24,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var recvTime: UILabel?
     @IBOutlet weak var playView: UIView?
     @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    @IBOutlet weak var favImageView: UIImageView?
     @IBOutlet weak var audioReceiverImage: UIImageView?
     @IBOutlet weak var playImage: UIImageView?
     @IBOutlet weak var download: UIImageView?
@@ -52,7 +53,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var senderNameLabel: UILabel?
     @IBOutlet weak var bubbleImageViewTopConstraint: NSLayoutConstraint!
     
-    var selectedForwardMessage: [SelectedForwardMessage]? = []
+    var selectedForwardMessage: [SelectedMessages]? = []
     var message : ChatMessage?
     var refreshDelegate: RefreshBubbleImageViewDelegate?
     var audioPlayer:AVAudioPlayer?
@@ -112,18 +113,13 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?) -> AudioReceiver? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) -> AudioReceiver? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         audioCallBack = audioClosureCallBack
-        
-        // Forward view elements and its data
-        forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) ? false : true
-        forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
-        forwardLeadingCons?.constant = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) ? 20 : 0
-        bubbleLeadingCons?.constant = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) ? 10 : 0
-        forwardButton?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded) ? false : true
-        
+        // Starred Messages
+        favImageView?.isHidden =  message!.isMessageStarred ? false : true
+        showHideForwardView(message: message, isShowForwardView: isShowForwardView, isDeletedMessageSelected: isDeletedMessageSelected)
         if selectedForwardMessage?.filter({$0.chatMessage.messageId == message?.messageId}).first?.isSelected == true {
             forwardImageView?.image = UIImage(named: "forwardSelected")
             forwardImageView?.isHidden = false
@@ -162,94 +158,99 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
            replyView?.isHidden = false
             let getReplymessage =  message?.replyParentChatMessage?.messageTextContent
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
-           mapView?.isHidden = true
-           replyTextLabel?.text = getReplymessage
-           if replyMessage?.mediaChatMessage != nil {
-               switch replyMessage?.mediaChatMessage?.messageType {
-               case .image:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderCamera" : "receiverCamera")
-                   if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
-                       let converter = ImageConverter()
-                       let image =  converter.base64ToImage(thumImage)
-                       mediaMessageImageView?.image = image
+           if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true {
+               replyTextLabel?.text = "Original message not available"
+               mapView?.isHidden = true
+           } else {
+               mapView?.isHidden = true
+               replyTextLabel?.text = getReplymessage
+               if replyMessage?.mediaChatMessage != nil {
+                   switch replyMessage?.mediaChatMessage?.messageType {
+                   case .image:
+                       messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderCamera" : "receiverCamera")
+                       if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
+                           let converter = ImageConverter()
+                           let image =  converter.base64ToImage(thumImage)
+                           mediaMessageImageView?.image = image
+                           messageTypeIconView?.isHidden = false
+                           replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
+                       }
+                       replyWithMediaCons?.isActive = true
+                       replyWithOutMediaCons?.isActive = false
+                   case .audio:
+                       ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: nil, replyParentMessage: message?.replyParentChatMessage)
+                       let duration = Int(message?.replyParentChatMessage?.mediaChatMessage?.mediaDuration ?? 0)
+                       replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : message?.replyParentChatMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
                        messageTypeIconView?.isHidden = false
-                       replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
+                       replyWithMediaCons?.isActive = false
+                       replyWithOutMediaCons?.isActive = true
+                   case .video:
+                       messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
+                       messageTypeIconView?.isHidden = false
+                       if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
+                           let converter = ImageConverter()
+                           let image =  converter.base64ToImage(thumImage)
+                           mediaMessageImageView?.image = image
+                           replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : message?.replyParentChatMessage?.mediaChatMessage?.messageType.rawValue.capitalized
+                       }
+                       replyWithMediaCons?.isActive = true
+                       replyWithOutMediaCons?.isActive = false
+                   case .document:
+                       messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
+                       replyTextLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName.capitalized
+                       checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaMessageImageView)
+                       messageTypeIconView?.isHidden = false
+                       replyWithMediaCons?.isActive = true
+                       replyWithOutMediaCons?.isActive = false
+                   default:
+                       messageTypeIconView?.isHidden = true
+                       replyWithMediaCons?.isActive = true
+                       replyWithOutMediaCons?.isActive = false
+                   }
+                   
+               } else if replyMessage?.locationChatMessage != nil {
+                   mapView?.isHidden = false
+                   replyTextLabel?.text = "Location"
+                   mapView?.isUserInteractionEnabled = false
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
+                   messageTypeIconView?.isHidden = false
+                   guard let latitude = message?.replyParentChatMessage?.locationChatMessage?.latitude else {
+                       return nil
+                   }
+                   guard let longitude = message?.replyParentChatMessage?.locationChatMessage?.longitude  else {
+                       return nil
+                   }
+                   
+                   mapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
+                   
+                   DispatchQueue.main.async
+                   { [self] in
+                       // 2. Perform UI Operations.
+                       var position = CLLocationCoordinate2DMake(latitude,longitude)
+                       var marker = GMSMarker(position: position)
+                       marker.map = mapView
                    }
                    replyWithMediaCons?.isActive = true
                    replyWithOutMediaCons?.isActive = false
-               case .audio:
-                   ChatUtils.setIconForAudio(imageView: messageTypeIcon, chatMessage: nil, replyParentMessage: message?.replyParentChatMessage)
-                   let duration = Int(message?.replyParentChatMessage?.mediaChatMessage?.mediaDuration ?? 0)
-                   replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : message?.replyParentChatMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
-                   messageTypeIconView?.isHidden = false
-                   replyWithMediaCons?.isActive = false
-                   replyWithOutMediaCons?.isActive = true
-               case .video:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
-                   messageTypeIconView?.isHidden = false
-                   if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
-                       let converter = ImageConverter()
-                       let image =  converter.base64ToImage(thumImage)
-                       mediaMessageImageView?.image = image
-                       replyTextLabel?.text = (!(message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? message?.replyParentChatMessage?.mediaChatMessage?.mediaCaptionText : message?.replyParentChatMessage?.mediaChatMessage?.messageType.rawValue.capitalized
-                   }
-                   replyWithMediaCons?.isActive = true
-                   replyWithOutMediaCons?.isActive = false
-               case .document:
-                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
-                   replyTextLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName.capitalized
-                   checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: mediaMessageImageView)
+               } else if replyMessage?.contactChatMessage != nil {
+                   replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: message?.replyParentChatMessage?.contactChatMessage?.contactName)
+                   messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                    messageTypeIconView?.isHidden = false
                    replyWithMediaCons?.isActive = true
                    replyWithOutMediaCons?.isActive = false
-               default:
+               } else {
                    messageTypeIconView?.isHidden = true
                    replyWithMediaCons?.isActive = true
                    replyWithOutMediaCons?.isActive = false
                }
-               
-           } else if replyMessage?.locationChatMessage != nil {
-               mapView?.isHidden = false
-               replyTextLabel?.text = "Location"
-               mapView?.isUserInteractionEnabled = false
-               messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
-               messageTypeIconView?.isHidden = false
-               guard let latitude = message?.replyParentChatMessage?.locationChatMessage?.latitude else {
-                   return nil
-               }
-               guard let longitude = message?.replyParentChatMessage?.locationChatMessage?.longitude  else {
-                   return nil
-               }
-               
-               mapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
-      
-               DispatchQueue.main.async
-               { [self] in
-                   // 2. Perform UI Operations.
-                   var position = CLLocationCoordinate2DMake(latitude,longitude)
-                   var marker = GMSMarker(position: position)
-                   marker.map = mapView
-               }
-               replyWithMediaCons?.isActive = true
-               replyWithOutMediaCons?.isActive = false
-           } else if replyMessage?.contactChatMessage != nil {
-               replyTextLabel?.attributedText = ChatUtils.setAttributeString(name: message?.replyParentChatMessage?.contactChatMessage?.contactName)
-               messageTypeIcon?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
-               messageTypeIconView?.isHidden = false
-               replyWithMediaCons?.isActive = true
-               replyWithOutMediaCons?.isActive = false
-           } else {
-               messageTypeIconView?.isHidden = true
-               replyWithMediaCons?.isActive = true
-               replyWithOutMediaCons?.isActive = false
            }
         if(message?.replyParentChatMessage?.isMessageSentByMe ?? false) {
             replyUserLabel?.text = you.localized
-        }
-        else {
+        } else {
             replyUserLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "" ,name: replyMessage?.senderUserName ?? "",
                                                nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
         }
+           ChatUtils.setDeletedReplyMessage(chatMessage: replyMessage, messageIconView: messageTypeIconView, messageTypeIcon: messageTypeIcon, replyTextLabel: replyTextLabel, mediaImageView: mediaMessageImageView, mediaImageViewWidthCons: nil, replyMessageIconWidthCons: nil, replyMessageIconHeightCons: nil)
     }
         else {
             replyView?.isHidden = true
@@ -306,7 +307,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         guard let timeStamp =  message?.messageSentTime else {
             return self
         }
-        self.recvTime?.text = Utility.convertTime(timeStamp: timeStamp)
+        self.recvTime?.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
 
         return self
     }
@@ -327,6 +328,24 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         player.stop()
         stopDisplayLink()
 }
+    
+    func showHideForwardView(message: ChatMessage?,isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) {
+        if isDeletedMessageSelected ?? false {
+            // Forward view elements and its data
+            forwardView?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaDownloadStatus == .downloading) ? true : false
+            forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
+            forwardLeadingCons?.constant = (isShowForwardView == false || message?.mediaChatMessage?.mediaDownloadStatus == .downloading) ? 0 : 20
+            bubbleLeadingCons?.constant = (isShowForwardView == false || message?.mediaChatMessage?.mediaDownloadStatus == .downloading) ? 0 : 10
+            forwardButton?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaDownloadStatus == .downloading) ? true : false
+        } else {
+            // Forward view elements and its data
+            forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && message?.isMessageRecalled == false) ? false : true
+            forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
+            forwardLeadingCons?.constant = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && message?.isMessageRecalled == false) ? 20 : 0
+            bubbleLeadingCons?.constant = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && message?.isMessageRecalled == false) ? 10 : 0
+            forwardButton?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && message?.isMessageRecalled == false) ? false : true
+        }
+    }
     
     func startDownload() {
         DispatchQueue.main.async { [weak self] in

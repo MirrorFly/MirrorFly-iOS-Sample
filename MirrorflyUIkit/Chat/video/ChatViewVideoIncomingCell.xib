@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -149,7 +149,7 @@
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </view>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="Pc0-Yg-rtb" secondAttribute="bottom" constant="4" id="0f2-Qs-foD"/>
                                             <constraint firstItem="bdu-ym-qjN" firstAttribute="leading" secondItem="uw1-nQ-k5Z" secondAttribute="leading" id="3xZ-Ea-Pr6"/>
@@ -289,31 +289,56 @@
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="videotime" translatesAutoresizingMaskIntoConstraints="NO" id="ZK8-1L-N4G">
                                         <rect key="frame" x="339.5" y="180" width="114.5" height="53"/>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6:30 pm" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nj7-J9-2R1">
-                                        <rect key="frame" x="8" y="216" width="441" height="12"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                        <color key="textColor" name="gray"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="9HP-ST-PYP">
+                                        <rect key="frame" x="8" y="216" width="441" height="10"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" horizontalHuggingPriority="2" verticalHuggingPriority="2" horizontalCompressionResistancePriority="2" verticalCompressionResistancePriority="2" translatesAutoresizingMaskIntoConstraints="NO" id="NLz-jg-JwT">
+                                                <rect key="frame" x="0.0" y="0.0" width="380.5" height="10"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </view>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_favouriteStarGray" translatesAutoresizingMaskIntoConstraints="NO" id="04n-7A-ovw">
+                                                <rect key="frame" x="385.5" y="0.0" width="10" height="10"/>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <accessibilityTraits key="traits" none="YES"/>
+                                                </accessibility>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="10" id="XfA-JZ-LA5"/>
+                                                    <constraint firstAttribute="width" constant="10" id="iUp-rq-2BN"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6:30 pm" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nj7-J9-2R1">
+                                                <rect key="frame" x="400.5" y="0.0" width="40.5" height="10"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                <color key="textColor" name="gray"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                                 <color key="backgroundColor" name="sentImageBg"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <bool key="isElement" value="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="230" id="6e6-y9-F18"/>
-                                    <constraint firstItem="Nj7-J9-2R1" firstAttribute="leading" secondItem="dbz-iW-g8z" secondAttribute="leading" constant="8" id="6g2-ac-hDu"/>
                                     <constraint firstItem="Bug-lQ-2No" firstAttribute="centerX" secondItem="dbz-iW-g8z" secondAttribute="centerX" id="7BJ-t0-VZf"/>
                                     <constraint firstItem="Bug-lQ-2No" firstAttribute="top" secondItem="dbz-iW-g8z" secondAttribute="top" constant="95" id="7iG-jc-OlS"/>
+                                    <constraint firstAttribute="trailing" secondItem="9HP-ST-PYP" secondAttribute="trailing" constant="8" id="98z-bv-bBb"/>
                                     <constraint firstItem="SZ7-1g-ZQd" firstAttribute="top" secondItem="dbz-iW-g8z" secondAttribute="top" constant="8" id="Ebv-Kl-ShS"/>
+                                    <constraint firstItem="9HP-ST-PYP" firstAttribute="leading" secondItem="dbz-iW-g8z" secondAttribute="leading" constant="8" id="Ghp-aZ-rnZ"/>
                                     <constraint firstAttribute="trailing" secondItem="ZK8-1L-N4G" secondAttribute="trailing" constant="3" id="HgK-SQ-WCf"/>
+                                    <constraint firstItem="9HP-ST-PYP" firstAttribute="top" secondItem="Bug-lQ-2No" secondAttribute="bottom" constant="86" id="NIw-RG-MZ6"/>
                                     <constraint firstItem="h1q-WO-WN4" firstAttribute="top" secondItem="dbz-iW-g8z" secondAttribute="top" constant="95" id="QrH-XF-U5w"/>
                                     <constraint firstItem="SZ7-1g-ZQd" firstAttribute="leading" secondItem="dbz-iW-g8z" secondAttribute="leading" constant="10" id="SLr-i5-TR1"/>
                                     <constraint firstAttribute="trailing" secondItem="vzx-ne-p5H" secondAttribute="trailing" constant="3" id="eMp-Se-Nw8"/>
                                     <constraint firstItem="vzx-ne-p5H" firstAttribute="top" secondItem="dbz-iW-g8z" secondAttribute="top" constant="3" id="jw8-qq-Kyi"/>
-                                    <constraint firstAttribute="trailing" secondItem="Nj7-J9-2R1" secondAttribute="trailing" constant="8" id="pqy-6c-Bda"/>
                                     <constraint firstItem="h1q-WO-WN4" firstAttribute="centerX" secondItem="Bug-lQ-2No" secondAttribute="centerX" id="qrw-9z-Qv4"/>
-                                    <constraint firstItem="Nj7-J9-2R1" firstAttribute="top" secondItem="Bug-lQ-2No" secondAttribute="bottom" constant="86" id="tSG-TQ-7yK"/>
                                     <constraint firstItem="vzx-ne-p5H" firstAttribute="leading" secondItem="dbz-iW-g8z" secondAttribute="leading" constant="3" id="tUT-yQ-QnB"/>
                                     <constraint firstItem="ZK8-1L-N4G" firstAttribute="top" secondItem="dbz-iW-g8z" secondAttribute="top" constant="180" id="xjM-Lo-aPO"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="receivedImageOrVideoMessage"/>
+                                </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uto-Uf-RPi">
                                 <rect key="frame" x="0.0" y="310" width="457" height="0.0"/>
@@ -336,6 +361,9 @@
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="14"/>
                                                         <color key="textColor" name="imageCaption"/>
                                                         <nil key="highlightedColor"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="receivedImageOrVideoCaption"/>
+                                                        </userDefinedRuntimeAttributes>
                                                     </label>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -475,6 +503,7 @@
                 <outlet property="downloadView" destination="h1q-WO-WN4" id="ugN-x5-57X"/>
                 <outlet property="emptyView" destination="uto-Uf-RPi" id="bD8-LH-Iu7"/>
                 <outlet property="emptyViewHeight" destination="IbF-mp-e9S" id="XU8-Xz-w1i"/>
+                <outlet property="favImageView" destination="04n-7A-ovw" id="3Ih-tF-d9S"/>
                 <outlet property="fileSizeLabel" destination="kpg-Nj-b6m" id="aK1-Xv-u9F"/>
                 <outlet property="forwardButton" destination="Muj-gO-060" id="KD1-mE-orr"/>
                 <outlet property="forwardImageView" destination="Gra-ah-BvG" id="Ijl-KE-Ve8"/>
@@ -511,6 +540,7 @@
         <image name="close" width="16" height="16"/>
         <image name="download" width="15" height="15"/>
         <image name="foward" width="24" height="24"/>
+        <image name="ic_favouriteStarGray" width="16" height="16"/>
         <image name="videoPlay" width="79" height="79"/>
         <image name="videoWhite" width="12.5" height="7.5"/>
         <image name="videotime" width="114.5" height="53"/>

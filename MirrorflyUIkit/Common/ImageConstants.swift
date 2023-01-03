@@ -86,4 +86,30 @@ enum ImageConstant{
     static let ic_info_phone = "infoPhone"
     static let ic_info_status = "infoStatus"
     static let ic_info_report = "report"
+    
+    //MessageInf
+    static let ic_info_remove = "ic_remove"
+    static let ic_info_add = "plusBlack"
+    static let ic_info_not_delivered = "message_info_not_delivered"
+    static let ic_info_not_read = "message_info_not_read"
+
+
+    
+    //Auto Download Settings
+    static let up_arrow = "up_arrow"
+    static let down_arrow = "down_arrow"
+
+    // App Lock
+    static let hide_Password = "hide_Password"
+    static let showeye_password = "showeye_password"
+    static let Pin_Locked = "Pin_Locked"
+    static let remove_PIN = "remove_PIN"
+    static let otpPin = "otpPin"
+    static let otppinDatk = "otppinDatk"
+
+
+    // NotificationToneSelection
+    static let tone_Unselect = "tone_Unselect"
+    static let tone_selected = "tone_selected"
+
 }

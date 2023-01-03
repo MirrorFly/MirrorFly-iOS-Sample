@@ -12,6 +12,7 @@ import Photos
 import FlyCommon
 import SDWebImage
 import FlyCore
+import PhoneNumberKit
 
 class AppUtils: NSObject {
     
@@ -108,10 +109,20 @@ class AppUtils: NSObject {
         }
     }
     
-    func getRandomColors() ->[UIColor?]
-    {
+    func getRandomColors() ->[UIColor?] {
         let colors = [Color.color1, Color.color2, Color.color3, Color.color4, Color.color5, Color.color6, Color.color7, Color.color8, Color.color9, Color.color10, Color.color11, Color.color12, Color.color13, Color.color14, Color.color15, Color.color16, Color.color17, Color.color18, Color.color19, Color.color20 ]
         return colors
+    }
+    
+    func mobileNumberParse(phoneNo: String) -> String {
+        var splittedMobileNumber:String = ""
+        let phoneNumberKit = PhoneNumberKit()
+        do {
+            let phoneNumber = try phoneNumberKit.parse(phoneNo)
+            splittedMobileNumber  = " +\(String(describing: phoneNumber.countryCode)) \(String(describing: phoneNumber.nationalNumber))"
+        } catch {
+        }
+        return splittedMobileNumber
     }
     
     func setRandomColors(totalCount: Int) -> [UIColor?] {
@@ -137,6 +148,12 @@ class AppUtils: NSObject {
       //  NotificationCenter.default.removeObserver(self, name:  NSNotification.Name(foregroundNotification), object: nil)
     }
     
+    func getErrorMessage(description: String) -> String {
+        
+        let split = description.components(separatedBy: "ErrorCode")
+        let errorMessage = split.isEmpty ? description : split[0]
+        return errorMessage
+    }
 }
 
 public struct Units {
@@ -279,27 +296,34 @@ private func getIsBlockedByMe(jid: String) -> Bool {
 
 
 extension UIImageView {
-    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown,jid: String){
+    func loadFlyImage(imageURL: String, name: String, chatType: ChatType = .singleChat, uniqueId: String = "", contactType : ContactType = .unknown,jid: String, isBlockedByAdmin: Bool = false, validateBlock: Bool = true){
         let urlString = FlyDefaults.baseURL + "media/" + imageURL + "?mf=" + FlyDefaults.authtoken
-        let url = URL(string: urlString)
+        var url = URL(string: urlString)
         var placeholder : UIImage?
-        switch chatType {
-        case .groupChat:
-            placeholder = UIImage(named: "smallGroupPlaceHolder")
-        default:
-            if uniqueId == FlyDefaults.myJid || contactType == .unknown || getIsBlockedByMe(jid: jid) {
-                placeholder = UIImage(named: "ic_profile_placeholder")
-            } else {
-                let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-                let ipimage = IPImage(text: trimmedName, radius: Double(self.frame.size.height), font: UIFont.font32px_appBold(),
-                                      textColor: nil, color: getColor(userName: name))
-                placeholder = ipimage.generateInitialImage()
-                self.backgroundColor = ChatUtils.getColorForUser(userName: name)
+        if validateBlock {
+            switch chatType {
+            case .groupChat:
+                placeholder = UIImage(named: "smallGroupPlaceHolder")
+            default:
+                if uniqueId == FlyDefaults.myJid || contactType == .unknown || getIsBlockedByMe(jid: jid) || isBlockedByAdmin {
+                    placeholder = UIImage(named: "ic_profile_placeholder")
+                } else {
+                    let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let ipimage = IPImage(text: trimmedName, radius: Double(self.frame.size.height), font: UIFont.font32px_appBold(),
+                                          textColor: nil, color: getColor(userName: name))
+                    placeholder = ipimage.generateInitialImage()
+                    self.backgroundColor = ChatUtils.getColorForUser(userName: name)
+                }
             }
         }
         if contactType == .deleted || getIsBlockedByMe(jid: jid) {
             placeholder = UIImage(named: "ic_profile_placeholder")
         }
+        
+        if isBlockedByAdmin {
+            url = URL(string: "")
+        }
+        
         self.sd_setImage(with: url, placeholderImage: placeholder, options: [.continueInBackground,.decodeFirstFrameOnly,.highPriority,.scaleDownLargeImages], progress: nil){ (image, responseError, isFromCache, imageUrl) in
             if let error =  responseError as? NSError{
                 if let errorCode = error.userInfo[SDWebImageErrorDownloadStatusCodeKey] as? Int {

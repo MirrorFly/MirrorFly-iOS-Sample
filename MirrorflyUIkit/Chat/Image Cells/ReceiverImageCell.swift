@@ -63,7 +63,7 @@ class ReceiverImageCell: BaseTableViewCell {
     var receivedMediaMessages: [ChatMessage]? = []
     var message : ChatMessage?
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
-    var selectedForwardMessage: [SelectedForwardMessage]? = []
+    var selectedForwardMessage: [SelectedMessages]? = []
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -337,7 +337,7 @@ class ReceiverImageCell: BaseTableViewCell {
         guard let timeStamp =  message?.messageSentTime else {
             return self
         }
-        self.reecivedTime.text = Utility.convertTime(timeStamp: timeStamp)
+        self.reecivedTime.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
         
     //MARK: - Populating the Incoming Cell with the translated message
         

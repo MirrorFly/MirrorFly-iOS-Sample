@@ -198,7 +198,7 @@
                                                         <rect key="frame" x="10" y="5" width="178.5" height="0.0"/>
                                                         <accessibility key="accessibilityConfiguration">
                                                             <accessibilityTraits key="traits" none="YES"/>
-                                                            <bool key="isElement" value="NO"/>
+                                                            <bool key="isElement" value="YES"/>
                                                         </accessibility>
                                                         <constraints>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="VZp-eD-azy"/>
@@ -206,6 +206,9 @@
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="14"/>
                                                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="receivedTextMessage"/>
+                                                        </userDefinedRuntimeAttributes>
                                                     </label>
                                                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O9m-0m-g2f" userLabel="Translated View">
                                                         <rect key="frame" x="0.0" y="10" width="208.5" height="12"/>

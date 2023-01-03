@@ -17,46 +17,40 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     @IBOutlet weak var baseViewTopConstraint: NSLayoutConstraint?
     @IBOutlet weak var bubbleImageView: UIImageView?
     @IBOutlet weak var cellBaseView: UIView?
-    @IBOutlet weak var imageContainerView: UIImageView?
     @IBOutlet weak var documenTypeView: UIView?
     @IBOutlet weak var documentNameLabel: UILabel?
     @IBOutlet weak var documetTypeImage: UIImageView?
     @IBOutlet weak var sentTimeLabel: UILabel?
     @IBOutlet weak var messageStatusImage: UIImageView?
     @IBOutlet weak var nicoProgressBar: NicoProgressBar?
-    @IBOutlet weak var documentNameLabelTrailingConstarint: NSLayoutConstraint?
+    @IBOutlet weak var favImageView: UIImageView?
     @IBOutlet weak var fwdButton: UIButton?
-    
     @IBOutlet weak var doctNameTrailingWithoutImageCons: NSLayoutConstraint?
     @IBOutlet weak var documentNameTrailingCons: NSLayoutConstraint?
     @IBOutlet weak var viewDocumentButton: UIButton?
-    @IBOutlet weak var pageCountLabel: UILabel?
     @IBOutlet weak var documentSizeLabel: UILabel?
-    
     @IBOutlet weak var uploadButton: UIButton?
     @IBOutlet weak var uploadView: UIView?
     @IBOutlet weak var uploadCancelImage: UIImageView?
     @IBOutlet weak var uploadImageView: UIImageView?
-    
-    @IBOutlet weak var replyViewHeight: NSLayoutConstraint?
     @IBOutlet weak var replyView: UIView?
     @IBOutlet weak var replyTypeIconImageView: UIImageView?
     @IBOutlet weak var replyUserNameLabel: UILabel?
     @IBOutlet weak var replyTypeLabel: UILabel?
     @IBOutlet weak var replyTypeImageView: UIImageView?
     @IBOutlet weak var mediaMapView: GMSMapView?
-    
+    @IBOutlet weak var replyMediaImageWidthCons: NSLayoutConstraint?
     // Forward Outlet
     @IBOutlet weak var forwardImageView: UIImageView?
     @IBOutlet weak var forwardView: UIView?
-    @IBOutlet weak var forwardLeadingCons: NSLayoutConstraint?
     @IBOutlet weak var forwardButton: UIButton?
+    @IBOutlet weak var replyMessageIconWidth: NSLayoutConstraint?
     
     var isUploading: Bool? = false
     
     var isShowAudioLoadingIcon: Bool? = false
     
-    var selectedForwardMessage: [SelectedForwardMessage]? = []
+    var selectedForwardMessage: [SelectedMessages]? = []
     var sendMediaMessages: [ChatMessage]? = []
     var message: ChatMessage?
     
@@ -72,11 +66,9 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     }
     
     func setupUI() {
+        sentTimeLabel?.font = UIFont.font9px_appLight()
         replyView?.roundCorners(corners: [.topLeft, .topRight], radius: 5.0)
         cellBaseView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
-        //        documenTypeView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight, .bottomRight], radius: 5.0)
-        imageContainerView?.backgroundColor = UIColor.clear
-        //uploadView?.isHidden = true
         nicoProgressBar?.primaryColor = .white
         nicoProgressBar?.secondaryColor = .clear
     }
@@ -89,15 +81,13 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         }
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?) -> SenderDocumentsTableViewCell? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) -> SenderDocumentsTableViewCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         let mediaUrl = message?.mediaChatMessage?.mediaFileUrl
         checkFileType(urlExtension: ((mediaUrl?.isEmpty ?? false ? (message?.mediaChatMessage?.mediaLocalStoragePath.components(separatedBy: ".").last as? String) : mediaUrl?.components(separatedBy: ".").last) ?? ""), typeImageView: documetTypeImage)
-        // Forward view elements and its data
-        forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) ? false : true
-        forwardLeadingCons?.constant = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) ? 20 : 0
-        forwardButton?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) ? false : true
+        viewDocumentButton?.isHidden = message?.mediaChatMessage?.mediaUploadStatus == .uploaded && isShowForwardView == false ? false : true
+        showHideForwardView(message: message, isShowForwardView: isShowForwardView, isDeletedMessageSelected: isDeletedMessageSelected)
         
         if selectedForwardMessage?.filter({$0.chatMessage.messageId == message?.messageId}).first?.isSelected == true {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 0.0)
@@ -112,30 +102,35 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         }
         isAllowSwipe = (message?.messageStatus == .notAcknowledged || message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .failed  || message?.mediaChatMessage?.mediaUploadStatus == .uploading) ? false : true
         if message?.isCarbonMessage == true {
-            if  ((message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded  || message?.mediaChatMessage?.mediaDownloadStatus == .failed || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent) && isShowForwardView == false) {
-                forwardView?.isHidden = true
-                forwardButton?.isHidden = true
-            } else {
-                forwardView?.isHidden = false
-                forwardButton?.isHidden = false
+            if isDeletedMessageSelected == false {
+                if  (message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && isShowForwardView == true) {
+                    forwardView?.isHidden = false
+                    forwardButton?.isHidden = false
+                } else {
+                    forwardView?.isHidden = true
+                    forwardButton?.isHidden = true
+                }
             }
         } else {
-            if  (message?.mediaChatMessage?.mediaUploadStatus == .uploaded && isShowForwardView == true) {
-                forwardView?.isHidden = false
-                forwardButton?.isHidden = false
-            } else {
-                forwardView?.isHidden = true
-                forwardButton?.isHidden = true
+            if isDeletedMessageSelected == false {
+                if  (message?.mediaChatMessage?.mediaUploadStatus == .uploaded && isShowForwardView == true) {
+                    forwardView?.isHidden = false
+                    forwardButton?.isHidden = false
+                } else {
+                    forwardView?.isHidden = true
+                    forwardButton?.isHidden = true
+                }
             }
         }
         
-        if  (message?.mediaChatMessage?.mediaUploadStatus == .uploaded && isShowForwardView == false && message?.messageStatus != .notAcknowledged) {
+        if  (message?.mediaChatMessage?.mediaUploadStatus == .uploaded && isShowForwardView == false && message?.messageStatus != .notAcknowledged) || (message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && isShowForwardView == false && message?.messageStatus != .notAcknowledged) {
             fwdButton?.isHidden = false
         } else {
             fwdButton?.isHidden = true
         }
         
-        
+        // Starred Messages
+        favImageView?.isHidden =  message!.isMessageStarred ? false : true
         
         /// - Handling Reply Messages
         
@@ -144,18 +139,27 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
             replyView?.isHidden = false
             let getReplymessage = message?.replyParentChatMessage?.messageTextContent
             let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
-            replyTypeLabel?.text = getReplymessage
-            checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: replyTypeImageView)
-            
-            if replyMessage?.isMessageSentByMe == false {
+            mediaMapView?.isHidden = true
+            replyTypeImageView?.isHidden = true
+            if replyMessage?.isMessageSentByMe == true {
                 replyUserNameLabel?.text = you.localized
             } else {
                 replyUserNameLabel?.text = getUserName(jid: replyMessage?.senderUserJid ?? "", name: replyMessage?.senderUserName ?? "",
                                                        nickName: replyMessage?.senderNickName ?? "",
                                                        contactType: replyMessage?.isSavedContact == true ? .live : .unknown)
             }
-            
+            if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true {
+                replyTypeLabel?.text = "Original message not available"
+                replyMessageIconWidth?.constant = 0
+                replyMediaImageWidthCons?.constant = 0
+                replyTypeIconImageView?.isHidden = true
+            } else {
+            replyTypeLabel?.text = getReplymessage
+            checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: replyTypeImageView)
+                replyMessageIconWidth?.constant = 0
             if replyMessage?.mediaChatMessage != nil {
+                replyMessageIconWidth?.constant = 15
+                replyTypeIconImageView?.isHidden = false
                 switch replyMessage?.mediaChatMessage?.messageType {
                 case .image:
                     replyTypeIconImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderCamera" : "receiverCamera")
@@ -164,6 +168,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                         let image =  converter.base64ToImage(thumImage)
                         replyTypeImageView?.image = image
                         replyTypeImageView?.isHidden = false
+                        replyMediaImageWidthCons?.constant = 50
                         replyTypeLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : "Photo"
                     }
                     mediaMapView?.isHidden = true
@@ -171,11 +176,13 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                     let duration = Int(replyMessage?.mediaChatMessage?.mediaDuration ?? 0)
                     ChatUtils.setIconForAudio(imageView: replyTypeIconImageView, chatMessage: message)
                     replyTypeLabel?.text = (!(replyMessage?.mediaChatMessage?.mediaCaptionText.isEmpty ?? false)) ? replyMessage?.mediaChatMessage?.mediaCaptionText : replyMessage?.mediaChatMessage?.messageType.rawValue.capitalized.appending(" (\(duration.msToSeconds.minuteSecondMS))")
-                    replyTypeImageView?.isHidden = false
+                    replyTypeImageView?.isHidden = true
+                    replyMediaImageWidthCons?.constant = 0
                     mediaMapView?.isHidden = true
                 case .video:
                     replyTypeIconImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderVideo" : "video")
                     replyTypeImageView?.isHidden = false
+                    replyMediaImageWidthCons?.constant = 50
                     if let thumImage = message?.replyParentChatMessage?.mediaChatMessage?.mediaThumbImage {
                         let converter = ImageConverter()
                         let image =  converter.base64ToImage(thumImage)
@@ -184,20 +191,23 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                     }
                     mediaMapView?.isHidden = true
                 case .document:
-                    replyTypeIconImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "ic_document" : "ic_document")
+                    replyTypeIconImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "document" : "document")
                     checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: replyTypeImageView)
-                    
                     replyTypeLabel?.text = replyMessage?.mediaChatMessage?.mediaFileName
                     replyTypeImageView?.isHidden = false
+                    replyMediaImageWidthCons?.constant = 50
                     mediaMapView?.isHidden = true
                 default:
                     replyTypeImageView?.isHidden = true
+                    replyMediaImageWidthCons?.constant = 0
                     replyUserNameLabel?.isHidden = true
                     replyTypeLabel?.isHidden = true
                     replyTypeIconImageView?.isHidden = true
                     mediaMapView?.isHidden = true
+                    replyMessageIconWidth?.constant = 0
                 }
             } else if replyMessage?.locationChatMessage != nil {
+                replyMessageIconWidth?.constant = 15
                 replyTypeLabel?.text = "Location"
                 //                chatMapView?.isUserInteractionEnabled = false
                 replyTypeIconImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "map" : "receivedMap")
@@ -207,7 +217,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 guard let longitude = replyMessage?.locationChatMessage?.longitude  else {
                     return nil
                 }
-                mediaMapView?.camera = GMSCameraPosition.camera(withLatitude: replyMessage?.locationChatMessage?.latitude ?? 0.0, longitude: replyMessage?.locationChatMessage?.longitude ?? 0.0, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
+                mediaMapView?.camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16.0, bearing: 360.0, viewingAngle: 15.0)
                 mediaMapView?.isUserInteractionEnabled = false
                 DispatchQueue.main.async
                 { [self] in
@@ -218,20 +228,24 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 }
                 replyTypeIconImageView?.isHidden = false
                 replyTypeImageView?.isHidden = true
+                replyMediaImageWidthCons?.constant = 50
                 mediaMapView?.isHidden = false
                 
             } else if replyMessage?.contactChatMessage != nil {
+                replyMessageIconWidth?.constant = 15
                 replyTypeLabel?.attributedText = ChatUtils.setAttributeString(name: replyMessage?.contactChatMessage?.contactName)
-                replyTypeImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
+                replyTypeIconImageView?.image = UIImage(named: (message?.isMessageSentByMe ?? false) ? "senderContact" : "receiverContact")
                 replyTypeIconImageView?.isHidden = false
-                //                replyTrailingCons?.isActive = true
-                //                replyTrailingWithMediaCons?.isActive = false
+                replyTypeImageView?.isHidden = true
                 mediaMapView?.isHidden = true
             }
-            
+            }
         } else {
             documenTypeView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight, .bottomRight], radius: 5.0)
             replyView?.isHidden = true
+            replyTypeIconImageView?.isHidden = true
+            mediaMapView?.isHidden = true
+            replyMessageIconWidth?.constant = 0
         }
         
         /// Carbon Messages Handler
@@ -283,7 +297,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                     if FileManager.default.fileExists(atPath: fileURL.relativePath) {
                         let data = NSData(contentsOf: fileURL)
                         let image = UIImage(data: data! as Data)
-                        imageContainerView?.image = image
+                        bubbleImageView?.image = image
                     }
                 }
                 documentNameTrailingCons?.isActive = false
@@ -341,7 +355,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                     if FileManager.default.fileExists(atPath: fileURL.relativePath) {
                         let data = NSData(contentsOf: fileURL)
                         let image = UIImage(data: data! as Data)
-                        imageContainerView?.image = image
+                        bubbleImageView?.image = image
                     }
                 }
                 uploadCancelImage?.isHidden = true
@@ -394,11 +408,23 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         }
     
         documentNameLabel?.text = message?.mediaChatMessage?.mediaFileName
-        sentTimeLabel?.text = Utility.convertTime(timeStamp: timeStamp)
+        sentTimeLabel?.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
         self.layoutIfNeeded()
         self.layoutSubviews()
         
         return self
+    }
+    
+    func showHideForwardView(message: ChatMessage?, isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) {
+        if isDeletedMessageSelected == true {
+            // Forward view elements and its data
+            forwardView?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaUploadStatus == .uploading)  || (message?.isMessageRecalled == true) ? true : false
+            forwardButton?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaUploadStatus == .uploading)  || (message?.isMessageRecalled == true) ? true : false
+        } else {
+            // Forward view elements and its data
+            forwardView?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded && message?.isMessageRecalled == false) ? false : true
+            forwardButton?.isHidden = (isShowForwardView == true && message?.mediaChatMessage?.mediaUploadStatus == .uploaded && message?.isMessageRecalled == false) ? false : true
+        }
     }
     
     func startUpload() {

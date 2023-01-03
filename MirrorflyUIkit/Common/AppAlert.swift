@@ -16,6 +16,8 @@ class AppAlert: NSObject {
 
     //MARK: - Delegate
     var onAlertAction : ((Int)->Void)?
+    
+    var alert : UIAlertController? = nil
 
     //Simple Alert view
     func showToast(message : String){
@@ -59,8 +61,8 @@ class AppAlert: NSObject {
     }
 
     //Simple Alert view with two button
-    func showAlert(view: UIViewController, title: String? = nil, message: String, buttonOneTitle: String? = cancelUppercase.localized, buttonTwoTitle: String){
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+    func showAlert(view: UIViewController, title: String? = nil, message: String, buttonOneTitle: String? = cancelUppercase.localized, buttonTwoTitle: String, buttonOneColor: UIColor? = nil,cancelWhenTapOutside : Bool = false){
+        alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
 
         //Button One Action
         let buttonOne = UIAlertAction(title: buttonOneTitle, style: UIAlertAction.Style.default)  {
@@ -69,7 +71,11 @@ class AppAlert: NSObject {
             self.onAlertAction?(0)
             view.dismiss(animated: true, completion: nil)
         }
-        buttonOne.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        if let buttonOneColor = buttonOneColor {
+            buttonOne.setValue(buttonOneColor, forKey: "titleTextColor")
+        } else {
+            buttonOne.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        }
         //Button Two Action
         let buttonTwo = UIAlertAction(title: buttonTwoTitle,
                                       style: UIAlertAction.Style.default)
@@ -78,12 +84,24 @@ class AppAlert: NSObject {
             self.onAlertAction?(1)
         }
         buttonTwo.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
-        alert.addAction(buttonOne)
-        alert.addAction(buttonTwo)
+        alert?.addAction(buttonOne)
+        alert?.addAction(buttonTwo)
 
         DispatchQueue.main.async {
-            view.present(alert, animated: true, completion: nil)
+            if let alert = self.alert {
+                view.present(alert, animated: true) {
+                    if cancelWhenTapOutside {
+                        alert.view.superview?.isUserInteractionEnabled = true
+                        alert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
+                    }
+                }
+            }
         }
+    }
+    
+    @objc private func alertControllerBackgroundTapped()
+    {
+        alert?.dismiss(animated: true, completion: nil)
     }
     
     /// Contact access permission if user disabeld in device Settings

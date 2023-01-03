@@ -13,6 +13,8 @@ class AppActionSheet : NSObject {
     
     public typealias SheetCallBack = (_ didCancelTap: Bool,_ tappedOption: String) -> Void
     
+    var alertController: UIAlertController?
+    
     public static let shared : AppActionSheet =  {
         return AppActionSheet()
     }()
@@ -23,7 +25,7 @@ class AppActionSheet : NSObject {
         let mMessage = message.isEmpty ? nil : message
         
         if !actions.isEmpty {
-            let alertController = UIAlertController(title: mTitle, message: mMessage, preferredStyle: .actionSheet)
+            alertController = UIAlertController(title: mTitle, message: mMessage, preferredStyle: .actionSheet)
             
             if let mTitle = mTitle, mTitle.isNotEmpty, titleBold {
                 
@@ -31,7 +33,7 @@ class AppActionSheet : NSObject {
                     NSAttributedString.Key.font : UIFont.font18px_appSemibold(), //your font here
                     NSAttributedString.Key.foregroundColor : UIColor.blue,
                 ])
-                alertController.setValue(attributedString, forKey: "attributedTitle")
+                alertController?.setValue(attributedString, forKey: "attributedTitle")
             }
             
             for (title, style) in actions {
@@ -39,14 +41,21 @@ class AppActionSheet : NSObject {
                     sheetCallBack(false, title)
                 }
                 alertAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
-                alertController.addAction(alertAction)
+                alertController?.addAction(alertAction)
             }
             let cancel = UIAlertAction(title: cancelUppercase, style: .cancel, handler: { (action) -> Void in
                 sheetCallBack(true, cancelUppercase)
             })
             cancel.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
-            alertController.addAction(cancel)
-            UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
+            alertController?.addAction(cancel)
+            UIApplication.shared.keyWindow?.rootViewController?.present(alertController ?? UIAlertController(), animated: true, completion:nil)
+        }
+    }
+    
+    func dismissActionSeet(animated: Bool) {
+        if let alert = alertController {
+            alert.dismiss(animated: animated)
+            alertController = nil
         }
     }
 }

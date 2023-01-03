@@ -60,6 +60,7 @@ class ParticipantCell: UITableViewCell {
             contactImageView?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType, jid: jid)
         } else {
             contactImageView?.image = UIImage(named: ImageConstant.ic_profile_placeholder)!
+            statusUILabel?.text = ""
         }
     }
     
@@ -90,12 +91,30 @@ class ParticipantCell: UITableViewCell {
     
     func setImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
         let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
-        let url = URL(string: urlString)
+        var url = URL(string: urlString)
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
             placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder)!
         }else if recentChat.isDeletedUser || getisBlockedMe(jid: recentChat.jid) {
             placeHolder = UIImage(named: ImageConstant.ic_profile_placeholder)!
+            url = nil
+            statusUILabel?.text = ""
+        }else {
+            placeHolder = getPlaceholder(name: name, color: color)
+        }
+        contactImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
+    }
+    
+    func setImage(imageURL: String, name: String, color: UIColor , profile : ProfileDetails) {
+        let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
+        var url = URL(string: urlString)
+        var placeHolder = UIImage()
+        if profile.profileChatType == .groupChat {
+            placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder)!
+        }else if profile.contactType == .deleted || getisBlockedMe(jid: profile.jid) {
+            placeHolder = UIImage(named: ImageConstant.ic_profile_placeholder)!
+            url = nil
+            statusUILabel?.text = ""
         }else {
             placeHolder = getPlaceholder(name: name, color: color)
         }
@@ -104,7 +123,12 @@ class ParticipantCell: UITableViewCell {
     
     func setRecentChatDetails(recentChat: RecentChat,color: UIColor) {
         nameUILabel?.text = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName, contactType: (recentChat.isDeletedUser ? .deleted :  recentChat.isItSavedContact ? .live : .unknown))
-        statusUILabel?.text = recentChat.lastMessageContent
+        if recentChat.isLastMessageRecalledByUser {
+            statusUILabel?.text = recentChat.isLastMessageSentByMe ? senderDeletedMessage : receiverDeletedMessage
+        } else {
+            statusUILabel?.text = recentChat.lastMessageContent
+        }
+       
         if !recentChat.isDeletedUser{
             checkBoxImageView?.image = recentChat.isSelected ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
             setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown), color: color , recentChat: recentChat)

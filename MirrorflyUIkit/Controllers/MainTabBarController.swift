@@ -14,20 +14,53 @@ import Contacts
 class MainTabBarController: UITabBarController{
     @IBOutlet weak var chatTabBars: UITabBar?
     
+    var tabViewControllers : [UIViewController] = []
+    
     static var isConnected = false
+    
+    var shouldShowCallTab = false
+    
+    var avilableFeatures = ChatManager.getAvailableFeatures()
+    
+    static var tabBarDelegagte : TabBarDelegate? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+         if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable  {
+            let vc = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+             self.navigationController?.pushViewController(vc, animated: true)
+        }
+        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
+            let vc = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+            vc.login = true
+             self.navigationController?.pushViewController(vc, animated: true)
+           
+        }
         self.delegate = self
+        if let vcs = self.viewControllers{
+            tabViewControllers = vcs
+        }
+        MainTabBarController.tabBarDelegagte = self
+        shouldShowCallTab = avilableFeatures.isOneToOneCallEnabled || avilableFeatures.isGroupCallEnabled
+        if !shouldShowCallTab{
+            setupUI()
+            removeTabAt(index:2)
+        }else{
+            resetTabs()
+        }
         // Do any additional setup after loading the view.
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUnReadMissedCallCount(notification:)), name: NSNotification.Name("updateUnReadMissedCallCount"), object: nil)
+        handleBackgroundAndForground()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupUI()
         updateSelection()
         saveMyJidAsContacts()
         ChatManager.shared.connectionDelegate = self
+        updateUnReadMissedCallBadgeCount()
     }
     
     override func viewDidLayoutSubviews() {
@@ -64,6 +97,22 @@ class MainTabBarController: UITabBarController{
         FlyDatabaseController.shared.rosterManager.saveContact(profileDetailsArray: [profileData], chatType: .singleChat, contactType: .live, saveAsTemp: false, calledBy: "")
     }
     
+    @objc override func willCometoForeground() {
+        updateUnReadMissedCallBadgeCount()
+    }
+    
+    @objc func updateUnReadMissedCallCount(notification: NSNotification) {
+        updateUnReadMissedCallBadgeCount()
+    }
+    
+    func updateUnReadMissedCallBadgeCount() {
+        
+        if let item : UITabBarItem = chatTabBars?.items?[2] {
+            let missedCallCount = FlyDefaults.unreadMissedCallCount
+            item.badgeValue = (missedCallCount == 0) ? nil : "\(missedCallCount)"
+        }
+    }
+    
 }
 
 extension MainTabBarController : ConnectionEventDelegate {
@@ -73,6 +122,7 @@ extension MainTabBarController : ConnectionEventDelegate {
                 FlyDefaults.isFriendsListSyncPending = !isSuccess
             }
         }
+        
     }
     
     func onDisconnected() {
@@ -98,6 +148,39 @@ extension MainTabBarController : UITabBarControllerDelegate {
         }
       }
 
+}
+
+
+extension MainTabBarController : TabBarDelegate{
+    
+    func currentTabCount() -> Int {
+        self.viewControllers?.count ?? 0
+    }
+
+    
+    func removeTabAt(index: Int) {
+        avilableFeatures = ChatManager.getAvailableFeatures()
+        if let vcs =  self.viewControllers{
+            self.viewControllers?.remove(at: index)
+            self.viewControllers = self.viewControllers
+        }
+    }
+    
+    func resetTabs(){
+        avilableFeatures = ChatManager.getAvailableFeatures()
+        self.viewControllers = tabViewControllers
+        setupUI()
+    }
+    
+}
+
+public protocol TabBarDelegate {
+    
+    func removeTabAt(index : Int)
+    
+    func resetTabs()
+    
+    func currentTabCount() -> Int
 }
 
 

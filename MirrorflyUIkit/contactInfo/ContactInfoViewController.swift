@@ -28,6 +28,7 @@ class ContactInfoViewController: ViewController {
         super.viewDidLoad()
         setConfiguration()
         setUpUI()
+        setUpStatusBar()
         getLastSeen()
         networkMonitor()
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
@@ -37,12 +38,14 @@ class ContactInfoViewController: ViewController {
         super.viewDidAppear(animated)
         ContactManager.shared.profileDelegate = self
         ChatManager.shared.adminBlockDelegate = self
+        ChatManager.shared.connectionDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         ContactManager.shared.profileDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
+        ChatManager.shared.connectionDelegate = nil
         delegate = nil
     }
     
@@ -63,7 +66,15 @@ class ContactInfoViewController: ViewController {
     
     private func getLastSeen() {
         contactInfoViewModel.getLastSeen(jid: contactJid) { [weak self] lastSeen in
-            self?.setLastSeen(lastSeen: lastSeen)
+            if lastSeen == "error" {
+                let indexPath = IndexPath(row: 0, section: 0)
+                if let cell = self?.contactInfoTableView?.cellForRow(at: indexPath) as? ContactImageCell {
+                    cell.onlineStatus?.text = emptyString()
+                    cell.onlineStatus?.isHidden = true
+                }
+            } else {
+                self?.setLastSeen(lastSeen: lastSeen)
+            }
         }
     }
     
@@ -151,10 +162,10 @@ class ContactInfoViewController: ViewController {
                 self?.setLastSeen(lastSeen: waitingForNetwork)
             }
         }
-        NetStatus.shared.netStatusChangeHandler = { [weak self] in
-            print("networkMonitor \(NetStatus.shared.isConnected)")
+        NetworkReachability.shared.netStatusChangeHandler = { [weak self] in
+            print("networkMonitor \(NetworkReachability.shared.isConnected)")
             DispatchQueue.main.async {
-                if NetStatus.shared.isConnected {
+                if NetworkReachability.shared.isConnected {
                     self?.getLastSeen()
                 } else {
                     self?.setLastSeen(lastSeen: waitingForNetwork)
@@ -162,11 +173,19 @@ class ContactInfoViewController: ViewController {
             }
         }
     }
+    
+    func handleUserBlockedUnblocked(jid : String) {
+        if jid == contactJid {
+            setConfiguration()
+            refreshData()
+            getLastSeen()
+        }
+    }
 }
 
 extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 1 {
+        if section == 2 {
             return 3
         } else {
             return 1
@@ -203,30 +222,32 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             cell.editProfileButton?.isHidden = true
             
             return cell
-//        } else if indexPath.section == 1 {
-//            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
-//            cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
-//            cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
-//            return cell
-          } else if indexPath.section == 1 {
+        } else if indexPath.section == 1 {
+            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
+            cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
+            cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
+            return cell
+          } else if indexPath.section == 2 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.contactInfoCell, for: indexPath) as? ContactInfoCell)!
             
             cell.titleLabel?.text = contactInfoTitle[indexPath.row]
             cell.icon?.image = UIImage(named: contactInfoIcon[indexPath.row])
-            
+              
+            let mobileNumberWithoutCountryCode = AppUtils.shared.mobileNumberParse(phoneNo: (profileDetails?.mobileNumber ?? ""))
+              
             if indexPath.row == 0 {
                 cell.contentLabel?.text = profileDetails?.email ?? ""
             } else if indexPath.row == 1 {
-                cell.contentLabel?.text = profileDetails?.mobileNumber ?? ""
+                cell.contentLabel?.text = mobileNumberWithoutCountryCode
             } else if indexPath.row == 2 {
                 cell.contentLabel?.text = profileDetails?.status ?? ""
             }
             
             return cell
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 3 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
             return cell
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
             cell.nextImage.isHidden = true
             cell.titleLabel.text = report
@@ -243,14 +264,14 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if (profileDetails?.contactType != .deleted){
-            return 4
+            return 5
         }else{
             return 1
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 2 {
+        if indexPath.section == 3 {
             return 0
         } else {
             return UITableView.automaticDimension
@@ -267,8 +288,7 @@ extension ContactInfoViewController : ProfileEventsDelegate {
     
     func userWentOffline(for jid: String) {
         if contactJid == jid {
-            let lastSeen = contactInfoViewModel.calculateLastSeen(lastSeenTime: "0")
-            setLastSeen(lastSeen: lastSeen)
+            getLastSeen()
         }
     }
     
@@ -314,19 +334,19 @@ extension ContactInfoViewController : ProfileEventsDelegate {
     }
     
     func userBlockedMe(jid: String) {
-        getLastSeen()
+        handleUserBlockedUnblocked(jid: jid)
     }
     
     func userUnBlockedMe(jid: String) {
-        getLastSeen()
+        handleUserBlockedUnblocked(jid: jid)
     }
     
     func hideUserLastSeen() {
-        
+        getLastSeen()
     }
     
     func getUserLastSeen() {
-        
+        getLastSeen()
     }
     
     func userDeletedTheirProfile(for jid : String, profileDetails:ProfileDetails){
@@ -389,29 +409,53 @@ extension ContactInfoViewController {
             return  
         }
         
-        let values : [String] = ChatActions.allCases.map { $0.rawValue }
-        var actions = [(String, UIAlertAction.Style)]()
-        values.forEach { title in
-            actions.append((title, UIAlertAction.Style.default))
+        if ChatUtils.isMessagesAvailableFor(jid: profileDetails?.jid ?? "") {
+            if let profileDetails = profileDetails {
+                reportForJid(profileDetails: profileDetails)
+            }
+        } else {
+            AppAlert.shared.showToast(message: noMessgesToReport)
         }
         
-        AppActionSheet.shared.showActionSeet(title: report, message: "", actions: actions) { [weak self] didCancelTap, tappedOption in
-            if !didCancelTap {
-                switch tappedOption {
-                case ChatActions.report.rawValue:
-                    print("\(tappedOption)")
-                    if ChatUtils.isMessagesAvailableFor(jid: self?.profileDetails?.jid ?? "") {
-                        if let profileDetails = self?.profileDetails {
-                            self?.reportForJid(profileDetails: profileDetails)
-                        }
-                    } else {
-                        AppAlert.shared.showToast(message: noMessgesToReport)
-                    }
-                   
-                default:
-                    print(" \(tappedOption)")
-                }
-            }
-        }
+        // commented this code temporarly, It may be used in future
+        
+//        let values : [String] = ChatActions.allCases.map { $0.rawValue }
+//        var actions = [(String, UIAlertAction.Style)]()
+//        values.forEach { title in
+//            actions.append((title, UIAlertAction.Style.default))
+//        }
+//
+//        AppActionSheet.shared.showActionSeet(title: report, message: "", actions: actions) { [weak self] didCancelTap, tappedOption in
+//            if !didCancelTap {
+//                switch tappedOption {
+//                case ChatActions.report.rawValue:
+//                    print("\(tappedOption)")
+//                    if ChatUtils.isMessagesAvailableFor(jid: self?.profileDetails?.jid ?? "") {
+//                        if let profileDetails = self?.profileDetails {
+//                            self?.reportForJid(profileDetails: profileDetails)
+//                        }
+//                    } else {
+//                        AppAlert.shared.showToast(message: noMessgesToReport)
+//                    }
+//
+//                default:
+//                    print(" \(tappedOption)")
+//                }
+//            }
+//        }
+    }
+}
+
+extension ContactInfoViewController: ConnectionEventDelegate {
+    func onConnected() {
+        getLastSeen()
+    }
+    
+    func onDisconnected() {
+        setLastSeen(lastSeen: waitingForNetwork)
+    }
+    
+    func onConnectionNotAuthorized() {
+        
     }
 }

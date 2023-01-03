@@ -23,13 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         if FlyDefaults.isBlockedByAdmin {
-            if CallManager.isOngoingCall() {
-                CallManager.disconnectCall()
-            }
-            let storyboard = UIStoryboard(name: "Profile", bundle: nil)
-            let initialViewController = storyboard.instantiateViewController(withIdentifier: "BlockedByAdminViewController") as! BlockedByAdminViewController
-            self.window?.rootViewController =  UINavigationController(rootViewController: initialViewController)
-            self.window?.makeKeyAndVisible()
+            navigateToBlockedScreen()
         } else if Utility.getBoolFromPreference(key: isProfileSaved) {
             let navigationController : UINavigationController
             if IS_LIVE {
@@ -86,6 +80,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneDidBecomeActive(_ scene: UIScene) {
         print("#scene sceneDidBecomeActive \(FlyDefaults.isLoggedIn)")
+        if FlyDefaults.isBlockedByAdmin {
+            navigateToBlockedScreen()
+            return
+        }
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
@@ -123,5 +121,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
+}
+
+extension SceneDelegate {
+    func navigateToBlockedScreen() {
+        Utility.saveInPreference(key: isProfileSaved, value: false)
+        Utility.saveInPreference(key: isLoggedIn, value: false)
+        ChatManager.disconnect()
+        ChatManager.shared.resetFlyDefaults()
+        FlyDefaults.isBlockedByAdmin = false
+        if CallManager.isOngoingCall() {
+            CallManager.disconnectCall()
+        }
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        let initialViewController = storyboard.instantiateViewController(withIdentifier: "BlockedByAdminViewController") as! BlockedByAdminViewController
+        self.window?.rootViewController =  UINavigationController(rootViewController: initialViewController)
+        self.window?.makeKeyAndVisible()
+    }
 }
 

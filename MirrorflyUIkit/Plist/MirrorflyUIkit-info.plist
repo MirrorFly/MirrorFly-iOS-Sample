@@ -119,5 +119,7 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>Privacy - Face ID Usage Description</key>
+	<string>Identify Yourself!</string>
 </dict>
 </plist>

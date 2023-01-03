@@ -11,10 +11,15 @@ import SDWebImage
 import AVKit
 import Contacts
 import RxSwift
+import FlyDatabase
 
 class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
    
-    @IBOutlet weak var recentChatTableView: UITableView?
+    @IBOutlet weak var recentChatTableView: UITableView? {
+        didSet {
+            recentChatTableView?.register(UINib(nibName: Identifiers.ArchiveChatTableViewCell, bundle: nil), forCellReuseIdentifier: Identifiers.ArchiveChatTableViewCell)
+        }
+    }
     @IBOutlet weak var searchBar: UISearchBar?
     @IBOutlet weak var emptyMessageView: UIView?
     @IBOutlet weak var descriptionMessageText: UILabel?
@@ -29,7 +34,14 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var headerView: UIView?
     @IBOutlet weak var deleteChatButton: UIButton?
     @IBOutlet weak var stackView: UIStackView?
-    
+    @IBOutlet weak var pinChatButton: UIButton!
+    @IBOutlet weak var muteChatButton: UIButton!
+    @IBOutlet weak var archiveChatButton: UIButton!
+    @IBOutlet weak var headerBackButton: UIButton!
+    @IBOutlet weak var headerLabel: UILabel!
+    @IBOutlet weak var searchView: UIView!
+    @IBOutlet weak var createGroupButton: UIButton!
+
     var longPressCount = 0
     var isCellLongPressed: Bool? = false
     var getRecentChat: [RecentChat] = []
@@ -48,6 +60,8 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     private var replyJid: String?
     private var messageTxt: String?
     var tappedProfile : ProfileDetails? = nil
+    var getArchiveChat: [RecentChat] = []
+    var showArchivedChat = false
     
     var totalPages = 2
     var totalUsers = 0
@@ -62,10 +76,22 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     var internetObserver = PublishSubject<Bool>()
     var isFirstPageLoaded = false
     
+    var fetchRecentChatParams : RecentChatListParams? = nil
+    var recentChatListBuilder : RecentChatListBuilder? = nil
+    var isRecentLoadingDone = false
+    var isRecentLoadingInProgress = false
+    let backgroundQueue = DispatchQueue(label: "recent")
+    
+    var availableFeatures = ChatManager.getAvailableFeatures()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        archiveChatButton.isHidden = true
+        selectionCountLabel?.textColor = UIColor(named: "buttonColor")
         contactViewModel =  ContactViewModel()
         recentChatViewModel = RecentChatViewModel()
+        fetchRecentChatParams = RecentChatListParams(limit: 50)
+        recentChatListBuilder = RecentChatListBuilder(recentChatListParams: fetchRecentChatParams!)
         setupTableviewLongPressGesture()
         handleBackgroundAndForground()
         configTableView()
@@ -118,6 +144,9 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         }else{
             resetDataAndFetchUsersList()
         }
+        
+        availableFeatures = ChatManager.getAvailableFeatures()
+        searchBar?.isHidden = !(availableFeatures.isRecentChatSearchEnabled) ? true : false
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -128,16 +157,18 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         FlyMessenger.shared.messageEventsDelegate = self
         GroupManager.shared.groupDelegate = self
         ChatManager.shared.adminBlockDelegate = self
+        ChatManager.shared.availableFeaturesDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         chatManager.connectionDelegate = nil
         ContactManager.shared.profileDelegate = nil
-        ChatManager.shared.messageEventsDelegate = nil
+        chatManager.messageEventsDelegate = nil
         FlyMessenger.shared.messageEventsDelegate = nil
         GroupManager.shared.groupDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
+        ChatManager.shared.availableFeaturesDelegate = nil
         NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
     }
     
@@ -189,15 +220,19 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         if gestureRecognizer.state == .began && isSearchEnabled == false {
             let touchPoint = gestureRecognizer.location(in:  recentChatTableView)
             if let indexPath =  recentChatTableView?.indexPathForRow(at: touchPoint) {
-                if getRecentChat[indexPath.row].profileType == .singleChat {
                     if let cell =  recentChatTableView?.cellForRow(at: indexPath) as? RecentChatTableViewCell {
-                        if selectionRecentChatList.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 {
+                        if selectionRecentChatList.filter({$0.jid == (showArchivedChat ? getArchiveChat[indexPath.row].jid : getRecentChat[indexPath.row].jid) }).count == 0 {
                             cell.contentView.backgroundColor = Color.recentChatSelectionColor
                             isCellLongPressed = true
                             recentChatTableView?.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                             showHideDeleteButton()
-                            getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
-                            selectionRecentChatList.insert(getRecentChat[indexPath.row], at: 0)
+                            if showArchivedChat {
+                                getArchiveChat[indexPath.row].isSelected = !getArchiveChat[indexPath.row].isSelected
+                                selectionRecentChatList.insert(getArchiveChat[indexPath.row], at: 0)
+                            } else {
+                                getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
+                                selectionRecentChatList.insert(getRecentChat[indexPath.row], at: 0)
+                            }
                             longPressCount += 1
                             hideHeaderView()
                             selectionCountLabel?.isHidden = false
@@ -208,7 +243,9 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
                     }
                     showHideDeleteButton()
                     recentChatTableView?.allowsMultipleSelection = true
-                }
+                updatePinIcon()
+                updateMuteIcon()
+                updateArchiveIcon()
             }
         }
     }
@@ -254,13 +291,14 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         longPressCount = 0
         isCellLongPressed = false
         selectionCountLabel?.text = String(longPressCount)
-        selectionRecentChatList.enumerated().forEach { (index, element) in
-        if let cell =  recentChatTableView?.cellForRow(at: IndexPath(row: index, section: 0)) as? RecentChatTableViewCell {
-            cell.contentView.backgroundColor = .clear
-            }
-        }
         clearSelectedColor()
         selectionRecentChatList = []
+        getRecentChatList()
+    }
+
+    @IBAction func headerArchiveBackAction(_ sender: UIButton) {
+        hideArchiveHeader()
+        getRecentChatList()
     }
     
     @IBAction func viewContact(_ sender: Any) {
@@ -268,7 +306,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     @IBAction func createGroup(_ sender: Any) {
         print("createGroup")
-        let values : [String] = CreateGroupOptions.allCases.map { $0.rawValue }
+        let values : [String] = !(availableFeatures.isGroupChatEnabled) ? [CreateGroupOptions.web.rawValue] : CreateGroupOptions.allCases.map { $0.rawValue }
         var actions = [(String, UIAlertAction.Style)]()
         values.forEach { title in
             actions.append((title, UIAlertAction.Style.default))
@@ -404,8 +442,117 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
                 self?.selectionRecentChatList = []
             }
         })
-}
-    
+    }
+
+    //Recent chat Pin/Unpin Action
+    @IBAction func pinChatAction(_ sender: UIButton) {
+        var pinChatList = [RecentChat]()
+        let isPin = isPin()
+        for chat in self.selectionRecentChatList {
+            if isPin {
+                if chat.isChatPinned == false {
+                    pinChatList.append(chat)
+                }
+            } else {
+                pinChatList.append(chat)
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+            self?.dismiss(animated: true) {
+                //FlyDefaults.maximumRecentChatPin
+                if (ChatManager.recentChatPinnedCount() > 3 || pinChatList.count > 3 || (ChatManager.recentChatPinnedCount() + pinChatList.count) > 3) && isPin {
+                    AppAlert.shared.showToast(message: "You can only pin upto 3 chats")
+                } else {
+                    pinChatList.forEach { pinRecentChat in
+                        self?.recentChatViewModel?.getPinChat(jid: pinRecentChat.jid, isPin: isPin, completionHandler: { isSuccess in
+                        })
+                    }
+                    AppAlert.shared.showToast(message: "Chat\(pinChatList.count > 1 ? "s" : "") \(isPin ? "pinned" : "unpinned")")
+                }
+                self?.longPressCount = 0
+                self?.selectionCountLabel?.isHidden = true
+                self?.showHeaderView()
+                self?.isCellLongPressed = false
+                self?.selectionRecentChatList = []
+                self?.getRecentChatList()
+                self?.recentChatTableView?.reloadData()
+            }
+        })
+    }
+
+    //Get status whether is Pin or Unpin
+    func isPin() -> Bool {
+        for chat in selectionRecentChatList {
+            if chat.isChatPinned == false {
+                return true
+            }
+        }
+        return false
+    }
+
+    //Update Pin icon
+    func updatePinIcon() {
+        pinChatButton.setImage(isPin() ? UIImage(named: "push-pin")?.withHorizontallyFlippedOrientation() : UIImage(named: "push-unpin")?.withHorizontallyFlippedOrientation(), for: .normal)
+    }
+
+    @IBAction func muteChatAction(_ sender: UIButton) {
+        let isMute = isMute()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+            self?.dismiss(animated: true) {
+                self?.selectionRecentChatList.forEach { pinRecentChat in
+                    self?.recentChatViewModel?.getMuteChat(jid: pinRecentChat.jid, isMute: isMute, completionHandler: { isSuccess in
+                    })
+                }
+                self?.longPressCount = 0
+                self?.selectionCountLabel?.isHidden = true
+                self?.showHeaderView()
+                self?.isCellLongPressed = false
+                self?.selectionRecentChatList = []
+                self?.getRecentChatList()
+                self?.recentChatTableView?.reloadData()
+            }
+        })
+    }
+
+    //Get status whether is mute or Unmute
+    func isMute() -> Bool {
+        return selectionRecentChatList.filter {$0.isMuted == false }.count > 0 ? true : false
+    }
+
+    //Update mute icon
+    func updateMuteIcon() {
+        muteChatButton.setImage(isMute() ? UIImage(named: "mute") : UIImage(named: "unmute"), for: .normal)
+    }
+
+    //Archive chat Action
+    @IBAction func ArchiveChatAction(_ sender: UIButton) {
+
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.checkYourInternet)
+            return
+        }
+
+        let isArchive = isArchive()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+            self?.dismiss(animated: true) {
+
+                self?.recentChatViewModel?.getArchiveChat(jids: self?.selectionRecentChatList.compactMap { $0.jid } ?? [], isArchive: isArchive, completionHandler: { isSuccess, error, data in
+                    if isSuccess {
+                        AppAlert.shared.showToast(message: (self?.selectionRecentChatList.count ?? 0) > 1 ? " \(self?.selectionRecentChatList.count ?? 0) chats are \(isArchive ? "archived" : "unarchived")" : "Chat has been \(isArchive ? "archived" : "unarchived")")
+                    }
+                })
+
+                self?.longPressCount = 0
+                self?.selectionCountLabel?.isHidden = true
+                self?.showHeaderView()
+                self?.isCellLongPressed = false
+                self?.selectionRecentChatList = []
+                self?.getRecentChatList()
+                self?.recentChatTableView?.reloadData()
+            }
+        })
+    }
+
     @objc func cancelAction(_ sender: UIButton) {
         self.dismiss(animated: false, completion: nil)
     }
@@ -420,7 +567,9 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             } else {
                 return 1
             }
-        } else if getRecentChat.count > 0 {
+        } else if getRecentChat.count > 0 && getArchiveChat.count > 0 && !showArchivedChat {
+            return 2
+        } else if getRecentChat.count > 0 || getArchiveChat.count > 0 || showArchivedChat {
             return 1
         } else {
             return 0
@@ -432,7 +581,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         case true:
                 switch section {
                 case 0:
-                    return getRecentChat.count > 0 ? getRecentChat.filter({$0.unreadMessageCount == 0}).count : (filteredContactList.count > 0) ? filteredContactList.count : 0
+                    return getRecentChat.count > 0 ? getRecentChat.count : (filteredContactList.count > 0) ? filteredContactList.count : 0
                 case 1:
                     return filteredContactList.count > 0 ? filteredContactList.count : 0
                 case 2:
@@ -441,7 +590,22 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                     break
                 }
         case false:
-            return getRecentChat.count
+            if getRecentChat.count > 0 && getArchiveChat.count > 0 && showArchivedChat == false {
+                switch section {
+                case FlyDefaults.isArchivedChatEnabled ? 0 : 1:
+                    return 1
+                case FlyDefaults.isArchivedChatEnabled ? 1 : 0:
+                    return getRecentChat.count
+                default:
+                    break
+                }
+            } else if getArchiveChat.count > 0 && showArchivedChat == false {
+                return 1
+            } else if getArchiveChat.count > 0 && showArchivedChat == true {
+                return getArchiveChat.count
+            } else {
+                return getRecentChat.count
+            }
         }
         return 0
     }
@@ -488,27 +652,44 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         var cell: RecentChatTableViewCell!
         switch isSearchEnabled {
         case false:
-            cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
-            if getRecentChat.count > indexPath.row {
-                let recentChat = getRecentChat[indexPath.row]
-                let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
-                let color = getColor(userName: name)
-                cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
-                cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
-                let chatMessage = getMessages(messageId: recentChat.lastMessageId)
-                let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
-                cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName)
-                cell.profileImageButton?.tag = indexPath.row
-                cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
-                cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
+            if getRecentChat.count > 0 && getArchiveChat.count > 0 && showArchivedChat == false {
+                switch indexPath.section {
+                case FlyDefaults.isArchivedChatEnabled ? 0 : 1:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ArchiveChatTableViewCell, for: indexPath) as! ArchiveChatTableViewCell
+                    let count = getArchiveChat.reduce(0, {$0 + $1.unreadMessageCount})
+                    cell.chatCountLabel.isHidden = count == 0 ? true : false
+                    cell.chatCountLabel.text = String(count)
+                    return cell
+                case FlyDefaults.isArchivedChatEnabled ? 1 : 0:
+                    cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
+                    if getRecentChat.count > indexPath.row {
+                        let recentChat = getRecentChat[indexPath.row]
+                        let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
+                        let color = getColor(userName: name)
+                        cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
+                        cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
+                        let chatMessage = getMessages(messageId: recentChat.lastMessageId)
+                        let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
+                        cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName)
+                        cell.archivedStatusLabel.isHidden = true
+                        cell.profileImageButton?.tag = indexPath.row
+                        cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
+                        cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
+                        return cell
+                    }
+                default:
+                    break
+                }
+            } else if getArchiveChat.count > 0 && showArchivedChat == false {
+                let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.ArchiveChatTableViewCell, for: indexPath) as! ArchiveChatTableViewCell
+                let count = getArchiveChat.reduce(0, {$0 + $1.unreadMessageCount})
+                cell.chatCountLabel.isHidden = count == 0 ? true : false
+                cell.chatCountLabel.text = String(count)
                 return cell
-            }
-        case true:
-            switch indexPath.section {
-            case 0:
+            } else if getArchiveChat.count > 0 && showArchivedChat == true {
                 cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
-                if getRecentChat.filter({$0.unreadMessageCount == 0}).count > indexPath.row {
-                    let recentChat = getRecentChat.filter({$0.unreadMessageCount == 0})[indexPath.row]
+                if getArchiveChat.count > indexPath.row {
+                    let recentChat = getArchiveChat[indexPath.row]
                     let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
                     let color = getColor(userName: name)
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
@@ -516,6 +697,44 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                     let chatMessage = getMessages(messageId: recentChat.lastMessageId)
                     let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
                     cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName)
+                    cell.archivedStatusLabel.isHidden = true
+                    cell.profileImageButton?.tag = indexPath.row
+                    cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
+                    cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
+                    return cell
+                }
+            } else {
+                cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
+                if getRecentChat.count > indexPath.row {
+                    let recentChat = getRecentChat[indexPath.row]
+                    let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
+                    let color = getColor(userName: name)
+                    cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
+                    cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
+                    let chatMessage = getMessages(messageId: recentChat.lastMessageId)
+                    let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
+                    cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName)
+                    cell.archivedStatusLabel.isHidden = true
+                    cell.profileImageButton?.tag = indexPath.row
+                    cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
+                    cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
+                    return cell
+                }
+            }
+        case true:
+            switch indexPath.section {
+            case 0:
+                cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.recentChatCell, for: indexPath) as? RecentChatTableViewCell
+                if getRecentChat.count > indexPath.row {
+                    let recentChat = getRecentChat[indexPath.row]
+                    let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
+                    let color = getColor(userName: name)
+                    cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
+                    cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
+                    let chatMessage = getMessages(messageId: recentChat.lastMessageId)
+                    let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
+                    cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName)
+                    cell.archivedStatusLabel.isHidden = !recentChat.isChatArchived
                     cell.profileImageButton?.tag = indexPath.row
                     cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
                     cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
@@ -531,6 +750,8 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                         recentChat.isItSavedContact = profile.contactType == .live ? true : false
                         recentChat.jid = profile.jid
                         let color = getColor(userName: name)
+                        cell.pinImageView.isHidden = true
+                        cell.muteImageView.isHidden = true
                         cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                         cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
                         cell.profileImageButton?.tag = indexPath.row
@@ -549,7 +770,10 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                 cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat)
                 let chatMessage = getMessages(messageId: recentChat.lastMessageId)
                 let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
+                cell.archivedStatusLabel.isHidden = true
                 cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName)
+                cell.muteImageView.isHidden = true
+                cell.pinImageView.isHidden = true
                 cell.profileImageButton?.tag = indexPath.row
                 cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
                 cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
@@ -567,8 +791,11 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                     recentChat.jid = profile.jid
                     recentChat.isDeletedUser = profile.contactType == .deleted
                     let color = getColor(userName: name)
+                    cell.archivedStatusLabel.isHidden = true
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                     cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
+                    cell.muteImageView.isHidden = true
+                    cell.pinImageView.isHidden = true
                     cell.profileImageButton?.tag = indexPath.row
                     cell.profileImageButton?.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
                     cell.setContactInfo(recentChat: recentChat, color: color)
@@ -587,6 +814,9 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                     recentChat.isItSavedContact = profile.contactType == .live ? true : false
                     recentChat.jid = profile.jid
                     let color = getColor(userName: name)
+                    cell.archivedStatusLabel.isHidden = true
+                    cell.muteImageView.isHidden = true
+                    cell.pinImageView.isHidden = true
                     cell.setTextColorWhileSearch(searchText: searchBar?.text ?? "", recentChat: recentChat)
                     cell.setLastContentTextColor(searchText: "", recentChat: recentChat)
                     cell.profileImageButton?.tag = indexPath.row
@@ -606,66 +836,115 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if isSearchEnabled && indexPath.section == 1 || isSearchEnabled && indexPath.section == 2{
-            if filteredContactList.count >= indexPath.row{
-                ContactManager.shared.saveUser(profileDetails: filteredContactList[indexPath.row])
-                openContactChat(index: indexPath)
+        switch isSearchEnabled {
+        case true:
+            if indexPath.section == 1 || isSearchEnabled && indexPath.section == 2 {
+                if filteredContactList.count >= indexPath.row{
+                    ContactManager.shared.saveUser(profileDetails: filteredContactList[indexPath.row])
+                    openContactChat(index: indexPath)
+                }
+            } else {
+                didSelectRow(tableView: tableView, indexPath: indexPath)
             }
-        }else{
-            if( isCellLongPressed ?? false) {
-                if let cell = tableView.cellForRow(at: indexPath) as? RecentChatTableViewCell {
-                    if( longPressCount >= 1) {
-                        if selectionRecentChatList.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 {
-                            cell.contentView.backgroundColor = Color.recentChatSelectionColor
-                            longPressCount += 1
-                            getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
-                            selectionRecentChatList.insert(getRecentChat[indexPath.row], at: 0)
-                            selectionCountLabel?.text = String(longPressCount)
-                        } else {
-                            recentChatTableView?.delegate?.tableView!(tableView, didDeselectRowAt: indexPath)
-                        }
-                    } else {
-                        hideMultipleSelectionView()
+        case false:
+            switch showArchivedChat {
+            case true:
+                didSelectRow(tableView: tableView, indexPath: indexPath)
+            case false:
+                if getRecentChat.count > 0 && getArchiveChat.count > 0 && showArchivedChat == false {
+                    switch indexPath.section {
+                    case FlyDefaults.isArchivedChatEnabled ? 0 : 1:
+                        updateArchiveChatView()
+                        recentChatTableView?.reloadData()
+                    case FlyDefaults.isArchivedChatEnabled ? 1 : 0:
+                        didSelectRow(tableView: tableView, indexPath: indexPath)
+                    default:
+                        break
                     }
+                } else if getArchiveChat.count > 0 {
+                    updateArchiveChatView()
+                    recentChatTableView?.reloadData()
+                } else {
+                    didSelectRow(tableView: tableView, indexPath: indexPath)
                 }
             }
-            if !(isCellLongPressed ?? false) {
-                if !getRecentChat.isEmpty && getRecentChat[indexPath.row].profileType == .groupChat && getRecentChat[indexPath.row].isBlockedByAdmin {
-                    showGroupBlockedView()
-                } else if isSearchEnabled == true {
-                    if !ENABLE_CONTACT_SYNC{
+        }
+    }
+
+    func didSelectRow(tableView: UITableView, indexPath: IndexPath) {
+        if( isCellLongPressed ?? false) {
+            if let cell = tableView.cellForRow(at: indexPath) as? RecentChatTableViewCell {
+                if( longPressCount >= 1) {
+                    if selectionRecentChatList.filter({$0.jid == (showArchivedChat ? getArchiveChat[indexPath.row].jid : getRecentChat[indexPath.row].jid) }).count == 0 {
+                        cell.contentView.backgroundColor = Color.recentChatSelectionColor
+                        longPressCount += 1
+                        if showArchivedChat {
+                            getArchiveChat[indexPath.row].isSelected = !getArchiveChat[indexPath.row].isSelected
+                            selectionRecentChatList.insert(getArchiveChat[indexPath.row], at: 0)
+                        } else {
+                            getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
+                            selectionRecentChatList.insert(getRecentChat[indexPath.row], at: 0)
+                        }
+                        selectionCountLabel?.text = String(longPressCount)
+                        updatePinIcon()
+                        updateMuteIcon()
+                        updateArchiveIcon()
+                    } else {
+                        recentChatTableView?.delegate?.tableView!(tableView, didDeselectRowAt: indexPath)
+                    }
+                } else {
+                    hideMultipleSelectionView()
+                }
+            }
+        }
+        if !(isCellLongPressed ?? false) {
+            if showArchivedChat && (!getArchiveChat.isEmpty && getArchiveChat[indexPath.row].profileType == .groupChat && getArchiveChat[indexPath.row].isBlockedByAdmin) {
+                showGroupBlockedView()
+            } else if (!getRecentChat.isEmpty && getRecentChat[indexPath.row].profileType == .groupChat && getRecentChat[indexPath.row].isBlockedByAdmin) {
+                showGroupBlockedView()
+            } else if isSearchEnabled == true {
+                if !ENABLE_CONTACT_SYNC {
+                    if filteredContactList.count != 0 {
                         if filteredContactList.count >= indexPath.row{
                             ContactManager.shared.saveUser(profileDetails: filteredContactList[indexPath.row])
                         }
                     }
-                    openContactChat(index: indexPath)
-                } else {
-                    openChat(index: indexPath.row)
                 }
+                openContactChat(index: indexPath)
+            } else {
+                openChat(index: indexPath.row)
             }
-            if selectionRecentChatList.count == 0 {
-                hideMultipleSelectionView()
-            }
-            showHideDeleteButton()
         }
+        if selectionRecentChatList.count == 0 {
+            hideMultipleSelectionView()
+        }
+        showHideDeleteButton()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         if( isCellLongPressed ?? false) {
             if let cell = tableView.cellForRow(at: indexPath) as? RecentChatTableViewCell {
                 if( longPressCount >= 1) {
-                        let recentChatJid = getRecentChat[indexPath.row].jid
+                    let recentChatJid = showArchivedChat ? getArchiveChat[indexPath.row].jid : getRecentChat[indexPath.row].jid
                         if selectionRecentChatList.filter({$0.jid == recentChatJid}).count > 0 {
                             selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
                                 if recentChatJid == selectedRecentChat.jid {
                                     cell.contentView.backgroundColor = .clear
                                     longPressCount -= 1
-                                    getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
-                                    selectionRecentChatList.remove(at: index)
+                                    if showArchivedChat {
+                                        getArchiveChat[indexPath.row].isSelected = !getArchiveChat[indexPath.row].isSelected
+                                        selectionRecentChatList.remove(at: index)
+                                    } else {
+                                        getRecentChat[indexPath.row].isSelected = !getRecentChat[indexPath.row].isSelected
+                                        selectionRecentChatList.remove(at: index)
+                                    }
                                     selectionCountLabel?.text = String(longPressCount)
                                     if selectionRecentChatList.count == 0 {
                                         hideMultipleSelectionView()
                                     }
+                                    updatePinIcon()
+                                    updateMuteIcon()
+                                    updateArchiveIcon()
                                     return
                                 }
                             }
@@ -703,13 +982,14 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
     private func clearSelectedColor() {
         getRecentChat.enumerated().forEach { (index, element) in
             if let cell =  recentChatTableView?.cellForRow(at: IndexPath(row: index, section: 0)) as? RecentChatTableViewCell {
+                getRecentChat[index].isSelected = false
                 cell.contentView.backgroundColor = .clear
             }
         }
     }
     
     func openChat(index: Int) {
-        let profile = getRecentChat[index]
+        let profile = showArchivedChat ? getArchiveChat[index] : getRecentChat[index]
         let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
         let profileDetails = ProfileDetails(jid: profile.jid)
         profileDetails.name = profile.profileName
@@ -738,8 +1018,8 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
         switch index.section {
         case 0:
-            if getRecentChat.filter({$0.unreadMessageCount == 0}).count > index.row {
-                let profile = getRecentChat.filter({$0.unreadMessageCount == 0})[index.row]
+            if getRecentChat.count > index.row {
+                let profile = getRecentChat[index.row]
                 let profileDetails = ProfileDetails(jid: profile.jid)
                 profileDetails.name = profile.profileName
                 profileDetails.nickName = profile.nickName
@@ -855,16 +1135,19 @@ extension RecentChatViewController {
  }
     
     func getRecentChatList() {
-        recentChatViewModel?.getRecentChatList(isBackground: true, completionHandler: { [weak self] recentChatList in
-            if let weakSelf = self {
+        
+        
+        recentChatListBuilder?.loadRecentChatList(completionHandler: {  [weak self] isSuccess, error, data in
+            var result = data
+            if  let weakSelf = self, let recentChatList = result.getData() as? [RecentChat], isSuccess{
+                weakSelf.isRecentLoadingDone = false
                 if weakSelf.isSearchEnabled == false {
                     weakSelf.clearChatList()
-                    weakSelf.getRecentChat = recentChatList ?? []
-                    weakSelf.getAllRecentChat = recentChatList ?? []
+                    weakSelf.getRecentChat = recentChatList
+                    weakSelf.getAllRecentChat = recentChatList
                     weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
                         weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
                     }
-                  //weakSelf.getMessageForSearch()
                 }
                 DispatchQueue.main.async { [weak self] in
                     if self?.isSearchEnabled == false {
@@ -874,33 +1157,37 @@ extension RecentChatViewController {
                     self?.getOverallUnreadCount()
                 }
             }
+            
         })
-    }
-    
-//    func getMessageForSearch(){
-//        DispatchQueue.main.async { [weak self] in
+
+        ChatManager.getArchivedChatList { [weak self] isSuccess, error, data in
+            if isSuccess {
+                self?.getArchiveChat = data["data"] as? [RecentChat] ?? []
+                self?.showHideEmptyMessage()
+            }
+        }
+        
+//        recentChatViewModel?.getRecentChatList(isBackground: true, completionHandler: { [weak self] recentChatList in
 //            if let weakSelf = self {
-//                weakSelf.getRecentChat.forEach { recentChat in
-//                    let chatMessage = FlyMessenger.getMessagesOf(jid: recentChat.jid)
-//                    chatMessage.forEach { chatMessage in
-//                        let recentChatObj = RecentChat()
-//                        recentChatObj.lastMessageContent = chatMessage.messageTextContent
-//                        recentChatObj.lastMessageId = chatMessage.messageId
-//                        recentChatObj.profileName = chatMessage.senderUserName
-//                        recentChatObj.lastMessageTime = chatMessage.messageSentTime
-//                        recentChatObj.lastMessageStatus = chatMessage.messageStatus
-//                        recentChatObj.jid = chatMessage.chatUserJid
-//                        DispatchQueue.main.async {
-//                            weakSelf.unreadMessageChatList.insert(recentChatObj, at: 0)
-//                        }
+//                if weakSelf.isSearchEnabled == false {
+//                    weakSelf.clearChatList()
+//                    weakSelf.getRecentChat = recentChatList ?? []
+//                    weakSelf.getAllRecentChat = recentChatList ?? []
+//                    weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
+//                        weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
 //                    }
+//                  //weakSelf.getMessageForSearch()
 //                }
-//                weakSelf.getAllRecentChat = weakSelf.getRecentChat
-//                weakSelf.allUnreadMessageChatList = weakSelf.unreadMessageChatList
+//                DispatchQueue.main.async { [weak self] in
+//                    if self?.isSearchEnabled == false {
+//                        self?.recentChatTableView?.reloadData()
+//                        self?.showHideEmptyMessage()
+//                    }
+//                    self?.getOverallUnreadCount()
+//                }
 //            }
-//
-//        }
-//    }
+//        })
+    }
     
     func getLastMesssage() -> [ChatMessage]? {
         var chatMessage: [ChatMessage] = []
@@ -933,8 +1220,7 @@ extension RecentChatViewController: UISearchBarDelegate {
             clearSelectedColor()
             getRecentChat = searchText.trim().isEmpty ? getAllRecentChat : getAllRecentChat.filter({ recentChat -> Bool in
                 let name = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName,contactType: recentChat.isItSavedContact ? .live : .unknown)
-                return (name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false) ||
-                recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+                return (name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false)
             })
             if ENABLE_CONTACT_SYNC {
                 filteredContactList = searchText.trim().isEmpty ? removeDuplicateFromContacts(contactList: allContactsList) : removeDuplicateFromContacts(contactList: allContactsList).filter({ contact -> Bool in
@@ -942,7 +1228,7 @@ extension RecentChatViewController: UISearchBarDelegate {
                     return name.range(of: searchText.trim(), options: [.caseInsensitive, .diacriticInsensitive]) != nil
                 })
             } else {
-                let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                let searchString = searchText.trim()
                 if !searchString.isEmpty || self.searchTerm != searchString{
                     resetParams()
                     searchSubject.onNext(searchString.lowercased())
@@ -1004,7 +1290,7 @@ extension RecentChatViewController {
                     userImage?.contentMode = .scaleAspectFill
                 }
                 userImage?.sd_setImage(with: url, placeholderImage: placeHolder)
-            }else if isDeletedUser || getisBlockedMe(jid: profile.jid) {
+            }else if isDeletedUser || getisBlockedMe(jid: profile.jid) || profile.isBlockedByAdmin {
                 userImage?.backgroundColor =  Color.groupIconBackgroundGray
                 userImage?.sd_setImage(with: nil, placeholderImage: UIImage(named: "ic_profile_placeholder") ?? UIImage())
             }else {
@@ -1059,14 +1345,14 @@ extension RecentChatViewController {
     
     private func showHideEmptyMessage() {
         if isSearchEnabled == true {
-            emptyMessageView?.isHidden = (getRecentChat.count == 0 && filteredContactList.count == 0 && unreadMessageChatList.count == 0) ? false : true
+            emptyMessageView?.isHidden = (getRecentChat.count == 0 && getArchiveChat.count == 0 && filteredContactList.count == 0 && unreadMessageChatList.count == 0) ? false : true
             emptyImage?.isHidden = true
             noNewMsgText?.isHidden = false
             noNewMsgText?.text = noResultFound
             noNewMsgText?.textColor = .lightGray
             descriptionMessageText?.isHidden = true
         } else {
-            emptyMessageView?.isHidden = getRecentChat.count == 0 ? false : true
+            emptyMessageView?.isHidden = (getRecentChat.count == 0 && getArchiveChat.count == 0) ? false : true
             emptyImage?.isHidden = false
             noNewMsgText?.isHidden = false
             noNewMsgText?.text = noNewMessage
@@ -1092,11 +1378,21 @@ extension RecentChatViewController {
         searchBar?.setShowsCancelButton(false, animated: true)
         searchBar?.text = ""
         getRecentChatList()
+        recentChatTableView?.tableFooterView = nil
     }
 }
 
 extension RecentChatViewController : ConnectionEventDelegate {
-    func onConnected() {}
+    func onConnected() {
+        if !Utility.getBoolFromPreference(key: "oneTimeSync") {
+            ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
+                if isSuccess {
+                    print("oneTimeSync", isSuccess)
+                    Utility.saveInPreference(key: "oneTimeSync", value: true)
+                }
+            }
+        }
+    }
     
     func onDisconnected() {}
     
@@ -1105,7 +1401,7 @@ extension RecentChatViewController : ConnectionEventDelegate {
 
 // MessageEventDelegate
 extension RecentChatViewController : MessageEventsDelegate {
-    
+   
     func onMessageTranslated(message: ChatMessage, jid: String) {
         
     }
@@ -1127,18 +1423,31 @@ extension RecentChatViewController : MessageEventsDelegate {
         
     }
     
-    func onMessagesClearedOrDeleted(messageIds: Array<String>) {}
+    func onMessagesClearedOrDeleted(messageIds: Array<String>) {
+        getRecentChatList()
+    }
     
-    func onMessagesDeletedforEveryone(messageIds: Array<String>) {}
+    func onMessagesDeletedforEveryone(messageIds: Array<String>) {
+        getRecentChatList()
+    }
     
     func showOrUpdateOrCancelNotification() {}
     
-    func onMessagesCleared(toJid: String) {}
+    func onMessagesCleared(toJid: String) {
+        if let index = getRecentChat.firstIndex(where: { pd in pd.jid == toJid }) {
+            if let recentChat = ChatManager.getRechtChat(jid: toJid) {
+                getRecentChat[index] = recentChat
+                let indexPath = IndexPath(item: index, section: 0)
+                recentChatTableView?.reloadRows(at: [indexPath], with: .fade)
+            }
+        }
+    }
     
     func setOrUpdateFavourite(messageId: String, favourite: Bool, removeAllFavourite: Bool) {}
     
     func onMessageReceived(message: ChatMessage, chatJid: String) {
         print("onMessageReceived \(message.messageId) \(chatJid)")
+        unArchiveChatOnEvents(jids: [chatJid])
         if isSearchEnabled == false {
             refreshRecentChatMessages()
         }
@@ -1179,19 +1488,45 @@ extension RecentChatViewController : ProfileEventsDelegate {
     }
     
     func blockedThisUser(jid: String) {}
-    
+
     func unblockedThisUser(jid: String) {}
-    
+
     func usersIBlockedListFetched(jidList: [String]) {}
     
     func usersBlockedMeListFetched(jidList: [String]) {}
     
     func userBlockedMe(jid: String) {
-        setProfile()
+        if let recentChat = ChatManager.getRechtChat(jid: jid){
+            if isSearchEnabled{
+                if let indexofJid = getRecentChat.firstIndex(where: { pd in pd.jid == jid }){
+                    getRecentChat[indexofJid] = recentChat
+                    reloadRecentChatRow(index: indexofJid, section: 0)
+                }else if let indexofJid = filteredContactList.firstIndex(where: { pd in pd.jid == jid }), let profileDetails = ChatManager.profileDetaisFor(jid: jid){
+                    filteredContactList[indexofJid] = profileDetails
+                    reloadRecentChatRow(index: indexofJid, section: 1)
+                }
+            }else if let indexofJid = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+                getRecentChat[indexofJid] = recentChat
+                reloadRecentChatRow(index: indexofJid, section: 0)
+            }
+        }
     }
     
     func userUnBlockedMe(jid: String) {
-        setProfile()
+        if let recentChat = ChatManager.getRechtChat(jid: jid){
+            if isSearchEnabled{
+                if let indexofJid = getRecentChat.firstIndex(where: { pd in pd.jid == jid }){
+                    getRecentChat[indexofJid] = recentChat
+                    reloadRecentChatRow(index: indexofJid, section: 0)
+                }else if let indexofJid = filteredContactList.firstIndex(where: { pd in pd.jid == jid }), let profileDetails = ChatManager.profileDetaisFor(jid: jid){
+                    filteredContactList[indexofJid] = profileDetails
+                    reloadRecentChatRow(index: indexofJid, section: 1)
+                }
+            }else if let indexofJid = getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
+                getRecentChat[indexofJid] = recentChat
+                reloadRecentChatRow(index: indexofJid, section: 0)
+            }
+        }
     }
     
     func hideUserLastSeen() {}
@@ -1242,6 +1577,11 @@ extension RecentChatViewController : ProfileEventsDelegate {
             filteredContactList.remove(at: index)
         }
         recentChatTableView?.reloadData()
+    }
+    
+    func reloadRecentChatRow(index : Int, section : Int){
+        let indexPath = IndexPath(item: index, section: section)
+        recentChatTableView?.reloadRows(at: [indexPath], with: .fade)
     }
 }
 
@@ -1298,7 +1638,7 @@ extension RecentChatViewController : GroupEventsDelegate {
     }
     
     func didFetchGroupMembers(groupJid: String) {
-        updateGroupInRecentChat(groupJid: groupJid)
+        
     }
     
     func didReceiveGroupNotificationMessage(message: ChatMessage) {
@@ -1369,6 +1709,11 @@ extension RecentChatViewController {
                 for (index, recent) in recentChats.enumerated() {
                     if recent.jid == jid {
                         self?.getRecentChat[index].isBlockedByAdmin = isBlocked
+                        if self?.getRecentChat[index].isGroup ?? false && isBlocked {
+                            self?.userImage?.image = UIImage(named: "ic_groupPlaceHolder")
+                        } else {
+                            self?.setProfile()
+                        }
                         self?.recentChatTableView?.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
                         break
                     }
@@ -1389,7 +1734,7 @@ extension RecentChatViewController {
                     if element.jid == groupJid {
                         if let recent = groupAndRecent.recentChat {
                             self?.getRecentChat.remove(at: index)
-                            self?.getRecentChat.insert(recent, at: 0)
+                            self?.getRecentChat.insert(recent, at: element.isChatPinned ? index : ChatManager.recentChatPinnedCount())
                             print("\(self?.getRecentChat[index].nickName ?? "")")
                             self?.recentChatTableView?.reloadData()
                         }
@@ -1399,7 +1744,7 @@ extension RecentChatViewController {
         } else {
             if let recent = groupAndRecent.recentChat {
                 executeOnMainThread { [weak self] in
-                    self?.getRecentChat.insert(recent, at: 0)
+                    self?.getRecentChat.insert(recent, at: ChatManager.recentChatPinnedCount())
                     self?.recentChatTableView?.reloadData()
                 }
             }
@@ -1420,21 +1765,63 @@ extension RecentChatViewController {
 extension RecentChatViewController : UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let position  = scrollView.contentOffset.y
+        print("#scroll #load recentChatList loading done \(isSearchEnabled)")
+        if !isSearchEnabled{
+            
+            if ((recentChatTableView!.contentSize.height-scrollView.frame.size.height) - position) < (2 * scrollView.frame.size.height){
+                if isRecentLoadingDone{
+                    print("#scroll #load recentChatList loading done")
+                    return
+                }
+                
+                if !isRecentLoadingInProgress{
+                    isRecentLoadingInProgress = true
+                    backgroundQueue.async {
+                        self.loadNextSetOfData()
+                    }
+                }
+            }
+            
+        }
         if ENABLE_CONTACT_SYNC{
             return
-        }
-        let position  = scrollView.contentOffset.y
-         if position > (recentChatTableView?.contentSize.height ?? 300)-200 - scrollView.frame.size.height {
-             if isPaginationCompleted(){
-                 print("#fetch Pagination Done")
-                 return
-             }
-             recentChatTableView?.tableFooterView = createTableFooterView()
-            if !isLoadingInProgress{
-                isLoadingInProgress = true
-                getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
+        }else{
+            
+            if position > (recentChatTableView?.contentSize.height ?? 300)-200 - scrollView.frame.size.height {
+                if isPaginationCompleted(){
+                    print("#fetch Pagination Done")
+                    return
+                }
+                recentChatTableView?.tableFooterView = createTableFooterView()
+                if !isLoadingInProgress{
+                    isLoadingInProgress = true
+                    getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
+                }
             }
         }
+    }
+    
+    func loadNextSetOfData()  {
+        print("#scroll loadNextSetOfData")
+        recentChatListBuilder?.nextSetOfData(completionHandler: {  [weak self] isSuccess, error, data in
+            var result = data
+            if  let weakSelf = self, let recentChatList = result.getData() as? [RecentChat], isSuccess{
+                weakSelf.getAllRecentChat.append(contentsOf: recentChatList)
+                weakSelf.getRecentChat.append(contentsOf: recentChatList)
+                if !(weakSelf.recentChatListBuilder?.hasNextRecentChatData() ?? true){
+                    weakSelf.isRecentLoadingDone = true
+                }
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.isRecentLoadingInProgress = false
+                if self?.isSearchEnabled == false {
+                    self?.recentChatTableView?.reloadData()
+                }
+                self?.getOverallUnreadCount()
+            }
+        })
     }
     
     public func getUsersList(pageNo : Int = 1, pageSize : Int =  40, searchTerm : String){
@@ -1466,12 +1853,12 @@ extension RecentChatViewController : UIScrollViewDelegate {
                     self.filteredContactList.append(contentsOf: profileArray)
                     profilesCount = profileArray.count
                 }
-                    if profilesCount >= pageSize{
-                        self.searchNextPage += 1
-                    }
-                    self.searchTotalPages = data["totalPages"] as? Int ?? 1
-                    self.searchTotalUsers = data["totalRecords"] as? Int ?? 1
-                    print("#fetch response search total => \(self.searchTotalPages) nextPage => \(self.searchNextPage) searchTotoalUsers => \(self.searchTotalUsers) profilesCount => \(profilesCount) searchTerm => \(self.searchTerm)")
+                if profilesCount >= pageSize{
+                    self.searchNextPage += 1
+                }
+                self.searchTotalPages = data["totalPages"] as? Int ?? 1
+                self.searchTotalUsers = data["totalRecords"] as? Int ?? 1
+                print("#fetch response search total => \(self.searchTotalPages) nextPage => \(self.searchNextPage) searchTotoalUsers => \(self.searchTotalUsers) profilesCount => \(profilesCount) searchTerm => \(self.searchTerm)")
                 self.recentChatTableView?.tableFooterView = nil
                 self.recentChatTableView?.reloadData()
                 self.showHideEmptyMessage()
@@ -1553,6 +1940,71 @@ extension RecentChatViewController : UIScrollViewDelegate {
     public func saveUserToDatabase(jid : String){
         if let index = filteredContactList.firstIndex { pd in pd.jid == jid}{
             ContactManager.shared.saveUser(profileDetails: filteredContactList[index], saveAs: .live)
+        }
+    }
+}
+
+//MARK: - Archive chat extension
+extension RecentChatViewController {
+
+    //Get status whether is archive or Unarchive
+    func isArchive() -> Bool {
+        return selectionRecentChatList.filter {$0.isChatArchived == false }.count > 0 ? true : false
+    }
+
+    //Update archive icon
+    func updateArchiveIcon() {
+        archiveChatButton.setImage(isArchive() ? UIImage(named: "archive") : UIImage(named: "unarchive"), for: .normal)
+    }
+
+    func hideArchiveHeader() {
+        showArchivedChat = false
+        headerBackButton.isHidden = true
+        searchView.isHidden = false
+        createGroupButton.isHidden = false
+        pinChatButton.isHidden = false
+        headerLabel.text = "Chats"
+    }
+
+    func updateArchiveChatView() {
+        showArchivedChat = true
+        headerBackButton.isHidden = false
+        searchView.isHidden = true
+        createGroupButton.isHidden = true
+        pinChatButton.isHidden = true
+        headerLabel.text = "Archive Chats"
+    }
+
+    func unArchiveChatOnEvents(jids: [String]) {
+        if !FlyDefaults.isArchivedChatEnabled {
+            recentChatViewModel?.getArchiveChat(jids: jids, isArchive: false, completionHandler: { isSuccess, error, data in
+                print(data)
+            })
+        }
+    }
+}
+
+extension RecentChatViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        searchBar?.isHidden = !(availableFeatures.isRecentChatSearchEnabled) ? true : false
+        
+        if !(availableFeatures.isRecentChatSearchEnabled){
+            refreshRecentChatMessages()
+        }
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
         }
     }
 }

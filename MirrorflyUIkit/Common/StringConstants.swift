@@ -67,6 +67,14 @@ let typeHere = "Type here"
 let noCamera = "No Camera"
 let noCameraMessage = "Sorry, this device has no camera"
 
+//MARK: - Notification Tone
+let chooseAlertTypeforIncomingMessages = "Choose alert type for incoming messages"
+let learnMoreInOurHelpCentre = "Learn more in our Help Center"
+let playSoundsForIncomingMessages = "Play sounds for incoming messages"
+let showingPopUpforIncomingMessages = "Showing popup for incoming messages "
+let vibrateWhenANewMessageArrivesWhileApplicationArrives = "Vibrate when a new message arrives while application is running "
+let  thisWillMuteAllNotificationsAlertsForIncomingMessages = "This will mute all notification alerts for incoming messages"
+
 //MARK : Toast
 //MARK : Profile
 
@@ -96,7 +104,7 @@ let reply = "Reply"
 let emptyChatMessage = "Message should not be empty"
 
 let allowLocation = "Allow location from settings"
-let copyAlert = "Text copied successfully"
+let copyAlert = "Text copied successfully to the clipboard"
 
 //Chat - Contacts
 let noContactNumberAlert = "Selected contact doesn't have any mobile number"
@@ -134,6 +142,9 @@ let adminText = "Admin"
 let removeTitle = "Remove"
 let removeDescription = "Are you sure you want remove?"
 let deleteGroupMessage = "Group deleted successfully"
+
+//Finger Print Set
+let biometricAuthentication = "You need to set pin first in order to enable bio metric authentication"
 
 /// Contact access permission
 let contactAccessTitle = "Allow Contact Access"
@@ -187,10 +198,27 @@ let googleToken = "googleToken"
 let voipToken = "voipToken"
 let password = "password"
 let username = "username"
+let revokeMediaAccess = "revokeMediaAccess"
 let isLoginContactSyncDone = "isLoginContactSyncDone"
 let firstTimeSandboxContactSyncDone = "firstTimeSandboxContactSyncDone"
-
+let senderDeletedMessage = "You deleted this message"
+let receiverDeletedMessage = "This message was deleted"
 let isLocationDenied = "isLocationDenied"
+
+let  enableTranslateMessageToChooseTranslationLanguage = "Enable Translate Message to choose Translation Language"
+let chooseTranslationLaguage = "Choose Translation Language"
+let doubleTapTheReceivedMessageToTranslate = "Double Tap the received message to translate"
+let hidingLastSeenActivityToOtherusers = "Hiding the last seen activity to other users"
+let enableAutodownlaodToTurnAllTypes = "Enable \"Auto download\" to turn all types of files received readily viewable"
+let dataUsageSettings = "Data Usage Settings"
+let setupYourMobileAndWifiDataUsageBasedOnMediaType = "Setup your mobile and wifi data usage based on media type"
+let ArchiveSettingsDescription = "Archived chats will remain archived when you receive a new message"
+
+let addMoresecurityWith4DigitsecretPIN = "Add more security with 4 digit secret PIN"
+let useFingerPrintIDorFaceID = "Use Fingerprint ID"
+let changeThe4DigitSecurityPIN = "Change the 4 digit security PIN"
+let changePIN = "Change PIN"
+
 
 //MARK: - Chat
 
@@ -208,6 +236,13 @@ let processingVideo = "Processsing Video..."
 let waitingForNetwork = "Waiting for Network"
 let adminEmail = "mirrorflyadminsupport@gmail.com"
 let chatActions = "Chat Actions"
+let message = "Message"
+let clearChatMessage = "Do you want to clear all Conversation?"
+let clearAllChat = "Are you sure want to clear your conversation history?"
+let allYourConversationareCleared = "All your conversation are cleared"
+let serverError = "Server error, kindly try again later" 
+let clearAll = "Clear All"
+let thereIsNoConversation = "There is no conversation"
 
 //MARK: Group
 let groupNameRequired = "Please provide group name"
@@ -219,6 +254,7 @@ let groupCreatedSuccess = "Group created successfully"
 let groupCreatedFailure = "Group creation failure"
 let isText = "is"
 let groupNoLongerAvailable = "This group is no longer available"
+let messageNoLongerAvailable = "This message is no longer available"
 let youCantSendMessagesToThiGroup = "You can't send messages to this group because you're no longer a participant."
 let thisUerIsNoLonger = "This user is no longer available"
 let youCantSelectTheGroup = "You're no longer a participant in this group"
@@ -240,7 +276,8 @@ let foregroundNotification = "foregroundNotification"
 
 // MARK: rporting user or group or message
 let report = "Report"
-let reportLastFiveMessage = "The last 5 message from this contact will be forwarded to admin. This contact will not be notified."
+let reportMessage = "This message will be forwarded to admin. This contact will not be notified."
+let reportLastFiveMessage = "The last 5 messages from this contact will be forwarded to admin. This contact will not be notified."
 let reportSend = "Report Sent"
 let reportGroup = "Report Group"
 let reportThisGroup = "Report this group?"
@@ -257,6 +294,21 @@ let recordingReachedMaximumTime = "You can record maximum 300 seconds for audio 
 let recordingIsTooSmall = "Recorded audio time is too short"
 let cannotRecordAudioDuringCall = "Can’t record audio during a phone call"
 
+//MARK: Message Info
+let messageSentNotDelivered = "Message Sent, not delivered yet"
+let yourMessageIsNotRead = "Your message is not read"
+
+
+// MARK: Multiple Selection Title
+let deleteTitle = "Delete"
+let forwardTitle = "Forward"
+let starTitle = "Star"
+let unStarTitle = "Unstar"
+
+//MARK: DeleteMessages
+let originalMessageDeleted = "Can't forward because the original message is deleted"
+
+
 // Error messages
 public struct ErrorMessage {
     
@@ -271,18 +323,31 @@ public struct ErrorMessage {
     public static let enterOtp = NSLocalizedString("enterOtp", comment: "")
     public static let enterMobileNumber = NSLocalizedString("enterMobileNumber", comment: "")
     public static let sessionExpired = NSLocalizedString("sessionExpired", comment: "")
-    public static let restrictedMoreImages = NSLocalizedString("Can't share more than 5 media items", comment: "")
+    public static let restrictedMoreImages = NSLocalizedString("Can't share more than 10 media items", comment: "")
     public static let restrictedforwardUsers = NSLocalizedString("You can only forward with up to 5 users or groups", comment: "")
     public static let checkYourInternet = NSLocalizedString("Please check your internet connection", comment: "")
     public static let fileSizeLarge = NSLocalizedString("File size is too large", comment: "")
     public static let largeVideoFile = NSLocalizedString("File size is too large. Try uploading file size below 30MB", comment: "")
     public static let numberDoesntMatch =  NSLocalizedString("mobileNumberDoesntMatch", comment: "")
+    public static let invalidPIN = NSLocalizedString("Invalid PIN! Try again", comment: "")
+    public static let invalidOLDPIN = NSLocalizedString("Invalid old PIN", comment: "")
+    public static let enternewPIN = NSLocalizedString("Enter the New PIN", comment: "")
+    public static let enterconfirmPIN = NSLocalizedString("Enter the Confirm PIN", comment: "")
+    public static let enterthePIN = NSLocalizedString("Enter the PIN", comment: "")
+    public static let passwordShouldbeSame = NSLocalizedString(" PIN and Confirm PIN must be same", comment: "")
+    public static let oldPINnewPINsholdnotSame = NSLocalizedString("Old PIN and new PIN should not be same", comment: "")
+    public static let validateAppLock = NSLocalizedString("Invalid PIN! Try again", comment: "")
+    public static let fingerPrintIsNotRegisteredinDevice = NSLocalizedString("Fingerprint is not registered in device", comment: "")
+    public static let pleaseEnablefingerPrintonYourdevice = NSLocalizedString("Please enable fingerprint on your device", comment: "")
+    
+    
 }
 // Error messages
 public struct SuccessMessage {
     
     public static let successAuth = NSLocalizedString("successAuth", comment: "")
     public static let successOTP = NSLocalizedString("successOTP", comment: "")
+    public static let PINsetsuccessfully = NSLocalizedString("PIN set successfully", comment: "")
 }
 
 public struct AppRegex {
@@ -302,9 +367,21 @@ enum CreateGroupOptions : String, CaseIterable {
 }
 
 enum ChatActions : String, CaseIterable {
+    case clearAllConversation = "Clear All Conversation"
     case report = "Report"
     case block = "Block"
     case unblock = "Unblock"
+}
+
+enum MessageActions : String, CaseIterable {
+    case reply = "Reply"
+    case copy = "Copy"
+    case forward = "Forward"
+    case info = "Info"
+    case report = "Report"
+    case delete = "Delete"
+    case star = "Star"
+    case unStar = "Unstar"
 }
 
 enum GroupReportActions : String, CaseIterable {

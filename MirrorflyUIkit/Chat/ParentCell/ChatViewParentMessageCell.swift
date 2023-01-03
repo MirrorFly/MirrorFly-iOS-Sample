@@ -13,7 +13,7 @@ import Alamofire
 import FlyCore
 
 protocol RefreshBubbleImageViewDelegate {
-    func refreshBubbleImageView(indexPath: IndexPath,isSelected: Bool)
+    func refreshBubbleImageView(indexPath: IndexPath,isSelected: Bool,title: String?)
 }
 
 class ChatViewParentMessageCell: BaseTableViewCell {
@@ -83,11 +83,13 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     @IBOutlet weak var quickForwardView: UIView?
     
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
-    var selectedForwardMessage: [SelectedForwardMessage]? = []
+    var selectedForwardMessage: [SelectedMessages]? = []
+    var isDeleteSelected: Bool = false
        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        textMessageTimeLabel?.font = UIFont.font9px_appLight()
     }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -131,7 +133,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             isAllowSwipe = true
         }
         
-        if !(isShowForwardView ?? false) {
+        if !(isShowForwardView ?? false) || (isDeleteSelected == false && message?.isMessageRecalled == true) {
             forwardView?.isHidden = true
             forwardButton?.isHidden = true
             forwardLeadingCons?.constant = 0
@@ -156,8 +158,19 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         // Reply view elements and its data
        if(message!.isReplyMessage) {
             replyView?.isHidden = false
-           
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
+           if message?.replyParentChatMessage?.isMessageRecalled == true || message?.replyParentChatMessage?.isMessageDeleted == true {
+               replyTextLabel?.text = "Original message not available"
+               mediaImageView?.isHidden = true
+               messageIconView?.isHidden = true
+               mediaImageViewWidthCons?.constant = 0
+               replyMessageIconWidthCons?.constant = 0
+               replyMessageIconHeightCons?.isActive = false
+               replyTextWithImageTrailingCons?.isActive = false
+               replyTextLabelTrailingCons?.isActive = true
+               replyVIewWithMediaCons?.isActive = false
+               replyViewWithoutMediaCons?.isActive = true
+           } else {
             let getReplymessage =  replyMessage?.messageTextContent
            replyViewHeightCons?.isActive = (getReplymessage?.count ?? 0 > 20) ? false : true
            replyTextLabel?.text = getReplymessage
@@ -266,9 +279,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                replyTextLabelTrailingCons?.isActive = true              
                replyVIewWithMediaCons?.isActive = false
                replyViewWithoutMediaCons?.isActive = true
-
-               
            }
+       }
         if(replyMessage?.isMessageSentByMe ?? false) {
             replyUserLabel?.text = you.localized
         }
@@ -276,6 +288,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             let name =   getUserName(jid: replyMessage?.senderUserJid ?? "", name: replyMessage?.senderUserName ?? "", nickName: replyMessage?.senderNickName ?? "", contactType: (replyMessage?.isDeletedUser ?? false) ? .deleted : (replyMessage?.isSavedContact ?? false) ? .live : .unknown)
             replyUserLabel?.text = name
         }
+           
+        ChatUtils.setDeletedReplyMessage(chatMessage: replyMessage, messageIconView: messageIconView, messageTypeIcon: messageTypeIcon, replyTextLabel: replyTextLabel, mediaImageView: mediaImageView, mediaImageViewWidthCons: mediaImageViewWidthCons, replyMessageIconWidthCons: replyMessageIconWidthCons, replyMessageIconHeightCons: replyMessageIconHeightCons)
     }
         else {
             mediaImageViewWidthCons?.constant = 0
@@ -343,7 +357,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         }
         textMessageTimeLabel?.isAccessibilityElement =  true
         textMessageTimeLabel?.accessibilityLabel = Utility.currentMillisecondsToTime(milliSec: timeStamp)
-        textMessageTimeLabel?.text = Utility.currentMillisecondsToTime(milliSec: timeStamp)
+        textMessageTimeLabel?.accessibilityLabel = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
         textMessageTimeLabel?.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
         
         
@@ -395,20 +409,6 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             translatedTextLabel?.attributedText = processTextMessage(message: chatMessage.translatedMessageTextContent , uiLabel: translatedTextLabeltemp)
         }
         return self
-    }
-    
-    func utcToLocal(dateStr: String) -> String? {
-        let dateFormatter = DateFormatter()
-       // dateFormatter.dateFormat = "yyyy-MM-dd H:mm:ss"
-      //  dateFormatter.dateFormat = "HH:mm"
-        dateFormatter.timeStyle = .short
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        if let date = dateFormatter.date(from: dateStr) {
-            dateFormatter.timeZone = TimeZone.current
-            return dateFormatter.string(from: date)
-        }
-        return nil
     }
     
     @objc func didTapTextLabel(sender: UITapGestureRecognizer){

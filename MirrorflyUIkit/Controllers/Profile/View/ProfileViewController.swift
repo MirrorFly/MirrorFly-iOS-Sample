@@ -78,6 +78,8 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
         statusLabel.text = inMirrorfly.localized
         profileImage.layer.masksToBounds = false
         profileImage.layer.cornerRadius = profileImage.frame.height/2
+        profileImage?.layer.borderWidth = 0.5
+        profileImage.layer.borderColor = Color.groupIconBackgroundGray?.cgColor
         profileImage.clipsToBounds = true
         startLoading(withText: pleaseWait)
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -175,7 +177,6 @@ extension ProfileViewController {
         if(FlyDefaults.isProfileUpdated) {
             do {
                 let JID = FlyDefaults.myXmppUsername + "@" + FlyDefaults.xmppDomain
-                
             
                 try ContactManager.shared.getUserProfile(for:  JID, fetchFromServer: true, saveAsFriend: true) { [weak self] isSuccess, flyError, flyData in
                     var data  = flyData
@@ -191,10 +192,7 @@ extension ProfileViewController {
                                     }
                                 })
                                 self?.isImagePicked = true
-                                print("profileDetails.image")
-                                print(self?.profileDetails?.image)
-                            }
-                            else {
+                            } else {
                                 self?.getUserNameInitial()
                             }
                             print("profileDetails")
@@ -203,9 +201,9 @@ extension ProfileViewController {
                             self?.getUserMobileNumber = self?.profileDetails!.mobileNumber ?? ""
                             if mobileNumber.isEmpty || mobileNumber.count < 6 {
                                 self?.mobileNumberLabel.text = self?.getMobileNumber ?? ""
-                            }else{
-                                let mobileNumberWithoutCountryCode = self?.mobileNumberParse(phoneNo: mobileNumber)
-                                self?.mobileNumberLabel.text = "+91 " +  mobileNumberWithoutCountryCode!
+                            } else {
+                                let mobileNumberWithoutCountryCode = AppUtils.shared.mobileNumberParse(phoneNo: mobileNumber)
+                                self?.mobileNumberLabel.text = mobileNumberWithoutCountryCode
                             }
                             
                             self?.statusLabel.text = self?.profileDetails?.status
@@ -226,18 +224,6 @@ extension ProfileViewController {
             saveButton.setTitle(save.localized, for: .normal)
             self.stopLoading()
         }
-    }
-    
-    func mobileNumberParse(phoneNo:String) -> String {
-        var splittedMobileNumber:String = ""
-        let phoneNumberKit = PhoneNumberKit()
-        do {
-            let phoneNumber = try phoneNumberKit.parse(phoneNo)
-            splittedMobileNumber  = String(describing:phoneNumber.nationalNumber)
-        }
-        catch {
-        }
-        return splittedMobileNumber
     }
     
     func setImage(imageURL: String,completionHandler:  @escaping (Bool?)-> Void) {
@@ -299,6 +285,8 @@ extension ProfileViewController {
                 self?.stopLoading()
                 var data  = flyData
                 if isSuccess {
+                    ChatManager.sendRegisterUpdate { isSuccess, error, data in
+                    }
                     Utility.saveInPreference(key: isProfileSaved, value: true)
                     Utility.saveInPreference(key: isLoginContactSyncDone, value: false)
                     if ENABLE_CONTACT_SYNC {

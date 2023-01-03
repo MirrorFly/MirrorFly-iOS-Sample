@@ -1,5 +1,5 @@
 //
-//  callLogViewController.swift
+//  CallLogViewController.swift
 //  MirrorFlyiOS-SDK
 //
 //  Created by User on 14/07/21.
@@ -10,17 +10,16 @@ import FlyCall
 import FlyCommon
 import FlyCore
 import FlyDatabase
-import Alamofire
-import RealmSwift
 import Floaty
+import RxSwift
 
-class callLogViewController: UIViewController, RequestInterceptor {
+class CallLogViewController: UIViewController {
     
     @IBOutlet weak var callLogTableView: UITableView!
     let callLogManager = CallLogManager()
-    var CallLogArray = [Any]()
+    var callLogArray = [CallLog]()
     let rosterManager = RosterManager()
-    var callLog = RealmCallLog()
+    var seletedCallLog: CallLog!
     let button = UIButton(type: UIButton.ButtonType.custom) as UIButton
     var isClearAll = Bool()
     @IBOutlet weak var deleteAllBtn: UIButton!
@@ -28,26 +27,107 @@ class callLogViewController: UIViewController, RequestInterceptor {
     var layoutNumberOfColomn: Int = 2
     let imageArr = NSMutableArray()
     var groupCallViewController : GroupCallViewController?
-    var callLogRealm = RealmCallLog()
     var floaty : Floaty? = nil
+    var internetObserver = PublishSubject<Bool>()
+    let disposeBag = DisposeBag()
+    var callLogsTotalPages = 0
+    var callLogsTotalRecords = 0
+    var pageNumber = 1
+    var isLoadingInProgress = false
 
     @IBOutlet weak var noCallLogView: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpStatusBar()
         NotificationCenter.default.addObserver(self, selector: #selector(updateCallCount), name: NSNotification.Name("updateCallCount"), object: nil)
         noCallLogView.isHidden = false
         // Do any additional setup after loading the view.
+        internetObserver.throttle(.seconds(4), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
+            switch event {
+            case .next(let data):
+                print("#calllogs next ")
+                guard let self = self else{
+                    return
+                }
+                if data {
+                    self.resumeLoading()
+                }
+            case .error(let error):
+                print("#calllogs error \(error.localizedDescription)")
+            case .completed:
+                print("#calllogs completed")
+            }
+            
+        }.disposed(by: disposeBag)
+        
     }
    
     override func viewWillAppear(_ animated: Bool) {
-        CallLogArray = CallLogManager.getCallLogs()
-        noCallLogView.isHidden = CallLogArray.count > 0
-        deleteAllBtn.isHidden = CallLogArray.isEmpty
-        callLogTableView.reloadData()
-        getsyncedLogs()
-        postUnSyncedLogs()
-        CallLogArray = CallLogManager.getCallLogs()
-        deleteAllBtn.isHidden = CallLogArray.count > 0 ? false : true
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),
+                                               name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
+        
+        callLogArray = CallLogManager.getAllCallLogs()
+        noCallLogView.isHidden = !callLogArray.isEmpty
+        deleteAllBtn.isHidden = callLogArray.isEmpty
+        
+        if let lastPageNumber = Int(Utility.getStringFromPreference(key: "clLastPageNumber")), let logsTotalPages = Int(Utility.getStringFromPreference(key: "clLastTotalPages")), let logsTotalRecords = Int(Utility.getStringFromPreference(key: "clLastTotalRecords"))  {
+            
+            pageNumber = lastPageNumber
+            callLogsTotalPages = logsTotalPages
+            callLogsTotalRecords = logsTotalRecords
+            
+        }
+       
+        if !callLogArray.isEmpty {
+            
+            callLogTableView.reloadData()
+        }
+        else {
+            
+            isLoadingInProgress = true
+            callLogManager.getCallLogs(pageNumber: 1) { isSuccess, error, data in
+                if isSuccess {
+                    print(data)
+                    
+                    if let callLogs = data["data"] as? [String : Any]{
+                        
+                        if let totalPages = callLogs["totalPages"] as? Int ,let totalRecords = callLogs["totalRecords"] as? Int {
+                            self.callLogsTotalPages = totalPages
+                            self.callLogsTotalRecords = totalRecords
+                            self.pageNumber += 1
+                            
+                            Utility.saveInPreference(key: "clLastPageNumber", value: "\(self.pageNumber)")
+                            Utility.saveInPreference(key: "clLastTotalPages", value: "\(self.callLogsTotalPages)")
+                            Utility.saveInPreference(key: "clLastTotalRecords", value: "\(self.callLogsTotalRecords)")
+                        }
+                        
+                        self.callLogArray = CallLogManager.getAllCallLogs()
+                        self.noCallLogView.isHidden = !self.callLogArray.isEmpty
+                        self.deleteAllBtn.isHidden = self.callLogArray.isEmpty
+                        self.callLogTableView.reloadData()
+                        
+                    }
+                } else {
+                    if !NetworkReachability.shared.isConnected{
+                        AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                    }else{
+                        var flyData = data
+                        if let message = flyData.getMessage() as? String{
+                            print("#error \(message)")
+                        }
+                    }
+                }
+                self.isLoadingInProgress = false
+            }
+        }
+        callLogManager.syncCallLogs { isSuccess, error, data in
+            if isSuccess {
+                print(data)
+            }
+        }
+        callLogArray = CallLogManager.getAllCallLogs()
+        deleteAllBtn.isHidden = callLogArray.isEmpty
         if let fab = floaty{
             fab.removeFromSuperview()
         }
@@ -87,11 +167,25 @@ class callLogViewController: UIViewController, RequestInterceptor {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         ContactManager.shared.profileDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+        ChatManager.shared.availableFeaturesDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.adminBlockDelegate = nil
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
+
+        ChatManager.shared.availableFeaturesDelegate = nil
+        //Application Badge Count
+        var appBadgeCount = UIApplication.shared.applicationIconBadgeNumber
+        appBadgeCount = appBadgeCount - FlyDefaults.unreadMissedCallCount
+        UIApplication.shared.applicationIconBadgeNumber = appBadgeCount
+        //CallLogs Badge Count
+        FlyDefaults.unreadMissedCallCount = 0
+        NotificationCenter.default.post(name: NSNotification.Name("updateUnReadMissedCallCount"), object: FlyDefaults.unreadMissedCallCount)
+
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -102,16 +196,19 @@ class callLogViewController: UIViewController, RequestInterceptor {
     }
    
     @objc func appDidBecomeActive(){
-        getsyncedLogs()
-        // postUnSyncedLogs()
+        // getsyncedLogs()
+        callLogManager.getCallLogs(pageNumber: 1) { isSuccess, error, data in
+            if isSuccess {
+                print(data)
+            }
+        }
     }
     
-    @objc func updateCallCount(){
+    @objc func updateCallCount() {
         //postUnSyncedLogs()
-        CallLogArray = CallLogManager.getCallLogs()
-        let lastCallLog = CallLogArray.first as? RealmCallLog
-        if let callTime = lastCallLog?["callTime"] {
-            FlyCallUtils.sharedInstance.setConfigUserDefaults("\(callTime)", withKey: "LastMissedCallTime")
+        callLogArray = CallLogManager.getAllCallLogs()
+        if let lastCallLog = callLogArray.first {
+            FlyCallUtils.sharedInstance.setConfigUserDefaults("\(lastCallLog.callReceivedTime)", withKey: "LastMissedCallTime")
         }
         self.setMissedCallCount()
     }
@@ -121,16 +218,15 @@ class callLogViewController: UIViewController, RequestInterceptor {
     }
     
     @IBAction func deleteAllCallLogs(_ sender: Any) {
-        isClearAll = true
-        deleteCallLogs()
+        deleteCallLogs(isClearAll: true)
     }
 }
 
 // MARK: Table View Methods
-extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
+extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        CallLogArray = CallLogManager.getCallLogs()
-        print("calllog array issss" , CallLogArray)
+        callLogArray = CallLogManager.getAllCallLogs()
+        print("calllog array issss" , callLogArray)
 //        if CallLogArray.count == 0{
 //            let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
 //            noDataLabel.text          = "No call log history found \n Any new calls will appear here "
@@ -141,7 +237,7 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
 //            tableView.backgroundView  = noDataLabel
 //            tableView.separatorStyle  = .none
 //        }
-        return CallLogArray.count
+        return callLogArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -149,194 +245,189 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
         memberCell?.callInitiateBtn.isUserInteractionEnabled = true
         memberCell?.callInitiateBtn.tag = indexPath.row
         memberCell?.callInitiateBtn.addTarget(self, action: #selector(buttonClicked(sender:)), for: .touchUpInside)
-        if let callLog = CallLogArray[indexPath.row] as? RealmCallLog{
-            let isGroupCall =  (callLog.groupId?.count ?? 0 != 0)
-            if callLog["callMode"] as? String == "onetoone" || callLog["callMode"] as? String == "" || isGroupCall{
-                memberCell?.groupView.isHidden = true
-                memberCell?.userImageView.isHidden = false
-                var jidString = String()
-                if callLog["fromUser"] as! String == FlyDefaults.myJid{
-                    jidString = callLog["toUser"] as! String
-                }else{
-                    jidString = callLog["fromUser"] as! String
+        let callLog = callLogArray[indexPath.row]
+        let isGroupCall =  (callLog.groupId?.count ?? 0 != 0)
+        if callLog.callMode == .ONE_TO_ONE || isGroupCall {
+            memberCell?.groupView.isHidden = true
+            memberCell?.userImageView.isHidden = false
+            var jidString = String()
+            if callLog.fromUserId == FlyDefaults.myJid {
+                jidString = callLog.toUserId
+            } else {
+                jidString = callLog.fromUserId
+            }
+            let jid =  (callLog.groupId?.count ?? 0 == 0) ? jidString : callLog.groupId!
+            if let contact = rosterManager.getContact(jid: jid){
+                memberCell?.contactNamelabel.text = getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
+                memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
+                memberCell?.userImageView.layer.masksToBounds = true
+                memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType, jid: contact.jid, isBlockedByAdmin: ContactManager.shared.getUserProfileDetails(for: contact.jid)?.isBlockedByAdmin ?? false)
+                if getIsBlockedByMe(jid: jid) {
+                    memberCell?.userImageView.image = UIImage(named: "ic_profile_placeholder")
                 }
-                let jid =  (callLog.groupId?.count ?? 0 == 0) ? jidString : callLog.groupId!
-                if let contact = rosterManager.getContact(jid: jid){
-                    memberCell?.contactNamelabel.text = getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
-                    memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
-                    memberCell?.userImageView.layer.masksToBounds = true
-                    memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType, jid: contact.jid)
-                    if getIsBlockedByMe(jid: jid) {
-                        memberCell?.userImageView.image = UIImage(named: "ic_profile_placeholder")
-                    }
+            }
+        }else{
+            memberCell?.imgOne.layer.cornerRadius = (memberCell?.imgOne.frame.size.height)! / 2
+            memberCell?.imgOne.layer.masksToBounds = true
+            
+            memberCell?.imgThree.layer.cornerRadius = (memberCell?.imgThree.frame.size.height)! / 2
+            memberCell?.imgThree.layer.masksToBounds = true
+            
+            memberCell?.imgTwo.layer.cornerRadius = (memberCell?.imgTwo.frame.size.height)! / 2
+            memberCell?.imgTwo.layer.masksToBounds = true
+            
+            memberCell?.imgFour.layer.cornerRadius = (memberCell?.imgFour.frame.size.height)! / 2
+            memberCell?.imgFour.layer.masksToBounds = true
+            
+            memberCell?.groupView.isHidden = false
+            memberCell?.userImageView.isHidden = true
+            var userList = callLog.userList
+            userList.removeAll { jid in
+                jid == FlyDefaults.myJid
+            }
+            let fullNameArr = userList
+            let contactArr = NSMutableArray()
+            let contactJidArr = NSMutableArray()
+            for JID in fullNameArr{
+                if let contact = rosterManager.getContact(jid: JID){
+                    contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                    contactJidArr.add(JID)
                 }
-            }else{
-                memberCell?.imgOne.layer.cornerRadius = (memberCell?.imgOne.frame.size.height)! / 2
-                memberCell?.imgOne.layer.masksToBounds = true
-                
-                memberCell?.imgThree.layer.cornerRadius = (memberCell?.imgThree.frame.size.height)! / 2
-                memberCell?.imgThree.layer.masksToBounds = true
-                
-                memberCell?.imgTwo.layer.cornerRadius = (memberCell?.imgTwo.frame.size.height)! / 2
-                memberCell?.imgTwo.layer.masksToBounds = true
-                
-                memberCell?.imgFour.layer.cornerRadius = (memberCell?.imgFour.frame.size.height)! / 2
-                memberCell?.imgFour.layer.masksToBounds = true
-                
-                memberCell?.groupView.isHidden = false
-                memberCell?.userImageView.isHidden = true
-                let userString = callLog["userList"] as? String ?? ""
-                var userList = userString.components(separatedBy: ",")
-                userList.removeAll { jid in
-                    jid == FlyDefaults.myJid
-                }
-                let fullNameArr = userList
-                let contactArr = NSMutableArray()
-                let contactJidArr = NSMutableArray()
-                for JID in fullNameArr{
-                    if let contact = rosterManager.getContact(jid: JID){
-                        contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
-                        contactJidArr.add(JID)
-                    }
-                }
-                if callLog.groupId?.count ?? 0 > 0 {
-                    memberCell?.contactNamelabel.text = rosterManager.getContact(jid: callLog.groupId!)?.name ?? ""
-                }
-                else {
+            }
+            if callLog.groupId?.count ?? 0 > 0 {
+                memberCell?.contactNamelabel.text = rosterManager.getContact(jid: callLog.groupId!)?.name ?? ""
+            } else {
                 memberCell?.contactNamelabel.text = contactArr.componentsJoined(by: ",")
-                }
-                if contactJidArr.count == 1{
-                    
-                }
-                else if contactJidArr.count == 2{
-                    memberCell?.imgTwo.isHidden = true
-                    memberCell?.leadingConstant.constant = 10
-                    memberCell?.imgThree.isHidden = true
-                    memberCell?.imgFour.isHidden = false
-                    memberCell?.plusCountLbl.isHidden = true
-                    for i in 0...contactJidArr.count - 1{
-                        if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                            if i == 0{
-                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                            if i == 1{
-                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                               
-                            }
+            }
+            if contactJidArr.count == 1 {
+                
+            } else if contactJidArr.count == 2 {
+                memberCell?.imgTwo.isHidden = true
+                memberCell?.leadingConstant.constant = 10
+                memberCell?.imgThree.isHidden = true
+                memberCell?.imgFour.isHidden = false
+                memberCell?.plusCountLbl.isHidden = true
+                for i in 0...contactJidArr.count - 1{
+                    if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        if i == 0{
+                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
-                    }
-                      
-                }else if contactJidArr.count == 3{
-                    for i in 0...contactJidArr.count - 1{
-                        if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                            if i == 0{
-                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                            if i == 1{
-                                memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
+                        if i == 1{
+                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                             
-                            if i == 2{
-                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                        }
-                    }
-                    memberCell?.imgTwo.isHidden = true
-                    memberCell?.leadingConstant.constant = 15
-                    memberCell?.imgThree.isHidden = false
-                    memberCell?.imgFour.isHidden = false
-                    memberCell?.plusCountLbl.isHidden = true
-
-                }else if contactJidArr.count == 4{
-                    for i in 0...contactJidArr.count - 1{
-                        if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                            if i == 0{
-                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
-                            }
-                            else if i == 1{
-                                memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
-                            }
-                            
-                            else if i == 2{
-                                memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
-                            }
-                            else if i == 3{
-                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
-                            }
-                            else {
-                                break
-                            }
-                        }
-                    }
-                    memberCell?.imgTwo.isHidden = false
-                    memberCell?.leadingConstant.constant = 0
-                    memberCell?.imgThree.isHidden = false
-                    memberCell?.imgFour.isHidden = false
-                    memberCell?.plusCountLbl.isHidden = true
-
-                }else if contactJidArr.count != 0{
-                    memberCell?.imgOne.isHidden = false
-                    memberCell?.imgTwo.isHidden = false
-                    memberCell?.imgThree.isHidden = false
-                    memberCell?.imgFour.isHidden = false
-                    memberCell?.leadingConstant.constant = 0
-                    memberCell?.plusCountLbl.isHidden = false
-                    memberCell?.plusCountLbl.text =  "+ " + "\(fullNameArr.count - 4)"
-                    for i in 0...contactJidArr.count - 1{
-                        if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
-                            if i == 0{
-                                memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                            else if i == 1{
-                                memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                            
-                            else if i == 2{
-                                memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                            else if i == 3{
-                                memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
-                            }
-                            else {
-                                break
-                            }
                         }
                     }
                 }
                 
+            } else if contactJidArr.count == 3 {
+                for i in 0...contactJidArr.count - 1{
+                    if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        if i == 0{
+                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                        if i == 1{
+                            memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                        
+                        if i == 2{
+                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                    }
+                }
+                memberCell?.imgTwo.isHidden = true
+                memberCell?.leadingConstant.constant = 15
+                memberCell?.imgThree.isHidden = false
+                memberCell?.imgFour.isHidden = false
+                memberCell?.plusCountLbl.isHidden = true
+                
+            } else if contactJidArr.count == 4 {
+                for i in 0...contactJidArr.count - 1{
+                    if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        if i == 0{
+                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                        }
+                        else if i == 1{
+                            memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                        }
+                        
+                        else if i == 2{
+                            memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                        }
+                        else if i == 3{
+                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                        }
+                        else {
+                            break
+                        }
+                    }
+                }
+                memberCell?.imgTwo.isHidden = false
+                memberCell?.leadingConstant.constant = 0
+                memberCell?.imgThree.isHidden = false
+                memberCell?.imgFour.isHidden = false
+                memberCell?.plusCountLbl.isHidden = true
+                
+            } else if contactJidArr.count != 0 {
+                memberCell?.imgOne.isHidden = false
+                memberCell?.imgTwo.isHidden = false
+                memberCell?.imgThree.isHidden = false
+                memberCell?.imgFour.isHidden = false
+                memberCell?.leadingConstant.constant = 0
+                memberCell?.plusCountLbl.isHidden = false
+                memberCell?.plusCountLbl.text =  "+ " + "\(fullNameArr.count - 4)"
+                for i in 0...contactJidArr.count - 1{
+                    if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        if i == 0{
+                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                        else if i == 1{
+                            memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                        
+                        else if i == 2{
+                            memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                        else if i == 3{
+                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                        }
+                        else {
+                            break
+                        }
+                    }
+                }
             }
-            let time = callLog["callTime"] as! Double
-            let todayTimeStamp = FlyCallUtils.generateTimestamp()
-            memberCell?.callDateandTimeLabel.text = self.callLogTime(time, currentTime: todayTimeStamp)
-            memberCell?.callDurationLbl.text = self.callLogDuration(callLog["startTime"] as! Double, endTime: callLog["endTime"] as! Double)
-            print(callLog["startTime"] as! Double)
-            print(callLog["endTime"] as! Double)
-
-            if callLog["callType"] as! String == "audio"{
-                memberCell?.callInitiateBtn.setImage(UIImage.init(named: "audio_call"), for: .normal)
-            }else {
-                memberCell?.callInitiateBtn.setImage(UIImage.init(named: "VideoType"), for: .normal)
-            }
-            if callLog["callState"] as! String == "IncomingCall"{
-                memberCell?.callStatusBtn.image = UIImage.init(named: "incomingCall")
-            }else if callLog["callState"] as! String == "OutgoingCall"{
-                memberCell?.callStatusBtn.image = UIImage.init(named: "outGoing")
-            }else{
-                memberCell?.callStatusBtn.image = UIImage.init(named: "missedCall")
-            }
+            
         }
+        let time = callLog.callReceivedTime
+        let todayTimeStamp = FlyCallUtils.generateTimestamp()
+        memberCell?.callDateandTimeLabel.text = self.callLogTime(time, currentTime: todayTimeStamp)
+        memberCell?.callDurationLbl.text = self.callLogDuration(callLog.callAttendedTime, endTime: callLog.callEndedTime)
+        print(callLog.callReceivedTime)
+        print(callLog.callEndedTime)
+        
+        if callLog.callType == .Audio {
+            memberCell?.callInitiateBtn.setImage(UIImage.init(named: "audio_call"), for: .normal)
+        } else {
+            memberCell?.callInitiateBtn.setImage(UIImage.init(named: "VideoType"), for: .normal)
+        }
+        if callLog.callState == .IncomingCall {
+            memberCell?.callStatusBtn.image = UIImage.init(named: "incomingCall")
+        } else if callLog.callState == .OutgoingCall {
+            memberCell?.callStatusBtn.image = UIImage.init(named: "outGoing")
+        } else {
+            memberCell?.callStatusBtn.image = UIImage.init(named: "missedCall")
+        }
+        
         return memberCell!
     }
     
-    private func isGroupOrUserBlocked(callLog : RealmCallLog?) -> Bool {
-        if let callLog = callLog {
-            if let tempGroupJid = callLog["groupId"] as? String, ChatManager.isUserOrGroupBlockedByAdmin(jid: tempGroupJid) {
-                AppAlert.shared.showToast(message: groupNoLongerAvailable)
-                return true
-            } else if let tempToUser = callLog["toUser"] as? String, ChatManager.isUserOrGroupBlockedByAdmin(jid: tempToUser) {
-                AppAlert.shared.showToast(message: thisUerIsNoLonger)
-                return true
-            }
+    private func isGroupOrUserBlocked(callLog : CallLog) -> Bool {
+        if let tempGroupJid = callLog.groupId, ChatManager.isUserOrGroupBlockedByAdmin(jid: tempGroupJid) {
+            AppAlert.shared.showToast(message: groupNoLongerAvailable)
+            return true
+        } else if ChatManager.isUserOrGroupBlockedByAdmin(jid: callLog.toUserId) {
+            AppAlert.shared.showToast(message: thisUerIsNoLonger)
+            return true
         }
         return false
     }
@@ -344,58 +435,111 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
     @objc func buttonClicked(sender: UIButton) {
         let buttonRow = sender.tag
         print(buttonRow)
-        if let callLog = CallLogArray[buttonRow] as? RealmCallLog{
-            
-            if isGroupOrUserBlocked(callLog: callLog) {
-                return
-            }
-            
-            if CallManager.isAlreadyOnAnotherCall(){
-                AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
-                return
-            }
-            
-            if callLog["callMode"] as? String == "onetoone"{
-                var jidString = String()
-                if callLog["fromUser"] as! String == FlyDefaults.myJid{
-                    jidString = callLog["toUser"] as! String
-                }else{
-                    jidString = callLog["fromUser"] as! String
+        let callLog = callLogArray[buttonRow]
+
+        if callLog.callMode == .ONE_TO_ONE {
+            if let contact = rosterManager.getContact(jid: callLog.toUserId) {
+                if contact.isBlocked {
+                    let alertViewController = UIAlertController.init(title: "\(ChatActions.unblock.rawValue)?" , message: "\(ChatActions.unblock.rawValue) \(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))?", preferredStyle: .alert)
+
+                    let cancelAction = UIAlertAction(title: cancelUppercase, style: .cancel) { [weak self] (action) in
+                        self?.dismiss(animated: true,completion: nil)
+                    }
+                    let blockAction = UIAlertAction(title: ChatActions.unblock.rawValue, style: .default) { [weak self] (action) in
+                        self?.unblockUser(contact: contact, callLog : callLog)
+                    }
+                    alertViewController.addAction(cancelAction)
+                    alertViewController.addAction(blockAction)
+                    alertViewController.preferredAction = cancelAction
+                    present(alertViewController, animated: true)
+                } else {
+                    initiateCall(callLog: callLog)
                 }
-                var callUserProfiles = [ProfileDetails]()
-                
-                if let contact = rosterManager.getContact(jid: jidString)
-                {
+            }
+        } else {
+            initiateCall(callLog: callLog)
+        }
+    }
+
+    //MARK: UnBlockUser
+    private func unblockUser(contact: ProfileDetails, callLog: CallLog) {
+        BlockUnblockViewModel.unblockUser(jid: contact.jid) { [weak self] isSuccess, error, data in
+            if isSuccess {
+                self?.initiateCall(callLog: callLog)
+            }
+        }
+    }
+
+    func initiateCall(callLog: CallLog) {
+        if isGroupOrUserBlocked(callLog: callLog) {
+            return
+        }
+
+        if CallManager.isAlreadyOnAnotherCall(){
+            AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
+            return
+        }
+
+        if callLog.callMode == .ONE_TO_ONE {
+            var jidString = String()
+            if callLog.fromUserId == FlyDefaults.myJid {
+                jidString = callLog.toUserId
+            }else{
+                jidString = callLog.fromUserId
+            }
+            var callUserProfiles = [ProfileDetails]()
+
+            if let contact = rosterManager.getContact(jid: jidString)
+            {
+                if contact.contactType != .deleted{
+                    callUserProfiles.append(contact)
+                }
+            }
+            if callLog.callType == .Audio {
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString(), onCompletion: { isSuccess, message in
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                })
+            } else{
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video,groupId: callLog.groupId ?? emptyString(), onCompletion: { isSuccess, message in
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                })
+            }
+        } else {
+            let fullNameArr = callLog.userList
+            var callUserProfiles = [ProfileDetails]()
+            for JID in fullNameArr{
+                if let contact = rosterManager.getContact(jid: JID){
                     if contact.contactType != .deleted{
                         callUserProfiles.append(contact)
                     }
                 }
-                if callLog["callType"] as! String == "audio"{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString())
-                }
-                else{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video,groupId: callLog.groupId ?? emptyString())
-                }
-            }else{
-                let userString = callLog["userList"] as? String ?? ""
-                let fullNameArr = userString.components(separatedBy: ",")
-                var callUserProfiles = [ProfileDetails]()
-                for JID in fullNameArr{
-                    if let contact = rosterManager.getContact(jid: JID){
-                        if contact.contactType != .deleted{
-                            callUserProfiles.append(contact)
-                        }
+            }
+            if callLog.callType == .Audio {
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString(), onCompletion: { isSuccess, message in
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
                     }
-                }
-                if callLog["callType"] as! String == "audio"{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Audio, groupId: callLog.groupId ?? emptyString())
-                }
-                else{
-                    RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video, groupId: callLog.groupId ?? emptyString())
-                }
+                    
+                })
+            } else{
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: callUserProfiles.compactMap{$0.jid}, callType: .Video, groupId: callLog.groupId ?? emptyString(), onCompletion: { isSuccess, message in
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                    
+                })
             }
         }
     }
+
     
     func callLogTime(_ callTime: Double, currentTime: String?) -> String? {
         let aDateFormatter = DateFormatter()
@@ -473,10 +617,9 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCell.EditingStyle.delete {
-            callLog = CallLogArray[indexPath.row] as! RealmCallLog
-            isClearAll = false
-            print(callLog)
-            deleteCallLogs()
+            seletedCallLog = callLogArray[indexPath.row]
+            print(seletedCallLog)
+            deleteCallLogs(isClearAll: false)
             callLogTableView.reloadData()
         }
     }
@@ -486,23 +629,22 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        callLog = CallLogArray[indexPath.row] as! RealmCallLog
+        seletedCallLog = callLogArray[indexPath.row]
         
-        if isGroupOrUserBlocked(callLog: callLog) {
+        if isGroupOrUserBlocked(callLog: seletedCallLog) {
             return
         }
         
-        if callLog["callMode"] as? String == "onetoone" && (callLog.groupId?.isEmpty ?? true){
+        if seletedCallLog.callMode == .ONE_TO_ONE && (seletedCallLog.groupId?.isEmpty ?? true){
             
         }else{
             let storyboard = UIStoryboard(name: "Call", bundle: nil)
             groupCallViewController = storyboard.instantiateViewController(withIdentifier: "GroupCallViewController") as? GroupCallViewController
-            groupCallViewController?.callLog = callLog
-            let userString = callLog["userList"] as? String ?? ""
-            let fullNameArr = userString.components(separatedBy: ",")
+            groupCallViewController?.callLog = seletedCallLog
+            let fullNameArr = seletedCallLog.userList
             var name = ""
-            if !(callLog.groupId?.isEmpty ?? true){
-                if let contact = rosterManager.getContact(jid: callLog.groupId!){
+            if !(seletedCallLog.groupId?.isEmpty ?? true){
+                if let contact = rosterManager.getContact(jid: seletedCallLog.groupId!){
                     name = contact.name
                 }
                 groupCallViewController?.isGroup = true
@@ -516,304 +658,54 @@ extension callLogViewController : UITableViewDataSource, UITableViewDelegate {
                 name = contactArr.componentsJoined(by: ",")
             }
             groupCallViewController?.groupCallName = name
-            let time = callLog["callTime"] as! Double
+            let time = seletedCallLog.callReceivedTime
             let todayTimeStamp = FlyCallUtils.generateTimestamp()
             groupCallViewController?.callTime = self.callLogTime(time, currentTime: todayTimeStamp)!
-            groupCallViewController?.callDuration = self.callLogDuration(callLog["startTime"] as! Double, endTime: callLog["endTime"] as! Double)!
-            groupCallViewController
+            groupCallViewController?.callDuration = self.callLogDuration(seletedCallLog.callReceivedTime, endTime: seletedCallLog.callEndedTime)!
             self.navigationController?.pushViewController(groupCallViewController!, animated: true)
         }
     }
 }
 
-extension callLogViewController{
-    
-    func deleteCallLogs() {
-        let url = Utility.appendBaseURL(restEnd: "users/callLogs")
-        var headers: HTTPHeaders = ["Content-Type": "application/json", "Accept": "application/json"]
-        var parametersDictionary: [String : Any]?
-        if isClearAll{
-            parametersDictionary = [
-                "roomId": []
-            ]
-        }else{
-            parametersDictionary = [
-                "roomId": [callLog["callId"]]
-            ]
-        }
-        let authToken = FlyCallUtils.sharedInstance.getConfigUserDefault(forKey: "token") as? String ?? ""
-        if authToken.count > 0 {
-            headers.add(name: "Authorization", value: authToken)
-        }
-        AF.request(URL(string: url)!,method: .delete,parameters:parametersDictionary ,encoding: JSONEncoding.default,headers: headers).validate(statusCode: 200..<300).responseJSON { [self] response in
-            print(response.result)
-            switch response.result {
-            case .success(_):
-                if response.response?.statusCode == 200 {
-                    if self.isClearAll{
-                        callLogManager.deleteCallLogs()
-                        CallLogArray.removeAll()
-                        deleteAllBtn.isHidden = true
-                    }else{
-                        callLogManager.deleteSingleCallLogs(callLog:callLog)
-                        deleteAllBtn.isHidden = false
-                    }
-                    CallLogArray = CallLogManager.getCallLogs()
-                    noCallLogView.isHidden = CallLogArray.count > 0
-                    callLogTableView.reloadData()
-                }else {
-                }
-            case .failure(_) :
-                let _ : String
-                if let httpStatusCode = response.response?.statusCode {
-                    if(httpStatusCode == 401){
-                        self.refreshToken { [weak self] isSuccess  in
-                            if isSuccess {
-                                self?.deleteCallLogs()
-                            }
-                        }
-                    } else {
-                    }
-                }
-            }
-        }
-    }
-    
-    func getsyncedLogs(){
-        let SyncedArray = callLogManager.getCallLogsWithSync(isLogSync: true)
-        let callLog = SyncedArray.first as? RealmCallLog
-        var parametersDictionary: [String : Any]?
-        if (callLog != nil) {
-            parametersDictionary = [
-                "lastSyncDate": callLog?["callTime"] as Any
-            ]
-        } else {
-            parametersDictionary = [:]
-       }
-        let url = Utility.appendBaseURL(restEnd: "users/callLogs")
-        var headers: HTTPHeaders = ["Content-Type": "application/json", "Accept": "application/json"]
-        let authToken = FlyCallUtils.sharedInstance.getConfigUserDefault(forKey: "token") as? String ?? ""
-        if authToken.count > 0 {
-            headers.add(name: "Authorization", value: authToken)
-        }
-        AF.request(URL(string: url)!,method: .get,parameters:parametersDictionary ,encoding: URLEncoding.default,headers: headers).validate(statusCode: 200..<300).responseJSON { [self] response in
-            switch response.result
-            {
-            case .success(_) :do {
-                print("success")
-                let data = response.value
-                let responseObject = data as? NSDictionary
-                print("response object isssss ",responseObject as Any)
-                if let callLogArr = responseObject?.value(forKeyPath: "data.callLogs") as? NSArray{
-                    let callLogs = NSMutableArray()
-                    for dict in callLogArr{
-                        let roomID = (dict as AnyObject).value(forKey: "roomId") as? String
-                        let existingLog = callLog?.getCallLog(forCallID: roomID)
-                        var newLog: RealmCallLog?
-                        if existingLog != nil {
-                            newLog = RealmCallLog(value: existingLog as Any)
-                            let callStart = (dict as AnyObject).value(forKey: "startTime") as? Int
-                            let callEnd = (dict as AnyObject).value(forKey: "endTime") as? Int
-                            let callStartDouble = Double(callStart ?? 0)
-                            let callEndDouble = Double(callEnd ?? 0)
-                            newLog?["callTime"] = ((dict as AnyObject).value(forKey: "callTime") as? NSNumber)?.doubleValue ?? 0.0
-                            newLog?["startTime"] = callStartDouble
-                            newLog?["endTime"] = callEndDouble
-                        } else if !(roomID == nil) {
-                            let callState = (dict as AnyObject).value(forKey: "callState") as? Int
-                            let callStart = (dict as AnyObject).value(forKey: "startTime") as? Int
-                            let callEnd = (dict as AnyObject).value(forKey: "endTime") as? Int
-                            print(Double(callStart ?? 0))
-
-                            let callStartDouble = Double(callStart ?? 0)
-                            let callEndDouble = Double(callEnd ?? 0)
-
-                            var callStateFinal = String()
-                            if callState == 0{
-                                callStateFinal = CallState.IncomingCall.rawValue
-                            }else if callState == 1{
-                                callStateFinal = CallState.OutgoingCall.rawValue
-                            }else{
-                                callStateFinal = CallState.MissedCall.rawValue
-                            }
-                            print(callStartDouble)
-                            print(callEndDouble)
-                            newLog = callLogRealm.initWithCallID(roomID, fromJID: (dict as AnyObject).value(forKey: "fromUser") as? String , toJID: (dict as AnyObject).value(forKey: "toUser") as? String, callerDevice: "ios", callType: (dict as AnyObject).value(forKey: "callType") as? String , callingTime: (dict as AnyObject).value(forKey: "callTime") as! Double, callStartTime: callStartDouble, callEndTime: callEndDouble, callState: callStateFinal, callMode: (dict as AnyObject).value(forKey: "callMode") as! String , usersList: (dict as AnyObject).value(forKey: "userList") as! String, groupId: (dict as AnyObject).value(forKey: "group_id") as? String)
-                        }
-                        
-                        if let usersString = (dict as AnyObject).value(forKey: "userList") as? String, usersString.contains(",") {
-                            var userList = usersString.components(separatedBy: ",")
-                            userList.removeAll { jid in
-                                jid == FlyDefaults.myJid
-                            }
-                            for item in userList{
-                                if ContactManager.shared.getUserProfileDetails(for: item) == nil{
-                                    print("#callFEtch for item \(item)")
-                                    try? ContactManager.shared.getUserProfile(for: item, fetchFromServer: true){ _, _, _ in }
-                                }
-                            }
-                        }
-                        
-                        if let groupid = (dict as AnyObject).value(forKey: "group_id") as? String, !groupid.isEmpty{
-                            if ContactManager.shared.getUserProfileDetails(for: groupid) == nil{
-                                print("#callFEtch group  \(groupid)")
-                               try? GroupManager.shared.getGroupProfile(groupJid: groupid, fetchFromServer: true) { _, _, _ in }
-                            }
-                        }else if let callMode =  (dict as AnyObject).value(forKey: "callMode") as? String , callMode == "onetoone" {
-                            var jidString = emptyString()
-                            if let fromUser = (dict as AnyObject).value(forKey: "fromUser") as? String , let toUser = (dict as AnyObject).value(forKey: "toUser") as? String{
-                                jidString = fromUser == FlyDefaults.myJid ? toUser : fromUser
-                                if ContactManager.shared.getUserProfileDetails(for: jidString) == nil{
-                                    print("#callFEtch onetoone  \(jidString)")
-                                    try? ContactManager.shared.getUserProfile(for: jidString, fetchFromServer: true){ _, _, _ in }
-                                }                            }
-                        }
-                        // TODO: have to insert sessionStatus, inviteUserList
-                        newLog?["isLogSync"] = true
-                        callLogs.add(newLog as Any)
-                    }
-                    callLogManager.saveRealmArray(callLogs as! [RealmCallLog])
-                    CallLogArray.removeAll()
-                    CallLogArray = CallLogManager.getCallLogs()
-                    noCallLogView.isHidden = CallLogArray.count > 0
-                    deleteAllBtn.isHidden = CallLogArray.isEmpty
-                    callLogTableView.reloadData()
-                }
-            }
-            case .failure(let error):
-                print("failure(error)",error)
-                if let httpStatusCode = response.response?.statusCode {
-                    if(httpStatusCode == 401){
-                        self.refreshToken { [weak self] isSuccess  in
-                            if isSuccess {
-                                self?.getsyncedLogs()
-                            }
-                        }
-                    } else {
-                    }
-                }
-                break
-            }
-        }
-    }
+extension CallLogViewController {
     
     func setMissedCallCount(){
-        let missedCallCount = self.getMissedCallCount()
-        if (missedCallCount != 0){
+        let missedCallCount = CallLogManager.getMissedCallCount()
+        if (missedCallCount != 0) {
             print(missedCallCount)
-        }else{
+        } else {
             print("No missed calls")
         }
         NotificationCenter.default.post(name: NSNotification.Name("missedCallCount"), object: missedCallCount)
         callLogTableView.reloadData()
     }
     
-    func getMissedCallCount() -> Int {
-        var lastValue = FlyCallUtils.sharedInstance.getConfigUserDefault(forKey: "LastMissedCallTime") as? Any
-        let countString: String?
-        lastValue = lastValue as? Double != 0.0 ? lastValue : 0
-        let MissedCallsArray = CallLogManager.getAllMissedCallList()
-        var count = 0
-        for callLog in MissedCallsArray {
-            guard let callLog = callLog as? RealmCallLog else {
-                continue
-            }
-            if callLog["callTime"] as? Double ?? 0.0 >= lastValue as? Double ?? 0.0{
-                count = count + 1
-            }
-        }
-        if count != 0 {
-            countString = "\(count)"
-        }
-        return count
-    }
-    
-    func getBadgeCount() -> NSNumber? {
-        let missedCount = self.getMissedCallCount()
-        let badge = missedCount
-        return badge as NSNumber
-    }
-    
-    func postUnSyncedLogs(){
-        var callLogs: [Any] = []
-        let unSyncedArray = callLogManager.getCallLogsWithSync(isLogSync: false)
-        for log in unSyncedArray {
-            guard let log = log as? RealmCallLog else {
-                continue
-            }
-            if (log["callId"] == nil) {
-                return
-            }
-            var dict: [AnyHashable : Any] = [:]
-            dict["roomId"] = log["callId"]
-            if log["callType"] == nil {
-                let precicate = NSPredicate(format: "SELF.callId == %@", log["callId"] as! CVarArg)
-                let resultArray = try? Realm().objects(RealmCallLog.self).filter(precicate)
-                CallLogArray = CallLogArray.filter({ !(resultArray?.contains($0 as! RealmCallLog))! })
-                callLogManager.deleteSingleCallLogs(callLog:log)
-                continue
-            }
-            var callState = Int()
-            if log["callState"] as! String == "IncomingCall"{
-                callState = 0
-            }else if log["callState"] as! String == "OutgoingCall"{
-                callState = 1
-            }else{
-                callState = 2
-            }
-            dict["callType"] = log["callType"]
-            dict["callerDevice"] = log["callerDevice"] ?? "ios"
-            dict["fromUser"] = log["fromUser"] ?? ""
-            dict["toUser"] = log["toUser"] ?? ""
-            dict["callState"] = callState
-            dict["callTime"] = log["callTime"] ?? 0.0
-            dict["endTime"] = log["endTime"] ?? 0.0
-            dict["startTime"] = log["startTime"] ?? 0.0
-            dict["callMode"] = log["callMode"] ?? ""
-            dict["userList"] = log["userList"] ?? ""
-            dict["sessionStatus"] = "Closed"
-            dict["groupId"] = ""
-            dict["inviteUserList"] = ""
-            callLogs.append(dict)
-        }
-        if callLogs.count == 0 {
-            return
-        }
-        let url = Utility.appendBaseURL(restEnd: "users/callLogs")
-        var headers: HTTPHeaders = ["Content-Type": "application/json", "Accept": "application/json"]
-        let authToken = FlyCallUtils.sharedInstance.getConfigUserDefault(forKey: "token") as? String ?? ""
-        if authToken.count > 0 {
-            headers.add(name: "Authorization", value: authToken)
-        }
-        let parameters = ["callLogs":callLogs]
-        AF.request(url, method: .post, parameters: parameters , encoding: JSONEncoding.default, headers: headers, interceptor: self, requestModifier: nil).validate().responseJSON { [self]  response in
-            print(response.result)
-            switch response.result {
-            case .success(_):
-                if response.response?.statusCode == 200 {
-                  print("success")
-                    callLogManager.updatecallLog(callLogs: callLogs)
-                   
-                    callLogTableView.reloadData()
-                }else {
+    func deleteCallLogs(isClearAll: Bool) {
+        if isClearAll {
+            callLogManager.deleteCallLog { [weak self] isSuccess, error, data in
+                if isSuccess {
+                    print(data)
+                    self?.deleteAllBtn.isHidden = true
+                    self?.refreshTableview()
                 }
-                
-            case .failure(_) :
-                let _ : String
-                if let httpStatusCode = response.response?.statusCode {
-                    if(httpStatusCode == 401){
-                        self.refreshToken { [weak self] isSuccess  in
-                            if isSuccess {
-                                self?.postUnSyncedLogs()
-                            }
-                        }
-                    } else {
-                    }
+            }
+        } else {
+            callLogManager.deleteCallLog(callLogId: seletedCallLog.callLogId) { [weak self] isSuccess, error, data in
+                if isSuccess {
+                    print(data)
+                    self?.deleteAllBtn.isHidden = false
+                    self?.refreshTableview()
                 }
             }
         }
     }
     
+    func refreshTableview() {
+        callLogArray.removeAll()
+        callLogArray = CallLogManager.getAllCallLogs()
+        noCallLogView.isHidden = !callLogArray.isEmpty
+        callLogTableView.reloadData()
+    }
     
     func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
 
@@ -826,38 +718,9 @@ extension callLogViewController{
             }
         }
     }
-
-    
-//    func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
-//        let username = FlyDefaults.myXmppUsername
-//        let password = FlyDefaults.myXmppPassword
-//        if username.count == 0 || password.count == 0 {
-//            return
-//        }
-//        let parameters = ["username" : username,
-//                          "password": password];
-//        let url = Utility.appendBaseURL(restEnd: "login")
-//        AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil, interceptor: self, requestModifier: nil).validate().responseJSON { response in
-//            print(response.result)
-//            switch response.result {
-//            case .success(let result):
-//                if response.response?.statusCode == 200 {
-//                    guard let responseDictionary = result as? [String : Any]  else{
-//                        return
-//                    }
-//                    let data = responseDictionary["data"] as? [String: String] ?? [:]
-//                    let token = data["token"] ?? ""
-//                    FlyCallUtils.sharedInstance.setConfigUserDefaults(token, withKey: "token")
-//                }
-//                onCompletion(true)
-//            case .failure(_) :
-//                onCompletion(false)
-//            }
-//        }
-//    }
 }
 
-extension callLogViewController : ProfileEventsDelegate{
+extension CallLogViewController : ProfileEventsDelegate{
     func userCameOnline(for jid: String) {
         
     }
@@ -899,11 +762,21 @@ extension callLogViewController : ProfileEventsDelegate{
     }
     
     func userBlockedMe(jid: String) {
-        getsyncedLogs()
+       // getsyncedLogs()
+        callLogManager.getCallLogs(pageNumber: 1) { isSuccess, error, data in
+            if isSuccess {
+                print(data)
+            }
+        }
     }
     
     func userUnBlockedMe(jid: String) {
-        getsyncedLogs()
+       // getsyncedLogs()
+        callLogManager.getCallLogs(pageNumber: 1) { isSuccess, error, data in
+            if isSuccess {
+                print(data)
+            }
+        }
     }
     
     func hideUserLastSeen() {
@@ -946,5 +819,122 @@ class CCFCallLogListCell: UITableViewCell {
         super.awakeFromNib()
        
     }
+}
+
+
+extension CallLogViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if ((scrollView.contentOffset.y + scrollView.frame.size.height) > scrollView.contentSize.height){
+            
+            if !isPaginationCompleted() && !isLoadingInProgress{
+                print("call next page")
+                self.loadNextPage()
+            }
+        }
+    }
+    
+    func loadNextPage() {
+        
+        callLogTableView?.tableFooterView = createTableFooterView()
+        isLoadingInProgress = true
+        callLogManager.getCallLogs(pageNumber: pageNumber) { isSuccess, error, data in
+            if isSuccess {
+                
+                if let callLogs = data["data"] as? [String : Any]{
+                    
+                    if let totalPages = callLogs["totalPages"] as? Int ,let totalRecords = callLogs["totalRecords"] as? Int {
+                        
+                        self.callLogsTotalPages = totalPages
+                        self.callLogsTotalRecords = totalRecords
+                        self.pageNumber += 1
+                        
+                        Utility.saveInPreference(key: "clLastPageNumber", value: "\(self.pageNumber)")
+                        Utility.saveInPreference(key: "clLastTotalPages", value: "\(self.callLogsTotalPages)")
+                        Utility.saveInPreference(key: "clLastTotalRecords", value: "\(self.callLogsTotalRecords)")
+                    }
+                    
+                    self.callLogTableView?.tableFooterView = nil
+                    self.isLoadingInProgress = false
+                    self.callLogArray = CallLogManager.getAllCallLogs()
+                    self.callLogTableView.reloadData()
+                    
+                }
+            } else {
+                if !NetworkReachability.shared.isConnected{
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }else{
+                    var flyData = data
+                    if let message = flyData.getMessage() as? String{
+                        print("#error \(message)")
+                    }
+                }
+            }
+        }
+    }
+    
+    public func isPaginationCompleted() -> Bool {
+        if (callLogsTotalPages < pageNumber) || callLogArray.count == callLogsTotalRecords {
+            return true
+        }
+        return false
+    }
+    
+    public func createTableFooterView() -> UIView{
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 64))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        return footerView
+    }
+    
+    @objc func networkChange(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            let isNetworkAvailable = notification.userInfo?[NetStatus.isNetworkAvailable] as? Bool ?? false
+            self?.internetObserver.on(.next(isNetworkAvailable))
+        }
+    }
+    
+    func resumeLoading() {
+        if isLoadingInProgress || !isPaginationCompleted() {
+            self.loadNextPage()
+        }
+    }
+}
+
+extension CallLogViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+            
+        }else {
+            
+            if ((features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
+        }
+    }
+}
+
+extension CallLogViewController : AdminBlockDelegate {
+    func didBlockOrUnblockContact(userJid: String, isBlocked: Bool) {
+        callLogTableView.reloadData()
+    }
+    
+    func didBlockOrUnblockSelf(userJid: String, isBlocked: Bool) {
+    
+    }
+    
+    func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
+        callLogTableView.reloadData()
+    }
+
 }
 

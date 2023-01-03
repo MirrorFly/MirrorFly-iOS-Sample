@@ -62,7 +62,7 @@ class SenderImageCell: BaseTableViewCell {
     var imageGeasture: UITapGestureRecognizer!
     var isUploading: Bool? = false
     var message : ChatMessage?
-    var selectedForwardMessage: [SelectedForwardMessage]? = []
+    var selectedForwardMessage: [SelectedMessages]? = []
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -418,7 +418,7 @@ class SenderImageCell: BaseTableViewCell {
         guard let timeStamp =  message?.messageSentTime else {
             return self
         }
-        sentTime?.text = Utility.convertTime(timeStamp: timeStamp)
+        sentTime?.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
         self.layoutIfNeeded()
         self.layoutSubviews()
         return self

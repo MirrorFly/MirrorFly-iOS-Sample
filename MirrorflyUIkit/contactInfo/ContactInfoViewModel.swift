@@ -30,7 +30,7 @@ class ContactInfoViewModel : NSObject {
                     completionHandler(calculateLastSeen(lastSeenTime: lastSeenTime))
                 }
             } else{
-                completionHandler(calculateLastSeen(lastSeenTime: "0"))
+                completionHandler("error")
             }
         }
     }

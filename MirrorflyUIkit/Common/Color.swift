@@ -62,8 +62,17 @@ enum Color {
     static let senderBubbleColor = UIColor(named: "sender_bubble_color")
     static let receiverBubbleColor = UIColor(named: "receiver_bubble_color")
     static let forwardCircleBorderColor = UIColor(hex: "C4C4C6")
+    static let deleteForEveryoneColor = UIColor(hex: "E2E8F7")
     static let previewCaptionTextColor = UIColor(named: "previewCaptionColor")
     static let leaveGroupTextColor = UIColor(named: "leaveGroup")
+    static let color_FD3B2F = UIColor(named: "color_FD3B2F")
+    static let color_F2F2F2 = UIColor(named: "color_F2F2F2")
+    static let muteSwitchColor = UIColor.init(hex: "3276E2")
+    static let clearAllConversation = UIColor(hex: "FF3939")
+    static let textFieldBackground = UIColor.init(hex: "EEEEEE")
+    static let textFieldDefault = UIColor.white
+    static let resendButtonDisable = UIColor.init(hex: "989899")
+    static let resendButtonActivation = UIColor.init(hex: "#FF1E1E")
 }
 
 extension UIColor {

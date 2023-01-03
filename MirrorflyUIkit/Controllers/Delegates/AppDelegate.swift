@@ -21,7 +21,6 @@ import Contacts
 import CallKit
 
 
-
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
@@ -34,7 +33,6 @@ let IS_LIVE = false
 let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
 let IS_MOBILE_NUMBER_LOGIN = true
 let APP_NAME = "UiKit"
-
 
 
 let isMigrationDone = "isMigrationDone"
@@ -145,6 +143,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         ChatManager.hideNotificationContent(hide: false)
         FlyUtils.setAppName(appName: APP_NAME)
         VOIPManager.sharedInstance.updateDeviceToken()
+        let licenceKeyForEncryption = String(LICENSE_KEY.prefix(16))
+        FlyDefaults.profileIV = licenceKeyForEncryption
         return true
     }
     
@@ -171,6 +171,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         print("#appDelegate applicationDidBecomeActive")
+        
+        if FlyDefaults.isBlockedByAdmin {
+            navigateToBlockedScreen()
+            return
+        }
+        
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
@@ -323,6 +329,7 @@ extension AppDelegate {
                     if dismisLastViewController{
                         navigationController.popViewController(animated: false)
                     }
+                    navigationController.removeViewController(ChatViewParentController.self)
                     navigationController.pushViewController(chatViewController, animated: !dismisLastViewController)
                 }
                 completionHandler()
@@ -339,6 +346,7 @@ extension AppDelegate {
                     if dismisLastViewController{
                         navigationController.popViewController(animated: false)
                     }
+                    navigationController.removeViewController(ChatViewParentController.self)
                     navigationController.pushViewController(chatViewController, animated: !dismisLastViewController)
                 }
                 completionHandler()
@@ -373,10 +381,7 @@ extension AppDelegate {
 extension AppDelegate : LogoutDelegate {
     func didReceiveLogout() {
         print("AppDelegate LogoutDelegate ===> LogoutDelegate")
-        Utility.saveInPreference(key: isProfileSaved, value: false)
-        Utility.saveInPreference(key: isLoggedIn, value: false)
-        ChatManager.disconnectXMPPConnection()
-        ChatManager.shared.resetFlyDefaults()
+        logoutLocally()
         var controller : OTPViewController?
         if #available(iOS 13.0, *) {
             controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")
@@ -403,7 +408,7 @@ extension AppDelegate : AdminBlockCurrentUserDelegate {
     
     func didBlockOrUnblockGroup(groupJid: String, isBlocked: Bool) {
         print("AppDelegate didBlockOrUnblockGroup \(groupJid) \(isBlocked)")
-        if isBlocked && CallManager.isOngoingCall() && !CallManager.isOneToOneCall() && CallManager.getGroupID() == groupJid{
+        if isBlocked && CallManager.isOngoingCall() && CallManager.getGroupID() == groupJid{
             CallManager.disconnectCall()
         }
     }
@@ -420,7 +425,16 @@ extension AppDelegate : AdminBlockCurrentUserDelegate {
 
 extension AppDelegate {
     
+    func logoutLocally(){
+           Utility.saveInPreference(key: isProfileSaved, value: false)
+           Utility.saveInPreference(key: isLoggedIn, value: false)
+           ChatManager.disconnect()
+           ChatManager.shared.resetFlyDefaults()
+           FlyDefaults.isBlockedByAdmin = false
+    }
+    
     func navigateToBlockedScreen() {
+        logoutLocally()
         if CallManager.isOngoingCall() {
             CallManager.disconnectCall()
         }
@@ -444,9 +458,20 @@ extension AppDelegate {
                     navigationController =  UINavigationController(rootViewController: initialViewController)
                 }
             }else{
-                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                navigationController =  UINavigationController(rootViewController: initialViewController)
+                if FlyDefaults.appLockenable {
+                    let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
+                else if FlyDefaults.appFingerprintenable {
+                    let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
+                else{
+                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
+                
             }
             UIApplication.shared.keyWindow?.rootViewController = navigationController
             UIApplication.shared.keyWindow?.makeKeyAndVisible()

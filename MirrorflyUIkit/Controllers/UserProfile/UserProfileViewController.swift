@@ -51,13 +51,14 @@ class UserProfileViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         setupUI()
+        setupUI()
+        setUpStatusBar()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(UserProfileViewController.onProfileImage(_:)))
         profileImage?.isUserInteractionEnabled = false
         emailTextField?.isUserInteractionEnabled = false
         profileImage?.addGestureRecognizer(tapGesture)
         nameTextField?.addTarget(self, action: #selector(UserProfileViewController.textFieldDidChange(_:)),
-                                for: .editingChanged)
+                                 for: .editingChanged)
     }
     
     func setupUI() {
@@ -71,6 +72,8 @@ class UserProfileViewController : UIViewController {
         statusLabel?.text = inMirrorfly.localized
         profileImage?.layer.masksToBounds = false
         profileImage?.layer.cornerRadius = (profileImage?.frame.height ?? 0.0) / 2
+        profileImage?.layer.borderWidth = 0.5
+        profileImage?.layer.borderColor = Color.groupIconBackgroundGray?.cgColor
         profileImage?.clipsToBounds = true
         try? ContactManager.shared.getUserProfile(for: FlyDefaults.myJid, fetchFromServer: false, saveAsFriend: false, completionHandler: { isSuccess, error, flyData in
             var data  = flyData
@@ -80,8 +83,8 @@ class UserProfileViewController : UIViewController {
                         self.nameTextField?.text = pd.nickName
                         self.emailTextField?.text = pd.email
                         self.getUserMobileNumber = pd.mobileNumber
-                        let mobileNumberWithoutCountryCode = self.mobileNumberParse(phoneNo: (pd.mobileNumber))
-                        self.mobileNumberLabel?.text = "+91" +  mobileNumberWithoutCountryCode
+                        let mobileNumberWithoutCountryCode = AppUtils.shared.mobileNumberParse(phoneNo: (pd.mobileNumber))
+                        self.mobileNumberLabel?.text = mobileNumberWithoutCountryCode
                         self.statusLabel?.text = pd.status
                     }
                 }
@@ -95,9 +98,14 @@ class UserProfileViewController : UIViewController {
         getProfile()
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ChatManager.shared.availableFeaturesDelegate = self
+    }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        ChatManager.shared.availableFeaturesDelegate = nil
     }
     
     override func viewDidLayoutSubviews(){
@@ -161,64 +169,47 @@ extension UserProfileViewController {
         print( FlyDefaults.myXmppUsername)
         
         if(FlyDefaults.isProfileUpdated) {
-        do {
-            let JID = FlyDefaults.myXmppUsername + "@" + FlyDefaults.xmppDomain
-         
-            try ContactManager.shared.getUserProfile(for:  JID, fetchFromServer: true, saveAsFriend: true) { [weak self] isSuccess, flyError, flyData in
-                var data  = flyData
-                if(isSuccess) {
-                DispatchQueue.main.async {
-                    print(data.getData() as! ProfileDetails)
-                    self?.profileDetails = data.getData() as? ProfileDetails
-                      
-                    print("profileDetails.image")
-                    print(self?.profileDetails?.image)
-                    if(self?.profileDetails?.image != "") {
-                        self?.setImage(imageURL: self?.profileDetails?.image ?? "", completionHandler: { _ in
+            do {
+                let JID = FlyDefaults.myXmppUsername + "@" + FlyDefaults.xmppDomain
+                
+                try ContactManager.shared.getUserProfile(for:  JID, fetchFromServer: true, saveAsFriend: true) { [weak self] isSuccess, flyError, flyData in
+                    var data  = flyData
+                    if(isSuccess) {
+                        DispatchQueue.main.async {
+                            print(data.getData() as! ProfileDetails)
+                            self?.profileDetails = data.getData() as? ProfileDetails
+                            if(self?.profileDetails?.image != "") {
+                                self?.setImage(imageURL: self?.profileDetails?.image ?? "", completionHandler: { _ in
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        self?.stopLoading()
+                                    }
+                                })
+                                self?.isImagePicked = true
+                            } else {
+                                self?.getUserNameInitial()
+                            }
+                            self?.nameTextField?.text = self?.profileDetails?.name
+                            self?.emailTextField?.text = self?.profileDetails?.email
+                            self?.getUserMobileNumber = self?.profileDetails!.mobileNumber ?? ""
+                            let mobileNumberWithoutCountryCode = AppUtils.shared.mobileNumberParse(phoneNo: (self?.profileDetails!.mobileNumber)!)
+                            self?.mobileNumberLabel?.text = mobileNumberWithoutCountryCode
+                            self?.statusLabel?.text = self?.profileDetails?.status
                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                 self?.stopLoading()
                             }
-                        })
-                        self?.isImagePicked = true
+                            self?.checkToEnableButton(name: self?.nameTextField?.text ?? "")
+                        }
                     }
-                    else {
-                        self?.getUserNameInitial()
-                    }
-                    self?.nameTextField?.text = self?.profileDetails?.name
-                    self?.emailTextField?.text = self?.profileDetails?.email
-                    self?.getUserMobileNumber = self?.profileDetails!.mobileNumber ?? ""
-                    let mobileNumberWithoutCountryCode = self?.mobileNumberParse(phoneNo: (self?.profileDetails!.mobileNumber)!)
-                    self?.mobileNumberLabel?.text = "+91" +  mobileNumberWithoutCountryCode!
-                    self?.statusLabel?.text = self?.profileDetails?.status
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        self?.stopLoading()
-                    }
-                    self?.checkToEnableButton(name: self?.nameTextField?.text ?? "")
                 }
+            } catch {
+                self.stopLoading()
             }
-        }
-        } catch {
-            self.stopLoading()
-        }
-        }
-        else{
+        } else{
             saveButton?.setTitle(save.localized, for: .normal)
             self.stopLoading()
         }
     }
     
-    func mobileNumberParse(phoneNo:String) -> String {
-        var splittedMobileNumber:String = ""
-        let phoneNumberKit = PhoneNumberKit()
-          do {
-            let phoneNumber = try phoneNumberKit.parse(phoneNo)
-            splittedMobileNumber  = String(describing:phoneNumber.nationalNumber)
-          }
-          catch {
-          }
-        return splittedMobileNumber
-    }
-
     // MARK: Update Profile
     func updateMyProfile(isRemovedProfileImage: Bool) {
         if NetworkReachability.shared.isConnected {
@@ -702,4 +693,22 @@ extension UserProfileViewController: TatsiPickerViewControllerDelegate {
     func setCroppedImage(_ croppedImage: UIImage) {
         self.profileImage?.image = croppedImage
     }
+}
+
+extension UserProfileViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+        }
+    }
+
 }

@@ -24,6 +24,7 @@ class DMAReasonVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpStatusBar()
         feedbackField.delegate = self
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -57,6 +58,7 @@ class DMAReasonVC: UIViewController {
                 ContactManager.shared.deleteMyAccountRequest(reason: reason, feedback: feedBack) { isSuccess, error, data in
                     let message = data["message"] as? String ?? ""
                     if isSuccess{
+                        FlyDefaults.hideLastSeen = false
                         CallLogManager().deleteCallLogs()
                         Utility.saveInPreference(key: firstTimeSandboxContactSyncDone, value: false)
                         AppAlert.shared.showToast(message: "Your MirrorFly account has been deleted.")

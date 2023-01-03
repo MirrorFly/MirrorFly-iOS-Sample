@@ -21,7 +21,18 @@ class RecentChatTableViewCell: UITableViewCell {
     @IBOutlet weak var statusImage: UIImageView?
     @IBOutlet weak var statusView: UIView?
     @IBOutlet weak var receiverMessageTypeImageView: UIImageView?
-    
+    @IBOutlet weak var pinImageView: UIImageView! {
+        didSet {
+            pinImageView.image = UIImage(named: "pushpin")?.withHorizontallyFlippedOrientation()
+        }
+    }
+    @IBOutlet weak var muteImageView: UIImageView!
+    @IBOutlet weak var archivedStatusLabel: UILabel! {
+        didSet {
+            archivedStatusLabel.isHidden = true
+            archivedStatusLabel.cornerRadius(radius: 3, width: 0.3, color: Color.muteSwitchColor)
+        }
+    }
     @IBOutlet weak var senderNameLabel: UILabel?
     @IBOutlet weak var statusImageCons: NSLayoutConstraint?
     @IBOutlet weak var receiverMessageTypeView: UIView?
@@ -42,36 +53,46 @@ class RecentChatTableViewCell: UITableViewCell {
         profileImageView?.setCircleView()
     }
     
+    private func getIsBlockedByMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
     func setImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
         let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + (recentChat.profileImage ?? "") + "?mf=" + "" + FlyDefaults.authtoken)"
         let url = URL(string: urlString)
         var placeHolder = UIImage()
         if recentChat.profileType == .groupChat {
             placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
-        }else if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
+        } else if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
             placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
-        }else{
+        } else {
             placeHolder = getPlaceholder(name: name, color: color)
         }
-        profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
-    }
-    
-    private func getIsBlockedByMe(jid: String) -> Bool {
-        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+        
+        if recentChat.isBlockedByAdmin || getIsBlockedByMe(jid: recentChat.jid) {
+            profileImageView?.image = placeHolder
+        } else {
+            profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
+        }
     }
     
     func setSingleChatImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
         var placeHolder = UIImage()
         placeHolder = getPlaceholder(name: name, color: color)
+        let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
+        var url = URL(string: urlString)
         if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
             placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
             profileImageView?.sd_setImage(with: nil, placeholderImage: placeHolder)
-        }else if imageURL.isNotEmpty {
-            let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
-            let url = URL(string: urlString)
-            profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
         } else {
             profileImageView?.sd_setImage(with: URL(string: ""), placeholderImage: placeHolder)
+        }
+        
+        if recentChat.isBlockedByAdmin || getIsBlockedByMe(jid: recentChat.jid){
+            placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
+            profileImageView?.image = placeHolder
+        } else {
+            profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
         }
     }
     
@@ -130,7 +151,7 @@ class RecentChatTableViewCell: UITableViewCell {
         if let range = recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
             let convertedRange = NSRange(range, in: recentChat.lastMessageContent.capitalized)
             let attributedString = NSMutableAttributedString(string: recentChat.lastMessageContent.capitalized)
-            attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
+            attributedString.setAttributes([NSAttributedString.Key.foregroundColor: Color.userStatusTextColor], range: convertedRange)
             userMessageLabel?.attributedText = attributedString
         } else {
             userMessageLabel?.text = recentChat.lastMessageContent
@@ -177,15 +198,17 @@ class RecentChatTableViewCell: UITableViewCell {
         } else {
             senderNameLabel?.isHidden = true
         }
+        pinImageView.isHidden = !recentChatMessage.isChatPinned
+        muteImageView.isHidden = !recentChatMessage.isMuted
+        archivedStatusLabel.isHidden = !recentChatMessage.isChatArchived
         if recentChatMessage.profileType == .groupChat {
             setImage(imageURL: recentChatMessage.profileImage ?? "", name: recentChatMessage.profileName, color: color, recentChat: recentChatMessage)
         } else {
             setSingleChatImage(imageURL: recentChatMessage.profileImage ?? "", name: getUserName(jid: recentChatMessage.jid,name: recentChatMessage.profileName, nickName: recentChatMessage.nickName, contactType: recentChatMessage.isItSavedContact ? .live : .unknown), color: color, recentChat: recentChatMessage)
         }
-        
         let messageTime = chatMessage?.messageChatType == .singleChat ? recentChatMessage.lastMessageTime : DateFormatterUtility.shared.getGroupMilliSeconds(milliSeconds: recentChatMessage.lastMessageTime)
       
-        chatTimeLabel?.text = String().fetchMessageDate(for: messageTime)
+        chatTimeLabel?.text = recentChatMessage.lastMessageId == "" ? "" : String().fetchMessageDate(for: messageTime)
         countLabel?.text = recentChatMessage.unreadMessageCount > 99 ? "99+" : String(recentChatMessage.unreadMessageCount)
         chatTimeLabel?.isHidden = false
         countView?.isHidden = (recentChatMessage.unreadMessageCount > 0) ? false : true
@@ -193,6 +216,7 @@ class RecentChatTableViewCell: UITableViewCell {
         statusView?.isHidden = (recentChatMessage.isLastMessageSentByMe == true) ? false : true
         receiverMessageTypeView?.isHidden = false
         contentView.backgroundColor = recentChatMessage.isSelected == true ? Color.recentChatSelectionColor : .clear
+        
             switch recentChatMessage.lastMessageType {
             case .text:
                 receiverMessageTypeView?.isHidden = true
@@ -225,7 +249,7 @@ class RecentChatTableViewCell: UITableViewCell {
                 break
             case .sent:
                 switch recentChatMessage.lastMessageType {
-                case .video, .audio, .image,.text,.contact:
+                case .video, .audio, .image,.text,.contact, .document:
                     statusImage?.image = UIImage(named: ImageConstant.ic_hour)
                 default:
                     statusImage?.image = UIImage(named: ImageConstant.ic_sent)
@@ -254,6 +278,9 @@ class RecentChatTableViewCell: UITableViewCell {
         // show send messageType
         switch recentChatMessage.lastMessageType {
         case .text:
+            if recentChatMessage.lastMessageContent.isEmpty == true {
+                statusImage?.isHidden = true
+            }
             break
         case .video, .image,.audio,.contact,.location:
             userMessageLabel?.text = (chatMessage?.mediaChatMessage?.mediaCaptionText.trim().isNotEmpty ?? false) ? chatMessage?.mediaChatMessage?.mediaCaptionText : recentChatMessage.lastMessageType?.rawValue.capitalized
@@ -261,6 +288,16 @@ class RecentChatTableViewCell: UITableViewCell {
             userMessageLabel?.text = "Document"
         default:
             break
+        }
+        if recentChatMessage.isLastMessageRecalledByUser {
+            userMessageLabel?.text = recentChatMessage.isLastMessageSentByMe ? senderDeletedMessage : receiverDeletedMessage
+            statusView?.isHidden = true
+            receiverMessageTypeView?.isHidden = true
+            if recentChatMessage.profileType == .groupChat && !recentChatMessage.isLastMessageSentByMe {
+                senderNameLabel?.isHidden = false
+            } else {
+                senderNameLabel?.isHidden = true
+            }
         }
     }
 }

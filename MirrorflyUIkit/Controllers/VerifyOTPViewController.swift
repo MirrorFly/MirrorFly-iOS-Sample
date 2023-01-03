@@ -35,11 +35,10 @@ class VerifyOTPViewController: UIViewController
     private var verifyOTPViewModel : VerifyOTPViewModel!
     private var otpViewModel : OTPViewModel!
     var currentBackgroundDate = Date()
-    override func viewDidLoad()
-    {
+    override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         setupUI()
+        setUpStatusBar()
         configureDefaults()
         handleBackgroundAndForground()
     }

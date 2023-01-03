@@ -6,6 +6,6 @@ framework module FlyXmpp {
 }
 
 module FlyXmpp.Swift {
-    header "FlyXmpp-Swift.h"
-    requires objc
+  header "FlyXmpp-Swift.h"
+  requires objc
 }

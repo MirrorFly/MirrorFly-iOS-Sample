@@ -9,7 +9,11 @@ import UIKit
 
 class MuteNotificationCell: UITableViewCell {
 
-    @IBOutlet weak var muteSwitch: UISwitch?
+    @IBOutlet weak var muteSwitch: UISwitch? {
+        didSet {
+            muteSwitch?.onTintColor = Color.muteSwitchColor
+        }
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -206,11 +206,14 @@
                                                 <fontDescription key="fontDescription" name="SFUIDisplay-Semibold" family="SF UI Display" pointSize="14"/>
                                                 <color key="textColor" name="PrimaryTextColor"/>
                                                 <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="receivedContactName"/>
+                                                </userDefinedRuntimeAttributes>
                                             </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="bS9-oM-pmv">
-                                                <rect key="frame" x="78.5" y="52.5" width="69.5" height="12"/>
+                                                <rect key="frame" x="78.5" y="52.5" width="69.5" height="8"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_favouriteStar" translatesAutoresizingMaskIntoConstraints="NO" id="h2B-W6-7wR">
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_favouriteStarGray" translatesAutoresizingMaskIntoConstraints="NO" id="h2B-W6-7wR">
                                                         <rect key="frame" x="0.0" y="0.0" width="8" height="8"/>
                                                         <accessibility key="accessibilityConfiguration">
                                                             <accessibilityTraits key="traits" none="YES"/>
@@ -238,11 +241,11 @@
                                                     </label>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="12" id="YQn-HH-AOs"/>
+                                                    <constraint firstItem="h2B-W6-7wR" firstAttribute="centerY" secondItem="K1N-Zl-3IQ" secondAttribute="centerY" id="zdQ-IV-Cyj"/>
                                                 </constraints>
                                             </stackView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uJG-sA-QXB">
-                                                <rect key="frame" x="39" y="80.5" width="80" height="12.5"/>
+                                                <rect key="frame" x="39" y="76.5" width="80" height="16.5"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="80" id="FEu-E5-pWg"/>
                                                 </constraints>
@@ -253,6 +256,9 @@
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <bool key="isElement" value="YES"/>
+                                        </accessibility>
                                         <constraints>
                                             <constraint firstItem="uJG-sA-QXB" firstAttribute="centerX" secondItem="eQC-46-TkW" secondAttribute="centerX" id="C52-R5-eyJ"/>
                                             <constraint firstItem="rVw-DE-Tea" firstAttribute="leading" secondItem="eQC-46-TkW" secondAttribute="leading" constant="8" id="CEt-bb-8LH"/>
@@ -269,12 +275,13 @@
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                                 <integer key="value" value="8"/>
                                             </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="receivedContactMessage"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Skq-4n-rkn">
-                                <rect key="frame" x="0.0" y="152.5" width="164" height="1"/>
+                                <rect key="frame" x="0.0" y="148.5" width="164" height="1"/>
                                 <color key="backgroundColor" name="contatSeparator"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="tZe-n4-YgP"/>
@@ -382,7 +389,7 @@
     <resources>
         <image name="foward" width="24" height="24"/>
         <image name="ic_contactIcon" width="69" height="69"/>
-        <image name="ic_favouriteStar" width="15" height="14"/>
+        <image name="ic_favouriteStarGray" width="16" height="16"/>
         <image name="ic_seen" width="8" height="8"/>
         <namedColor name="PrimaryTextColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

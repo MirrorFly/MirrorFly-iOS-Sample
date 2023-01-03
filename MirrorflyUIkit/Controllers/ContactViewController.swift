@@ -51,7 +51,6 @@ class ContactViewController: UIViewController {
     var permissionDialogShowedOnViewDidLoad = false
     
     var refreshDelegate : RefreshProfileInfo? = nil
-
     
     public var profileCount = Int()
     //var randomColors = [UIColor?]()
@@ -83,6 +82,7 @@ class ContactViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setUpStatusBar()
         handleBackgroundAndForground()
         configureDefaults()
         bottomBtn.isEnabled = false
@@ -172,23 +172,26 @@ class ContactViewController: UIViewController {
         super.viewDidAppear(animated)
         print("#content \(permissionDialogShowedOnViewDidLoad)")
         ContactManager.shared.profileDelegate = self
-
+        
         ChatManager.shared.adminBlockDelegate = self
-
+        ChatManager.shared.availableFeaturesDelegate = self
+        
         if !permissionDialogShowedOnViewDidLoad && groupJid.isEmpty{
             showContactPermissionAlert(showDialogONly: true)
         }
         permissionDialogShowedOnViewDidLoad = false
-
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
+        navigationController?.setNavigationBarHidden(true, animated: false)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
         replyTagDelegate?.replyMessageObj(message: replyMessageObj, jid: replyJid ?? "", messageText: messageTxt ?? "")
         ContactManager.shared.profileDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
+        ChatManager.shared.availableFeaturesDelegate = nil
     }
     
     func setupUI() {
@@ -268,31 +271,25 @@ class ContactViewController: UIViewController {
         print("#image getCotactFromLocal")
         var profileDetails = [ProfileDetails]()
         if groupJid.isEmpty{
-            if ENABLE_CONTACT_SYNC{
-                if fromServer{
-                    contactViewModel.getContacts(fromServer: true, removeContacts: callUsers) { [weak self] (profiles, error)  in
-                        if error != nil {
-                            return
-                        }
-                        if  let  contactsList = profiles {
-                            profileDetails.append(contentsOf: contactsList)
-                            self?.reloadTableView(profileDetails: profileDetails)
-                            self?.refreshControl.endRefreshing()
-                        }
-                    }
-                }
-                contactViewModel.getContacts(fromServer: false,removeContacts: callUsers) { [weak self] (profiles, error)  in
+            if fromServer{
+                contactViewModel.getContacts(fromServer: true, removeContacts: callUsers) { [weak self] (profiles, error)  in
                     if error != nil {
                         return
                     }
                     if  let  contactsList = profiles {
                         profileDetails.append(contentsOf: contactsList)
                         self?.reloadTableView(profileDetails: profileDetails)
-                        self?.refreshControl.endRefreshing()
                     }
                 }
-            }else{
-                resetDataAndFetchUsersList()
+            }
+            contactViewModel.getContacts(fromServer: false,removeContacts: callUsers) { [weak self] (profiles, error)  in
+                if error != nil {
+                    return
+                }
+                if  let  contactsList = profiles {
+                    profileDetails.append(contentsOf: contactsList)
+                    self?.reloadTableView(profileDetails: profileDetails)
+                }
             }
         }else{
             var groupMembers =  GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupJid).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid && $0.profileDetail?.isBlockedByAdmin == false})
@@ -409,7 +406,39 @@ class ContactViewController: UIViewController {
         if let profile =  tappedProfile{
             let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
             self.userName.text = name
-            userImage.loadFlyImage(imageURL: profile.image, name: name, chatType: profile.profileChatType, jid: profile.jid)
+            let urlString = FlyDefaults.baseURL + "media/" + profile.image + "?mf=" + FlyDefaults.authtoken
+            var url = URL(string: urlString)
+            var placeholder : UIImage?
+            switch profile.profileChatType {
+            case .groupChat:
+                placeholder = UIImage(named: "smallGroupPlaceHolder")
+            default:
+                if profile.jid == FlyDefaults.myJid || profile.contactType == .unknown || getIsBlockedByMe(jid: profile.jid) {
+                    url = nil
+                    placeholder = UIImage(named: "ic_profile_placeholder")
+                    userImage?.backgroundColor =  Color.groupIconBackgroundGray
+                } else {
+                    let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let ipimage = IPImage(text: trimmedName, radius: Double(userImage.frame.size.height), font: UIFont.font84px_appBold(),
+                                          textColor: nil, color: getColor(userName: name))
+                    placeholder = ipimage.generateInitialImage()
+                    userImage.backgroundColor = ChatUtils.getColorForUser(userName: name)
+                }
+            }
+            if profile.contactType == .deleted || getIsBlockedByMe(jid: profile.jid) {
+                url = nil
+                placeholder = UIImage(named: "ic_profile_placeholder")
+                userImage?.backgroundColor =  Color.groupIconBackgroundGray
+            }
+            userImage.sd_setImage(with: url, placeholderImage: placeholder)
+            if !contacts.isEmpty {
+                tappedProfile = contacts[currentIndex]
+                if let profile =  tappedProfile{
+                    let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
+                    self.userName.text = name
+                    userImage.loadFlyImage(imageURL: profile.image, name: name, chatType: profile.profileChatType, jid: profile.jid)
+                }
+            }
         }
     }
     
@@ -434,27 +463,33 @@ class ContactViewController: UIViewController {
     }
     
     func showContactPermissionAlert(showDialogONly : Bool = false){
-        if ENABLE_CONTACT_SYNC {
-            let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+        
+        let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+        
+        if FlyDefaults.isContactPermissionSkipped && contactPermissionStatus == .authorized{
+            syncSkippedDialog()
+        }else if ENABLE_CONTACT_SYNC {
+            
             if contactPermissionStatus == .authorized{
                 if !showDialogONly{
                     refreshContacts()
                     refreshControl.endRefreshing()
                 }
-            }else if contactPermissionStatus == .denied{
+            } else if contactPermissionStatus == .denied{
                 allContacts.removeAll()
                 contacts.removeAll()
                 contactList.reloadData()
                 alertContactAccessNeeded()
-            }else if (contactPermissionStatus == .restricted || contactPermissionStatus == .notDetermined){
+            } else if (contactPermissionStatus == .restricted || contactPermissionStatus == .notDetermined){
                 CNContactStore().requestAccess(for: .contacts){ [weak self] (access, error)  in
                     executeOnMainThread {
+                        FlyDefaults.isContactPermissionSkipped = false
                         self?.contactViewModel.syncContacts()
                         self?.refreshControl.endRefreshing()
                     }
                 }
             }
-        }else{
+        } else{
             if !showDialogONly{
                 refreshContacts()
             }
@@ -482,6 +517,22 @@ class ContactViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    func syncSkippedDialog() {
+        let alert = UIAlertController(title: "Sync Contacts", message: "Do you allow the app to read and sync contacts?",
+                                      preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (alert) -> Void in
+            executeOnMainThread { [weak self] in
+                FlyDefaults.isContactPermissionSkipped = false
+                self?.contactViewModel.syncContacts()
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "No ", style: .cancel, handler: { (alert) -> Void in
+            executeOnMainThread {
+                self.refreshControl.endRefreshing()
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // SearchBar Delegate Method
@@ -564,16 +615,20 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
             cell.profileButton.tag = indexPath.row
             cell.profileButton.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
             cell.name.text = name
-            cell.status.text = profile.status
-            let color = getColor(userName: name)
-            cell.profile.loadFlyImage(imageURL: profile.image, name: name, jid: profile.jid)
             if getIsBlockedByMe(jid: profile.jid) {
                 cell.profile.image = UIImage(named: "ic_profile_placeholder")
+                cell.status.text = ""
+                cell.status.isHidden = true
+            } else {
+                cell.status.isHidden = false
+                cell.status.text = profile.status
+                cell.profile.loadFlyImage(imageURL: profile.image, name: name, contactType: profile.contactType, jid: profile.jid)
             }
             cell.checkBox.tag = indexPath.row
-            cell.checkBox.isSelected = selectedProfilesJid.contains(profile.jid)
+            cell.checkBox.isSelected = selectedProfilesJid.contains(profile.jid ?? "")
             cell.checkBox.isHidden = !isMultiSelect
-            cell.setTextColorWhileSearch(searchText: searchTerm, profile: profile)
+            cell.setTextColorWhileSearch(searchText: searchTxt.text ?? "", profile: profile)
+            cell.setLastContentTextColor(searchText: "", profile: profile)
             return cell
         }else {
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.noContacts)
@@ -641,19 +696,21 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
     }
     
     func openChat(index: Int) {
-        let profile = contacts[index]
-        let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
-        vc?.getProfileDetails = profile
-        let color = getColor(userName: profile.name)
-        vc?.contactColor = color
-        vc?.replyJid = replyJid
-        vc?.replyMessageObj = replyMessageObj
-        vc?.replyMessagesDelegate = self
-        vc?.messageText = messageTxt
-        ContactManager.shared.saveUser(profileDetails: profile, saveAs: .live)
-        navigationController?.modalPresentationStyle = .fullScreen
-        guard let viewController = vc else { return }
-        navigationController?.pushViewController(viewController, animated: true)
+        if !contacts.isEmpty {
+            let profile = contacts[index]
+            let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
+            vc?.getProfileDetails = profile
+            let color = getColor(userName: profile.name)
+            vc?.contactColor = color
+            vc?.replyJid = replyJid
+            vc?.replyMessageObj = replyMessageObj
+            vc?.replyMessagesDelegate = self
+            vc?.messageText = messageTxt
+            ContactManager.shared.saveUser(profileDetails: profile, saveAs: .live)
+            navigationController?.modalPresentationStyle = .fullScreen
+            guard let viewController = vc else { return }
+            navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     @objc func buttonSelected(sender: UIButton){
@@ -824,11 +881,23 @@ extension ContactViewController {
         
         if !CallManager.isOngoingCall() || isInvite{
             if isInvite{
-                CallManager.inviteUsersToOngoingCall(selectedProfilesJid as! [String])
+                CallManager.inviteUsersToOngoingCall(selectedProfilesJid as! [String]) { isSuccess, message in
+                    if !isSuccess {
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                }
             }else{
-                RootViewController.sharedInstance.callViewController?.makeCall(usersList: selectedProfilesJid as! [String], callType: callType, groupId : groupJid)
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: selectedProfilesJid as! [String], callType: callType, groupId : groupJid, onCompletion: { isSuccess, message in
+                    
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                })
             }
-            self.navigationController?.popViewController(animated: false)
+            //self.navigationController?.popViewController(animated: false)
+            
         }else{
             AppAlert.shared.showToast(message: "Already in another call, can't make new call")
         }
@@ -887,6 +956,7 @@ extension ContactViewController {
             self?.updateBottomButton()
             self?.contactList.reloadData()
         }
+        profilePopupContainer.isHidden = true
     }
 }
 
@@ -898,12 +968,12 @@ extension ContactViewController : UIScrollViewDelegate {
             return
         }
         let position  = scrollView.contentOffset.y
-         if position > contactList.contentSize.height-200 - scrollView.frame.size.height {
-             if isPaginationCompleted(){
-                 print("#fetch Pagination Done")
-                 return
-             }
-             contactList.tableFooterView = createTableFooterView()
+        if position > contactList.contentSize.height-200 - scrollView.frame.size.height {
+            if isPaginationCompleted(){
+                print("#fetch Pagination Done")
+                return
+            }
+            contactList.tableFooterView = createTableFooterView()
             if !isLoadingInProgress{
                 isLoadingInProgress = true
                 getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
@@ -1118,6 +1188,22 @@ extension ContactViewController {
             }
         } catch let error as NSError {
             print("block user error: \(error)")
+        }
+    }
+}
+
+extension ContactViewController: AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        } else {
+            if ((features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
         }
     }
 }

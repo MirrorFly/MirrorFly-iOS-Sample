@@ -190,6 +190,7 @@ class GroupInfoViewController: UIViewController {
         groupMembers = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid})
         
         let myJid = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid == FlyDefaults.myJid})
+        groupMembers = groupMembers.sorted(by: { $0.profileDetail?.name.lowercased() ?? "" < $1.profileDetail?.name.lowercased() ?? "" })
         groupMembers.insert(contentsOf: myJid, at: 0)
         refreshData()
     }
@@ -264,11 +265,11 @@ class GroupInfoViewController: UIViewController {
 extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return 6
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 2 {
+        if section == 3 {
             return groupMembers.count
         } else {
             return 1
@@ -277,7 +278,7 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        if indexPath.section == 1 {
+        if indexPath.section == 2 {
             if isExistMember == false {
                 return 0
             } else {
@@ -326,25 +327,30 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
             
         } else if indexPath.section == 1 {
+            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
+            cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
+            cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
+            return cell
+        } else if indexPath.section == 2 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             cell.optionImageview.image = UIImage(named: "add_user")
             cell.optionLabel.textColor = Color.userNameTextColor
             cell.optionLabel.text = addParticipants
             return cell
             
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 3 {
             let groupMembers = groupMembers[indexPath.row]
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupMembersTableViewCell, for: indexPath) as? GroupMembersTableViewCell)!
             cell.getGroupInfo(groupInfo: groupMembers)
             return cell
             
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             cell.optionImageview.image = UIImage(named: ImageConstant.ic_group_report)
             cell.optionLabel.textColor = Color.leaveGroupTextColor
             cell.optionLabel.text = reportGroup
             return cell
-        } else if indexPath.section == 4 {
+        } else if indexPath.section == 5 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             if isExistMember == true {
                 cell.optionImageview.image = UIImage(named: "leave_group")
@@ -361,7 +367,7 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 {
+        if indexPath.section == 2 {
             if self.isAdminMember == true {
                 let contactPermissionStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
                 if contactPermissionStatus == .denied {
@@ -382,7 +388,7 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 AppAlert.shared.showToast(message: adminAccess)
             }
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 3 {
             let groupMembers = groupMembers[indexPath.row]
             if groupMembers.memberJid != FlyDefaults.myJid {
                 let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
@@ -399,9 +405,9 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     self.present(optionsController, animated: true, completion: nil)
                 }
             }
-        } else if indexPath.section == 3 {
-            showReportOptions()
         } else if indexPath.section == 4 {
+            showReportOptions()
+        } else if indexPath.section == 5 {
             if isExistMember == true {
                 AppAlert.shared.showAlert(view: self,
                                           title: exitGroup,
@@ -586,6 +592,15 @@ extension GroupInfoViewController: GroupInfoOptionsDelegate {
             navigationController?.pushViewController(controller, animated: true)
         }
     }
+    
+    func hanldeUserBlockedUnblocked(jid : String) {
+        if let member = groupMembers.filter({$0.memberJid == jid}).first {
+            if let profile = groupInfoViewModel.checkContactType(participantJid: jid) {
+                member.profileDetail = profile
+                refreshData()
+            }
+        }
+    }
 }
 
 /**
@@ -637,11 +652,11 @@ extension GroupInfoViewController: ProfileEventsDelegate {
     }
     
     func userBlockedMe(jid: String) {
-        
+        hanldeUserBlockedUnblocked(jid : jid)
     }
     
     func userUnBlockedMe(jid: String) {
-        
+        hanldeUserBlockedUnblocked(jid : jid)
     }
     
     func hideUserLastSeen() {
@@ -1009,33 +1024,43 @@ extension GroupInfoViewController {
             actions.append((title, UIAlertAction.Style.default))
         }
         
-        AppActionSheet.shared.showActionSeet(title: report, message: "", actions: actions) { [weak self] didCancelTap, tappedOption in
-            if !didCancelTap {
-                switch tappedOption {
-                case ChatActions.report.rawValue:
-                    if ChatUtils.isMessagesAvailableFor(jid: self?.profileDetails?.jid ?? "") {
-                        self?.showReportingGroupOptions(completionHandler: { action in
-                            print("\(action)")
-                            if let profileDetails = self?.profileDetails {
-                                if action == GroupReportActions.report.rawValue {
-                                    self?.reportForJid(profileDetails: profileDetails, isFromGroupInfo: true)
-                                }else if action == GroupReportActions.reportAndExit.rawValue {
-                                    self?.reportAndExitFromGroup(jid: profileDetails.jid, completionHandler: { isReported in
-                                        if isReported {
-                                            self?.leaveFromGroup()
-                                        }
-                                    })
-                                }
-                            }
-                        })
-                    } else {
-                        AppAlert.shared.showToast(message: noMessgesToReport)
-                    }
-                default:
-                    print(" \(tappedOption)")
-                }
+        if ChatUtils.isMessagesAvailableFor(jid: profileDetails?.jid ?? "") {
+            if let profileDetails = profileDetails {
+                reportForJid(profileDetails: profileDetails, isFromGroupInfo: false)
             }
+        } else {
+            AppAlert.shared.showToast(message: noMessgesToReport)
         }
+        
+        // commented this code temporarly. It may be used in feature case
+        
+//        AppActionSheet.shared.showActionSeet(title: report, message: "", actions: actions) { [weak self] didCancelTap, tappedOption in
+//            if !didCancelTap {
+//                switch tappedOption {
+//                case ChatActions.report.rawValue:
+//                    if ChatUtils.isMessagesAvailableFor(jid: self?.profileDetails?.jid ?? "") {
+//                        self?.showReportingGroupOptions(completionHandler: { action in
+//                            print("\(action)")
+//                            if let profileDetails = self?.profileDetails {
+//                                if action == GroupReportActions.report.rawValue {
+//                                    self?.reportForJid(profileDetails: profileDetails, isFromGroupInfo: true)
+//                                }else if action == GroupReportActions.reportAndExit.rawValue {
+//                                    self?.reportAndExitFromGroup(jid: profileDetails.jid, completionHandler: { isReported in
+//                                        if isReported {
+//                                            self?.leaveFromGroup()
+//                                        }
+//                                    })
+//                                }
+//                            }
+//                        })
+//                    } else {
+//                        AppAlert.shared.showToast(message: noMessgesToReport)
+//                    }
+//                default:
+//                    print(" \(tappedOption)")
+//                }
+//            }
+//        }
     }
 }
 

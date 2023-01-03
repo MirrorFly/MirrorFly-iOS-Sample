@@ -162,9 +162,9 @@ class ImageEditController: UIViewController {
     }
     
     private func showHideAddMoreOption() {
-        addMoreButton?.isUserInteractionEnabled = selectedAssets.count == 5 ? false : true
-        addMoreButton?.alpha = selectedAssets.count == 5 ? 0.4 : 1.0
-        addImage?.alpha = selectedAssets.count == 5 ? 0.4 : 1.0
+        addMoreButton?.isUserInteractionEnabled = selectedAssets.count == 10 ? false : true
+        addMoreButton?.alpha = selectedAssets.count == 10 ? 0.4 : 1.0
+        addImage?.alpha = selectedAssets.count == 10 ? 0.4 : 1.0
     }
     
     @objc func appMovedToBackground() {
@@ -312,7 +312,7 @@ class ImageEditController: UIViewController {
         let imagePicker = ImagePickerController(selectedAssets: selectedAssets)
         imagePicker.settings.theme.selectionStyle = .numbered
         imagePicker.settings.fetch.assets.supportedMediaTypes = [.image,.video]
-        imagePicker.settings.selection.max = 5
+        imagePicker.settings.selection.max = 10
         imagePicker.settings.preview.enabled = true
         presentImagePicker(imagePicker, select: { [weak self] (asset) in
             // User selected an asset. Do something with it. Perhaps begin processing/upload?
@@ -328,7 +328,7 @@ class ImageEditController: UIViewController {
                     }
                 }
             }
-            if imagePicker.selectedAssets.count > 4 {
+            if imagePicker.selectedAssets.count > 9 {
                 AppAlert.shared.showToast(message: ErrorMessage.restrictedMoreImages)
             }
         }, deselect: { [weak self] (asset) in

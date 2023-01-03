@@ -17,6 +17,7 @@ class ContactUsController: UIViewController, UITextFieldDelegate, UITextViewDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpStatusBar()
         titleTextField.borderStyle = .none
     }
     

@@ -80,7 +80,7 @@ class CustomPhotoAlbum {
             }
         })
     }
-    
+
     public static func fetchAssetCollectionForAlbum(currentFolderName: String?) -> PHAssetCollection! {
         let fetchOptions = PHFetchOptions()
         fetchOptions.predicate = NSPredicate(format: "title = %@", currentFolderName ?? "")

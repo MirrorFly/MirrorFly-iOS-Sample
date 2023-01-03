@@ -23,7 +23,7 @@ class OTPViewController: UIViewController {
     public var countryArray = [Country]()
     @IBOutlet weak var termsAndConditionLabel: UILabel!
     @IBOutlet weak var privacyPolicyLabel: UILabel!
-    private var otpViewModel : OTPViewModel!
+   public  var otpViewModel : OTPViewModel!
     let chatmanager = ChatManager.shared
     var countryRegion = ""
     
