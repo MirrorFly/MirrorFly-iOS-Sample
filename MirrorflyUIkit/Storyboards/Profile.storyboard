@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ma2-Xg-Lfi">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ma2-Xg-Lfi">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -569,6 +569,42 @@
                                     <constraint firstItem="LVF-XE-2PH" firstAttribute="centerX" secondItem="hXJ-Qy-SA5" secondAttribute="centerX" id="wkR-iM-Nyz"/>
                                 </constraints>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ufX-XZ-hvu">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pid-Qp-KR5">
+                                        <rect key="frame" x="8" y="4" width="42" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="Cbz-vq-7XB"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="ic_close"/>
+                                        <connections>
+                                            <action selector="onDeleteBackButton:" destination="sCd-7H-19A" eventType="touchUpInside" id="Yo3-MX-gug"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H2w-n5-Ptd">
+                                        <rect key="frame" x="364" y="4" width="42" height="42"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="42" id="AXb-HP-iPj"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="ic_delete"/>
+                                        <connections>
+                                            <action selector="onDeleteButton:" destination="sCd-7H-19A" eventType="touchUpInside" id="rlm-uv-b0q"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" name="NavigationColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="H2w-n5-Ptd" secondAttribute="bottom" constant="4" id="5ws-wr-Xkl"/>
+                                    <constraint firstItem="H2w-n5-Ptd" firstAttribute="top" secondItem="ufX-XZ-hvu" secondAttribute="top" constant="4" id="E69-92-T47"/>
+                                    <constraint firstItem="Pid-Qp-KR5" firstAttribute="leading" secondItem="ufX-XZ-hvu" secondAttribute="leading" constant="8" id="Zdk-dq-cGA"/>
+                                    <constraint firstAttribute="bottom" secondItem="Pid-Qp-KR5" secondAttribute="bottom" constant="4" id="qGe-oM-qzL"/>
+                                    <constraint firstAttribute="trailing" secondItem="H2w-n5-Ptd" secondAttribute="trailing" constant="8" id="rDX-Y5-oTC"/>
+                                    <constraint firstItem="Pid-Qp-KR5" firstAttribute="top" secondItem="ufX-XZ-hvu" secondAttribute="top" constant="4" id="reG-Nu-Hic"/>
+                                </constraints>
+                            </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dr5-px-FMy">
                                 <rect key="frame" x="0.0" y="53" width="414" height="663"/>
                                 <subviews>
@@ -584,7 +620,7 @@
                                                 </constraints>
                                                 <prototypes>
                                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="statusCell" rowHeight="64" id="A5b-pC-nLB" customClass="EditStatusTableViewCell" customModule="Mirrorfly" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="49" width="414" height="64"/>
+                                                        <rect key="frame" x="0.0" y="55.333332061767578" width="414" height="64"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="A5b-pC-nLB" id="6m4-JJ-oKu">
                                                             <rect key="frame" x="0.0" y="0.0" width="414" height="64"/>
@@ -609,11 +645,10 @@
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="laY-C5-Iav">
                                                                     <rect key="frame" x="15" y="12" width="384" height="50"/>
                                                                 </button>
-                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_tick" translatesAutoresizingMaskIntoConstraints="NO" id="Keh-tD-Wvp">
-                                                                    <rect key="frame" x="379" y="22" width="20" height="20"/>
+                                                                <imageView clipsSubviews="YES" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_Tick" translatesAutoresizingMaskIntoConstraints="NO" id="Keh-tD-Wvp">
+                                                                    <rect key="frame" x="374" y="5" width="25" height="54"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" secondItem="Keh-tD-Wvp" secondAttribute="height" multiplier="1:1" id="pHq-Xg-HOm"/>
-                                                                        <constraint firstAttribute="width" constant="20" id="wBC-eZ-dPD"/>
+                                                                        <constraint firstAttribute="width" constant="25" id="wBC-eZ-dPD"/>
                                                                     </constraints>
                                                                 </imageView>
                                                             </subviews>
@@ -632,6 +667,7 @@
                                                                 <constraint firstItem="laY-C5-Iav" firstAttribute="leading" secondItem="6m4-JJ-oKu" secondAttribute="leading" constant="15" id="UWR-9v-HJ1"/>
                                                                 <constraint firstItem="Keh-tD-Wvp" firstAttribute="centerY" secondItem="6m4-JJ-oKu" secondAttribute="centerY" id="XCF-af-3hK"/>
                                                                 <constraint firstAttribute="bottom" secondItem="JYI-sK-GqJ" secondAttribute="bottom" constant="5" id="ibO-lm-CLY"/>
+                                                                <constraint firstItem="Keh-tD-Wvp" firstAttribute="height" secondItem="JYI-sK-GqJ" secondAttribute="height" id="uR4-eI-RMD"/>
                                                             </constraints>
                                                         </tableViewCellContentView>
                                                         <inset key="separatorInset" minX="17" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -855,6 +891,7 @@
                             <constraint firstItem="qWu-M7-Bad" firstAttribute="top" secondItem="3l9-Zz-JfR" secondAttribute="bottom" constant="5" id="B2o-Jc-TMz"/>
                             <constraint firstItem="sRf-rY-RCC" firstAttribute="trailing" secondItem="hXJ-Qy-SA5" secondAttribute="trailing" id="BvD-zk-0iu"/>
                             <constraint firstItem="3l9-Zz-JfR" firstAttribute="top" secondItem="mb7-EI-Z21" secondAttribute="top" id="Cy4-ZG-3zn"/>
+                            <constraint firstItem="ufX-XZ-hvu" firstAttribute="bottom" secondItem="hXJ-Qy-SA5" secondAttribute="bottom" id="D6C-SS-9bq"/>
                             <constraint firstItem="Dr5-px-FMy" firstAttribute="top" secondItem="hXJ-Qy-SA5" secondAttribute="bottom" constant="3" id="EEX-h8-7Wm"/>
                             <constraint firstItem="mb7-EI-Z21" firstAttribute="trailing" secondItem="3l9-Zz-JfR" secondAttribute="trailing" id="Lbq-qz-OzV"/>
                             <constraint firstItem="mb7-EI-Z21" firstAttribute="trailing" secondItem="hXJ-Qy-SA5" secondAttribute="trailing" id="Uaf-Im-wBr"/>
@@ -862,7 +899,10 @@
                             <constraint firstItem="hXJ-Qy-SA5" firstAttribute="leading" secondItem="mb7-EI-Z21" secondAttribute="leading" id="Woh-wn-w9X"/>
                             <constraint firstItem="hXJ-Qy-SA5" firstAttribute="top" secondItem="sRf-rY-RCC" secondAttribute="bottom" id="YXr-TN-tmZ"/>
                             <constraint firstItem="hXJ-Qy-SA5" firstAttribute="top" secondItem="mb7-EI-Z21" secondAttribute="top" id="YaR-nC-tLO"/>
+                            <constraint firstItem="ufX-XZ-hvu" firstAttribute="trailing" secondItem="hXJ-Qy-SA5" secondAttribute="trailing" id="chX-p4-J5N"/>
+                            <constraint firstItem="ufX-XZ-hvu" firstAttribute="top" secondItem="hXJ-Qy-SA5" secondAttribute="top" id="ewl-51-cdc"/>
                             <constraint firstItem="3l9-Zz-JfR" firstAttribute="leading" secondItem="mb7-EI-Z21" secondAttribute="leading" id="gOn-C4-nxj"/>
+                            <constraint firstItem="ufX-XZ-hvu" firstAttribute="leading" secondItem="hXJ-Qy-SA5" secondAttribute="leading" id="nnn-9c-VaV"/>
                             <constraint firstItem="mb7-EI-Z21" firstAttribute="trailing" secondItem="Dr5-px-FMy" secondAttribute="trailing" id="pxD-4F-Mop"/>
                             <constraint firstItem="Dr5-px-FMy" firstAttribute="leading" secondItem="mb7-EI-Z21" secondAttribute="leading" id="uGb-aR-Qes"/>
                         </constraints>
@@ -875,6 +915,7 @@
                         <outlet property="editStatusViewBottom" destination="tJf-tT-Kis" id="rJa-22-gei"/>
                         <outlet property="editTextButton" destination="Jcv-c1-mwc" id="RwT-l4-WJr"/>
                         <outlet property="okButtonView" destination="iPF-fn-sq0" id="LhH-JC-1dE"/>
+                        <outlet property="selectionHeaderView" destination="ufX-XZ-hvu" id="H0Z-BN-QHB"/>
                         <outlet property="statusTextview" destination="S6r-C2-eyf" id="YJK-10-7IQ"/>
                         <outlet property="textCountLabel" destination="rQ5-Kh-5w6" id="0fc-jY-8Wy"/>
                         <outlet property="topStatusView" destination="sRf-rY-RCC" id="ec8-Ir-9Zj"/>
@@ -1484,14 +1525,16 @@
         <image name="block_user_background" width="376" height="644"/>
         <image name="blockedUser" width="62" height="62"/>
         <image name="down_arrow" width="10" height="6"/>
+        <image name="ic_Tick" width="17" height="14"/>
         <image name="ic_back" width="19.333333969116211" height="13.666666984558105"/>
+        <image name="ic_close" width="20" height="20"/>
+        <image name="ic_delete" width="20" height="20"/>
         <image name="ic_email" width="22" height="22"/>
         <image name="ic_pencil" width="18.333333969116211" height="17"/>
         <image name="ic_phone" width="16.333333969116211" height="16.333333969116211"/>
         <image name="ic_profileCamera" width="31.666666030883789" height="31.666666030883789"/>
         <image name="ic_profile_placeholder" width="139" height="139"/>
         <image name="ic_status" width="22" height="22"/>
-        <image name="ic_tick" width="17" height="14"/>
         <image name="logo_blue" width="224.33332824707031" height="36"/>
         <image name="sync" width="23.666666030883789" height="33.666667938232422"/>
         <image name="sync_bg" width="375" height="386"/>

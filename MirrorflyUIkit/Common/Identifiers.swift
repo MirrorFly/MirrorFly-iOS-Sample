@@ -18,6 +18,13 @@ enum Identifiers {
     static let contactTableViewCell = "ContactTableViewCell"
     static let verifyOTPViewController = "VerifyOTPViewController"
     static let mainTabBarController = "MainTabBarController"
+    static let backupViewController = "BackupViewController"
+    static let restoreViewController = "RestoreViewController"
+    static let backupPopupViewController = "BackupPopupViewController"
+    static let autoBackupPopupViewController = "AutoBackupPopupViewController"
+    static let backupProgressViewController = "BackupProgressViewController"
+    static let restoreInstructionViewController = "RestoreInstructionViewController"
+    static let profileViewController = "ProfileViewController"
     static let country = "CountryCell"
     static let countryPicker = "CountryPicker"
     static let noContacts = "NoContacts"
@@ -125,6 +132,9 @@ enum Identifiers {
     
     //MARK: ChatSettings
     static let chatSettingsTableViewCell = "ChatSettingsTableViewCell"
+    static let chatBackupTableViewCell = "ChatBackupTableViewCell"
+    static let chatBackupPopupTableViewCell = "BackupPopupTableViewCell"
+    static let restoreInstructionsTableViewCell = "RestoreInstructionsTableViewCell"
     static let clearAllChatTableViewCell = "ClearAllChatTableViewCell"
     static let LanguageSelectionTableViewCell = "LanguageSelectionTableViewCell"
     static let LanguageSelectionViewController = "LanguageSelectionViewController"
@@ -144,6 +154,16 @@ enum Identifiers {
     static let groupHeaderCell = "GroupHeaderCell"
     static let inforDeliveredCell = "DeliveredCell"
     static let notDelivered = "NotDeliveredCell"
+    
+    // view All Media
+    static let viewAllMediaVC = "ViewAllMediaController"
+    static let mediaCell = "MediaCell"
+    static let mediaSectionHeader = "SectionHeaderView"
+    static let mediaSectionFooter = "SectionFooterView"
+    static let documentCell = "DocumentTableViewCell"
+    static let headerSectionCell = "HeaderSectionCell"
+    static let footerSectionCell = "FooterSectionCell"
+    static let linkCell = "LinkCell"
 }
 
 //MARK: - Storyboards
@@ -151,4 +171,5 @@ enum Storyboards {
     static let main = "Main"
     static let chat = "Chat"
     static let profile = "Profile"
+    static let backupRestore = "BackupRestore"
 }

@@ -122,10 +122,7 @@ class UserProfileViewController : UIViewController {
         if url != URL(string: FlyDefaults.myProfileImageUrl) {
             profileImage?.sd_setImage(with: url) { image, error, cache, url in
                 if error != nil {
-//                    FlyMessenger.refreshToken { isSuccess, error, data in
-//
-//                    }
-                    FlyMessenger.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
+                    ChatManager.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
                            if isSuccess {
                                self?.profileImage?.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"), completed: { [weak self]image,error,_,imageUrl in
                                    self?.profileImage?.stopAnimating()
@@ -243,7 +240,8 @@ extension UserProfileViewController {
                     isImagePicked = false
                 }
             }
-            ContactManager.shared.updateMyProfile(for: myProfile, isFromLocal: isImagePicked) { [weak self] isSuccess, flyError, flyData in
+           
+            ContactManager.shared.updateMyProfile(for: myProfile) { [weak self] isSuccess, flyError, flyData in
                 self?.stopLoading()
                 var data  = flyData
                 if isSuccess {

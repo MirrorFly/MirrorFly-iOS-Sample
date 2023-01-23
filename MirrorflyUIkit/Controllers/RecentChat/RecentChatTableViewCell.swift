@@ -147,12 +147,19 @@ class RecentChatTableViewCell: UITableViewCell {
         }
     }
     
-    func setLastContentTextColor(searchText: String,recentChat: RecentChat) {
+    func setLastContentTextColor(searchText: String,recentChat: RecentChat, caption : String = "") {
         if let range = recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
             let convertedRange = NSRange(range, in: recentChat.lastMessageContent.capitalized)
             let attributedString = NSMutableAttributedString(string: recentChat.lastMessageContent.capitalized)
             attributedString.setAttributes([NSAttributedString.Key.foregroundColor: Color.userStatusTextColor], range: convertedRange)
             userMessageLabel?.attributedText = attributedString
+        } else if caption.isNotEmpty {
+            if let range = caption.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
+                let convertedRange = NSRange(range, in: caption.capitalized)
+                let attributedString = NSMutableAttributedString(string: caption.capitalized)
+                attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
+                userMessageLabel?.attributedText = attributedString
+            }
         } else {
             userMessageLabel?.text = recentChat.lastMessageContent
             userMessageLabel?.textColor = Color.userStatusTextColor
@@ -187,7 +194,7 @@ class RecentChatTableViewCell: UITableViewCell {
         }
     }
     
-    func setRecentChatMessage(recentChatMessage: RecentChat,color : UIColor,chatMessage: ChatMessage?,senderName: String) {
+    func setRecentChatMessage(recentChatMessage: RecentChat,color : UIColor,chatMessage: ChatMessage?,senderName: String, fromArchive: Bool) {
         receivedMessageTrailingCons?.constant = 5
         statusViewTralingCons?.constant = 5
         statusImageCons?.constant = 7
@@ -201,6 +208,11 @@ class RecentChatTableViewCell: UITableViewCell {
         pinImageView.isHidden = !recentChatMessage.isChatPinned
         muteImageView.isHidden = !recentChatMessage.isMuted
         archivedStatusLabel.isHidden = !recentChatMessage.isChatArchived
+
+        if fromArchive {
+            muteImageView.isHidden = true
+        }
+
         if recentChatMessage.profileType == .groupChat {
             setImage(imageURL: recentChatMessage.profileImage ?? "", name: recentChatMessage.profileName, color: color, recentChat: recentChatMessage)
         } else {

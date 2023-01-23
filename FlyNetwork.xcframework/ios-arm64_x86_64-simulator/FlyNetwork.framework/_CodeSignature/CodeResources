@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/FlyNetwork-Swift.h</key>
 		<data>
-		rzc/tgfv15cdaGsx7BbiqNcJI+k=
+		fY+GmlTS4KXK6y0Lfa+GfkXd5Ac=
 		</data>
 		<key>Headers/FlyNetwork.h</key>
 		<data>
@@ -14,47 +14,47 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		JK1pBImp23+PmdinAJ5pQq0N+eE=
+		Zheg/7uuWyxKf23UefIskVVP8pE=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		TlMO8bBRXKZ3M7+CMKJ6tk5darw=
+		S/hySa91pGEBsAtIyiJHC+B55oU=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		wbUJeM4kdt5SxxyO9NYUC3jRQdk=
+		V6tNcJ/k3749NEimHO6x6rxlkXY=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		fn2t0HhT6eEw52u7dhXMQtSdnJQ=
+		tsZPi48vVRQvbOXrWISh8Zzy1ws=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		wbUJeM4kdt5SxxyO9NYUC3jRQdk=
+		V6tNcJ/k3749NEimHO6x6rxlkXY=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		xxn5EiQninzo4szP7OWtLsnWeKg=
+		OJrHoWR7+pEDMC4hZ50P4Of4Rco=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		TlMO8bBRXKZ3M7+CMKJ6tk5darw=
+		S/hySa91pGEBsAtIyiJHC+B55oU=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		B9TWH27c+dcx/Pxb+Rl/cgVC7ss=
+		jUUb4hcC/emrjOu+v4+BhsXY1MM=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		Ywj3kRimkSi+ZWDAvreDD8RbMUA=
+		lOxnhvXi/BZIPaichp32t1oe6wE=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		B9TWH27c+dcx/Pxb+Rl/cgVC7ss=
+		jUUb4hcC/emrjOu+v4+BhsXY1MM=
 		</data>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		tG4EutJviHWw76BzRCvMn34IPDs=
+		DX21s+WjzyU7isVfhuBo2LYCFz8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -67,7 +67,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			FNgMFHEPtfBqLfheZQ/UK1JPuM9KbRhgDGjC1428mQk=
+			p1BoSovW4L+Qm2RVvQB5TXxgG41bxyiQsx+wzIcbyAU=
 			</data>
 		</dict>
 		<key>Headers/FlyNetwork.h</key>
@@ -81,70 +81,70 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			7WXUXmv0praJPV6PRsNee4DHc92Etml1GREYgCoQkSc=
+			Kk2hinvU9/JEqW2Cw/rGSMjUytFXHqMffIH7zywNAEY=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			K98VMt6iDmf6CoRLI/U17N2ufooXoMM+ZLVRueh6P3k=
+			uOGOk9Tcfpp4VhPjbQ8PGLw8vn6SUScCZinUkL/gSqY=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZnCEWsnAOyhypdWWKKLltg2cSO6wf+DpX7yAlSrWjrI=
+			HyLHD4i9XD76vBhKG4oYsDFjiyHiZjc0gU72yM6ddfw=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			K98VMt6iDmf6CoRLI/U17N2ufooXoMM+ZLVRueh6P3k=
+			uOGOk9Tcfpp4VhPjbQ8PGLw8vn6SUScCZinUkL/gSqY=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5mnU+pINn5qJva7OThqbo+p5EmwrnuBFFeAretn97Go=
+			CcgVN6rlqIhyrfhiGU6+3feSImWwQ7vn7OZjd3LtjlA=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			7WXUXmv0praJPV6PRsNee4DHc92Etml1GREYgCoQkSc=
+			Kk2hinvU9/JEqW2Cw/rGSMjUytFXHqMffIH7zywNAEY=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			iHRVME300C0p2+mGvg8sAB7NbHPCJMpbUnMreuU6YW4=
+			db4R3fVrv5Vmp5ECXQJ6WcLiwZ7UvwMo40uZfwMIEW4=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			EpOVOi5SshmUMol3kEZczycc4MnIZYJ8FH87693xfWM=
+			QB/N6iu5iRvNr/2Jd8KF2MiT59/Z86cBGusW6iIkF5o=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			iHRVME300C0p2+mGvg8sAB7NbHPCJMpbUnMreuU6YW4=
+			db4R3fVrv5Vmp5ECXQJ6WcLiwZ7UvwMo40uZfwMIEW4=
 			</data>
 		</dict>
 		<key>Modules/FlyNetwork.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OU4v4lTy9PXA/V1pCHsaG6cDDJ1vKGz22bvhqMwPOOs=
+			bq5nhrP5N+3jjaAJ0n3SIHr/CtCb6X2SHa88NBWP3wk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

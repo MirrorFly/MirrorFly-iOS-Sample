@@ -441,7 +441,7 @@ extension MessageInfoViewController {
             return
         }
         
-        let fileURL = getAudioURL(audioFileName: audioFileName)
+        let fileURL = ChatUtils.getAudioURL(audioFileName: audioFileName)
         if FileManager.default.fileExists(atPath: fileURL.relativePath) {
             audioPlayer.prepareToPlay()
             do {
@@ -469,13 +469,6 @@ extension MessageInfoViewController {
             print("File Does not Exist")
             return
         }
-    }
-    
-    private func getAudioURL(audioFileName : String) -> URL {
-        let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Audio", isDirectory: true)
-        let fileURL: URL = folderPath.appendingPathComponent(audioFileName)
-        return fileURL
     }
     
     func stopDisplayLink() {
@@ -518,7 +511,7 @@ extension MessageInfoViewController {
             return
         }
         
-        let fileURL = getAudioURL(audioFileName: audioFileName)
+        let fileURL = ChatUtils.getAudioURL(audioFileName: audioFileName)
         if FileManager.default.fileExists(atPath: fileURL.relativePath) {
             audioPlayer.prepareToPlay()
             do {
@@ -594,7 +587,7 @@ extension MessageInfoViewController : MessageEventsDelegate {
         
     }
     
-    func onMessagesCleared(toJid: String) {
+    func onMessagesCleared(toJid: String, deleteType: String?) {
         
     }
     

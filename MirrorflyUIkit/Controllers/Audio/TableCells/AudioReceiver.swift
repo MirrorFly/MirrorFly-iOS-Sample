@@ -113,7 +113,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) -> AudioReceiver? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?,isDeletedMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> AudioReceiver? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         audioCallBack = audioClosureCallBack
@@ -163,7 +163,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
                mapView?.isHidden = true
            } else {
                mapView?.isHidden = true
-               replyTextLabel?.text = getReplymessage
+               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
                if replyMessage?.mediaChatMessage != nil {
                    switch replyMessage?.mediaChatMessage?.messageType {
                    case .image:

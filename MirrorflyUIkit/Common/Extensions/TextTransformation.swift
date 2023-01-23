@@ -37,6 +37,30 @@ extension String {
         }
     }
     
+    func fetchHeaderDateForViewAllMedia(for lastMessageTime : Double) -> String {
+        let date =  DateFormatterUtility.shared.convertMillisecondsToLocalDate(milliSeconds: lastMessageTime)
+        
+        let currentMonth = Calendar.current.component(Calendar.Component.month, from: Date())
+        let messageMonth = Calendar.current.component(Calendar.Component.month, from: date)
+        if currentMonth == messageMonth {
+            return "Recent"
+        } else if (currentMonth - messageMonth) == 1 {
+            return "Last Month"
+        } else {
+            let currentYear = Calendar.current.component(Calendar.Component.year, from: Date())
+            let messageYear = Calendar.current.component(Calendar.Component.year, from: date)
+            var formatString = "MMM, yyyy"
+            if currentYear == messageYear {
+                formatString = "MMMM"
+            }
+            let formatter = DateFormatter()
+            formatter.dateFormat = formatString
+            formatter.locale = Locale(identifier: "en_US")
+            let strDate: String = formatter.string(from: date)
+            return strDate.capitalized
+        }
+    }
+    
     func fetchMessageDateHeader(for date : Date) -> String {
         
         var secondsAgo = Int(Date().timeIntervalSince(date))

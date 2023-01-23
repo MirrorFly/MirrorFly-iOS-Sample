@@ -145,7 +145,7 @@ class VerifyOTPViewController: UIViewController
         self.stopLoading()
         let localGoogleToken = Utility.getStringFromPreference(key: googleToken)
         if userData.verifyUserData?.deviceToken == nil {
-            registration()
+            registration(isForceRegister: false)
         }else if localGoogleToken != userData.verifyUserData?.deviceToken
         {
             let localGoogleToken = Utility.getStringFromPreference(key: googleToken)
@@ -154,14 +154,14 @@ class VerifyOTPViewController: UIViewController
                 AppAlert.shared.onAlertAction = { (result) ->
                     Void in
                     if result == 1 {
-                        self.registration()
+                        self.registration(isForceRegister: false)
                     }else {
                         self.popView()
                     }
                 }
             }
         }else {
-            self.registration()
+            self.registration(isForceRegister: false)
         }
     }
     
@@ -183,7 +183,7 @@ class VerifyOTPViewController: UIViewController
          ChatManager.logoutApi { [weak self] isSuccess, flyError, flyData in
             if isSuccess {
                 print("requestLogout Logout api isSuccess")
-                self?.registration()
+                self?.registration(isForceRegister: false)
             }else{
                 print("Logout api error : \(String(describing: flyError))")
                 self?.stopLoading()
@@ -191,10 +191,10 @@ class VerifyOTPViewController: UIViewController
         }
     }
     
-    func registration() {
+    func registration(isForceRegister: Bool) {
         self.startLoading(withText: pleaseWait)
         let mobile = Utility.removeCharFromString(string: self.mobileNumber, char: "+")
-        verifyOTPViewModel.registration(uniqueIdentifier: mobile) { [weak self] (result, error) in
+        verifyOTPViewModel.registration(uniqueIdentifier: mobile, isForceRegister: isForceRegister) { [weak self] (result, error) in
             if error == nil {
                 self?.stopLoading()
                 guard let userPassword = result?["password"] as? String else{
@@ -223,7 +223,23 @@ class VerifyOTPViewController: UIViewController
                 if let errorMsg  = error {
                     if errorMsg == userBlocked {
                         self?.navigateToBlockedScreen()
-                    } else {
+                    }
+                    else if errorMsg.contains("405") {
+                        
+                        let message = AppUtils.shared.getErrorMessage(description: errorMsg)
+                        
+                        AppAlert.shared.showAlert(view: self!, title: alert, message: message, buttonOneTitle: cancel, buttonTwoTitle: continueButton)
+                        
+                        AppAlert.shared.onAlertAction = { [weak self] (result) ->
+                            Void in
+                            if result == 1 {
+                                self?.registration(isForceRegister: true)
+                            } else if result == 0{
+                                self?.popView()
+                            }
+                        }
+                    }
+                    else {
                         AppAlert.shared.showToast(message: errorMsg)
                     }
                     
@@ -314,7 +330,7 @@ class VerifyOTPViewController: UIViewController
                         }
                         self?.stopTimer()
                         DispatchQueue.main.async { [weak self] in
-                            self?.registration()
+                            self?.registration(isForceRegister: false)
                         }
                         
                     }
@@ -482,7 +498,19 @@ extension VerifyOTPViewController: UITextFieldDelegate, CustomTextFieldDelegate 
 extension VerifyOTPViewController : ConnectionEventDelegate {
     func onConnected() {
         if isAuthorizedSuccess == true {
-            self.performSegue(withIdentifier: Identifiers.otpNextToProfile, sender: nil)
+//            self.performSegue(withIdentifier: Identifiers.otpNextToProfile, sender: nil)
+            if let vc = UIStoryboard.init(name: Storyboards.backupRestore, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.restoreViewController) as? RestoreViewController {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+//            guard let containerURL = FileManager.default.url(forUbiquityContainerIdentifier: FlyConstants.iCloudContainerId) else {
+//                self.performSegue(withIdentifier: Identifiers.otpNextToProfile, sender: nil)
+//                return
+//            }
+//            var backupCloudFileURL = containerURL.appendingPathComponent("Documents")
+//            backupCloudFileURL = backupCloudFileURL.appendingPathComponent("Mirrorfly-\(FlyDefaults.myXmppUsername).txt")
+//            if FileManager.default.fileExists(atPath: containerURL.path) {
+//
+//            }
         }
     }
     func onDisconnected() {

@@ -41,6 +41,13 @@ extension UIImageView {
         self.contentMode = .scaleAspectFill
         self.image = self.image?.withAlignmentRectInsets(UIEdgeInsets(top: insect, left: insect, bottom: insect, right: insect))
     }
+    func applyShadow(){
+        self.layer.shadowColor = Color.restoreShadowColor.cgColor
+        self.layer.shadowRadius = 8.0
+        self.layer.shadowOpacity = 0.5
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.layer.masksToBounds = false
+    }
 
 }
 

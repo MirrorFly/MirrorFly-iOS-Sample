@@ -20,9 +20,8 @@ import RxSwift
 import Contacts
 import CallKit
 
-
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+let LICENSE_KEY = "xxxxxxxxxxxxxxxxxx"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
 let XMPP_PORT = 5222
 let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
@@ -33,7 +32,7 @@ let IS_LIVE = false
 let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
 let IS_MOBILE_NUMBER_LOGIN = true
 let APP_NAME = "UiKit"
-
+    let ICLOUD_CONTAINER_ID = "iCloud.com.mirrorfly.qa"
 
 let isMigrationDone = "isMigrationDone"
 
@@ -145,6 +144,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         VOIPManager.sharedInstance.updateDeviceToken()
         let licenceKeyForEncryption = String(LICENSE_KEY.prefix(16))
         FlyDefaults.profileIV = licenceKeyForEncryption
+        networkMonitor()
         return true
     }
     
@@ -180,6 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
+        ChatManager.shared.startAutoDownload()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
     }
     
@@ -278,6 +279,7 @@ extension AppDelegate : PKPushRegistryDelegate {
     }
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
         NSLog("Push VOIP Received with Payload - %@",payload.dictionaryPayload)
+        print("#callopt \(FlyUtils.printTime()) pushRegistry voip received")
         VOIPManager.sharedInstance.processPayload(payload.dictionaryPayload)
     }
 }
@@ -395,6 +397,8 @@ extension AppDelegate : LogoutDelegate {
             navigationController.navigationBar.isHidden = true
             navigationController.pushViewController(otpViewController, animated: false)
         }
+        
+        AppAlert.shared.showToast(message: "The session has been logged out")
     }
 }
 
@@ -480,6 +484,16 @@ extension AppDelegate {
             let initialViewController = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
             UIApplication.shared.keyWindow?.rootViewController =  UINavigationController(rootViewController: initialViewController)
             UIApplication.shared.keyWindow?.makeKeyAndVisible()
+        }
+    }
+}
+
+extension AppDelegate {
+    func networkMonitor() {
+        NetworkReachability.shared.netStatusChangeHandler = {
+            if NetworkReachability.shared.isConnected {
+                ChatManager.shared.startAutoDownload()
+            }
         }
     }
 }

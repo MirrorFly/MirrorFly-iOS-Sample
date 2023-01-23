@@ -88,6 +88,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ChatManager.makeXMPPConnection()
         }
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
+        iCloudmanager().checkAutoBackupSchedule()
+        ChatManager.shared.startAutoDownload()
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
@@ -102,6 +104,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     @available(iOS 13.0, *)
     func sceneWillEnterForeground(_ scene: UIScene) {
+        NetworkReachability.shared.startMonitoring()
         print("#scene sceneWillEnterForeground \(FlyDefaults.isLoggedIn)")
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.

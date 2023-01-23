@@ -1,16 +1,16 @@
 {
   "images" : [
     {
+      "filename" : "Archive_ic_up arrow.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "unarchive.png",
+      "filename" : "Archive_ic_up arrow@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "unarchive icon@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

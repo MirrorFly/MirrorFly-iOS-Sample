@@ -69,6 +69,7 @@ class BaseViewController : UIViewController {
                 Utility.saveInPreference(key: isProfileSaved, value: false)
                 Utility.saveInPreference(key: isLoggedIn, value: false)
                 ChatManager.disconnect()
+                ChatManager.resetXmppResource()
                 var controller : OTPViewController?
                 if #available(iOS 13.0, *) {
                     controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "OTPViewController")

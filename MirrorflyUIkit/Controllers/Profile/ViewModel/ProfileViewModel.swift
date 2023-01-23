@@ -66,7 +66,7 @@ class ProfileViewModel {
         print(params)
         apiService.post(withEndPoint: url, params: params, headers: headers).responseJSON { [weak self] (response) in
             if response.response?.statusCode == 401 {
-                FlyMessenger.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
+                ChatManager.refreshToken(completionHandler: { isSuccess,flyError,flyData  in
                     if isSuccess {
                         self?.contactSync()
                     }

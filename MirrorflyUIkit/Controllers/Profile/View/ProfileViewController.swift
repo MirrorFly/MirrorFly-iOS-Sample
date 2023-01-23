@@ -281,7 +281,7 @@ extension ProfileViewController {
                     isImagePicked = false
                 }
             }
-            ContactManager.shared.updateMyProfile(for: myProfile, isFromLocal: isImagePicked) { [weak self] isSuccess, flyError, flyData in
+            ContactManager.shared.updateMyProfile(for: myProfile) { [weak self] isSuccess, flyError, flyData in
                 self?.stopLoading()
                 var data  = flyData
                 if isSuccess {

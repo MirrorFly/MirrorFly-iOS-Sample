@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
 // swift-module-flags: -target arm64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyNetwork
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import Alamofire
@@ -74,7 +74,7 @@ public protocol FlyNetworkControllerDelegate : ObjectiveC.NSObjectProtocol {
   @objc deinit
 }
 extension FlyNetwork.FlyNetworkController {
-  public func registerApiService(uniqueIdentifier: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, mode: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public func registerApiService(uniqueIdentifier: Swift.String, deviceToken: Swift.String, voipDeviceToken: Swift.String, mode: Swift.Bool, isForceRegister: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func requestOtpApiService(mobileNumber: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func removeProfileImage(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func uploadMyProfileImage(fileUrl: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)

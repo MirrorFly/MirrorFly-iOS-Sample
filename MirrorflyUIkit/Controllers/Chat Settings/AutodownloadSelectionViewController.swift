@@ -23,8 +23,8 @@ enum MessageDownloadType : String , CaseIterable{
 }
 
 enum NetworkType : String,CaseIterable{
-    case mobileData = "When using MobileData"
-    case wifi = "When connected on Wi-fi"
+    case mobileData = "When using Mobile Data"
+    case wifi = "When connected on Wi-Fi"
 }
 
 class AutodownloadSelectionViewController: UIViewController {
@@ -37,9 +37,9 @@ class AutodownloadSelectionViewController: UIViewController {
     
     @IBOutlet weak var autoDownloadTableview: UITableView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidLoad() {        super.viewDidLoad()
         self.autoDownloadTableview.delegate = self
+
         self.autoDownloadTableview.dataSource = self
         sectionName = [DownlaodList(isopened: false, sectionTitle:sectionlist, sectionValues: downloadfiles),DownlaodList(isopened: false, sectionTitle:sectionlist, sectionValues: downloadfiles)]
         mobiledata = FlyDefaults.autoDownloadMobile

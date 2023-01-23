@@ -1,23 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "0C07BEEF-68A0-451C-9D8A-CAE1CB89978E"
+   uuid = "9DE28D19-A49E-4D9C-8076-ECB03A16A81D"
    type = "0"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6CBB24F4-6DA0-4340-AE42-16DC2F76BE27"
+            uuid = "83612F86-A968-4970-9DA3-9B86D6A4A8E5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SubmoduleNetwork/FlyNetwork/FlyNetwork/RequestManager.swift"
+            filePath = "MirrorflyUIkit/Calls/CallLogViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "618"
-            endingLineNumber = "618"
-            landmarkName = "contactSyncRequest(restEnd:headers:method:params:completionHandler:)"
+            startingLineNumber = "800"
+            endingLineNumber = "800"
+            landmarkName = "userBlockedMe(jid:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "554793C2-E3A8-4A86-AC99-C9E45EA39836"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MirrorflyUIkit/Calls/CallLogViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "809"
+            endingLineNumber = "809"
+            landmarkName = "userUnBlockedMe(jid:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4237B18C-E0D3-4956-9578-ACB4F782D74E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MirrorflyUIkit/Calls/CallLogViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "799"
+            endingLineNumber = "799"
+            landmarkName = "userBlockedMe(jid:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4237B18C-E0D3-4956-9578-ACB4F782D74E - 6d998827a0b9af39"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UiKitQa.CallLogViewController.userBlockedMe(jid: Swift.String) -&gt; ()"
+                  moduleName = "UiKitQa"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Documents/ToRelease/uikit/MirrorflyUIkit/Calls/CallLogViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "799"
+                  endingLineNumber = "799"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  uuid = "4237B18C-E0D3-4956-9578-ACB4F782D74E - 4fe898654bcc9d38"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; () in UiKitQa.CallLogViewController.userBlockedMe(jid: Swift.String) -&gt; ()"
+                  moduleName = "UiKitQa"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Documents/ToRelease/uikit/MirrorflyUIkit/Calls/CallLogViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "800"
+                  endingLineNumber = "800"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3CCC47BB-DBED-4C27-B237-E7887E7C6D88"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MirrorflyUIkit/Calls/CallLogViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "808"
+            endingLineNumber = "808"
+            landmarkName = "userUnBlockedMe(jid:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3CCC47BB-DBED-4C27-B237-E7887E7C6D88 - 641d4d052634f25"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UiKitQa.CallLogViewController.userUnBlockedMe(jid: Swift.String) -&gt; ()"
+                  moduleName = "UiKitQa"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Documents/ToRelease/uikit/MirrorflyUIkit/Calls/CallLogViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "808"
+                  endingLineNumber = "808"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  uuid = "3CCC47BB-DBED-4C27-B237-E7887E7C6D88 - a8b3893ed19f6dcf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; () in UiKitQa.CallLogViewController.userUnBlockedMe(jid: Swift.String) -&gt; ()"
+                  moduleName = "UiKitQa"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Documents/ToRelease/uikit/MirrorflyUIkit/Calls/CallLogViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "809"
+                  endingLineNumber = "809"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8C805A51-456F-4E66-87EC-F608D8F4C7DE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MirrorflyUIkit/Calls/CallLogViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
+            landmarkName = "appDidBecomeActive()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "8C805A51-456F-4E66-87EC-F608D8F4C7DE - 105320a31bc3ceb3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "UiKitQa.CallLogViewController.appDidBecomeActive() -&gt; ()"
+                  moduleName = "UiKitQa"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Documents/ToRelease/uikit/MirrorflyUIkit/Calls/CallLogViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "214"
+                  endingLineNumber = "214"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  uuid = "8C805A51-456F-4E66-87EC-F608D8F4C7DE - eade95bf6ff66558"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool, Swift.Optional&lt;FlyCommon.FlyError&gt;, Swift.Dictionary&lt;Swift.String, Any&gt;) -&gt; () in UiKitQa.CallLogViewController.appDidBecomeActive() -&gt; ()"
+                  moduleName = "UiKitQa"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/user/Documents/ToRelease/uikit/MirrorflyUIkit/Calls/CallLogViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "215"
+                  endingLineNumber = "215"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

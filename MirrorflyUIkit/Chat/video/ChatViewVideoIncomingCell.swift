@@ -114,7 +114,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         downloadView.isHidden = false
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?) -> ChatViewVideoIncomingCell? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> ChatViewVideoIncomingCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         replyTextLabel?.text = ""
@@ -153,7 +153,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                replyTextLabel?.text = "Original message not available"
            } else {
                messageIconView?.isHidden = true
-               replyTextLabel?.text = getReplymessage
+               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
                mapView?.isHidden = true
                if replyMessage?.mediaChatMessage != nil {
                    messageTypeIcon?.isHidden = false
@@ -264,7 +264,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         }
         
         if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt != "" {
-            caption.text = captionTxt
+            caption.attributedText = ChatUtils.getAttributedMessage(message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch)
             timeOverlay.isHidden = true
             reecivedTime.isHidden = true
             captionTime?.isHidden = false
