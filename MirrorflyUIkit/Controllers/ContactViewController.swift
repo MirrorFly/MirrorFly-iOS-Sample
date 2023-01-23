@@ -401,6 +401,26 @@ class ContactViewController: UIViewController {
         }
     }
     
+    @objc
+    func openContainerImage(sender: UITapGestureRecognizer? = nil) {
+        if let controller = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: "ViewUserImageController") as? ViewUserImageController {
+            
+            guard let getRecentChatJID = contacts[currentIndex].jid else {
+                return
+            }
+            guard let getRecentChatProfile = ContactManager.shared.getUserProfileDetails(for: getRecentChatJID) else {
+                return
+            }
+            
+            let profile = contacts[currentIndex]
+            controller.profileDetails?.jid = profile.jid
+            controller.profileDetails = getRecentChatProfile
+            controller.navigationController?.modalPresentationStyle = .overFullScreen
+            profilePopupContainer.isHidden = true
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
     func setProfile() {
         tappedProfile = contacts[currentIndex]
         if let profile =  tappedProfile{
@@ -425,12 +445,11 @@ class ContactViewController: UIViewController {
                     userImage.backgroundColor = ChatUtils.getColorForUser(userName: name)
                 }
             }
-            if profile.contactType == .deleted || getIsBlockedByMe(jid: profile.jid) {
+            if profile.contactType == .deleted || getIsBlockedByMe(jid: profile.jid) || profile.isBlockedByAdmin {
                 url = nil
                 placeholder = UIImage(named: "ic_profile_placeholder")
                 userImage?.backgroundColor =  Color.groupIconBackgroundGray
             }
-            userImage.sd_setImage(with: url, placeholderImage: placeholder)
             if !contacts.isEmpty {
                 tappedProfile = contacts[currentIndex]
                 if let profile =  tappedProfile{
@@ -438,6 +457,16 @@ class ContactViewController: UIViewController {
                     self.userName.text = name
                     userImage.loadFlyImage(imageURL: profile.image, name: name, chatType: profile.profileChatType, jid: profile.jid)
                 }
+            }
+          
+            userImage.sd_setImage(with: url, placeholderImage: placeholder)
+            if userImage?.image == placeholder {
+                userImage?.isUserInteractionEnabled = false
+                profilePopupContainer?.isHidden = false
+            } else {
+                let tap = UITapGestureRecognizer(target: self, action: #selector(self.openContainerImage(sender:)))
+                userImage?.isUserInteractionEnabled = true
+                userImage?.addGestureRecognizer(tap)
             }
         }
     }
@@ -451,15 +480,61 @@ class ContactViewController: UIViewController {
     
     @IBAction func message(_ sender: Any) {
         openChat(index: currentIndex)
+        profilePopupContainer?.isHidden = true
     }
     
     @IBAction func call(_ sender: Any) {
+        let profile = contacts[currentIndex]
+        if CallManager.isAlreadyOnAnotherCall(){
+            AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
+            return
+        }
+        let callType = CallType.Audio
+        if profile.profileChatType == .singleChat{
+            if profile.contactType != .deleted {
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: [profile.jid], callType: callType, onCompletion: { isSuccess, message in
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                })
+            }
+        }
+        profilePopupContainer?.isHidden = true
+        
     }
     
     @IBAction func videoCall(_ sender: Any) {
+        let profile = contacts[currentIndex]
+        if CallManager.isAlreadyOnAnotherCall(){
+            AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
+            return
+        }
+        let callType = CallType.Video
+        if profile.profileChatType == .singleChat{
+            if profile.contactType != .deleted {
+                RootViewController.sharedInstance.callViewController?.makeCall(usersList: [profile.jid], callType: callType, onCompletion: { isSuccess, message in
+                    if(!isSuccess){
+                        let errorMessage = AppUtils.shared.getErrorMessage(description: message)
+                        AppAlert.shared.showAlert(view: self, title: "", message: errorMessage, buttonTitle: "Okay")
+                    }
+                })
+            }
+        }
+        profilePopupContainer?.isHidden = true
+        
     }
     
     @IBAction func userInfo(_ sender: Any) {
+        let profile = contacts[currentIndex]
+        if profile.profileChatType == .singleChat{
+            let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.contactInfoViewController) as? ContactInfoViewController
+            vc?.contactJid = profile.jid
+            vc?.navigationController?.modalPresentationStyle = .overFullScreen
+            self.navigationController?.pushViewController(vc!, animated: true)
+        }
+        profilePopupContainer?.isHidden = true
+        
     }
     
     func showContactPermissionAlert(showDialogONly : Bool = false){
@@ -773,6 +848,7 @@ extension ContactViewController : ProfileEventsDelegate {
         if ENABLE_CONTACT_SYNC{
             getCotactFromLocal(fromServer: false)
         }
+        setProfile()
     }
     
     func blockedThisUser(jid: String) {
@@ -820,10 +896,12 @@ extension ContactViewController : ProfileEventsDelegate {
     
     func userBlockedMe(jid: String) {
         getCotactFromLocal(fromServer: false)
+        setProfile()
     }
     
     func userUnBlockedMe(jid: String) {
         getCotactFromLocal(fromServer: false)
+        setProfile()
     }
     
     func hideUserLastSeen() {
@@ -1169,6 +1247,11 @@ extension ContactViewController {
             try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
                 executeOnMainThread { [weak self] in
                     self?.getCotactFromLocal(fromServer: false)
+                    self?.contacts.enumerated().forEach { (index, value) in
+                        if value.jid == jid {
+                            self?.contactList.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                        }
+                    }
                     AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
                 }
             }
@@ -1183,6 +1266,11 @@ extension ContactViewController {
             try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
                 executeOnMainThread { [weak self] in
                     self?.getCotactFromLocal(fromServer: false)
+                    self?.contacts.enumerated().forEach { (index, value) in
+                        if value.jid == jid {
+                            self?.contactList.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                        }
+                    }
                     AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
                 }
             }

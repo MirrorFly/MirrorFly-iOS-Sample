@@ -46,7 +46,8 @@ class NotificationTonesListViewController: UIViewController {
                 notificationTonesListView.reloadData()
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.notificationTonesListView.scrollToRow(at: IndexPath(row: index, section: 0), at: .top, animated: false)
+                    let scrollIndex = index == 0 ? index : index-1
+                    self.notificationTonesListView.scrollToRow(at: IndexPath(row: scrollIndex, section: 0), at: .top, animated: false)
                 }
             }
         }

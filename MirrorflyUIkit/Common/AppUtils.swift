@@ -315,6 +315,21 @@ extension UIImageView {
                     self.backgroundColor = ChatUtils.getColorForUser(userName: name)
                 }
             }
+        } else {
+            switch chatType {
+            case .groupChat:
+                placeholder = UIImage(named: "smallGroupPlaceHolder")
+            default:
+                if uniqueId == FlyDefaults.myJid || getIsBlockedByMe(jid: jid) || isBlockedByAdmin {
+                    placeholder = UIImage(named: "ic_profile_placeholder")
+                } else {
+                    let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let ipimage = IPImage(text: trimmedName, radius: Double(self.frame.size.height), font: UIFont.font32px_appBold(),
+                                          textColor: nil, color: getColor(userName: name))
+                    placeholder = ipimage.generateInitialImage()
+                    self.backgroundColor = ChatUtils.getColorForUser(userName: name)
+                }
+            }
         }
         if contactType == .deleted || getIsBlockedByMe(jid: jid) {
             placeholder = UIImage(named: "ic_profile_placeholder")
@@ -328,7 +343,7 @@ extension UIImageView {
             if let error =  responseError as? NSError{
                 if let errorCode = error.userInfo[SDWebImageErrorDownloadStatusCodeKey] as? Int {
                     if errorCode == 401{
-                        FlyMessenger.refreshToken { [weak self] isSuccess, error, data in
+                        ChatManager.refreshToken { [weak self] isSuccess, error, data in
                             if isSuccess{
                                 self?.loadFlyImage(imageURL: imageURL, name: name, chatType : chatType, jid: jid)
                             }else{

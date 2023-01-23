@@ -9,6 +9,8 @@ class ImageCell: UICollectionViewCell, UIScrollViewDelegate {
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var zoomScroll: UIScrollView?
     @IBOutlet weak var videoPlayButton: UIButton?
+    @IBOutlet weak var audioButton: UIButton!
+    @IBOutlet weak var audioImage: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,7 +26,7 @@ class ImageCell: UICollectionViewCell, UIScrollViewDelegate {
     }
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?) -> ImageCell? {
         switch message?.messageType {
-        case .image,.video:
+        case .image,.video,.audio:
            setUIImage(message: message)
         default:
             break
@@ -59,29 +61,40 @@ class ImageCell: UICollectionViewCell, UIScrollViewDelegate {
            return cellImage
     }
     
-    func setUIImage(message: ChatMessage?)-> UIImage {
-        if let localPath = message?.mediaChatMessage?.mediaFileName {
-            let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
-            let fileURL: URL = folderPath.appendingPathComponent(localPath)
-            if FileManager.default.fileExists(atPath:fileURL.relativePath) {
-                let data = NSData(contentsOf: fileURL)
-                let image = UIImage(data: data! as Data)
-                cellImage.image = image
-            }else {
+    func setUIImage(message: ChatMessage?) {
+        if message?.messageType == .audio {
+            cellImage.image = nil
+            cellImage.backgroundColor = Color.color_97A5C7
+            if message?.mediaChatMessage?.audioType == AudioType.recording {
+                audioImage.image = UIImage(named: ImageConstant.ic_mic_white)
+            } else {
+                audioImage.image = UIImage(named: ImageConstant.ic_white_headphone)
+            }
+        } else {
+            cellImage.backgroundColor = .clear
+            if let localPath = message?.mediaChatMessage?.mediaFileName {
+                let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                if FileManager.default.fileExists(atPath:fileURL.relativePath) {
+                    let data = NSData(contentsOf: fileURL)
+                    let image = UIImage(data: data! as Data)
+                    cellImage.image = image
+                }else {
+                    if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
+                        let converter = ImageConverter()
+                        let image =  converter.base64ToImage(thumImage)
+                        cellImage.image = image
+                    }
+                }
+            } else {
                 if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
                     let converter = ImageConverter()
                     let image =  converter.base64ToImage(thumImage)
                     cellImage.image = image
                 }
             }
-        } else {
-            if let thumImage = message?.mediaChatMessage?.mediaThumbImage {
-                let converter = ImageConverter()
-                let image =  converter.base64ToImage(thumImage)
-                cellImage.image = image
-            }
         }
-        return UIImage()
+        
     }
 }

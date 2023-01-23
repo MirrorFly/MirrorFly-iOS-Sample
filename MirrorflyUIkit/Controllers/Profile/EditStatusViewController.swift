@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import FlyCore
 import FlyCommon
+import FlyDatabase
 
 protocol StatusDelegate: class {
     func userSelectedStatus(selectedStatus: String)
@@ -25,17 +26,25 @@ class EditStatusViewController: UIViewController {
     @IBOutlet weak var okButtonView: UIView!
     @IBOutlet weak var textCountLabel: UILabel!
     @IBOutlet weak var editStatusViewBottom: NSLayoutConstraint!
+    @IBOutlet weak var selectionHeaderView: UIView!
+
+    var isUserBusyStatus = false
     
     var defaultStatus: String!
     var setstatusArray = [StatusModel]()
     weak var delegate: StatusDelegate? = nil
     var statusArray: [ProfileStatus] = []
+    var busyStatusArray: [BusyStatus] = []
     var isStatusChanged: Bool = false
+
+    var isLongPress = false
+    var deleteIndexPath: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-          setupUI()
           statusArray =   getStatus()
+        busyStatusArray = getBusyStatus()
+        setupUI()
         if(  statusArray.count > 0) {
               editStatusTableView.reloadData()
         }
@@ -51,6 +60,11 @@ class EditStatusViewController: UIViewController {
     }
     
     func setupUI() {
+
+        if isUserBusyStatus {
+            defaultStatus = ChatManager.shared.getMyBusyStatus().status
+        }
+
           backgroundView.isHidden = true
           typeHereLabel.isHidden = true
           okButtonView.isHidden = true
@@ -80,6 +94,12 @@ class EditStatusViewController: UIViewController {
     
     func getStatus() -> [ProfileStatus] {
         let profileStatus = ChatManager.getAllStatus()
+        print("Get Status Started profileList Count \(profileStatus.count)")
+        return profileStatus
+    }
+
+    func getBusyStatus() -> [BusyStatus] {
+        let profileStatus = ChatManager.shared.getBusyStatusList()
         print("Get Status Started profileList Count \(profileStatus.count)")
         return profileStatus
     }
@@ -127,30 +147,59 @@ extension EditStatusViewController {
     @IBAction func onBackButton(_ sender: Any) {
           navigationController?.popViewController(animated: true)
     }
+
+    @IBAction func onDeleteBackButton(_ sender: Any) {
+        updateDeleteHeaderView()
+    }
+
+    @IBAction func onDeleteButton(_ sender: Any) {
+        if let indexPath = deleteIndexPath {
+            showDelete(indexPath: indexPath)
+        }
+        updateDeleteHeaderView()
+    }
+
+    func updateDeleteHeaderView() {
+        selectionHeaderView.isHidden = true
+        deleteIndexPath = nil
+        editStatusTableView.reloadData()
+        isLongPress = false
+    }
     
     @IBAction func onOkButton(_ sender: Any) {
-        if NetworkReachability.shared.isConnected {
+        if isUserBusyStatus {
             if   statusTextview.text.isBlank {
-                AppAlert.shared.showToast(message: emptyStatus.localized)
+                AppAlert.shared.showToast(message: busyEmptyStatus.localized)
+            } else {
+                if FlyDatabaseController.shared.userBusyStatusManager.saveStatus(busyStatus: BusyStatus(statusText: statusTextview.text)) {
+                    ChatManager.shared.setMyBusyStatus(statusTextview.text)
+                }
+                navigationController?.popViewController(animated: true)
+            }
+        } else {
+            if NetworkReachability.shared.isConnected {
+                if   statusTextview.text.isBlank {
+                    AppAlert.shared.showToast(message: emptyStatus.localized)
+                }
+                else {
+                    let trimmedStatus =   statusTextview.text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                    if(  isStatusChanged) {
+                    var getAllStatus: [ProfileStatus] = []
+                        getAllStatus =   getStatus()
+                        for getAllStatus in   statusArray {
+                        ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
+                    }
+                    ChatManager.saveProfileStatus(statusText: trimmedStatus, currentStatus: true)
+                    }
+
+                    delegate?.userSelectedStatus(selectedStatus: trimmedStatus)
+                      navigationController?.popViewController(animated: true)
+                }
             }
             else {
-                let trimmedStatus =   statusTextview.text.trimmingCharacters(in: .whitespacesAndNewlines)
-                
-                if(  isStatusChanged) {
-                var getAllStatus: [ProfileStatus] = []
-                    getAllStatus =   getStatus()
-                    for getAllStatus in   statusArray {
-                    ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
-                }
-                ChatManager.saveProfileStatus(statusText: trimmedStatus, currentStatus: true)
-                }
-                
-                delegate?.userSelectedStatus(selectedStatus: trimmedStatus)
-                  navigationController?.popViewController(animated: true)
+                AppAlert.shared.showToast(message: ErrorMessage.noInternet)
             }
-        }
-        else {
-            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
     }
 }
@@ -180,7 +229,7 @@ extension EditStatusViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return   statusArray.count
+        return  isUserBusyStatus ? busyStatusArray.count : statusArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -188,17 +237,38 @@ extension EditStatusViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.statusCell, for: indexPath as IndexPath) as? EditStatusTableViewCell
         cell.selectionStyle = .none
-        cell.statusLabel.text =   statusArray[indexPath.row].status
-        if(statusArray[indexPath.row].isCurrentStatus) {
-            cell.selectImage.isHidden = false
-            cell.statusLabel.textColor = .black
+
+        if isUserBusyStatus {
+            cell.statusLabel.text =   busyStatusArray[indexPath.row].status
+            if(busyStatusArray[indexPath.row].isCurrentStatus) {
+                cell.selectImage.isHidden = false
+                cell.statusLabel.textColor = .black
+            }
+            else {
+                cell.statusLabel.textColor = Color.userStatusUnselectColor
+                cell.selectImage.isHidden = true
+            }
+        } else {
+            cell.statusLabel.text =   statusArray[indexPath.row].status
+            if(statusArray[indexPath.row].isCurrentStatus) {
+                cell.selectImage.isHidden = false
+                cell.statusLabel.textColor = .black
+            }
+            else {
+                cell.statusLabel.textColor = Color.userStatusUnselectColor
+                cell.selectImage.isHidden = true
+            }
         }
-        else {
-            cell.selectImage.isHidden = true
+
+        if let index = deleteIndexPath, index == indexPath {
+            cell.contentView.backgroundColor = Color.recentChatSelectionColor
+            selectionHeaderView.isHidden = false
+        } else {
+            cell.contentView.backgroundColor = .clear
         }
-        
-        cell.selectButton.addTarget(self, action: #selector(  onSelectStatus(sender:)), for: .touchUpInside)
+
         cell.selectButton.tag = indexPath.row
+        cell.selectButton.addTarget(self, action: #selector(  onSelectStatus(sender:)), for: .touchUpInside)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
         tableView.addGestureRecognizer(longPress)
@@ -213,39 +283,90 @@ extension EditStatusViewController {
         if sender.state == .began {
             let touchPoint = sender.location(in:   editStatusTableView)
             if let indexPath =   editStatusTableView.indexPathForRow(at: touchPoint) {
-                  showDelete(indexPath: indexPath)
+                isLongPress = true
+                deleteIndexPath = indexPath
+                editStatusTableView.reloadRows(at: [indexPath], with: .none)
+                  //showDelete(indexPath: indexPath)
                 
             }
         }
     }
+
+    @objc private func onDeleteStatus(sender: UITapGestureRecognizer) {
+        if let indexPath = deleteIndexPath {
+            showDelete(indexPath: indexPath)
+        }
+    }
     
     func showDelete(indexPath: IndexPath) {
-        let deleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        let okButton = UIAlertAction(title: deleteText.localized, style: UIAlertAction.Style.default) {
-            (result : UIAlertAction) -> Void in
-            self.dismiss(animated: true, completion: nil)
-            
-            AppAlert.shared.showAlert(view: self, title: nil, message: deleteStatusAlert, buttonOneTitle: noButton, buttonTwoTitle: yesButton)
-            AppAlert.shared.onAlertAction = { [weak self] (result)  ->
-                Void in
-                if result == 1 {
+
+        if self.isUserBusyStatus == true {
+            if self.busyStatusArray[indexPath.row].isCurrentStatus == true {
+                return
+            }
+        }
+
+        AppAlert.shared.showAlert(view: self, title: nil, message: deleteStatusAlert, buttonOneTitle: noButton, buttonTwoTitle: yesButton)
+        AppAlert.shared.onAlertAction = { [weak self] (result)  ->
+            Void in
+            if result == 1 {
+                if let status = self?.isUserBusyStatus, status == true {
+                    self?.deleteBusyStatus(status: (self?.busyStatusArray[indexPath.row])!)
+                    self?.busyStatusArray.remove(at: indexPath.row)
+                    self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
+                } else {
                     self?.deleteStatus(statusId: (self?.statusArray[indexPath.row].id)!)
                     self?.statusArray.remove(at: indexPath.row)
                     self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
-                }else {
-
                 }
+            }else {
+                self?.deleteIndexPath = nil
+                self?.editStatusTableView.reloadData()
             }
         }
-        deleteAlert.addAction(okButton)
-          present(deleteAlert, animated: true) {
-            deleteAlert.view.superview?.isUserInteractionEnabled = true
-            deleteAlert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
-        }
+
+//        let deleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+//        let okButton = UIAlertAction(title: deleteText.localized, style: UIAlertAction.Style.default) {
+//            (result : UIAlertAction) -> Void in
+//            self.dismiss(animated: true, completion: nil)
+//
+//            if self.isUserBusyStatus == true {
+//                if self.busyStatusArray[indexPath.row].isCurrentStatus == true {
+//                    return
+//                }
+//            }
+//
+//            AppAlert.shared.showAlert(view: self, title: nil, message: deleteStatusAlert, buttonOneTitle: noButton, buttonTwoTitle: yesButton)
+//            AppAlert.shared.onAlertAction = { [weak self] (result)  ->
+//                Void in
+//                if result == 1 {
+//                    if let status = self?.isUserBusyStatus, status == true {
+//                        self?.deleteBusyStatus(status: (self?.busyStatusArray[indexPath.row])!)
+//                        self?.busyStatusArray.remove(at: indexPath.row)
+//                        self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
+//                    } else {
+//                        self?.deleteStatus(statusId: (self?.statusArray[indexPath.row].id)!)
+//                        self?.statusArray.remove(at: indexPath.row)
+//                        self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
+//                    }
+//                }else {
+//
+//                }
+//            }
+//        }
+//        deleteAlert.addAction(okButton)
+//          present(deleteAlert, animated: true) {
+//            deleteAlert.view.superview?.isUserInteractionEnabled = true
+//            deleteAlert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
+//        }
     }
 
     func deleteStatus(statusId: String) {
        ChatManager.deleteStatus(statusId: statusId)
+    }
+
+    func deleteBusyStatus(status: BusyStatus) {
+        ChatManager.shared.deleteBusyStatus(status)
     }
     
     @objc func alertControllerBackgroundTapped()
@@ -254,31 +375,49 @@ extension EditStatusViewController {
     }
     
     @objc func onSelectStatus(sender : UIButton) {
-        if NetworkReachability.shared.isConnected {
-            let indexRow = sender.tag
-            for i in 0..<statusArray.count {
-                  statusArray[i].isCurrentStatus = false
-            }
-            statusArray[indexRow].isCurrentStatus = true
-              editStatusTableView.reloadData()
-              statusTextview.text =   statusArray[indexRow].status
-            delegate?.userSelectedStatus(selectedStatus:   statusArray[indexRow].status)
-            
-            var getAllStatus: [ProfileStatus] = []
-            getAllStatus =   getStatus()
-            for getAllStatus in   statusArray {
-                if(getAllStatus.id ==   statusArray[indexRow].id) {
-                    ChatManager.updateStatus(statusId:   statusArray[indexRow].id ,statusText:   statusArray[indexRow].status,currentStatus: true)
+
+        if isLongPress {
+            deleteIndexPath = IndexPath(row: sender.tag, section: 0)
+            editStatusTableView.reloadData()
+        } else {
+            if isUserBusyStatus {
+
+                let indexRow = sender.tag
+                for i in 0..<busyStatusArray.count {
+                    busyStatusArray[i].isCurrentStatus = false
                 }
-                else{
-                ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
+                busyStatusArray[indexRow].isCurrentStatus = true
+                editStatusTableView.reloadData()
+                statusTextview.text =   busyStatusArray[indexRow].status
+
+                ChatManager.shared.setMyBusyStatus(statusTextview.text)
+            } else {
+                if NetworkReachability.shared.isConnected {
+                    let indexRow = sender.tag
+                    for i in 0..<statusArray.count {
+                        statusArray[i].isCurrentStatus = false
+                    }
+                    statusArray[indexRow].isCurrentStatus = true
+                    editStatusTableView.reloadData()
+                    statusTextview.text =   statusArray[indexRow].status
+                    delegate?.userSelectedStatus(selectedStatus:   statusArray[indexRow].status)
+
+                    var getAllStatus: [ProfileStatus] = []
+                    getAllStatus =   getStatus()
+                    for getAllStatus in   statusArray {
+                        if(getAllStatus.id ==   statusArray[indexRow].id) {
+                            ChatManager.updateStatus(statusId:   statusArray[indexRow].id ,statusText:   statusArray[indexRow].status,currentStatus: true)
+                        }
+                        else{
+                            ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
+                        }
+                    }
+                }
+                else {
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
                 }
             }
         }
-        else {
-            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
-        }
-        
     }
 }
 

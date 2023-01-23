@@ -11,6 +11,7 @@ import BSImagePicker
 import AVKit
 import Tatsi
 import FlyCommon
+import FlyCore
 import GrowingTextViewHandler_Swift
 
 protocol EditImageDelegate: class {
@@ -34,6 +35,7 @@ class ImageEditController: UIViewController {
     @IBOutlet weak var bottomCollectionCons: NSLayoutConstraint?
     
     var growingTextViewHandler:GrowingTextViewHandler?
+    public var tempImageAray = [ImageData]()
     public var imageAray = [ImageData]()
     public var mediaData = [MediaData]()
     public var selectedAssets = [PHAsset]()
@@ -44,6 +46,7 @@ class ImageEditController: UIViewController {
     var captionText: String?
     public var iscamera = false
     var mediaProcessed = [String]()
+    var id : String = emptyString()
     
     let backgroundQueue = DispatchQueue.init(label: "mediaQueue")
     
@@ -245,6 +248,7 @@ class ImageEditController: UIViewController {
     
     
     public func backToConversationScreen(){
+        FlyMessenger.saveUnsentMessage(id: id, message: emptyString())
         DispatchQueue.main.async { [weak self] in
             print("#media : ImageEditController backToConversationScreen  \(self!.imageAray.count)")
             self?.stopLoading()
@@ -344,6 +348,7 @@ class ImageEditController: UIViewController {
             // User canceled selection.
         }, finish: { [weak self] (assets) in
             if let strongSelf = self {
+                strongSelf.tempImageAray = strongSelf.imageAray
                 strongSelf.imageAray.removeAll()
                 DispatchQueue.main.async { [weak self] in
                     self?.startLoading(withText: "Processing")
@@ -599,12 +604,18 @@ extension ImageEditController : UITextViewDelegate {
             removeKeyboardConstraints()
             return false
         }
-        
+        if text.count > 1024 {
+            textView.text = String(text.prefix(1024))
+            self.perform(#selector(self.getHintsFromTextField), with: textView, afterDelay: 0.5)
+            return false
+        }
         let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
         let numberOfChars = newText.count
         return numberOfChars <= 1024
     }
-    
+    @objc func getHintsFromTextField(textView: UITextView) {
+        textView.selectedRange = NSRange(location: textView.text.count, length: 1)
+    }
     func textViewDidChange(_ textView: UITextView) {
         if textView == captionTxt {
             let sizeToFitIn = CGSize(width: captionTxt?.bounds.size.width ?? 0.0, height: CGFloat(MAXFLOAT))
@@ -684,11 +695,23 @@ extension ImageEditController {
                     if let (fileName, data, size, image, thumbImage,isVideo) = MediaUtils.getAssetsImageInfo(asset: asset), let fileExtension =  URL(string: fileName)?.pathExtension{
                         if isVideo {
                             print("#media : ImageEditController getAssetsImageInfo VIDEO \(fileName) ")
-                            imageAray.append(ImageData(image: image, caption: nil, isVideo: true, phAsset: asset, isSlowMotion: false, mediaData : data,fileName : fileName, base64Image : MediaUtils.convertImageToBase64(img: thumbImage) ,fileExtension : fileExtension,fileSize: size))
+                            
+                            let videoAsset = tempImageAray.filter({$0.fileName == fileName})
+                            if videoAsset.count > 0 {
+                                imageAray.append(videoAsset[0])
+                            } else {
+                                imageAray.append(ImageData(image: image, caption: nil, isVideo: true, phAsset: asset, isSlowMotion: false, mediaData : data,fileName : fileName, base64Image : MediaUtils.convertImageToBase64(img: thumbImage) ,fileExtension : fileExtension,fileSize: size))
+                            }
                         }else{
                             if MediaUtils.checkMediaFileFormat(format:fileExtension){
                                 print("#media : ImageEditController getAssetsImageInfo IMAGE \(fileName) ")
-                                imageAray.append(ImageData(image: image, caption: nil, isVideo: false, isSlowMotion: false,mediaData : data, fileName : fileName, base64Image : MediaUtils.convertImageToBase64(img: thumbImage), fileExtension : fileExtension, fileSize: size))
+                                
+                                let imageAsset = tempImageAray.filter({$0.fileName == fileName})
+                                if imageAsset.count > 0 {
+                                    imageAray.append(imageAsset[0])
+                                } else {
+                                    imageAray.append(ImageData(image: image, caption: nil, isVideo: false, isSlowMotion: false,mediaData : data, fileName : fileName, base64Image : MediaUtils.convertImageToBase64(img: thumbImage), fileExtension : fileExtension, fileSize: size))
+                                }
                             }
                         }
                     }

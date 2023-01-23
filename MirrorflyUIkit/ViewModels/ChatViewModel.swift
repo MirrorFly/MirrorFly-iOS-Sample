@@ -22,6 +22,17 @@ RecentChatViewModel  {
             completionHandler(ChatManager.getRecentChatList())
         }
     }
+
+    func getRecentChatListWithArchive(isBackground: Bool, completionHandler:  @escaping ([RecentChat]?)-> Void) {
+        if isBackground {
+            ChatManager.getRecentChatListIncludingArchive { (isSuccess, flyError, resultDict) in
+                let flydata = resultDict
+                completionHandler(flydata[FlyConstants.data] as? [RecentChat])
+            }
+        } else {
+            completionHandler(ChatManager.getRecentChatListIncludingArchived())
+        }
+    }
     
     func getMessageOfId(messageId: String, completionHandler:  @escaping (ChatMessage?)-> Void) {
         if messageId.isEmpty {

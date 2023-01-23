@@ -18,6 +18,7 @@ class CallLogViewController: UIViewController {
     @IBOutlet weak var callLogTableView: UITableView!
     let callLogManager = CallLogManager()
     var callLogArray = [CallLog]()
+    var allCallLogArray = [CallLog]()
     let rosterManager = RosterManager()
     var seletedCallLog: CallLog!
     let button = UIButton(type: UIButton.ButtonType.custom) as UIButton
@@ -34,6 +35,12 @@ class CallLogViewController: UIViewController {
     var callLogsTotalRecords = 0
     var pageNumber = 1
     var isLoadingInProgress = false
+    var isSearchEnabled = false
+    @IBOutlet weak var callLogSearchBar: UISearchBar! {
+        didSet {
+            callLogSearchBar.delegate = self
+        }
+    }
 
     @IBOutlet weak var noCallLogView: UIView!
     override func viewDidLoad() {
@@ -66,10 +73,13 @@ class CallLogViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),
                                                name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
-        
-        callLogArray = CallLogManager.getAllCallLogs()
-        noCallLogView.isHidden = !callLogArray.isEmpty
-        deleteAllBtn.isHidden = callLogArray.isEmpty
+
+        if !isSearchEnabled {
+            callLogArray = CallLogManager.getAllCallLogs()
+            allCallLogArray = callLogArray
+            noCallLogView.isHidden = !callLogArray.isEmpty
+            deleteAllBtn.isHidden = callLogArray.isEmpty
+        }
         
         if let lastPageNumber = Int(Utility.getStringFromPreference(key: "clLastPageNumber")), let logsTotalPages = Int(Utility.getStringFromPreference(key: "clLastTotalPages")), let logsTotalRecords = Int(Utility.getStringFromPreference(key: "clLastTotalRecords"))  {
             
@@ -103,6 +113,7 @@ class CallLogViewController: UIViewController {
                         }
                         
                         self.callLogArray = CallLogManager.getAllCallLogs()
+                        self.allCallLogArray = self.callLogArray
                         self.noCallLogView.isHidden = !self.callLogArray.isEmpty
                         self.deleteAllBtn.isHidden = self.callLogArray.isEmpty
                         self.callLogTableView.reloadData()
@@ -126,7 +137,10 @@ class CallLogViewController: UIViewController {
                 print(data)
             }
         }
-        callLogArray = CallLogManager.getAllCallLogs()
+        if !isSearchEnabled {
+            callLogArray = CallLogManager.getAllCallLogs()
+            allCallLogArray = callLogArray
+        }
         deleteAllBtn.isHidden = callLogArray.isEmpty
         if let fab = floaty{
             fab.removeFromSuperview()
@@ -225,7 +239,7 @@ class CallLogViewController: UIViewController {
 // MARK: Table View Methods
 extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        callLogArray = CallLogManager.getAllCallLogs()
+        //callLogArray = CallLogManager.getAllCallLogs()
         print("calllog array issss" , callLogArray)
 //        if CallLogArray.count == 0{
 //            let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
@@ -258,7 +272,7 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
             }
             let jid =  (callLog.groupId?.count ?? 0 == 0) ? jidString : callLog.groupId!
             if let contact = rosterManager.getContact(jid: jid){
-                memberCell?.contactNamelabel.text = getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
+                memberCell?.contactNamelabel.attributedText = getAttributedUserName(name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), searchText: callLogSearchBar.text ?? "")
                 memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
                 memberCell?.userImageView.layer.masksToBounds = true
                 memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType, jid: contact.jid, isBlockedByAdmin: ContactManager.shared.getUserProfileDetails(for: contact.jid)?.isBlockedByAdmin ?? false)
@@ -295,9 +309,9 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
                 }
             }
             if callLog.groupId?.count ?? 0 > 0 {
-                memberCell?.contactNamelabel.text = rosterManager.getContact(jid: callLog.groupId!)?.name ?? ""
+                memberCell?.contactNamelabel.attributedText =  getAttributedUserName(name: rosterManager.getContact(jid: callLog.groupId!)?.name ?? "", searchText: callLogSearchBar.text ?? "")
             } else {
-                memberCell?.contactNamelabel.text = contactArr.componentsJoined(by: ",")
+                memberCell?.contactNamelabel.attributedText =  getAttributedUserName(name: contactArr.componentsJoined(by: ","), searchText: callLogSearchBar.text ?? "")
             }
             if contactJidArr.count == 1 {
                 
@@ -420,6 +434,18 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
         
         return memberCell!
     }
+
+    func getAttributedUserName(name: String, searchText: String) -> NSMutableAttributedString {
+        if isSearchEnabled {
+            let range = (name.lowercased() as NSString).range(of: searchText.lowercased())
+            let mutableAttributedString = NSMutableAttributedString.init(string: name)
+            mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: Color.color_3276E2 ?? .black, range: range)
+            return mutableAttributedString
+        } else {
+            let range = (name as NSString).range(of: searchText)
+            return NSMutableAttributedString.init(string: name)
+        }
+    }
     
     private func isGroupOrUserBlocked(callLog : CallLog) -> Bool {
         if let tempGroupJid = callLog.groupId, ChatManager.isUserOrGroupBlockedByAdmin(jid: tempGroupJid) {
@@ -438,7 +464,13 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
         let callLog = callLogArray[buttonRow]
 
         if callLog.callMode == .ONE_TO_ONE {
-            if let contact = rosterManager.getContact(jid: callLog.toUserId) {
+            var jidString = String()
+            if callLog.fromUserId == FlyDefaults.myJid {
+                jidString = callLog.toUserId
+            } else {
+                jidString = callLog.fromUserId
+            }
+            if let contact = rosterManager.getContact(jid: jidString) {
                 if contact.isBlocked {
                     let alertViewController = UIAlertController.init(title: "\(ChatActions.unblock.rawValue)?" , message: "\(ChatActions.unblock.rawValue) \(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))?", preferredStyle: .alert)
 
@@ -703,6 +735,7 @@ extension CallLogViewController {
     func refreshTableview() {
         callLogArray.removeAll()
         callLogArray = CallLogManager.getAllCallLogs()
+        allCallLogArray = callLogArray
         noCallLogView.isHidden = !callLogArray.isEmpty
         callLogTableView.reloadData()
     }
@@ -858,6 +891,7 @@ extension CallLogViewController: UIScrollViewDelegate {
                     self.callLogTableView?.tableFooterView = nil
                     self.isLoadingInProgress = false
                     self.callLogArray = CallLogManager.getAllCallLogs()
+                    self.allCallLogArray = self.callLogArray
                     self.callLogTableView.reloadData()
                     
                 }
@@ -902,6 +936,25 @@ extension CallLogViewController: UIScrollViewDelegate {
             self.loadNextPage()
         }
     }
+
+    func refreshCallLogs() {
+        isSearchEnabled = false
+        callLogSearchBar.resignFirstResponder()
+        callLogSearchBar.setShowsCancelButton(false, animated: true)
+        refreshTableview()
+        callLogSearchBar.text = ""
+    }
+
+    func refreshFloatButton() {
+        if let fab = floaty{
+            fab.removeFromSuperview()
+        }
+        floaty?.frame = CGRect(x: (view.bounds.maxX - 68), y:  (view.bounds.maxY - 160), width: 56, height: 56)
+        if let floaty = floaty {
+            floaty.overlayColor = UIColor(white: 1, alpha: 0.0)
+            view.addSubview(floaty)
+        }
+    }
 }
 
 extension CallLogViewController : AvailableFeaturesDelegate {
@@ -938,3 +991,70 @@ extension CallLogViewController : AdminBlockDelegate {
 
 }
 
+extension CallLogViewController: UISearchBarDelegate {
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.count > 0 {
+            callLogArray = allCallLogArray.filter {
+                let isGroupCall =  ($0.groupId?.count ?? 0 != 0)
+                if $0.callMode == .ONE_TO_ONE || isGroupCall {
+                    var jidString = String()
+                    if $0.fromUserId == FlyDefaults.myJid {
+                        jidString = $0.toUserId
+                    } else {
+                        jidString = $0.fromUserId
+                    }
+                    let jid =  ($0.groupId?.count ?? 0 == 0) ? jidString : $0.groupId!
+                    if let contact = rosterManager.getContact(jid: jid){
+                        return getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType).localizedCaseInsensitiveContains(searchText)
+                    }
+                }else{
+                    var userList = $0.userList
+                    userList.removeAll { jid in
+                        jid == FlyDefaults.myJid
+                    }
+                    let fullNameArr = userList
+                    let contactArr = NSMutableArray()
+                    let contactJidArr = NSMutableArray()
+                    for JID in fullNameArr{
+                        if let contact = rosterManager.getContact(jid: JID){
+                            contactArr.add(getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType))
+                            contactJidArr.add(JID)
+                        }
+                    }
+                    if $0.groupId?.count ?? 0 > 0 {
+                        return (rosterManager.getContact(jid: $0.groupId!)?.name ?? "").localizedCaseInsensitiveContains(searchText)
+                    } else {
+                        return contactArr.componentsJoined(by: ",").localizedCaseInsensitiveContains(searchText)
+                    }
+                }
+                return false
+            }
+        } else {
+            callLogArray = allCallLogArray
+        }
+        callLogTableView.reloadData()
+        noCallLogView.isHidden = !callLogArray.isEmpty
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        refreshFloatButton()
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        refreshCallLogs()
+        refreshFloatButton()
+    }
+
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        isSearchEnabled = true
+        scrollToTableViewTop()
+        refreshTableview()
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    func scrollToTableViewTop() {
+        callLogTableView.setContentOffset(.zero, animated: false)
+    }
+}

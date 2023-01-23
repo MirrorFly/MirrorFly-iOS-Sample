@@ -41,7 +41,7 @@ class LocationViewController: UIViewController, GMSMapViewDelegate, CLLocationMa
         super.viewDidLoad()
         bottomView.addTopShadow(shadowColor: UIColor.lightGray)
         handleBackgroundAndForground()
-        sendButton.layer.shadowColor = Color.senderBubbleColor?.cgColor
+        sendButton.layer.shadowColor = Color.senderBubbleColor.cgColor
         sendButton.layer.shadowOffset = CGSize(width: 0, height: 15.0)
         sendButton.layer.shadowOpacity = 25.0
         sendButton.layer.shadowRadius = 25.0

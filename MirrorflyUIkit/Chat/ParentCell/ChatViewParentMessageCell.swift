@@ -99,7 +99,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     }
     
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?) -> ChatViewParentMessageCell? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> ChatViewParentMessageCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         replyViewHeightCons?.isActive = true
@@ -173,7 +173,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
            } else {
             let getReplymessage =  replyMessage?.messageTextContent
            replyViewHeightCons?.isActive = (getReplymessage?.count ?? 0 > 20) ? false : true
-           replyTextLabel?.text = getReplymessage
+               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
            if replyMessage?.mediaChatMessage != nil {
                mediaImageViewWidthCons?.constant = 50
                replyMessageIconWidthCons?.constant = 12
@@ -369,7 +369,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         switch  message?.messageType {
         case .text:
             if let label = messageLabel {
-            messageLabel?.attributedText = processTextMessage(message: message?.messageTextContent ?? "", uiLabel: label)
+                messageLabel?.attributedText = processTextMessage(message: message?.messageTextContent ?? "", uiLabel: label, fromChat: fromChat, isMessageSearch: isMessageSearch, searchText: searchText, isSentByMe: message?.isMessageSentByMe ?? false)
                 print("message label width = \(messageLabel?.frame.size.width)")
             }
         case .location:
@@ -405,8 +405,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         
         if (message!.isMessageTranslated && FlyDefaults.isTranlationEnabled) {
             guard let chatMessage = message,let messageLabeltemp = messageLabel, let translatedTextLabeltemp = translatedTextLabel else {return self }
-            messageLabel?.attributedText = processTextMessage(message: chatMessage.messageTextContent , uiLabel: messageLabeltemp)
-            translatedTextLabel?.attributedText = processTextMessage(message: chatMessage.translatedMessageTextContent , uiLabel: translatedTextLabeltemp)
+            messageLabel?.attributedText = processTextMessage(message: chatMessage.messageTextContent , uiLabel: messageLabeltemp, fromChat: fromChat, isMessageSearch: isMessageSearch, searchText: searchText, isSentByMe: message?.isMessageSentByMe ?? false)
+            translatedTextLabel?.attributedText = processTextMessage(message: chatMessage.translatedMessageTextContent , uiLabel: translatedTextLabeltemp, fromChat: fromChat, isMessageSearch: isMessageSearch, searchText: searchText, isSentByMe: message?.isMessageSentByMe ?? false)
         }
         return self
     }
@@ -440,7 +440,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         
     }
     
-    func processTextMessage(message : String, uiLabel : UILabel) -> NSMutableAttributedString? {
+    func processTextMessage(message : String, uiLabel : UILabel, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "", isSentByMe: Bool) -> NSMutableAttributedString? {
         var attributedString : NSMutableAttributedString?
         if !message.isEmpty {
             attributedString = NSMutableAttributedString(string: message)
@@ -464,7 +464,12 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                      attributedString?.addAttribute(NSAttributedString.Key.underlineStyle,value: NSUnderlineStyle.single.rawValue, range: urlRange)
                      uiLabel.addGestureRecognizer(gestureRecognizer)
                  }
-                 
+
+                if fromChat && isMessageSearch {
+                    let range = (message.lowercased() as NSString).range(of: searchText.lowercased())
+                    attributedString?.addAttribute(NSAttributedString.Key.backgroundColor, value: Color.color_3276E2 ?? .blue, range: range)
+                }
+
                  print("processTextMessage After else \(tempText)")
 
             }

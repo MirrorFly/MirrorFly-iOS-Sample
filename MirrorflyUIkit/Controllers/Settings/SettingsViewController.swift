@@ -19,7 +19,7 @@ class SettingsViewController : BaseViewController {
     
     //private var settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
 
-    private var settingsArr = ["Chats","About and Help","Delete My Account","Logout"]
+    private var settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
 
     override func viewDidLoad() {
         let info = Bundle.main.infoDictionary

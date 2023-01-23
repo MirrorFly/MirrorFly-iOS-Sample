@@ -105,7 +105,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         }
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?) -> AudioSender? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> AudioSender? {
         audioCallBack = audioClosureCallBack
         currentIndexPath = nil
         currentIndexPath = indexPath
@@ -164,7 +164,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                mediaImageView?.isHidden = true
            } else {
                mediaLocationMap?.isHidden = true
-               userTextLabel?.text = getReplymessage
+               userTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
                if replyMessage?.mediaChatMessage?.messageType == .document {
                    mediaImageView?.contentMode = .scaleAspectFit
                } else {

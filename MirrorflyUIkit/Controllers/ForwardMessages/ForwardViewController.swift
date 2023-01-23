@@ -280,7 +280,9 @@ class ForwardViewController: UIViewController {
                 self?.startLoading(withText: "Sending")
                 let messageIds = self?.forwardMessages.map({$0.chatMessage.messageId})
                 let jids = self?.selectedMessages.map({$0.jid})
-                FlyMessenger.composeForwardMessage(messageIds: messageIds ?? [], toJidList: jids ?? [])
+                ChatManager.forwardMessages(messageIdList: messageIds ?? [], toJidList: jids ?? [], chatType: (self?.getProfileDetails?.profileChatType ?? .singleChat), completionHandler: {isSuccess,error,data in
+                    
+                })
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self?.navigationController?.modalPresentationStyle = .fullScreen
                     guard let viewController = vc else { return }
@@ -296,7 +298,9 @@ class ForwardViewController: UIViewController {
                     self?.selectedUserDelegate?.sendSelectedUsers(selectedUsers: self?.selectedMessages ?? [],completion: { [weak self] in
                         if let messageIds = self?.forwardMessages.map({$0.chatMessage.messageId}) {
                             let jids = self?.selectedMessages.map({$0.jid})
-                            FlyMessenger.composeForwardMessage(messageIds: messageIds, toJidList: jids ?? [])
+                            ChatManager.forwardMessages(messageIdList: messageIds, toJidList: jids ?? [], chatType: (self?.getProfileDetails?.profileChatType ?? .singleChat), completionHandler: {isSuccess,error,data in
+                                
+                            })
                             self?.navigationController?.popViewController(animated: true)
                         }
                     })
@@ -307,8 +311,15 @@ class ForwardViewController: UIViewController {
     
     @IBAction func SegmentControlValueChanged(_ sender: UISegmentedControl) {
         segmentSelectedIndex = sender.selectedSegmentIndex
-        forwardTableView?.reloadData()
-        handleEmptyViewWhileSearch()
+
+        if segmentSelectedIndex == 1 {
+            getRecentChatList(withArchive: true)
+        } else {
+            getRecentChatList()
+        }
+
+        //forwardTableView?.reloadData()
+        //handleEmptyViewWhileSearch()
         // temporarily show empty message by default
 //        if segmentSelectedIndex == 2 {
 //            showEmptyMessage()
@@ -796,30 +807,56 @@ extension ForwardViewController {
         
     }
     
-    func getRecentChatList() {
-        recentChatViewModel?.getRecentChatList(isBackground: false, completionHandler: { [weak self] recentChatList in
-            if let weakSelf = self {
-                weakSelf.getRecentChat = recentChatList?.filter({$0.isBlockedByAdmin == false}) ?? []
-                weakSelf.getAllRecentChat = weakSelf.getRecentChat
-                
-                weakSelf.getAllRecentChat.enumerated().forEach { (index,contact) in
-                    if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
-                        weakSelf.getAllRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+    func getRecentChatList(withArchive: Bool = false) {
+        if withArchive {
+            recentChatViewModel?.getRecentChatListWithArchive(isBackground: false, completionHandler: { [weak self] recentChatList in
+                if let weakSelf = self {
+                    weakSelf.getRecentChat = recentChatList?.filter({$0.isBlockedByAdmin == false}) ?? []
+                    weakSelf.getAllRecentChat = weakSelf.getRecentChat
+
+                    weakSelf.getAllRecentChat.enumerated().forEach { (index,contact) in
+                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                            weakSelf.getAllRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                        }
+                    }
+
+                    weakSelf.getRecentChat.enumerated().forEach { (index,contact) in
+                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                            weakSelf.getRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                        }
                     }
                 }
-                
-                weakSelf.getRecentChat.enumerated().forEach { (index,contact) in
-                    if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
-                        weakSelf.getRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
-                    }
-                }
+            })
+            randomColors = AppUtils.shared.setRandomColors(totalCount: getRecentChat.count)
+            if isSearchEnabled == false {
+                forwardTableView?.reloadData()
             }
-        })
-        randomColors = AppUtils.shared.setRandomColors(totalCount: getRecentChat.count)
-        if isSearchEnabled == false {
-            forwardTableView?.reloadData()
+            handleEmptyViewWhileSearch()
+        } else {
+            recentChatViewModel?.getRecentChatList(isBackground: false, completionHandler: { [weak self] recentChatList in
+                if let weakSelf = self {
+                    weakSelf.getRecentChat = recentChatList?.filter({$0.isBlockedByAdmin == false}) ?? []
+                    weakSelf.getAllRecentChat = weakSelf.getRecentChat
+
+                    weakSelf.getAllRecentChat.enumerated().forEach { (index,contact) in
+                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                            weakSelf.getAllRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                        }
+                    }
+
+                    weakSelf.getRecentChat.enumerated().forEach { (index,contact) in
+                        if  weakSelf.selectedMessages.filter({$0.jid == contact.jid}).count > 0 {
+                            weakSelf.getRecentChat[index].isSelected = (weakSelf.selectedMessages.filter({$0.jid == contact.jid}).first?.isSelected ?? false)
+                        }
+                    }
+                }
+            })
+            randomColors = AppUtils.shared.setRandomColors(totalCount: getRecentChat.count)
+            if isSearchEnabled == false {
+                forwardTableView?.reloadData()
+            }
+            handleEmptyViewWhileSearch()
         }
-        handleEmptyViewWhileSearch()
     }
 }
 
@@ -1119,7 +1156,7 @@ extension ForwardViewController : MessageEventsDelegate {
     
     func showOrUpdateOrCancelNotification() {}
     
-    func onMessagesCleared(toJid: String) {}
+    func onMessagesCleared(toJid: String, deleteType: String?) {}
     
     func setOrUpdateFavourite(messageId: String, favourite: Bool, removeAllFavourite: Bool) {}
     

@@ -77,6 +77,7 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
         documenTypeView?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: 5.0)
         nicoProgressBar?.primaryColor = .gray
         nicoProgressBar?.secondaryColor = .clear
+        replyView?.backgroundColor = .white
     }
     
     func setSelectView(selected: Bool) {
@@ -87,7 +88,7 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
         }
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?,isDeletedOrStarredSelected: Bool?) -> ReceiverDocumentsTableViewCell? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?,isDeletedOrStarredSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> ReceiverDocumentsTableViewCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         replyUserNameLabel?.text = ""
@@ -145,7 +146,7 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
             groupSenderNameView?.isHidden = true
             let getReplymessage = message?.replyParentChatMessage?.messageTextContent
             let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
-            replyTypeLabel?.text = getReplymessage
+            replyTypeLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
             replyTypeIconImageView?.isHidden = true
             replyTypeIconView?.isHidden = true
             if replyMessage?.isMessageSentByMe == true {

@@ -106,7 +106,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
          }
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?) -> ChatViewVideoOutgoingCell? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> ChatViewVideoOutgoingCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         
@@ -152,7 +152,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
                messageTypeIconView?.isHidden = true
            } else {
                messageTypeIconView?.isHidden = true
-               replyTextLabel?.text = getReplymessage
+               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
                if replyMessage?.mediaChatMessage != nil {
                    switch replyMessage?.mediaChatMessage?.messageType {
                    case .image:
@@ -268,7 +268,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         }else {
             let captionTxt = message?.mediaChatMessage?.mediaCaptionText ?? ""
             captionHolder.isHidden = false
-            captionLabel.text = captionTxt
+            captionLabel.attributedText = ChatUtils.getAttributedMessage(message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch)
             captionHolder.roundCorners(corners: [.bottomLeft], radius: 5.0)
             cellView.roundCorners(corners: [.topLeft, .topRight], radius: 5.0)
             sentTime.isHidden = true
@@ -359,13 +359,18 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             progressView?.isHidden = true
             retryButton?.isHidden = false
             uploadView?.isHidden = false
+            downloadView?.isHidden = true
+            downloadButton?.isHidden = true
+            downloadLabel?.isHidden = true
         case .failed:
             playButton.isHidden = true
             progressLoader?.isHidden = true
             progressView?.isHidden = true
             retryButton?.isHidden = false
             uploadView?.isHidden = false
-            
+            downloadView?.isHidden = true
+            downloadButton?.isHidden = true
+            downloadLabel?.isHidden = true
         case .uploading:
             let progrss = message?.mediaChatMessage?.mediaProgressStatus ?? 0
             print("Video Upload mediaStatus \(message?.mediaChatMessage?.mediaUploadStatus)")
@@ -375,6 +380,9 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             uploadView.isHidden = true
             playButton.isHidden = true
             retryButton?.isHidden = true
+            downloadView?.isHidden = true
+            downloadButton?.isHidden = true
+            downloadLabel?.isHidden = true
             if progrss == 100 || progrss == 0 {
                 progressLoader.transition(to: .indeterminate)
             } else {
@@ -386,17 +394,38 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             uploadView.isHidden = true
             playButton.isHidden = false
             retryButton?.isHidden = true
+            downloadView?.isHidden = true
+            downloadButton?.isHidden = true
+            downloadLabel?.isHidden = true
             if(message?.messageStatus == .sent) {
                 playButton.isHidden = true
                 uploadView.isHidden = false
                 retryButton?.isHidden = false
                 progressView.isHidden = true
             }
+       case .not_available:
+            downloadButton?.setTitle("", for: .normal)
+            downloadView?.isHidden = false
+            downloadButton?.isHidden = false
+            downloadLabel?.isHidden = false
+            if let fileSize = message?.mediaChatMessage?.mediaFileSize{
+                downloadLabel?.text = "\(Units(bytes: Int64(fileSize)).getReadableUnit())"
+            }else {
+                downloadLabel?.text = ""
+            }
+            playButton.isHidden = true
+            uploadView.isHidden = true
+            retryButton?.isHidden = true
+            progressView.isHidden = true
+            break
         default:
             progressView.isHidden = true
             uploadView.isHidden = false
             playButton.isHidden = true
             retryButton?.isHidden = false
+            downloadView?.isHidden = true
+            downloadButton?.isHidden = true
+            downloadLabel?.isHidden = true
         }
     }
     

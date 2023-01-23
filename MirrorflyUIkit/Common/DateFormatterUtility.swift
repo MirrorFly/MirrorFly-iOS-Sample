@@ -311,6 +311,14 @@ class DateFormatterUtility: NSObject {
         return str
     }
     
+    func convertMilliSecondsToDocumentDate(milliSeconds: Double) -> String {
+        let dateVar = Date.init(timeIntervalSince1970: milliSeconds/1000000)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.dateFormat = "dd/MM/yy"
+        return  dateFormatter.string(from: dateVar)
+    }
+    
 }
 
 extension Double {

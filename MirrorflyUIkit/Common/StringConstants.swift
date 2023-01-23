@@ -60,6 +60,7 @@ let available = "Available"
 let sleeping = "Sleeping"
 let inMirrorfly = "I am in Mirrorfly"
 let emptyStatus = "Status cannot be empty"
+let busyEmptyStatus = "Busy status cannot be empty"
 
 let iamIn = "I am in"
 let statusEmpty = "Status is Empty"
@@ -166,6 +167,7 @@ let fileSize = NSLocalizedString("fileSize", comment: "")
 let okButton = NSLocalizedString("Ok", comment: "")
 let okayButton = NSLocalizedString("okay", comment: "")
 let yesButton = NSLocalizedString("yes", comment: "")
+let unblock = NSLocalizedString("Unblock", comment: "")
 let noButton = NSLocalizedString("no", comment: "")
 let chat = NSLocalizedString("chat", comment: "")
 let profile = NSLocalizedString("profile", comment: "")
@@ -187,6 +189,7 @@ let removePhotoAlert = NSLocalizedString("removePhotoAlert", comment: "")
 let removeButton = NSLocalizedString("removeButton", comment: "")
 let deleteStatusAlert = NSLocalizedString("deleteStatusAlert", comment: "")
 let profilePictureRemoved = NSLocalizedString("profilePictureRemoved", comment: "")
+let continueButton = NSLocalizedString("Continue", comment: "")
 
 //MARK: -  Url
 let mainUrl = Bundle.main.url(forResource: "countries", withExtension: "json")
@@ -239,10 +242,15 @@ let chatActions = "Chat Actions"
 let message = "Message"
 let clearChatMessage = "Do you want to clear all Conversation?"
 let clearAllChat = "Are you sure want to clear your conversation history?"
+let unblockTOMakeAudioCall = "Unblock to make an audio call"
+let unblockToMakeVideocall = "Unblock to make a video call"
 let allYourConversationareCleared = "All your conversation are cleared"
 let serverError = "Server error, kindly try again later" 
 let clearAll = "Clear All"
 let thereIsNoConversation = "There is no conversation"
+
+let setBusyStatusDescription = "Set busy status as the Auto response to the message recieved from the individuals"
+let editBusyStatus = "Edit Busy Status Message"
 
 //MARK: Group
 let groupNameRequired = "Please provide group name"
@@ -299,15 +307,54 @@ let messageSentNotDelivered = "Message Sent, not delivered yet"
 let yourMessageIsNotRead = "Your message is not read"
 
 
+//MARK: View All media
+let photos = "Photos"
+let videos = "Videos"
+let audios = "Audios"
+let noMediaFound = "No media found"
+let document = "Document"
+let doucmentSMedia = "Documents"
+let noDocumentFound = "No document found"
+let links = "Links"
+let link = "link"
+let noLinkFound = "No link found"
+
+
 // MARK: Multiple Selection Title
 let deleteTitle = "Delete"
 let forwardTitle = "Forward"
 let starTitle = "Star"
+let shareTitle = "Share"
 let unStarTitle = "Unstar"
 
 //MARK: DeleteMessages
 let originalMessageDeleted = "Can't forward because the original message is deleted"
 
+
+
+//MARK: Backup Restore Info
+let optionsHeader = "Schedule to run backups\nautomatically"
+let optionsNetworkHeader = "Schedule to run backups\nover"
+let instructionOne = "Open iPhone Settings."
+let instructionTwo = "Tap “iCloud” and make sure you’re signed in."
+let instructionThree = "Tap “iCloud Drive” and set it to ON."
+let instructionFour = "In “iCloud Drive”, make sure “MirrorFly App” is also ON"
+let instructionOneImage = "restore_settings"
+let instructionTwoImage = "restore_cloud_ic"
+let instructionThreeImage = "restore_cloud_ic"
+let instructionFourImage = "restore_app"
+let iCloudNotAvailable = "iCloud not available"
+
+let backupFound = "Backup Found"
+let nobBackupFound = "No Backup Found"
+let backupFoundDescription = "Restore your messages and media from iCloud. If you don’t restore now, you wont be able to restore later."
+let noBackupFoundDescription = "In order to check and restore messages from iCloud backups, please sign in with your iCloud account."
+let restoring = "Restoring"
+let backupDownloading = "Backup Downloading..."
+let restoreSuccess = "Data Restored Successfully"
+let backupSuccess = "Backup downloaded successfully."
+let backupUploadSuccess = "Backup uploaded successfully."
+let containerError = "ContainerId invalid or not available"
 
 // Error messages
 public struct ErrorMessage {
@@ -368,20 +415,23 @@ enum CreateGroupOptions : String, CaseIterable {
 
 enum ChatActions : String, CaseIterable {
     case clearAllConversation = "Clear All Conversation"
+    case emailChat = "Email Chat"
     case report = "Report"
+    case search = "Search"
     case block = "Block"
     case unblock = "Unblock"
 }
 
 enum MessageActions : String, CaseIterable {
     case reply = "Reply"
+//    case share = "Share"
     case copy = "Copy"
     case forward = "Forward"
     case info = "Info"
     case report = "Report"
     case delete = "Delete"
-    case star = "Star"
-    case unStar = "Unstar"
+//    case star = "Star"
+//    case unStar = "Unstar"
 }
 
 enum GroupReportActions : String, CaseIterable {

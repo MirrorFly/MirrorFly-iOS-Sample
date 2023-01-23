@@ -62,6 +62,18 @@ class ChatUtils {
         }
         return NSMutableAttributedString()
     }
+
+    static func getAttributedMessage(message: String, searchText: String, isMessageSearch: Bool) -> NSMutableAttributedString {
+        if isMessageSearch {
+            let range = (message.lowercased() as NSString).range(of: searchText.lowercased())
+            let mutableAttributedString = NSMutableAttributedString.init(string: message, attributes: [NSAttributedString.Key.backgroundColor: UIColor.clear])
+            mutableAttributedString.addAttribute(NSAttributedString.Key.backgroundColor, value: Color.color_3276E2 ?? .blue, range: range)
+            mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: range)
+            return mutableAttributedString
+        } else {
+            return NSMutableAttributedString.init(string: message, attributes: [NSAttributedString.Key.backgroundColor: UIColor.clear])
+        }
+    }
     
     static func compressSlowMotionVideo(asset : AVComposition, onCompletion: @escaping (Bool, URL?) -> Void){
         let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".mp4")
@@ -361,18 +373,48 @@ class ChatUtils {
        
     }
     
+
+    static func getAudioURL(audioFileName : String) -> URL {
+        let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Audio", isDirectory: true)
+        let fileURL: URL = folderPath.appendingPathComponent(audioFileName)
+        return fileURL
+        
+    }
+
     static func checkForAutoDownload(messageTypeKey : String) -> Bool{
         
         if  FlyDefaults.autoDownloadEnable {
             if NetworkReachability.shared.isCellular && FlyDefaults.autoDownloadMobile[messageTypeKey] ?? false {
                 return true
             }
+            
             else if NetworkReachability.shared.isWifi && FlyDefaults.autoDownloadWifi[messageTypeKey] ?? false {
                 return true
             }
             
         }
         return false
+
+    }
+    
+    static func getLinksFrom(text : String) -> [String] {
+        if !text.isEmpty {
+            let textArray = text.trim().split(separator: " ")
+            
+            var linkArray = [String]()
+            textArray.forEach { tempText in
+                print("getLinkFrom  tempText \(tempText)")
+                let string = String(tempText)
+                if string.trim().isURL {
+                    linkArray.append(string)
+                }
+            }
+
+            return linkArray
+        } else {
+            return [String]()
+        }
     }
 
 }

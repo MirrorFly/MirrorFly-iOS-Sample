@@ -119,6 +119,7 @@ class GroupInfoViewController: UIViewController {
                             forCellReuseIdentifier: Identifiers.groupOptionsTableViewCell)
         tableView?.register(UINib(nibName: Identifiers.groupMembersTableViewCell, bundle: .main),
                             forCellReuseIdentifier: Identifiers.groupMembersTableViewCell)
+        tableView?.register(UINib(nibName: Identifiers.viewAllMediaCell , bundle: .main), forCellReuseIdentifier: Identifiers.viewAllMediaCell)
     }
     
     private func setupConfiguration() {
@@ -265,7 +266,7 @@ class GroupInfoViewController: UIViewController {
 extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 6
+        return 7
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -330,6 +331,7 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
             cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
             cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
+            cell.muteSwitch?.isEnabled = ChatManager.shared.isUserUnArchived(jid: profileDetails?.jid ?? "")
             return cell
         } else if indexPath.section == 2 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
@@ -343,14 +345,16 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupMembersTableViewCell, for: indexPath) as? GroupMembersTableViewCell)!
             cell.getGroupInfo(groupInfo: groupMembers)
             return cell
-            
         } else if indexPath.section == 4 {
+            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
+            return cell
+        } else if indexPath.section == 5 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             cell.optionImageview.image = UIImage(named: ImageConstant.ic_group_report)
             cell.optionLabel.textColor = Color.leaveGroupTextColor
             cell.optionLabel.text = reportGroup
             return cell
-        } else if indexPath.section == 5 {
+        } else if indexPath.section == 6 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             if isExistMember == true {
                 cell.optionImageview.image = UIImage(named: "leave_group")
@@ -406,8 +410,13 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         } else if indexPath.section == 4 {
-            showReportOptions()
+            let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
+            let viewAllMediaVC = storyboard.instantiateViewController(withIdentifier: Identifiers.viewAllMediaVC) as! ViewAllMediaController
+            viewAllMediaVC.jid = groupID
+            self.navigationController?.pushViewController(viewAllMediaVC, animated: true)
         } else if indexPath.section == 5 {
+            showReportOptions()
+        } else if indexPath.section == 6 {
             if isExistMember == true {
                 AppAlert.shared.showAlert(view: self,
                                           title: exitGroup,

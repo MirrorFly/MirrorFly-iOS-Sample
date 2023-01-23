@@ -81,7 +81,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         }
     }
     
-    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) -> SenderDocumentsTableViewCell? {
+    func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?,isDeletedMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> SenderDocumentsTableViewCell? {
         currentIndexPath = nil
         currentIndexPath = indexPath
         let mediaUrl = message?.mediaChatMessage?.mediaFileUrl
@@ -154,7 +154,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 replyMediaImageWidthCons?.constant = 0
                 replyTypeIconImageView?.isHidden = true
             } else {
-            replyTypeLabel?.text = getReplymessage
+                replyTypeLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
             checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: replyTypeImageView)
                 replyMessageIconWidth?.constant = 0
             if replyMessage?.mediaChatMessage != nil {

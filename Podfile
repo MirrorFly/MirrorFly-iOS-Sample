@@ -37,6 +37,7 @@ def uikit_pods
   pod 'MarqueeLabel'
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
+  pod 'SwiftLinkPreview'
 
 end
 
@@ -59,7 +60,6 @@ end
 target 'UiKitQaNotificationExtention' do
   notification_pods
 end
-
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

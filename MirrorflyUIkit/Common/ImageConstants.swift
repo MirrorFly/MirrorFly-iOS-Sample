@@ -92,9 +92,12 @@ enum ImageConstant{
     static let ic_info_add = "plusBlack"
     static let ic_info_not_delivered = "message_info_not_delivered"
     static let ic_info_not_read = "message_info_not_read"
-
-
     
+    //view all media
+    static let ic_white_headphone = "ic_white_headphone"
+    static let ic_mic_white = "ic_mic_white"
+    static let link_next_arrow = "link_next_arrow"
+
     //Auto Download Settings
     static let up_arrow = "up_arrow"
     static let down_arrow = "down_arrow"
@@ -106,7 +109,6 @@ enum ImageConstant{
     static let remove_PIN = "remove_PIN"
     static let otpPin = "otpPin"
     static let otppinDatk = "otppinDatk"
-
 
     // NotificationToneSelection
     static let tone_Unselect = "tone_Unselect"

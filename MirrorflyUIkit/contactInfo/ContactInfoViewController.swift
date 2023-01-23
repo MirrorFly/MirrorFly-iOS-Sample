@@ -226,6 +226,7 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.muteNotificationCell, for: indexPath) as? MuteNotificationCell)!
             cell.muteSwitch?.addTarget(self, action: #selector(stateChanged), for: .valueChanged)
             cell.muteSwitch?.setOn(profileDetails?.isMuted ?? false, animated: true)
+            cell.muteSwitch?.isEnabled = ChatManager.shared.isUserUnArchived(jid: profileDetails?.jid ?? "")
             return cell
           } else if indexPath.section == 2 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.contactInfoCell, for: indexPath) as? ContactInfoCell)!
@@ -246,6 +247,8 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             return cell
         } else if indexPath.section == 3 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
+            let tap = UITapGestureRecognizer(target: self, action: #selector(self.didTapViewAllMedia(_:)))
+            cell.addGestureRecognizer(tap)
             return cell
         } else if indexPath.section == 4 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
@@ -271,11 +274,7 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 3 {
-            return 0
-        } else {
-            return UITableView.automaticDimension
-        }
+        return UITableView.automaticDimension
     }
 }
 
@@ -402,6 +401,16 @@ extension ContactInfoViewController : AdminBlockDelegate {
 
 // For Reporting
 extension ContactInfoViewController {
+    
+    @objc func didTapViewAllMedia(_ sender: UITapGestureRecognizer) {
+        if let jid = profileDetails?.jid {
+            let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
+            let viewAllMediaVC = storyboard.instantiateViewController(withIdentifier: Identifiers.viewAllMediaVC) as! ViewAllMediaController
+            viewAllMediaVC.jid = jid
+            self.navigationController?.pushViewController(viewAllMediaVC, animated: true)
+        }
+    }
+    
     @objc func didTapReport(_ sender: UITapGestureRecognizer) {
         
         if let isBlockedByAdmin = profileDetails?.isBlockedByAdmin, isBlockedByAdmin || getBlocked() {

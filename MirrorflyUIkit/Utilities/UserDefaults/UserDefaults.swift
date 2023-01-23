@@ -55,6 +55,49 @@ class Utility: NSObject{
         return false
     }
     
+    class func setAutoBackupDetails(isOn: Bool) {
+        UserDefaults.standard.setValue(isOn, forKey: "isAutoBackup")
+        if isOn {
+            UserDefaults.standard.setValue(Date().description.localizedLowercase, forKey: "autoBackupDate")
+        }
+        UserDefaults.standard.synchronize()
+    }
+    
+    class func setAutoBackupOver(isOn: Bool) {
+        UserDefaults.standard.setValue(isOn, forKey: "isAutoBackupOver")
+        UserDefaults.standard.synchronize()
+    }
+    
+    class func setAutoBackupSchedule(schedule: String) {
+        UserDefaults.standard.setValue(schedule, forKey: "autoBackupSchedule")
+        UserDefaults.standard.synchronize()
+    }
+    
+    class func setAutoBackupNetwork(over: String) {
+        UserDefaults.standard.setValue(over, forKey: "autoBackupNetwork")
+        UserDefaults.standard.synchronize()
+    }
+    
+    class func getAutoBackupIsOn() -> Bool {
+        return UserDefaults.standard.object(forKey: "isAutoBackup") as? Bool ?? false
+    }
+    
+    class func getAutoBackupOverIsOn() -> Bool {
+        return UserDefaults.standard.object(forKey: "isAutoBackupOver") as? Bool ?? false
+    }
+    
+    class func getAutoBackupSchedule() -> String {
+        return UserDefaults.standard.object(forKey: "autoBackupSchedule") as? String ?? "Daily"
+    }
+    
+    class func getAutoBackupDate() -> String {
+        return UserDefaults.standard.object(forKey: "autoBackupDate") as? String ?? ""
+    }
+    
+    class func getAutoBackupNetwork() -> String {
+        return UserDefaults.standard.object(forKey: "autoBackupNetwork") as? String ?? "Wi-Fi"
+    }
+    
     class func timeString(time: TimeInterval) -> String {
         let minute = Int(time) / 60 % 60
         let second = Int(time) % 60
@@ -164,7 +207,7 @@ class Utility: NSObject{
                                         }
                                     }
                                 }else if response.response?.statusCode == 401{
-                                    FlyMessenger.refreshToken {  isSuccess,error,data  in
+                                    ChatManager.refreshToken {  isSuccess,error,data  in
                                         if isSuccess {
                                             self.download(token: token, profileImage: profileImage, uniqueId: uniqueId,name: name,colorCode: colorCode,frameSize: frameSize,fontSize: fontSize, completion: completion)
                                         }

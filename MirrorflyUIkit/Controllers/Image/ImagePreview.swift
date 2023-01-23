@@ -12,7 +12,33 @@ class ImagePreview: UIViewController  {
     
     @IBOutlet weak var imageList: UICollectionView!
     @IBOutlet weak var videoPlayButton: UIButton?
+ 
+    func shareMedia(media: MediaChatMessage?) {
+        var type = String()
+        
+        switch media?.messageType {
+        case .audio:
+            type = "Audio"
+        case .video:
+            type = "Video"
+        case .image:
+            type = "Image"
+        case .document:
+            type = "Document"
+        default:
+            return
+        }
+        
+        let localPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("FlyMedia/\(type)/\(media?.mediaFileName ?? "")")
+        let activityItems: [Any] = [localPath]
+        let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        
+        activityController.popoverPresentationController?.sourceView = view
+        activityController.popoverPresentationController?.sourceRect = view.frame
+        self.present(activityController, animated: true, completion: nil)
+    }
     
+
     public var imageAray = [ChatMessage]()
     var isimgLoad = false
     var imageIndex = 0
@@ -30,14 +56,12 @@ class ImagePreview: UIViewController  {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        ChatManager.shared.messageEventsDelegate = self
         navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
-        ChatManager.shared.messageEventsDelegate = nil
     }
     
     func setupUI() {
@@ -56,9 +80,9 @@ class ImagePreview: UIViewController  {
     }
     
     func getImages() {
-        imageAray  =  FlyMessenger.getMediaMessagesOf(jid: jid).filter({($0.mediaChatMessage?.messageType == .image || $0.messageType == .video) && ($0.mediaChatMessage?.mediaDownloadStatus == .downloaded || $0.mediaChatMessage?.mediaUploadStatus == .uploaded) && $0.isMessageRecalled == false && $0.isMessageDeleted == false})
+        imageAray  =  FlyMessenger.getMediaMessagesOf(jid: jid).filter({($0.mediaChatMessage?.messageType == .image || $0.messageType == .video || $0.messageType == .audio) && ($0.mediaChatMessage?.mediaDownloadStatus == .downloaded || $0.mediaChatMessage?.mediaUploadStatus == .uploaded) && $0.isMessageRecalled == false && $0.isMessageDeleted == false})
         if imageAray.count > 0 {
-            if let selelctedImage = imageAray.filter({$0.mediaChatMessage?.messageType == .image || $0.messageType == .video}).first(where: { $0.messageId == messageId }) {
+            if let selelctedImage = imageAray.filter({$0.mediaChatMessage?.messageType == .image || $0.messageType == .video || $0.messageType == .audio}).first(where: { $0.messageId == messageId }) {
                 imageIndex = imageAray.firstIndex(of: selelctedImage) ?? 0
                 setTitle()
             }else{
@@ -72,8 +96,13 @@ class ImagePreview: UIViewController  {
     @objc func didTapPlayButton(sender : UIButton) {
         let row = sender.tag
         let message = imageAray[row]
-        let videoUrl = URL(fileURLWithPath: message.mediaChatMessage?.mediaLocalStoragePath ?? "")
-        playVideo(view: self, asset: videoUrl)
+        if message.messageType == .video {
+            let videoUrl = URL(fileURLWithPath: message.mediaChatMessage?.mediaLocalStoragePath ?? "")
+            playVideo(view: self, asset: videoUrl)
+        } else if message.messageType == .audio {
+            playAudio(chatMessage: message)
+        }
+        
     }
     
     func playVideo (view:UIViewController, asset:URL) {
@@ -87,16 +116,35 @@ class ImagePreview: UIViewController  {
         }
     }
     
+    func playAudio(chatMessage : ChatMessage) {
+        let audioUrl = ChatUtils.getAudioURL(audioFileName: chatMessage.mediaChatMessage?.mediaFileName ?? "")
+        executeOnMainThread { [weak self] in
+            let player = AVPlayer(url: audioUrl)
+            let playerViewController = AVPlayerViewController()
+            playerViewController.player = player
+            self?.present(playerViewController, animated: true) {
+                playerViewController.player!.play()
+                
+            }
+        }
+    }
+    
     func setTitle() {
         let imgeDetail = imageAray[imageIndex]
+        self.navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(named: "ic_sharemedia"), style: .plain, target: self, action: #selector(shareMediaAction)), animated: true)
         if imgeDetail.isMessageSentByMe {
             self.title = sentMedia
         }else{
             self.title = receivedMedia
         }
     }
-}
+    
+    @objc func shareMediaAction() {
+        shareMedia(media: imageAray[imageIndex].mediaChatMessage)
 
+    }
+}
+                                                  
 extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
@@ -126,7 +174,7 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        imageAray.filter({$0.messageType == .image || $0.messageType == .video}).count
+        imageAray.filter({$0.messageType == .image || $0.messageType == .video || $0.messageType == .audio}).count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -134,13 +182,18 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
         if imageAray.count > indexPath.row {
             let imgeDetail = imageAray[indexPath.row]
             currentIndexPath = indexPath
-            if imgeDetail.messageType == .image || imgeDetail.messageType == .video {
-                cell.videoPlayButton?.isHidden = imgeDetail.messageType == .video ? false : true
+            if imgeDetail.messageType == .image || imgeDetail.messageType == .video || imgeDetail.messageType == .audio {
+                cell.videoPlayButton?.isHidden = (imgeDetail.messageType == .video) ? false : true
                 cell.videoPlayButton?.tag = indexPath.row
                 cell.videoPlayButton?.addTarget(self, action: #selector(didTapPlayButton(sender:)),
                                                 for: .touchUpInside)
+                cell.audioButton?.tag = indexPath.row
+                cell.audioButton?.addTarget(self, action: #selector(didTapPlayButton(sender:)),
+                                                for: .touchUpInside)
                 cell.cellImage.contentMode = .scaleAspectFit
                 cell = cell.getCellFor(imgeDetail, at: indexPath)!
+                cell.audioButton.isHidden = imgeDetail.messageType == .audio ? false : true
+                cell.audioImage.isHidden = imgeDetail.messageType == .audio ? false : true
             }
         }
         return cell
@@ -159,6 +212,19 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
         guard let indexPath = imageList.indexPathForItem(at: visiblePoint) else { return }
         imageIndex = indexPath.row
         setTitle()
+    }
+}
+
+extension ImagePreview : RefreshMessagesDelegate {
+    func refreshMessages(messageIds: Array<String>) {
+        messageIds.forEach { messageId in
+            if imageAray.count > 0 {
+                if imageAray[currentIndexPath.row].messageId == messageId {
+                    imageAray.remove(at: currentIndexPath.row)
+                    imageList?.reloadData()
+                }
+            }
+        }
     }
 }
 
@@ -192,7 +258,6 @@ extension ImagePreview : MessageEventsDelegate {
         messageIds.forEach { messageId in
             if imageAray[currentIndexPath.row].messageId == messageId {
                 imageAray.remove(at: currentIndexPath.row)
-                refreshDataDelegate?.refreshMessages()
                 imageList?.reloadData()
             }
         }
@@ -202,7 +267,7 @@ extension ImagePreview : MessageEventsDelegate {
         
     }
     
-    func onMessagesCleared(toJid: String) {
+    func onMessagesCleared(toJid: String, deleteType: String?) {
         
     }
     
