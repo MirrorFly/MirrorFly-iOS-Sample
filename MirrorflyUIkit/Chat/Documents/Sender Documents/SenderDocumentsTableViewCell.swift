@@ -11,10 +11,10 @@ import FlyCore
 import NicoProgress
 import GoogleMaps
 import MapKit
+import SDWebImage
 
 class SenderDocumentsTableViewCell: BaseTableViewCell {
-    
-    @IBOutlet weak var baseViewTopConstraint: NSLayoutConstraint?
+
     @IBOutlet weak var bubbleImageView: UIImageView?
     @IBOutlet weak var cellBaseView: UIView?
     @IBOutlet weak var documenTypeView: UIView?
@@ -23,7 +23,18 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     @IBOutlet weak var sentTimeLabel: UILabel?
     @IBOutlet weak var messageStatusImage: UIImageView?
     @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    
+    //StarredMessages
     @IBOutlet weak var favImageView: UIImageView?
+    @IBOutlet weak var senderImageview: UIImageView?
+    @IBOutlet weak var senderTimeLabel: UILabel?
+    @IBOutlet weak var senderStackView: UIStackView?
+    @IBOutlet weak var starredMessageView: UIView?
+    @IBOutlet weak var bubbleImageBottomCons: NSLayoutConstraint?
+    @IBOutlet weak var bubbleImageTopCons: NSLayoutConstraint?
+    @IBOutlet weak var bubbleTopContentViewCons: NSLayoutConstraint?
+    @IBOutlet weak var sendToLabel: UILabel?
+    @IBOutlet weak var sendFromLabel: UILabel?
     @IBOutlet weak var fwdButton: UIButton?
     @IBOutlet weak var doctNameTrailingWithoutImageCons: NSLayoutConstraint?
     @IBOutlet weak var documentNameTrailingCons: NSLayoutConstraint?
@@ -53,6 +64,8 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     var selectedForwardMessage: [SelectedMessages]? = []
     var sendMediaMessages: [ChatMessage]? = []
     var message: ChatMessage?
+    //MARK: StarredMessage local variable
+    var isStarredMessagePage: Bool? = false
     
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     
@@ -81,7 +94,42 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         }
     }
     
+    func showHideStarredMessageView() {
+        starredMessageView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageTopCons?.isActive = isStarredMessagePage == true ? false : true
+        senderStackView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageBottomCons?.constant = isStarredMessagePage == true ? 10 : 3
+    }
+
+    func setUserProfileInfo(message: ChatMessage?,isBlocked: Bool) {
+        let getProfileDetails = ChatManager.profileDetaisFor(jid: message?.chatUserJid ?? "")
+        let senderProfileDetails = ChatManager.profileDetaisFor(jid: message?.senderUserJid ?? "")
+        sendFromLabel?.text = "You"
+        sendToLabel?.text = getUserName(jid : getProfileDetails?.jid ?? "" ,name: getProfileDetails?.name ?? "", nickName: getProfileDetails?.nickName ?? "", contactType: getProfileDetails?.contactType ?? .local)
+        
+        let timeStamp =  message?.messageSentTime
+        senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
+        senderImageview?.sd_imageIndicator = SDWebImageActivityIndicator.gray
+        senderImageview?.makeRounded()
+        let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
+        setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
+    }
+    
+    private func getisBlockedMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
+    func setImage(imageURL: String, name: String, color: UIColor, chatType : ChatType,jid: String) {
+        if !getisBlockedMe(jid: jid) {
+            senderImageview?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType, jid: jid)
+        } else {
+            senderImageview?.image = UIImage(named: ImageConstant.ic_profile_placeholder)!
+        }
+    }
+    
+
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?, isShowForwardView: Bool?,isDeletedMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> SenderDocumentsTableViewCell? {
+
         currentIndexPath = nil
         currentIndexPath = indexPath
         let mediaUrl = message?.mediaChatMessage?.mediaFileUrl
@@ -123,10 +171,10 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
             }
         }
         
-        if  (message?.mediaChatMessage?.mediaUploadStatus == .uploaded && isShowForwardView == false && message?.messageStatus != .notAcknowledged) || (message?.mediaChatMessage?.mediaDownloadStatus == .downloaded && isShowForwardView == false && message?.messageStatus != .notAcknowledged) {
-            fwdButton?.isHidden = false
-        } else {
+        if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .failed || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true || isStarredMessagePage == true) {
             fwdButton?.isHidden = true
+        } else {
+            fwdButton?.isHidden = false
         }
         
         // Starred Messages
@@ -148,13 +196,13 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                                                        nickName: replyMessage?.senderNickName ?? "",
                                                        contactType: replyMessage?.isSavedContact == true ? .live : .unknown)
             }
-            if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true {
+            if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true || replyMessage == nil {
                 replyTypeLabel?.text = "Original message not available"
                 replyMessageIconWidth?.constant = 0
                 replyMediaImageWidthCons?.constant = 0
                 replyTypeIconImageView?.isHidden = true
             } else {
-                replyTypeLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
+                replyTypeLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: false)
             checkFileType(url: replyMessage?.mediaChatMessage?.mediaFileUrl ?? "", typeImageView: replyTypeImageView)
                 replyMessageIconWidth?.constant = 0
             if replyMessage?.mediaChatMessage != nil {
@@ -407,7 +455,11 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
             documentSizeLabel?.text = ""
         }
     
-        documentNameLabel?.text = message?.mediaChatMessage?.mediaFileName
+        if (isStarredMessagePage == true && isMessageSearch == true) {
+            documentNameLabel?.attributedText = ChatUtils.getAttributedMessage(message: message?.mediaChatMessage?.mediaFileName ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: true)
+        } else {
+            documentNameLabel?.text = message?.mediaChatMessage?.mediaFileName
+        }
         sentTimeLabel?.text = DateFormatterUtility.shared.currentMillisecondsToLocalTime(milliSec: timeStamp)
         self.layoutIfNeeded()
         self.layoutSubviews()
@@ -416,7 +468,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     }
     
     func showHideForwardView(message: ChatMessage?, isShowForwardView: Bool?,isDeletedMessageSelected: Bool?) {
-        if isDeletedMessageSelected == true {
+        if isDeletedMessageSelected == true || isStarredMessagePage == true {
             // Forward view elements and its data
             forwardView?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaUploadStatus == .uploading)  || (message?.isMessageRecalled == true) ? true : false
             forwardButton?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaUploadStatus == .uploading)  || (message?.isMessageRecalled == true) ? true : false

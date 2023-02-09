@@ -278,12 +278,17 @@ class DateFormatterUtility: NSObject {
         return  dateFormatter.string(from: date2) + " " + time
     }
     
-    func getAPIDateFormat(millSec: Double) -> Bool {
-        var epocTime = TimeInterval(millSec)
-        var dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy"
-        let myDate = Date(timeIntervalSince1970: epocTime)
-        return myDate.isTodayDate()
+    func convertMillisecondsToSentTime(milliSeconds: Double)  -> String {
+        // Date
+        let timeStamp = milliSeconds / 1000
+        let date2 = Date(timeIntervalSince1970: Double(timeStamp/1000))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMM yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        let time = convertMillisecondsToTime(milliSeconds: milliSeconds).getTimeFormat()
+ 
+        return  dateFormatter.string(from: date2)
     }
     
     func convertTimeToDate(millSec: Double) -> String {

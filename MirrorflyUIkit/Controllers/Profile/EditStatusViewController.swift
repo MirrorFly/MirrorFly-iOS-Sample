@@ -16,6 +16,13 @@ protocol StatusDelegate: class {
 }
 
 class EditStatusViewController: UIViewController {
+
+    @IBOutlet weak var mainHeaderLabel: UILabel! {
+        didSet {
+            mainHeaderLabel.text = isUserBusyStatus ? "User Busy Status" : "Status"
+        }
+    }
+
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var topStatusView: UIView!
     @IBOutlet weak var editStatusScrollView: UIScrollView!
@@ -27,6 +34,18 @@ class EditStatusViewController: UIViewController {
     @IBOutlet weak var textCountLabel: UILabel!
     @IBOutlet weak var editStatusViewBottom: NSLayoutConstraint!
     @IBOutlet weak var selectionHeaderView: UIView!
+
+    @IBOutlet weak var busyStatusLabel: UILabel!
+    @IBOutlet weak var busyStatusTextView: UITextView!
+    @IBOutlet weak var busyStatusCountLabel: UILabel!
+    @IBOutlet weak var busyStatusEditTextButton: UIButton!
+    @IBOutlet weak var busyStatusOkButton: UIView!
+
+    @IBOutlet weak var busyStatusViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var statusViewHeight: NSLayoutConstraint!
+
+    @IBOutlet weak var busyStatusMainView: UIView!
+    @IBOutlet weak var profileStatusMainView: UIView!
 
     var isUserBusyStatus = false
     
@@ -42,21 +61,32 @@ class EditStatusViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-          statusArray =   getStatus()
+
+        if isUserBusyStatus {
+            statusViewHeight.constant = 0
+            profileStatusMainView.isHidden = true
+            busyStatusMainView.isHidden = false
+        } else {
+            busyStatusViewHeight.constant = 0
+            profileStatusMainView.isHidden = false
+            busyStatusMainView.isHidden = true
+        }
+
+        statusArray =   getStatus()
         busyStatusArray = getBusyStatus()
         setupUI()
         if(  statusArray.count > 0) {
-              editStatusTableView.reloadData()
+            scrolltoRow()
         }
         else {
-              saveStatus()
+            saveStatus()
         }
-      
+
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-          editStatusTableView.rowHeight = UITableView.automaticDimension
-          editStatusTableView.estimatedRowHeight = UITableView.automaticDimension
+        editStatusTableView.rowHeight = UITableView.automaticDimension
+        editStatusTableView.estimatedRowHeight = UITableView.automaticDimension
     }
     
     func setupUI() {
@@ -65,19 +95,26 @@ class EditStatusViewController: UIViewController {
             defaultStatus = ChatManager.shared.getMyBusyStatus().status
         }
 
-          backgroundView.isHidden = true
-          typeHereLabel.isHidden = true
-          okButtonView.isHidden = true
-          textCountLabel.isHidden = true
-          statusTextview.delegate = self
-          statusTextview.text =   defaultStatus
-          statusTextview.inputAccessoryView = UIView()
-          statusTextview.textInputMode?.primaryLanguage == emoji
-          statusTextview.keyboardType = .default
+        backgroundView.isHidden = true
+        typeHereLabel.isHidden = true
+        busyStatusLabel.isHidden = true
+        okButtonView.isHidden = true
+        busyStatusOkButton.isHidden = true
+        textCountLabel.isHidden = true
+        busyStatusCountLabel.isHidden = true
+        statusTextview.delegate = self
+        busyStatusTextView.delegate = self
+        statusTextview.text =   defaultStatus
+        busyStatusTextView.text = defaultStatus
+        statusTextview.inputAccessoryView = UIView()
+        busyStatusTextView.inputAccessoryView = UIView()
+        statusTextview.textInputMode?.primaryLanguage == emoji
+        statusTextview.keyboardType = .default
+        busyStatusTextView.keyboardType = .default
     }
     
     func saveStatus() {
-          setstatusArray = [
+        setstatusArray = [
             StatusModel(userStatus: atTheMovies.localized, isSelected: false),
             StatusModel(userStatus: urgentCalls.localized, isSelected: false),
             StatusModel(userStatus: available.localized, isSelected: false),
@@ -88,8 +125,28 @@ class EditStatusViewController: UIViewController {
             ChatManager.saveProfileStatus(statusText: status.userStatus,currentStatus: status.isSelected)
         }
         
-          statusArray =   getStatus()
-          editStatusTableView.reloadData()
+        statusArray =   getStatus()
+        scrolltoRow()
+    }
+
+    func scrolltoRow() {
+        editStatusTableView.reloadData()
+        //        executeOnMainThread { [weak self] in
+        //            self?.
+        //            if self?.isUserBusyStatus ?? false {
+        //                self?.busyStatusArray.enumerated().forEach { (index, value) in
+        //                    if value.status == self?.defaultStatus {
+        //                        self?.editStatusTableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .top, animated: false)
+        //                    }
+        //                }
+        //            } else {
+        //                self?.statusArray.enumerated().forEach { (index, value) in
+        //                    if value.status == self?.defaultStatus {
+        //                        self?.editStatusTableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .top, animated: false)
+        //                    }
+        //                }
+        //            }
+        //        }
     }
     
     func getStatus() -> [ProfileStatus] {
@@ -122,30 +179,55 @@ class EditStatusViewController: UIViewController {
         self.editStatusScrollView.isScrollEnabled = true
         self.view.layoutIfNeeded()
     }
-   
+
     func newStatusView() {
-          backgroundView.isHidden = false
-          backgroundView.backgroundColor = Color.primaryTextColor
-          backgroundView.alpha = 0.5
-          topStatusView.backgroundColor = Color.primaryTextColor
-          topStatusView.alpha = 0.5
-          view.bringSubviewToFront(backgroundView)
-          statusTextview.becomeFirstResponder()
-          editTextButton.isHidden = true
-          typeHereLabel.isHidden = false
-          okButtonView.isHidden = false
-          textCountLabel.isHidden = false
+        if !isUserBusyStatus {
+            backgroundView.isHidden = false
+            backgroundView.backgroundColor = Color.primaryTextColor
+            backgroundView.alpha = 0.5
+            topStatusView.backgroundColor = Color.primaryTextColor
+            topStatusView.alpha = 0.5
+            view.bringSubviewToFront(backgroundView)
+        }
+        if isUserBusyStatus {
+            busyStatusTextView.becomeFirstResponder()
+        } else {
+            statusTextview.becomeFirstResponder()
+        }
+        editTextButton.isHidden = true
+        busyStatusEditTextButton.isHidden = true
+        typeHereLabel.isHidden = false
+        busyStatusLabel.isHidden = false
+        okButtonView.isHidden = false
+        busyStatusOkButton.isHidden = false
+        textCountLabel.isHidden = false
+        busyStatusCountLabel.isHidden = false
+    }
+
+    func hideNewStatusView() {
+        backgroundView.isHidden = true
+        topStatusView.backgroundColor = Color.navigationColor
+        view.sendSubviewToBack(  backgroundView)
+        typeHereLabel.isHidden = true
+        busyStatusLabel.isHidden = true
+        okButtonView.isHidden = true
+        busyStatusOkButton.isHidden = true
+        textCountLabel.isHidden = true
+        busyStatusCountLabel.isHidden = true
+        editTextButton.isHidden = false
+        busyStatusEditTextButton.isHidden = false
+        view.endEditing(true)
     }
 }
 
 //MARK: Button Action
 extension EditStatusViewController {
     @IBAction func onEditButton(_ sender: Any) {
-          newStatusView()
+        newStatusView()
     }
     
     @IBAction func onBackButton(_ sender: Any) {
-          navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 
     @IBAction func onDeleteBackButton(_ sender: Any) {
@@ -168,33 +250,40 @@ extension EditStatusViewController {
     
     @IBAction func onOkButton(_ sender: Any) {
         if isUserBusyStatus {
-            if   statusTextview.text.isBlank {
-                AppAlert.shared.showToast(message: busyEmptyStatus.localized)
-            } else {
-                if FlyDatabaseController.shared.userBusyStatusManager.saveStatus(busyStatus: BusyStatus(statusText: statusTextview.text)) {
-                    ChatManager.shared.setMyBusyStatus(statusTextview.text)
+            if busyStatusTextView.text.isBlank {
+                view.endEditing(true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    AppAlert.shared.showToast(message: busyEmptyStatus.localized)
                 }
-                navigationController?.popViewController(animated: true)
+            } else {
+                FlyDatabaseController.shared.userBusyStatusManager.saveStatus(busyStatus: BusyStatus(statusText: busyStatusTextView.text))
+                ChatManager.shared.setMyBusyStatus(busyStatusTextView.text)
+                hideNewStatusView()
+                defaultStatus = busyStatusTextView.text
+                busyStatusArray = getBusyStatus()
+                scrolltoRow()
+                //navigationController?.popViewController(animated: true)
             }
         } else {
             if NetworkReachability.shared.isConnected {
                 if   statusTextview.text.isBlank {
+                    view.endEditing(true)
                     AppAlert.shared.showToast(message: emptyStatus.localized)
                 }
                 else {
                     let trimmedStatus =   statusTextview.text.trimmingCharacters(in: .whitespacesAndNewlines)
 
                     if(  isStatusChanged) {
-                    var getAllStatus: [ProfileStatus] = []
+                        var getAllStatus: [ProfileStatus] = []
                         getAllStatus =   getStatus()
                         for getAllStatus in   statusArray {
-                        ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
-                    }
-                    ChatManager.saveProfileStatus(statusText: trimmedStatus, currentStatus: true)
+                            ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
+                        }
+                        ChatManager.saveProfileStatus(statusText: trimmedStatus, currentStatus: true)
                     }
 
                     delegate?.userSelectedStatus(selectedStatus: trimmedStatus)
-                      navigationController?.popViewController(animated: true)
+                    navigationController?.popViewController(animated: true)
                 }
             }
             else {
@@ -210,18 +299,18 @@ extension EditStatusViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let label = StatusHeaderLabel()
-        label.text = editStatusSectionTitle.localized
+        label.text = isUserBusyStatus ? editBusyStatusSectionTitle.localized : editStatusSectionTitle.localized
         
         let containerView = UIView()
         containerView.addSubview(label)
         label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        label.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
+        label.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 17).isActive = true
         return containerView
         
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-      return UITableView.automaticDimension
+        return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -237,6 +326,8 @@ extension EditStatusViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.statusCell, for: indexPath as IndexPath) as? EditStatusTableViewCell
         cell.selectionStyle = .none
+
+        cell.selectImage.image = UIImage(named: "ic_tickmark")
 
         if isUserBusyStatus {
             cell.statusLabel.text =   busyStatusArray[indexPath.row].status
@@ -275,7 +366,7 @@ extension EditStatusViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
-   
+
 }
 //MARK: Tableview action
 extension EditStatusViewController {
@@ -286,7 +377,7 @@ extension EditStatusViewController {
                 isLongPress = true
                 deleteIndexPath = indexPath
                 editStatusTableView.reloadRows(at: [indexPath], with: .none)
-                  //showDelete(indexPath: indexPath)
+                //showDelete(indexPath: indexPath)
                 
             }
         }
@@ -312,57 +403,22 @@ extension EditStatusViewController {
             if result == 1 {
                 if let status = self?.isUserBusyStatus, status == true {
                     self?.deleteBusyStatus(status: (self?.busyStatusArray[indexPath.row])!)
-                    self?.busyStatusArray.remove(at: indexPath.row)
-                    self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
+                    self?.busyStatusArray = self?.getBusyStatus() ?? []
+                    self?.editStatusTableView.reloadData()
                 } else {
                     self?.deleteStatus(statusId: (self?.statusArray[indexPath.row].id)!)
-                    self?.statusArray.remove(at: indexPath.row)
-                    self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
+                    self?.statusArray = self?.getStatus() ?? []
+                    self?.editStatusTableView.reloadData()
                 }
             }else {
                 self?.deleteIndexPath = nil
                 self?.editStatusTableView.reloadData()
             }
         }
-
-//        let deleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-//        let okButton = UIAlertAction(title: deleteText.localized, style: UIAlertAction.Style.default) {
-//            (result : UIAlertAction) -> Void in
-//            self.dismiss(animated: true, completion: nil)
-//
-//            if self.isUserBusyStatus == true {
-//                if self.busyStatusArray[indexPath.row].isCurrentStatus == true {
-//                    return
-//                }
-//            }
-//
-//            AppAlert.shared.showAlert(view: self, title: nil, message: deleteStatusAlert, buttonOneTitle: noButton, buttonTwoTitle: yesButton)
-//            AppAlert.shared.onAlertAction = { [weak self] (result)  ->
-//                Void in
-//                if result == 1 {
-//                    if let status = self?.isUserBusyStatus, status == true {
-//                        self?.deleteBusyStatus(status: (self?.busyStatusArray[indexPath.row])!)
-//                        self?.busyStatusArray.remove(at: indexPath.row)
-//                        self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
-//                    } else {
-//                        self?.deleteStatus(statusId: (self?.statusArray[indexPath.row].id)!)
-//                        self?.statusArray.remove(at: indexPath.row)
-//                        self?.editStatusTableView.deleteRows(at: [indexPath], with: .automatic)
-//                    }
-//                }else {
-//
-//                }
-//            }
-//        }
-//        deleteAlert.addAction(okButton)
-//          present(deleteAlert, animated: true) {
-//            deleteAlert.view.superview?.isUserInteractionEnabled = true
-//            deleteAlert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
-//        }
     }
 
     func deleteStatus(statusId: String) {
-       ChatManager.deleteStatus(statusId: statusId)
+        ChatManager.deleteStatus(statusId: statusId)
     }
 
     func deleteBusyStatus(status: BusyStatus) {
@@ -371,7 +427,7 @@ extension EditStatusViewController {
     
     @objc func alertControllerBackgroundTapped()
     {
-          dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func onSelectStatus(sender : UIButton) {
@@ -388,9 +444,9 @@ extension EditStatusViewController {
                 }
                 busyStatusArray[indexRow].isCurrentStatus = true
                 editStatusTableView.reloadData()
-                statusTextview.text =   busyStatusArray[indexRow].status
+                busyStatusTextView.text =   busyStatusArray[indexRow].status
 
-                ChatManager.shared.setMyBusyStatus(statusTextview.text)
+                ChatManager.shared.setMyBusyStatus(busyStatusTextView.text)
             } else {
                 if NetworkReachability.shared.isConnected {
                     let indexRow = sender.tag
@@ -424,26 +480,23 @@ extension EditStatusViewController {
 //MARK: TextViewDelegate
 extension EditStatusViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-          textCountLabel.text = "\(editStatusTextMaxLength - textView.text.count)"
-          newStatusView()
-          typeHereLabel.text = ""
+        textCountLabel.text = "\(editStatusTextMaxLength - textView.text.count)"
+        busyStatusCountLabel.text = "\(editStatusTextMaxLength - textView.text.count)"
+        newStatusView()
+        typeHereLabel.text = ""
+        busyStatusLabel.text = ""
     }
     func textViewDidEndEditing(_ textView: UITextView) {
-          backgroundView.isHidden = true
-          topStatusView.backgroundColor = Color.navigationColor
-          view.sendSubviewToBack(  backgroundView)
-          typeHereLabel.isHidden = true
-          okButtonView.isHidden = true
-          textCountLabel.isHidden = true
-          editTextButton.isHidden = false
+        hideNewStatusView()
     }
     
     func textViewDidChange(_ textView: UITextView) {
-          isStatusChanged = true
-          textCountLabel.text = "\(editStatusTextMaxLength - textView.text.count)"
-//        if textView.text.last == "\n" {
-//            textView.resignFirstResponder()
-//        }
+        isStatusChanged = true
+        textCountLabel.text = "\(editStatusTextMaxLength - textView.text.count)"
+        busyStatusCountLabel.text = "\(editStatusTextMaxLength - textView.text.count)"
+        //        if textView.text.last == "\n" {
+        //            textView.resignFirstResponder()
+        //        }
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -454,9 +507,9 @@ extension EditStatusViewController: UITextViewDelegate {
         if text.count > 1 {
             let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
             return newText.count <= editStatusTextMaxLength;
-          } else {
+        } else {
             return textView.text.count + (text.count - range.length) <= editStatusTextMaxLength
-          }
+        }
     }
 }
 

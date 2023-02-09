@@ -106,6 +106,14 @@ class ChangeAppLockViewController: UIViewController, UITextFieldDelegate {
     }
     
     func changePassword() -> Bool {
+        if enterNewPassword.text == nil || enterNewPassword.text == "" && confirmNewPassword.text == nil || confirmNewPassword.text == "" && enterOldPassword.text == nil || enterOldPassword.text == "" {
+            AppAlert.shared.showToast(message: ErrorMessage.invalidOLDPIN)
+            return false
+        }
+        if enterNewPassword.text == nil || enterNewPassword.text == "" && confirmNewPassword.text == nil || confirmNewPassword.text == "" {
+            AppAlert.shared.showToast(message: ErrorMessage.enterthePIN)
+            return false
+        }
         if enterOldPassword.text == nil || enterOldPassword.text == "" {
             AppAlert.shared.showToast(message: ErrorMessage.enterthePIN)
             return false
@@ -119,12 +127,15 @@ class ChangeAppLockViewController: UIViewController, UITextFieldDelegate {
             return false
         }
         if (enterOldPassword.text?.count ?? 0) < 4 {
+            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
             return false
         }
         if (enterNewPassword.text?.count ?? 0) < 4 {
+            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
             return false
         }
         if (confirmNewPassword.text?.count ?? 0) < 4 {
+            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
             return false
         }
         if enterOldPassword.text != FlyDefaults.appLockPassword{

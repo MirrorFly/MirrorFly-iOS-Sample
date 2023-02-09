@@ -80,11 +80,11 @@ class AppLockPasswordViewController: UIViewController, UITextFieldDelegate {
             AppAlert.shared.showToast(message: ErrorMessage.enterthePIN)
             return  false
         }
-        else if (enterNewPassword.text?.count ?? 0) < 4 {
-            
+        if (enterNewPassword.text?.count ?? 0) < 4 {
+            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
             return false
         } else if (confirmNewPassword.text?.count ?? 0) < 4 {
-            
+            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
             return false
         }
         else if enterNewPassword.text != confirmNewPassword.text{

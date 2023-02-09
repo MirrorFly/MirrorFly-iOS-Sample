@@ -20,6 +20,7 @@ let editStatusTextMaxLength = 139
 let tableviewHeaderHeight = 50
 let statusHeader = 50
 let otpTimer = 90
+let passwordResetTimer = 60
 let imageAttachCount = 5
 let minimumMobileNumber = 4
 let maximumMobileNumber = 15

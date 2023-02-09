@@ -61,7 +61,7 @@ class AppAlert: NSObject {
     }
 
     //Simple Alert view with two button
-    func showAlert(view: UIViewController, title: String? = nil, message: String, buttonOneTitle: String? = cancelUppercase.localized, buttonTwoTitle: String, buttonOneColor: UIColor? = nil,cancelWhenTapOutside : Bool = false){
+    func showAlert(view: UIViewController, title: String? = nil, message: String, buttonOneTitle: String? = cancelUppercase.localized, buttonTwoTitle: String, buttonOneColor: UIColor? = nil, buttonTwoColor: UIColor? = nil, cancelWhenTapOutside : Bool = false){
         alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
 
         //Button One Action
@@ -83,7 +83,13 @@ class AppAlert: NSObject {
             (result : UIAlertAction) -> Void in
             self.onAlertAction?(1)
         }
-        buttonTwo.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        
+        if let buttonTwoColor = buttonTwoColor {
+            buttonTwo.setValue(buttonTwoColor, forKey: "titleTextColor")
+        } else {
+            buttonTwo.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+        }
+        
         alert?.addAction(buttonOne)
         alert?.addAction(buttonTwo)
 

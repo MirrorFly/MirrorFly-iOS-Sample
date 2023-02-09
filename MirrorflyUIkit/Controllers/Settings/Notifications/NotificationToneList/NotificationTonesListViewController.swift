@@ -109,7 +109,7 @@ extension NotificationTonesListViewController: UITableViewDelegate, UITableViewD
         if selectedNotificationSoundName == soundList[indexPath.row] {
             cell.toneNameLabel.textColor = .black
             cell.toneNameLabel.font = UIFont(name: "SFUIDisplay-Medium", size: 16)
-            cell.selectedImageView.image = UIImage(named: "ic_Tick")
+            cell.selectedImageView.image = UIImage(named: "ic_tickmark")
         } else {
             cell.toneNameLabel.textColor = Color.recentChatTextColor
             cell.toneNameLabel.font = UIFont(name: "SFUIDisplay-Regular", size: 16)

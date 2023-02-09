@@ -5054,37 +5054,16 @@
                                     <outlet property="delegate" destination="LGe-HW-FjE" id="2PB-dS-db9"/>
                                 </connections>
                             </tableView>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v7D-fr-oMz">
-                                <rect key="frame" x="100.33333333333333" y="357.33333333333331" width="213.33333333333337" height="21.666666666666686"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Blocked Contacts found" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UzY-0l-Bay">
-                                        <rect key="frame" x="0.0" y="0.0" width="213.33333333333334" height="21.666666666666668"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="18"/>
-                                        <color key="textColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.46274509800000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="UzY-0l-Bay" secondAttribute="trailing" id="T1p-5J-yfx"/>
-                                    <constraint firstAttribute="bottom" secondItem="UzY-0l-Bay" secondAttribute="bottom" id="TRr-Ln-cyg"/>
-                                    <constraint firstItem="UzY-0l-Bay" firstAttribute="top" secondItem="v7D-fr-oMz" secondAttribute="top" id="n1u-yS-YxD"/>
-                                    <constraint firstItem="UzY-0l-Bay" firstAttribute="leading" secondItem="v7D-fr-oMz" secondAttribute="leading" id="nOe-Do-54B"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="MkS-4z-zKO"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="v7D-fr-oMz" firstAttribute="centerY" secondItem="yWh-Yv-phy" secondAttribute="centerY" id="11j-gp-9c3"/>
                             <constraint firstItem="Ufd-p2-9U2" firstAttribute="leading" secondItem="MkS-4z-zKO" secondAttribute="leading" id="2oL-X3-8uh"/>
                             <constraint firstItem="aHM-go-wZ4" firstAttribute="top" secondItem="yWh-Yv-phy" secondAttribute="top" id="5pJ-4k-hRh"/>
                             <constraint firstItem="aHM-go-wZ4" firstAttribute="leading" secondItem="MkS-4z-zKO" secondAttribute="leading" id="8j7-A7-UVX"/>
                             <constraint firstItem="Ufd-p2-9U2" firstAttribute="top" secondItem="aHM-go-wZ4" secondAttribute="bottom" id="EZz-rq-xxO"/>
                             <constraint firstItem="Ufd-p2-9U2" firstAttribute="trailing" secondItem="MkS-4z-zKO" secondAttribute="trailing" id="NEZ-pw-6hR"/>
                             <constraint firstItem="aHM-go-wZ4" firstAttribute="trailing" secondItem="MkS-4z-zKO" secondAttribute="trailing" id="Qm4-qi-ghm"/>
-                            <constraint firstItem="v7D-fr-oMz" firstAttribute="centerX" secondItem="yWh-Yv-phy" secondAttribute="centerX" id="a93-Vf-7fS"/>
                             <constraint firstItem="rDQ-JE-Cb8" firstAttribute="top" secondItem="MkS-4z-zKO" secondAttribute="top" id="dVA-eb-8fG"/>
                             <constraint firstItem="MkS-4z-zKO" firstAttribute="bottom" secondItem="Ufd-p2-9U2" secondAttribute="bottom" id="ewE-sd-9Wy"/>
                         </constraints>
@@ -5094,7 +5073,6 @@
                     </tabBarItem>
                     <connections>
                         <outlet property="blockedContactsTableView" destination="Ufd-p2-9U2" id="Alb-sb-Qyd"/>
-                        <outlet property="noContactsView" destination="v7D-fr-oMz" id="qAo-3w-Leb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2WZ-l9-F7l" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

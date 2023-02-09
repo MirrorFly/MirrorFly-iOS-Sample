@@ -60,8 +60,6 @@ extension AppLockViewController: UITableViewDelegate,UITableViewDataSource {
         case .pinlock:
             cell.lblTitle.text = self.AppLockSettingsArray[indexPath.row].rawValue
             cell.helpTextLabel.text = addMoresecurityWith4DigitsecretPIN
-            cell.switchOutlet.transform = CGAffineTransform(scaleX: 0.50, y: 0.50)
-            cell.switchOutlet.layer.borderColor = UIColor.blue.cgColor
             cell.doubleTapLabel.text = changeThe4DigitSecurityPIN
             cell.ChooseLangugaeLabel.text = changePIN
             let tap = UITapGestureRecognizer(target: self, action: #selector(self.PinLock(_:)))
@@ -76,8 +74,6 @@ extension AppLockViewController: UITableViewDelegate,UITableViewDataSource {
         case .fingerPrintID:
             cell.lblTitle.text = self.AppLockSettingsArray[indexPath.row].rawValue
             cell.helpTextLabel.text = useFingerPrintIDorFaceID
-            cell.switchOutlet.transform = CGAffineTransform(scaleX: 0.50, y: 0.50)
-            cell.switchOutlet.layer.borderColor = UIColor.blue.cgColor
             cell.helpTextView.isHidden = true
             cell.separaterView.isHidden = true
             cell.switchOutlet.isOn = FlyDefaults.appFingerprintenable 

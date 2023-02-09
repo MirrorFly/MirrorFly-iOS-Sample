@@ -556,6 +556,27 @@
             "protocolReq": true,
             "reqNewWitnessTableEntry": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "clearAllConversationForSyncedDevice",
+            "printedName": "clearAllConversationForSyncedDevice()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FlyXmpp19XMPPMessageDelegateP35clearAllConversationForSyncedDeviceyyF",
+            "mangledName": "$s7FlyXmpp19XMPPMessageDelegateP35clearAllConversationForSyncedDeviceyyF",
+            "moduleName": "FlyXmpp",
+            "genericSig": "<τ_0_0 where τ_0_0 : FlyXmpp.XMPPMessageDelegate>",
+            "sugared_genericSig": "<Self where Self : FlyXmpp.XMPPMessageDelegate>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Protocol",
@@ -6796,17 +6817,23 @@
           {
             "kind": "Function",
             "name": "didReceiveLogout",
-            "printedName": "didReceiveLogout()",
+            "printedName": "didReceiveLogout(isDeleteAccount:)",
             "children": [
               {
                 "kind": "TypeNominal",
                 "name": "Void",
                 "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyXmpp18XMPPLogoutDelegateP16didReceiveLogoutyyF",
-            "mangledName": "$s7FlyXmpp18XMPPLogoutDelegateP16didReceiveLogoutyyF",
+            "usr": "s:7FlyXmpp18XMPPLogoutDelegateP16didReceiveLogout15isDeleteAccountySb_tF",
+            "mangledName": "$s7FlyXmpp18XMPPLogoutDelegateP16didReceiveLogout15isDeleteAccountySb_tF",
             "moduleName": "FlyXmpp",
             "genericSig": "<τ_0_0 where τ_0_0 : FlyXmpp.XMPPLogoutDelegate>",
             "sugared_genericSig": "<Self where Self : FlyXmpp.XMPPLogoutDelegate>",
@@ -6908,1526 +6935,1526 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
       "kind": "StringLiteral",
       "offset": 355,
       "length": 23,
       "value": "\"ChatConnectionManager\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
       "kind": "FloatLiteral",
       "offset": 412,
       "length": 4,
       "value": "12.0"
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
       "kind": "BooleanLiteral",
       "offset": 542,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
       "kind": "Dictionary",
       "offset": 606,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConnectionManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 13082,
+      "offset": 13104,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/MessageManager.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/MessageManager.swift",
       "kind": "BooleanLiteral",
       "offset": 4829,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/FlyXmppController.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/FlyXmppController.swift",
       "kind": "StringLiteral",
       "offset": 665,
       "length": 16,
       "value": "\"XMPPController\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/FlyXmppController.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/FlyXmppController.swift",
       "kind": "StringLiteral",
       "offset": 23676,
       "length": 3,
       "value": "\" \""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/FlyXmppController.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/FlyXmppController.swift",
       "kind": "StringLiteral",
       "offset": 23702,
       "length": 4,
       "value": "\"\n\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 185,
       "length": 5,
       "value": "\"jid\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 224,
       "length": 5,
       "value": "\"get\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 263,
       "length": 5,
       "value": "\"set\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 305,
       "length": 8,
       "value": "\"result\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 351,
       "length": 10,
       "value": "\"bad-auth\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 405,
       "length": 16,
       "value": "\"not-authorized\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 465,
       "length": 15,
       "value": "\"profileUpdate\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 523,
       "length": 14,
       "value": "\"hideLastSeen\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 578,
       "length": 12,
       "value": "\"block_user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 633,
       "length": 14,
       "value": "\"unblock_user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 689,
       "length": 13,
       "value": "\"remove_user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 742,
       "length": 11,
       "value": "\"chat_type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 788,
       "length": 6,
       "value": "\"chat\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 839,
       "length": 15,
       "value": "\"hide_lastseen\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 889,
       "length": 6,
       "value": "\"mode\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 938,
       "length": 14,
       "value": "\"create_group\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 991,
       "length": 10,
       "value": "\"group_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1048,
       "length": 18,
       "value": "\"add_participants\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1121,
       "length": 26,
       "value": "\"admin_remove_participant\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1193,
       "length": 17,
       "value": "\"get_group_vcard\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1255,
       "length": 16,
       "value": "\"set_group_info\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1312,
       "length": 12,
       "value": "\"make_admin\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1372,
       "length": 19,
       "value": "\"user_delete_group\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1434,
       "length": 13,
       "value": "\"message_ids\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1485,
       "length": 9,
       "value": "\"to_user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1534,
       "length": 11,
       "value": "\"favourite\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1582,
       "length": 8,
       "value": "\"status\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1632,
       "length": 13,
       "value": "\"delete_type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1689,
       "length": 15,
       "value": "\"clear_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1744,
       "length": 11,
       "value": "\"clear_all\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1793,
       "length": 13,
       "value": "\"getLastSeen\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1846,
       "length": 11,
       "value": "\"composing\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1892,
       "length": 6,
       "value": "\"gone\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 1943,
       "length": 16,
       "value": "\"getCreateGroup\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2007,
       "length": 19,
       "value": "\"getAddParticipant\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2082,
       "length": 27,
       "value": "\"getAdminRemoveParticipant\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2155,
       "length": 17,
       "value": "\"getGroupProfile\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2221,
       "length": 20,
       "value": "\"groupProfileUpdate\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2283,
       "length": 13,
       "value": "\"groupTyping\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2336,
       "length": 11,
       "value": "\"groupGone\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2387,
       "length": 11,
       "value": "\"makeAdmin\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2440,
       "length": 13,
       "value": "\"deleteGroup\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2504,
       "length": 20,
       "value": "\"adminUserExitGroup\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2573,
       "length": 20,
       "value": "\"customParticipants\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2640,
       "length": 18,
       "value": "\"get_participants\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2695,
       "length": 8,
       "value": "\"itemid\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2744,
       "length": 12,
       "value": "\"created_at\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2799,
       "length": 14,
       "value": "\"user_profile\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2856,
       "length": 14,
       "value": "\"participants\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2907,
       "length": 8,
       "value": "\"recall\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 2957,
       "length": 13,
       "value": "\"participant\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3014,
       "length": 15,
       "value": "\"subscriptions\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3069,
       "length": 11,
       "value": "\"subscribe\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3115,
       "length": 6,
       "value": "\"nick\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3161,
       "length": 16,
       "value": "\"delete_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3221,
       "length": 17,
       "value": "\"new_admin_added\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3288,
       "length": 23,
       "value": "\"group_profile_updated\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3348,
       "length": 12,
       "value": "\"message_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3412,
       "length": 23,
       "value": "\"set_favourite_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3486,
       "length": 26,
       "value": "\"update_favourite_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3564,
       "length": 23,
       "value": "\"get_favourite_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3633,
       "length": 21,
       "value": "\"update_archive_chat\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3695,
       "length": 16,
       "value": "\"archive_status\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3745,
       "length": 9,
       "value": "\"archive\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3794,
       "length": 15,
       "value": "\"user_settings\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3854,
       "length": 20,
       "value": "\"all_archived_chats\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 3931,
       "length": 28,
       "value": "\"clearall_favourite_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4014,
       "length": 26,
       "value": "\"delete_favourite_message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4088,
       "length": 19,
       "value": "\"get_group_profile\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4147,
       "length": 11,
       "value": "\"getGroups\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4201,
       "length": 14,
       "value": "\"get_group_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4252,
       "length": 8,
       "value": "\"logout\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4300,
       "length": 11,
       "value": "\"mediacall\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4354,
       "length": 14,
       "value": "\"callInitiate\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4404,
       "length": 7,
       "value": "\"error\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4453,
       "length": 13,
       "value": "\"user_logout\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4510,
       "length": 15,
       "value": "\"webUserLogout\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4571,
       "length": 17,
       "value": "\"register_update\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4623,
       "length": 6,
       "value": "\"user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4677,
       "length": 19,
       "value": "\"deleteForEveryOne\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4733,
       "length": 8,
       "value": "\"normal\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4833,
       "length": 20,
       "value": "\"jabber:iq:user_fav\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4899,
       "length": 27,
       "value": "\"jabber:iq:user_activities\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 4966,
       "length": 16,
       "value": "\"jabber:iq:last\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5023,
       "length": 12,
       "value": "\"vcard-temp\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5079,
       "length": 15,
       "value": "\"jabber:client\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5138,
       "length": 18,
       "value": "\"jabber:iq:roster\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5200,
       "length": 19,
       "value": "\"urn:xmpp:blocking\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5258,
       "length": 19,
       "value": "\"urn:xmpp:receipts\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5315,
       "length": 18,
       "value": "\"urn:xmpp:content\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5368,
       "length": 22,
       "value": "\"urn:xmpp:messagetime\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5424,
       "length": 18,
       "value": "\"urn:xmpp:mam:tmp\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5479,
       "length": 16,
       "value": "\"urn:xmpp:sid:0\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5536,
       "length": 27,
       "value": "\"jabber:iq:user_activities\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5606,
       "length": 16,
       "value": "\"jabber:iq:last\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5667,
       "length": 24,
       "value": "\"jabber:iq:mixgroupchat\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5743,
       "length": 24,
       "value": "\"jabber:iq:mixgroupchat\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5815,
       "length": 29,
       "value": "\"urn:xmpp:mix:nodes:messages\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5896,
       "length": 29,
       "value": "\"'urn:xmpp:mix:nodes:subject\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 5978,
       "length": 29,
       "value": "\"urn:xmpp:mix:nodes:presence\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6063,
       "length": 33,
       "value": "\"urn:xmpp:mix:nodes:participants\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6147,
       "length": 27,
       "value": "\"urn:xmpp:mix:nodes:config\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6220,
       "length": 15,
       "value": "\"mix.localhost\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6269,
       "length": 33,
       "value": "\"urn:xmpp:mix:nodes:participants\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6339,
       "length": 20,
       "value": "\"urn:xmpp:carbons:2\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6397,
       "length": 20,
       "value": "\"urn:xmpp:forward:0\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6454,
       "length": 35,
       "value": "\"http:\/\/jabber.org\/protocol\/pubsub\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6534,
       "length": 25,
       "value": "\"urn:xmpp:mix:nodes:info\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6599,
       "length": 33,
       "value": "\"jabber:iq:media_call_activities\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6670,
       "length": 15,
       "value": "\"urn:xmpp:call\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6726,
       "length": 16,
       "value": "\"urn:xmpp:hints\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6788,
       "length": 26,
       "value": "\"urn:xmpp:register_update\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6850,
       "length": 16,
       "value": "\"urn:xmpp:delay\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 6910,
       "length": 21,
       "value": "\"urn:xmpp:mix:core:0\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7019,
       "length": 7,
       "value": "\"query\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7059,
       "length": 4,
       "value": "\"iq\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7101,
       "length": 9,
       "value": "\"profile\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7146,
       "length": 7,
       "value": "\"vCard\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7188,
       "length": 6,
       "value": "\"name\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7230,
       "length": 7,
       "value": "\"image\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7276,
       "length": 10,
       "value": "\"nickName\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7322,
       "length": 7,
       "value": "\"email\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7374,
       "length": 18,
       "value": "\"is_admin_blocked\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7429,
       "length": 8,
       "value": "\"status\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7480,
       "length": 14,
       "value": "\"mobileNumber\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7529,
       "length": 6,
       "value": "\"item\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7571,
       "length": 7,
       "value": "\"block\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7616,
       "length": 9,
       "value": "\"unblock\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7659,
       "length": 5,
       "value": "\"jid\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7697,
       "length": 4,
       "value": "\"id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7743,
       "length": 13,
       "value": "\"userblocked\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7798,
       "length": 13,
       "value": "\"chatcontent\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7853,
       "length": 13,
       "value": "\"acknowledge\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7906,
       "length": 11,
       "value": "\"delivered\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7952,
       "length": 6,
       "value": "\"seen\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 7998,
       "length": 11,
       "value": "\"timestamp\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8048,
       "length": 10,
       "value": "\"archived\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8095,
       "length": 8,
       "value": "\"stanza\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8146,
       "length": 14,
       "value": "\"messageclear\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8196,
       "length": 11,
       "value": "\"blocklist\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8247,
       "length": 11,
       "value": "\"blockedMe\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8296,
       "length": 9,
       "value": "\"members\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8345,
       "length": 11,
       "value": "\"composing\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8391,
       "length": 6,
       "value": "\"gone\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8434,
       "length": 8,
       "value": "\"recall\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8480,
       "length": 9,
       "value": "\"message\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8525,
       "length": 7,
       "value": "\"event\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8568,
       "length": 7,
       "value": "\"items\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8613,
       "length": 9,
       "value": "\"item_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8662,
       "length": 11,
       "value": "\"publisher\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8711,
       "length": 9,
       "value": "\"retract\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8756,
       "length": 7,
       "value": "\"group\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8806,
       "length": 14,
       "value": "\"groupdetails\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8858,
       "length": 9,
       "value": "\"groupid\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8907,
       "length": 11,
       "value": "\"groupinfo\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 8960,
       "length": 13,
       "value": "\"affiliation\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9015,
       "length": 13,
       "value": "\"createddate\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9063,
       "length": 6,
       "value": "\"info\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9106,
       "length": 9,
       "value": "\"done_by\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9155,
       "length": 11,
       "value": "\"new_admin\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9208,
       "length": 13,
       "value": "\"groupdelete\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9252,
       "length": 6,
       "value": "\"sent\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9297,
       "length": 10,
       "value": "\"received\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9345,
       "length": 11,
       "value": "\"forwarded\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9393,
       "length": 8,
       "value": "\"pubsub\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9441,
       "length": 11,
       "value": "\"favourite\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9488,
       "length": 7,
       "value": "\"users\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9530,
       "length": 6,
       "value": "\"user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9573,
       "length": 8,
       "value": "\"invite\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9615,
       "length": 10,
       "value": "\"no-store\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9659,
       "length": 5,
       "value": "\"mix\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9702,
       "length": 9,
       "value": "\"subject\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9752,
       "length": 13,
       "value": "\"admin_block\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9807,
       "length": 14,
       "value": "\"user_deleted\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9867,
       "length": 17,
       "value": "\"register_update\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9920,
       "length": 7,
       "value": "\"delay\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 9968,
       "length": 16,
       "value": "\"archived_chats\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10020,
       "length": 11,
       "value": "\"chat_type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10118,
       "length": 4,
       "value": "\"id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10157,
       "length": 6,
       "value": "\"type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10200,
       "length": 8,
       "value": "\"status\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10243,
       "length": 6,
       "value": "\"from\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10292,
       "length": 14,
       "value": "\"blocked_user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10349,
       "length": 14,
       "value": "\"message_type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10406,
       "length": 14,
       "value": "\"broadcast_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10466,
       "length": 17,
       "value": "\"broadcast_msgid\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10519,
       "length": 7,
       "value": "\"msgid\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10561,
       "length": 6,
       "value": "\"time\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10605,
       "length": 9,
       "value": "\"sent_to\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10664,
       "length": 21,
       "value": "\"remove_message_user\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10725,
       "length": 11,
       "value": "\"favourite\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10777,
       "length": 13,
       "value": "\"delete_type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10819,
       "length": 4,
       "value": "\"to\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10858,
       "length": 6,
       "value": "\"node\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10903,
       "length": 12,
       "value": "\"yugjgjgjgj\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10950,
       "length": 6,
       "value": "\"body\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 10995,
       "length": 9,
       "value": "\"room_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11043,
       "length": 10,
       "value": "\"group_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11093,
       "length": 11,
       "value": "\"call_type\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11144,
       "length": 11,
       "value": "\"call_mode\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11195,
       "length": 11,
       "value": "\"call_time\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11247,
       "length": 12,
       "value": "\"start_time\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11298,
       "length": 10,
       "value": "\"end_time\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11348,
       "length": 15,
       "value": "\"submission-id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11401,
       "length": 13,
       "value": "\"call_status\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11454,
       "length": 11,
       "value": "\"call_from\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11505,
       "length": 11,
       "value": "\"socket_id\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11559,
       "length": 14,
       "value": "\"block_status\""
     },
     {
-      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleXmpp\/FlyXmpp\/FlyXmpp\/XMPPConstants.swift",
       "kind": "StringLiteral",
       "offset": 11614,
       "length": 12,

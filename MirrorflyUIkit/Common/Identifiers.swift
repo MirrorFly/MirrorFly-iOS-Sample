@@ -62,6 +62,10 @@ enum Identifiers {
     static let audioReceiver = "AudioReceiver"
     static let audioView =  "AudioView"
     
+    //MARK: - StarredMessages
+    static let starredSenderView = "StarredSenderView"
+    static let starredReceiverView =  "StarredReceiverView"
+    
     static let chatViewLocationIncomingCell = "ChatViewLocationIncomingCell"
     static let chatViewLocationOutgoingCell = "ChatViewLocationOutgoingCell"
     static let chatScreenToLocation = "ChatScreenToLocation"
@@ -132,12 +136,16 @@ enum Identifiers {
     
     //MARK: ChatSettings
     static let chatSettingsTableViewCell = "ChatSettingsTableViewCell"
+
     static let chatBackupTableViewCell = "ChatBackupTableViewCell"
     static let chatBackupPopupTableViewCell = "BackupPopupTableViewCell"
     static let restoreInstructionsTableViewCell = "RestoreInstructionsTableViewCell"
     static let clearAllChatTableViewCell = "ClearAllChatTableViewCell"
+
     static let LanguageSelectionTableViewCell = "LanguageSelectionTableViewCell"
     static let LanguageSelectionViewController = "LanguageSelectionViewController"
+
+    static let BusyStatusHeaderCell = "BusyStatusHeaderCell"
     
     /// MARK: Documents Cells
     static let senderDocumenCell = "SenderDocumentsTableViewCell"

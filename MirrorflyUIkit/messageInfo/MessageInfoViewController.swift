@@ -548,9 +548,8 @@ extension MessageInfoViewController: AVAudioPlayerDelegate{
 }
 
 extension MessageInfoViewController : MessageEventsDelegate {
-   
     func onMessageReceived(message: ChatMessage, chatJid: String) {
-        //messageDelegate?.whileReceivingMessage(chatMessage: message, chatUserJid: chatJid)
+       // messageDelegate?.whileReceivingMessage(chatMessage: message, chatUserJid: chatJid)
     }
     
     func onMessageStatusUpdated(messageId: String, chatJid: String, status: MessageStatus) {
@@ -603,8 +602,8 @@ extension MessageInfoViewController : MessageEventsDelegate {
         
     }
     
+    func clearAllConversationForSyncedDevice() {}
 }
-
 // For viewing doucument
 // MARK - Text Delegate
 extension MessageInfoViewController : QLPreviewControllerDataSource {

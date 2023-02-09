@@ -32,14 +32,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
                     navigationController =  UINavigationController(rootViewController: initialViewController)
                 }else{
-                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                    let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                    if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable {
+                        let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+                        navigationController =  UINavigationController(rootViewController: initialViewController)
+                    }
+                    else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
+                        let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+                        navigationController =  UINavigationController(rootViewController: initialViewController)
+                    } else {
+                        let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                        let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                        navigationController =  UINavigationController(rootViewController: initialViewController)
+                    }
                 }
             }else{
-                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                navigationController =  UINavigationController(rootViewController: initialViewController)
+                if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable {
+                    let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
+                else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
+                    let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                } else {
+                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
+                }
             }
             self.window?.rootViewController = navigationController
             self.window?.makeKeyAndVisible()
@@ -68,9 +86,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         return sharedAppDelegateVar
     }
-    
+
     @available(iOS 13.0, *)
     func sceneDidDisconnect(_ scene: UIScene) {
+        FlyDefaults.showAppLock = true
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -97,7 +116,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     @available(iOS 13.0, *)
     func sceneWillResignActive(_ scene: UIScene) {
-        
+
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
@@ -105,6 +124,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneWillEnterForeground(_ scene: UIScene) {
         NetworkReachability.shared.startMonitoring()
+        if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable && FlyDefaults.showAppLock {
+            let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+            let navigationController =  UINavigationController(rootViewController: initialViewController)
+            self.window?.rootViewController = navigationController
+            self.window?.makeKeyAndVisible()
+        }
+        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false && FlyDefaults.showAppLock {
+            let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+            initialViewController.login = true
+            let navigationController =  UINavigationController(rootViewController: initialViewController)
+            self.window?.rootViewController = navigationController
+            self.window?.makeKeyAndVisible()
+        }
         print("#scene sceneWillEnterForeground \(FlyDefaults.isLoggedIn)")
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.

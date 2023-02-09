@@ -14,14 +14,11 @@ import AVFoundation
 import FlyDatabase
 import AudioToolbox
 
-
-let BASE_URL =  "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
+let BASE_URL =  "xxxxxxxxxxxxxxx"
 let CONTAINER_ID = "group.com.mirrorfly.qa"
-let LICENSE_KEY = "xxxxxxxxxxxxxxxxxxxxx"
+let LICENSE_KEY = "xxxxxxxxxxxxxx"
 let IS_LIVE = false
-let APP_NAME = "UiKit"
-
-
+let APP_NAME = "UiKitQa"
 
 class NotificationService: UNNotificationServiceExtension {
     
@@ -29,7 +26,7 @@ class NotificationService: UNNotificationServiceExtension {
     var bestAttemptContent: UNMutableNotificationContent?
     
     var notificationIDs = [String]()
-
+    
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
@@ -84,12 +81,12 @@ class NotificationService: UNNotificationServiceExtension {
                 if !FlyCoreController.shared.isContactMuted(jid: bestAttemptContents?.userInfo["from_user"] as? String ?? "") || !(FlyDefaults.isArchivedChatEnabled && ChatManager.getRechtChat(jid: bestAttemptContents?.userInfo["from_user"] as? String ?? "")?.isChatArchived ?? false){
                     bestAttemptContents?.badge = messageCount as? NSNumber
                 }
-
+                
                 let chatType = (bestAttemptContents?.userInfo["chat_type"] as? String ?? "")
                 let messageId = (self.bestAttemptContent?.userInfo["message_id"] as? String ?? "").components(separatedBy: ",").last ?? ""
-
+                
                 self.bestAttemptContent = bestAttemptContents
-
+                
                 if FlyDatabaseController.shared.messageManager.getMessageFor(id: messageId)?.senderUserJid == FlyDefaults.myJid && (chatType == "chat" || chatType == "normal") {
                     if !FlyUtils.isValidGroupJid(groupJid: FlyDatabaseController.shared.messageManager.getMessageFor(id: messageId)?.chatUserJid) {
                         self.bestAttemptContent?.title = "You"

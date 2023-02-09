@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "ic_tick.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "ic_tick@2x.png",
+      "filename" : "stared message.pdf",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "ic_tick@3x.png",
+      "filename" : "stared message 1.pdf",
       "idiom" : "universal",
       "scale" : "3x"
     }

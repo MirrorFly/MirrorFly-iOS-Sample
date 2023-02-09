@@ -24,6 +24,13 @@ class BaseTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func getPlaceholder(name: String , color: UIColor,userImage: UIImageView)->UIImage {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let ipimage = IPImage(text: trimmedName, radius: Double(userImage.frame.size.height), font: UIFont.font32px_appBold(), textColor: nil, color: color)
+        let placeholder = ipimage.generateInitialImage()
+        return placeholder ?? #imageLiteral(resourceName: "ic_profile_placeholder")
+    }
+    
     func setupGestures() {
         swiperight = UISwipeGestureRecognizer(target: self, action: #selector(handleRightSwipe(_:)))
         swiperight?.direction = UISwipeGestureRecognizer.Direction.right

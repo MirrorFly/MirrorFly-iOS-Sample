@@ -14,6 +14,8 @@ protocol DeleteMessageButtonAction {
     func closeButtonTapped()
     func deleteForMeButtonTapped()
     func deleteForEveryOneButtonTapped()
+    func clearAllWithStarred()
+    func clearAllWithOutStarred()
 }
 
 class DeleteMessagesForMeAlertController : UIViewController {

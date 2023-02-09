@@ -502,8 +502,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 switch isSearchEnabled  {
                 case true:
                     if getBlocked(jid: filteredContactList[indexPath.row].jid) {
-                        let contactDetails = filteredContactList[indexPath.row]
-                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType))
+                        showBlockUnblockConfirmationPopUp(jid: filteredContactList[indexPath.row].jid, name: filteredContactList[indexPath.row].nickName)
                         return
                     }
                     var profile = Profile()
@@ -512,10 +511,15 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     profile.isSelected = !(profile.isSelected ?? false)
                     saveUserToDatabase(jid: profile.jid)
                     if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
-                        getRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
-                        filteredContactList[indexPath.row].isSelected = true
-                        selectedMessages.append(profile)
-                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                        checkUserBusyStatusEnabled(self, jid: profile.jid) { [weak self] status in
+                            if status {
+                                self?.getRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
+                                self?.filteredContactList[indexPath.row].isSelected = true
+                                self?.selectedMessages.append(profile)
+                                self?.selectedJids = self?.selectedMessages.compactMap { profile in profile.jid } ?? []
+                            }
+                            self?.forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                        }
                     } else if selectedMessages.filter({$0.jid == filteredContactList[indexPath.row].jid}).count > 0 {
                         selectedMessages.enumerated().forEach({ (index,item) in
                             if item.jid == filteredContactList[indexPath.row].jid {
@@ -533,8 +537,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     forwardTableView?.reloadRows(at: [indexPath], with: .none)
                 case false:
                     if getBlocked(jid: allContactsList[indexPath.row].jid) {
-                        let contactDetails = allContactsList[indexPath.row]
-                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType))
+                        showBlockUnblockConfirmationPopUp(jid: allContactsList[indexPath.row].jid, name: allContactsList[indexPath.row].nickName)
                         return
                     }
                     var profile = Profile()
@@ -543,10 +546,15 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     profile.isSelected = !(profile.isSelected ?? false)
                     saveUserToDatabase(jid: profile.jid)
                     if selectedMessages.filter({$0.jid == profile.jid}).count == 0  && selectedMessages.count < 5 {
-                        getAllRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
-                        allContactsList[indexPath.row].isSelected = true
-                        selectedMessages.append(profile)
-                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                        checkUserBusyStatusEnabled(self, jid: profile.jid) { [weak self] status in
+                            if status {
+                                self?.getAllRecentChat.filter({$0.jid == profile.jid}).first?.isSelected = true
+                                self?.allContactsList[indexPath.row].isSelected = true
+                                self?.selectedMessages.append(profile)
+                                self?.selectedJids = self?.selectedMessages.compactMap { profile in profile.jid } ?? []
+                            }
+                            self?.forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                        }
                     } else if selectedMessages.filter({$0.jid == allContactsList[indexPath.row].jid}).count > 0 {
                         selectedMessages.enumerated().forEach({ (index,item) in
                             if item.jid == allContactsList[indexPath.row].jid {
@@ -636,8 +644,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                         return
                     }
                     if getBlocked(jid: getRecentChat[indexPath.row].jid) {
-                        let contactDetails = getRecentChat[indexPath.row]
-                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: contactDetails.nickName)
+                        showBlockUnblockConfirmationPopUp(jid: getRecentChat[indexPath.row].jid, name: getRecentChat[indexPath.row].nickName)
                         return
                     }
                     var profile = Profile()
@@ -646,10 +653,15 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     profile.isSelected = !(profile.isSelected ?? false)
                     saveUserToDatabase(jid: profile.jid)
                     if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count == 0 && selectedMessages.count < 5 {
-                        getRecentChat[indexPath.row].isSelected = true
-                        filteredContactList.filter({$0.jid == getRecentChat[indexPath.row].jid}).first?.isSelected = true
-                        selectedMessages.append(profile)
-                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                        checkUserBusyStatusEnabled(self, jid: profile.jid) { [weak self] status in
+                            if status {
+                                self?.getRecentChat[indexPath.row].isSelected = true
+                                self?.filteredContactList.filter({$0.jid == self?.getRecentChat[indexPath.row].jid}).first?.isSelected = true
+                                self?.selectedMessages.append(profile)
+                                self?.selectedJids = self?.selectedMessages.compactMap { profile in profile.jid } ?? []
+                            }
+                            self?.forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                        }
                     } else if selectedMessages.filter({$0.jid == getRecentChat[indexPath.row].jid}).count > 0 {
                         selectedMessages.enumerated().forEach({ (index,item) in
                             if item.jid == getRecentChat[indexPath.row].jid {
@@ -671,8 +683,7 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                         return
                     }
                     if getBlocked(jid: getAllRecentChat[indexPath.row].jid) {
-                        let contactDetails = getAllRecentChat[indexPath.row]
-                        showBlockUnblockConfirmationPopUp(jid: contactDetails.jid, name: contactDetails.nickName)
+                        showBlockUnblockConfirmationPopUp(jid: getAllRecentChat[indexPath.row].jid,name: getAllRecentChat[indexPath.row].nickName)
                         return
                     }
                     var profile = Profile()
@@ -680,10 +691,15 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                     profile.jid = getAllRecentChat[indexPath.row].jid
                     profile.isSelected = !(profile.isSelected ?? false)
                     if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count == 0  && selectedMessages.count < 5 {
-                        getAllRecentChat[indexPath.row].isSelected = true
-                        allContactsList.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).first?.isSelected = true
-                        selectedMessages.append(profile)
-                        selectedJids = selectedMessages.compactMap { profile in profile.jid }
+                        checkUserBusyStatusEnabled(self, jid: profile.jid) { [weak self] status in
+                            if status {
+                                self?.getAllRecentChat[indexPath.row].isSelected = true
+                                self?.allContactsList.filter({$0.jid == self?.getAllRecentChat[indexPath.row].jid}).first?.isSelected = true
+                                self?.selectedMessages.append(profile)
+                                self?.selectedJids = self?.selectedMessages.compactMap { profile in profile.jid } ?? []
+                            }
+                            self?.forwardTableView?.reloadRows(at: [indexPath], with: .none)
+                        }
                     } else if selectedMessages.filter({$0.jid == getAllRecentChat[indexPath.row].jid}).count > 0 {
                         selectedMessages.enumerated().forEach({ (index,item) in
                             if item.jid == getAllRecentChat[indexPath.row].jid {
@@ -1123,7 +1139,7 @@ extension ForwardViewController : GroupEventsDelegate {
 
 // MessageEventDelegate
 extension ForwardViewController : MessageEventsDelegate {
-   
+  
     func onMessageTranslated(message: ChatMessage, jid: String) {
         
     }
@@ -1167,6 +1183,8 @@ extension ForwardViewController : MessageEventsDelegate {
             refreshMessages()
         }
     }
+    
+    func clearAllConversationForSyncedDevice() {}
 }
 
 extension ForwardViewController : AdminBlockDelegate {
@@ -1406,7 +1424,7 @@ extension ForwardViewController : UIScrollViewDelegate {
 extension ForwardViewController {
     private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
         //showConfirmationAlert
-        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(name)?" : "Block \(name)?", preferredStyle: .alert)
+        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(getProfileDetails?.nickName ?? "")?" : "Block \(self.getProfileDetails?.nickName ?? "")?", preferredStyle: .alert)
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
             self?.dismiss(animated: true,completion: nil)
@@ -1449,6 +1467,32 @@ extension ForwardViewController {
             }
         } catch let error as NSError {
             print("block user error: \(error)")
+        }
+    }
+}
+
+extension ForwardViewController {
+
+    func checkUserBusyStatusEnabled(_ controller: UIViewController, jid: String, completion: @escaping (Bool)->()) {
+        if ChatManager.shared.isBusyStatusEnabled() && ContactManager.shared.getUserProfileDetails(for: jid)?.profileChatType == .singleChat {
+            let alertController = UIAlertController.init(title: "Disable busy Status. Do you want to continue?" , message: "", preferredStyle: .alert)
+            let forwardAction = UIAlertAction(title: "Yes", style: .default) {_ in
+                ChatManager.shared.enableDisableBusyStatus(!FlyDefaults.isUserBusyStatusEnabled)
+                completion(true)
+            }
+            let cancelAction = UIAlertAction(title: "No", style: .cancel) { [weak controller] (action) in
+                controller?.dismiss(animated: true,completion: nil)
+                completion(false)
+            }
+            forwardAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+            cancelAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+            alertController.addAction(cancelAction)
+            alertController.addAction(forwardAction)
+            executeOnMainThread { [weak controller] in
+                controller?.present(alertController, animated: true)
+            }
+        } else {
+            completion(true)
         }
     }
 }

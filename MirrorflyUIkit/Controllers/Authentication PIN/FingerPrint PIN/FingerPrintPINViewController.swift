@@ -7,10 +7,13 @@
 
 import UIKit
 import LocalAuthentication
+import FlyCommon
+
+var fingerPrintDidCancel = false
 
 class FingerPrintPINViewController: UIViewController {
     
-   
+    var chatId = String()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,12 +32,17 @@ class FingerPrintPINViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     if success {
-                        self?.navigationController?.popViewController(animated: true)
-                      
+                        FlyDefaults.showAppLock = false
+                        let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                        let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                        let navigationController =  UINavigationController(rootViewController: initialViewController)
+                        UIApplication.shared.windows.first?.rootViewController = navigationController
+                        UIApplication.shared.windows.first?.makeKeyAndVisible()
+
                     } else {
-                                let vc = AuthenticationPINViewController(nibName:Identifiers.authenticationPINViewController, bundle: nil)
-                                self?.navigationController?.pushViewController(vc, animated: true)
-                                vc.fingerPrintLogin = true
+                        let vc = AuthenticationPINViewController(nibName:Identifiers.authenticationPINViewController, bundle: nil)
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                        vc.fingerPrintLogin = true
                     }
                 }
             }
@@ -43,7 +51,7 @@ class FingerPrintPINViewController: UIViewController {
             let vc = AuthenticationPINViewController(nibName:Identifiers.authenticationPINViewController, bundle: nil)
             self.navigationController?.pushViewController(vc, animated: true)
             vc.noFingerprintAdded = true
-                   }
         }
     }
+}
 

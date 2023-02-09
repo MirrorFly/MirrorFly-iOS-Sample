@@ -12,16 +12,12 @@ import FlyCommon
 class BlockUnblockViewModel: NSObject {
 
     static func unblockUser(jid: String,  completionHandler : @escaping FlyCompletionHandler) {
-        if NetworkReachability.shared.isConnected {
-            do {
-                try ContactManager.shared.unblockUser(for: jid) { isSuccess, error, data in
-                    completionHandler(isSuccess,error,data)
-                }
-            } catch let error as NSError {
-                print("block user error: \(error)")
+        do {
+            try ContactManager.shared.unblockUser(for: jid) { isSuccess, error, data in
+                completionHandler(isSuccess,error,data)
             }
-        } else {
-            AppAlert.shared.showToast(message: ErrorMessage.checkYourInternet)
+        } catch let error as NSError {
+            print("block user error: \(error)")
         }
     }
 

@@ -14,12 +14,8 @@ class SettingsViewController : BaseViewController {
     @IBOutlet weak var tblSettings : UITableView!
     @IBOutlet weak var lblVersion: UILabel!
     //@IBOutlet weak var lblLatestRelease: UILabel!
-    
-    //private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","Archived Chats","About and Help","App Lock","Connection Label", "Logout"]
-    
-    //private var settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
 
-    private var settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
+    private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
 
     override func viewDidLoad() {
         let info = Bundle.main.infoDictionary
@@ -95,7 +91,6 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
             
         case "Chats":
             if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ChatSettingsViewController") as? ChatSettingsViewController {
-                vc.clearBadgeCountDelegate = self
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             break
@@ -104,41 +99,46 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             break
-        case "Blocked Contacts":
-            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BlockedContactsViewController") as? BlockedContactsViewController {
+        case "Starred Messages":
+            if let vc = UIStoryboard(name: "Chat", bundle: nil).instantiateViewController(withIdentifier: "ChatViewParentController") as? ChatViewParentController {
+                vc.isStarredMessagePage = true
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             break
-        case "About and Help":
-            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutandHelpViewController") as? AboutandHelpViewController {
-                self.navigationController?.pushViewController(vc, animated: true)
+            case "Blocked Contacts":
+                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BlockedContactsViewController") as? BlockedContactsViewController {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                break
+            case "About and Help":
+                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AboutandHelpViewController") as? AboutandHelpViewController {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case "App Lock":
+                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+                break
+            case "Delete My Account":
+                if let vc = UIStoryboard(name: "Profile", bundle: nil).instantiateViewController(withIdentifier: "DeleteMyAccountVC") as? DeleteMyAccountVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                break
+            case "ShareLog":
+                let logFileURL = FlyLogWriter.sharedInstance.getLogFileURL()
+                if let logFile = try? String(contentsOf: logFileURL){
+                    let activityVC = UIActivityViewController(activityItems: [logFile], applicationActivities: nil)
+                    present(activityVC, animated: true, completion: nil)
+                }
+                break
+            case "Logout":
+                self.onLogout()
+                break
+            default :
+                break
             }
-        case "App Lock":
-            if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-
-            break
-        case "Delete My Account":
-            if let vc = UIStoryboard(name: "Profile", bundle: nil).instantiateViewController(withIdentifier: "DeleteMyAccountVC") as? DeleteMyAccountVC {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-            break
-        case "ShareLog":
-            let logFileURL = FlyLogWriter.sharedInstance.getLogFileURL()
-            if let logFile = try? String(contentsOf: logFileURL){
-                let activityVC = UIActivityViewController(activityItems: [logFile], applicationActivities: nil)
-                present(activityVC, animated: true, completion: nil)
-            }
-            break
-        case "Logout":
-            self.onLogout()
-            break
-        default :
-            break
         }
-        
-    }
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -164,12 +164,4 @@ extension SettingsViewController : AvailableFeaturesDelegate {
         }
     }
 
-}
-extension SettingsViewController : ClearAllChatsDelegate{
-    func clearAllConversations(isCleared: Bool) {
-        self.tabBarController?.viewControllers?[0].tabBarItem.badgeValue = nil
-
-    }
-    
-    
 }
