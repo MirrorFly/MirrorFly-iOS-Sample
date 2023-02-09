@@ -151,7 +151,7 @@ class RecentChatTableViewCell: UITableViewCell {
         if let range = recentChat.lastMessageContent.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
             let convertedRange = NSRange(range, in: recentChat.lastMessageContent.capitalized)
             let attributedString = NSMutableAttributedString(string: recentChat.lastMessageContent.capitalized)
-            attributedString.setAttributes([NSAttributedString.Key.foregroundColor: Color.userStatusTextColor], range: convertedRange)
+            attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: convertedRange)
             userMessageLabel?.attributedText = attributedString
         } else if caption.isNotEmpty {
             if let range = caption.capitalized.range(of: searchText.trim().capitalized, options: [.caseInsensitive, .diacriticInsensitive]) {
@@ -194,12 +194,13 @@ class RecentChatTableViewCell: UITableViewCell {
         }
     }
     
-    func setRecentChatMessage(recentChatMessage: RecentChat,color : UIColor,chatMessage: ChatMessage?,senderName: String, fromArchive: Bool) {
+    func setRecentChatMessage(recentChatMessage: RecentChat,color : UIColor,chatMessage: ChatMessage?,senderName: String, fromArchive: Bool, forSearch : Bool = false) {
+        countLabel?.isHidden = false
         receivedMessageTrailingCons?.constant = 5
         statusViewTralingCons?.constant = 5
         statusImageCons?.constant = 7
         senderNameLabel?.textColor = Color.primaryTextColor
-        if recentChatMessage.profileType == .groupChat && senderName.isNotEmpty && (!(chatMessage?.isMessageSentByMe ?? false)) && recentChatMessage.lastMessageType != .notification {
+        if recentChatMessage.profileType == .groupChat && senderName.isNotEmpty && (!(chatMessage?.isMessageSentByMe ?? false)) && recentChatMessage.lastMessageType != .notification && !forSearch {
             senderNameLabel?.text =  "\(senderName): "
             senderNameLabel?.isHidden = false
         } else {

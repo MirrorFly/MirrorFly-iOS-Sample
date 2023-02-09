@@ -27,16 +27,16 @@ class MainTabBarController: UITabBarController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-         if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable  {
-            let vc = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-             self.navigationController?.pushViewController(vc, animated: true)
-        }
-        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
-            let vc = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-            vc.login = true
-             self.navigationController?.pushViewController(vc, animated: true)
-           
-        }
+//         if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable  {
+//            let vc = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+//             self.navigationController?.pushViewController(vc, animated: true)
+//        }
+//        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
+//            let vc = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+//            vc.login = true
+//             self.navigationController?.pushViewController(vc, animated: true)
+//
+//        }
         self.delegate = self
         if let vcs = self.viewControllers{
             tabViewControllers = vcs
@@ -52,6 +52,7 @@ class MainTabBarController: UITabBarController{
         // Do any additional setup after loading the view.
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateUnReadMissedCallCount(notification:)), name: NSNotification.Name("updateUnReadMissedCallCount"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateMessageUnreadCount(notification:)), name: NSNotification.Name("updateMessageUnreadCount"), object: nil)
         handleBackgroundAndForground()
     }
     
@@ -103,6 +104,14 @@ class MainTabBarController: UITabBarController{
     
     @objc func updateUnReadMissedCallCount(notification: NSNotification) {
         updateUnReadMissedCallBadgeCount()
+    }
+    
+    @objc func updateMessageUnreadCount(notification: NSNotification) {
+        if let count = notification.object as? Int {
+            if let item : UITabBarItem = chatTabBars?.items?[0] {
+                item.badgeValue = (count == 0) ? nil : "\(count)"
+            }
+        }
     }
     
     func updateUnReadMissedCallBadgeCount() {

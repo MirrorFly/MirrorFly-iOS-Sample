@@ -65,6 +65,8 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
                                 for: .editingChanged)
         emailTextField.addTarget(self, action: #selector(ProfileViewController.textFieldDidChange(_:)),
                                 for: .editingChanged)
+
+        ContactManager.shared.getUsersIBlocked(fetchFromServer: true) { isSuccess, error, data in }
     }
     
     func setupUI() {

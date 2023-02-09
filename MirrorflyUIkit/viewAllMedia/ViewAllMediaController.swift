@@ -563,6 +563,8 @@ extension ViewAllMediaController : MessageEventsDelegate {
         
     }
     
+    func clearAllConversationForSyncedDevice() {}
+    
     
 }
 

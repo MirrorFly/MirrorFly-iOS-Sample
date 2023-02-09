@@ -159,6 +159,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        //openChat(jid: pushChatId ?? "")
         chatManager.connectionDelegate = self
         ContactManager.shared.profileDelegate = self
         chatManager.messageEventsDelegate = self
@@ -173,7 +174,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewWillDisappear(animated)
         chatManager.connectionDelegate = nil
         ContactManager.shared.profileDelegate = nil
-        chatManager.messageEventsDelegate = nil
+        ChatManager.shared.messageEventsDelegate = nil
         FlyMessenger.shared.messageEventsDelegate = nil
         GroupManager.shared.groupDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
@@ -192,6 +193,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         if !ENABLE_CONTACT_SYNC && isSearchEnabled{
             resetDataAndFetchUsersList()
         }
+        openChat(jid: pushChatId ?? "")
     }
     
     private func configTableView() {
@@ -825,7 +827,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             case 0:
                 return getRecentChat.count > 0 ? chatTitle.appending(" (\(getRecentChat.count))") : (filteredContactList.count > 0) ? contactTitle.appending(" (\(filteredContactList.count))") : ""
             case 1:
-                return filteredContactList.count > 0 ? contactTitle.appending(" (\( ENABLE_CONTACT_SYNC ? filteredContactList.count : searchTotalUsers ))") : ""
+                return filteredContactList.count > 0 ? contactTitle.appending(" (\(filteredContactList.count))") : ""
             case 2:
                 return messageTitle.appending(" (\(searchedMessages.count))")
             default:
@@ -1010,6 +1012,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                             recentChat.lastMessageContent = chatMessage.messageTextContent
                             recentChat.lastMessageTime = chatMessage.messageSentTime
                             recentChat.lastMessageType = chatMessage.messageType
+                            recentChat.isLastMessageSentByMe = chatMessage.isMessageSentByMe
                             
                             let name = getUserName(jid: recentChat.jid, name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
                             let color = getColor(userName: name)
@@ -1017,7 +1020,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                             cell.archivedStatusLabel.isHidden = true
                             let chatMessage = getMessages(messageId: recentChat.lastMessageId)
                             let getGroupSenderName = ChatUtils.getGroupSenderName(messsage: chatMessage)
-                            cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName, fromArchive: showArchivedChat)
+                            cell.setRecentChatMessage(recentChatMessage: recentChat, color: color, chatMessage: chatMessage, senderName: getGroupSenderName, fromArchive: showArchivedChat, forSearch: true)
                             cell.setLastContentTextColor(searchText: searchBar?.text ?? "", recentChat: recentChat, caption: chatMessage.mediaChatMessage?.mediaCaptionText ?? "")
                             cell.profileImageButton?.isHidden = true
                             cell.setChatTimeTextColor(lastMessageTime: recentChat.lastMessageTime, unreadCount: recentChat.unreadMessageCount)
@@ -1051,6 +1054,13 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                     openContactChat(index: indexPath)
                 }
             } else {
+                if indexPath.row < getRecentChat.count {
+                    getRecentChat[indexPath.row].unreadMessageCount = 0
+                    executeOnMainThread { [weak self] in
+                        self?.recentChatTableView?.reloadRows(at: [indexPath], with: .none)
+                        self?.getOverallUnreadCount()
+                    }
+                }
                 didSelectRow(tableView: tableView, indexPath: indexPath)
             }
         case false:
@@ -1196,6 +1206,33 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
             }
         }
     }
+
+    func openChat(jid: String) {
+        if let profile = recentChatViewModel?.getRecentChat(jid: jid) {
+            pushChatId = nil
+            let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
+            let profileDetails = ProfileDetails(jid: profile.jid)
+            profileDetails.name = profile.profileName
+            profileDetails.nickName = profile.nickName
+            profileDetails.image = profile.profileImage ?? ""
+            profileDetails.profileChatType = profile.profileType
+            if profile.isDeletedUser{
+                profileDetails.contactType = .deleted
+            }else{
+                profileDetails.contactType = profile.isItSavedContact == true ? .live : .unknown
+            }
+            profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
+            vc?.getProfileDetails = profileDetails
+            let color = getColor(userName: profile.profileName)
+            vc?.contactColor = color
+            vc?.replyMessagesDelegate = self
+            vc?.replyMessageObj = replyMessageObj
+            vc?.replyJid = replyJid
+            vc?.ismarkMessagesAsRead = true
+            vc?.navigationController?.modalPresentationStyle = .overFullScreen
+            self.navigationController?.pushViewController(vc!, animated: true)
+        }
+    }
     
     func openChat(index: Int) {
         let profile = showArchivedChat ? getArchiveChat[index] : getRecentChat[index]
@@ -1293,6 +1330,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
         default:
             break
         }
+        vc?.isStarredMessagePage = false
         navigationController?.modalPresentationStyle = .overFullScreen
         navigationController?.pushViewController(vc!, animated: true)
     }
@@ -1470,6 +1508,7 @@ extension RecentChatViewController: UISearchBarDelegate {
             self.searchedMessages = ChatManager.shared.searchMessage(text: searchText.trim())
             DispatchQueue.main.async {[weak self] in
                 self?.recentChatTableView?.reloadData()
+                self?.showHideEmptyMessage()
             }
         }
 
@@ -1601,20 +1640,23 @@ extension RecentChatViewController {
     }
     
     private func showHideEmptyMessage() {
-        if isSearchEnabled == true {
-            emptyMessageView?.isHidden = (getRecentChat.count == 0 && getArchiveChat.count == 0 && filteredContactList.count == 0 && searchedMessages.count == 0) ? false : true
-            emptyImage?.isHidden = true
-            noNewMsgText?.isHidden = false
-            noNewMsgText?.text = noResultFound
-            noNewMsgText?.textColor = .lightGray
-            descriptionMessageText?.isHidden = true
-        } else {
-            emptyMessageView?.isHidden = (getRecentChat.count == 0 && getArchiveChat.count == 0) ? false : true
-            emptyImage?.isHidden = false
-            noNewMsgText?.isHidden = false
-            noNewMsgText?.text = noNewMessage
-            noNewMsgText?.textColor = .black
-            descriptionMessageText?.isHidden = false
+
+        executeOnMainThread { [self] in
+            if isSearchEnabled == true {
+                emptyMessageView?.isHidden = (getRecentChat.count == 0 && filteredContactList.count == 0 && searchedMessages.count == 0) ? false : true
+                emptyImage?.isHidden = true
+                noNewMsgText?.isHidden = false
+                noNewMsgText?.text = noResultFound
+                noNewMsgText?.textColor = .lightGray
+                descriptionMessageText?.isHidden = true
+            } else {
+                emptyMessageView?.isHidden = (getRecentChat.count == 0 && getArchiveChat.count == 0) ? false : true
+                emptyImage?.isHidden = false
+                noNewMsgText?.isHidden = false
+                noNewMsgText?.text = noNewMessage
+                noNewMsgText?.textColor = .black
+                descriptionMessageText?.isHidden = false
+            }
         }
     }
     
@@ -1658,7 +1700,7 @@ extension RecentChatViewController : ConnectionEventDelegate {
 
 // MessageEventDelegate
 extension RecentChatViewController : MessageEventsDelegate {
-   
+    
     func onMessageTranslated(message: ChatMessage, jid: String) {
         
     }
@@ -1714,6 +1756,15 @@ extension RecentChatViewController : MessageEventsDelegate {
         if isSearchEnabled == false {
             refreshRecentChatMessages()
         }
+    }
+    
+    func clearAllConversationForSyncedDevice() {
+
+        DispatchQueue.main.async {
+            self.getRecentChatList()
+            self.recentChatTableView?.reloadData()
+        }
+        
     }
 }
 
@@ -2202,9 +2253,6 @@ extension RecentChatViewController : UIScrollViewDelegate {
                 self.searchTotalPages = data["totalPages"] as? Int ?? 1
                 self.searchTotalUsers = data["totalRecords"] as? Int ?? 1
                 print("#fetch response search total => \(self.searchTotalPages) nextPage => \(self.searchNextPage) searchTotoalUsers => \(self.searchTotalUsers) profilesCount => \(profilesCount) searchTerm => \(self.searchTerm)")
-                self.recentChatTableView?.tableFooterView = nil
-                self.recentChatTableView?.reloadData()
-                self.showHideEmptyMessage()
             }else{
                 if !NetworkReachability.shared.isConnected{
                     AppAlert.shared.showToast(message: ErrorMessage.noInternet)
@@ -2215,6 +2263,11 @@ extension RecentChatViewController : UIScrollViewDelegate {
                     }
                 }
             }
+            
+            self.recentChatTableView?.tableFooterView = nil
+            self.recentChatTableView?.reloadData()
+            self.showHideEmptyMessage()
+            
             self.isLoadingInProgress = false
         }
     }

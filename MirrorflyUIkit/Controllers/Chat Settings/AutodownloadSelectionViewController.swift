@@ -146,27 +146,41 @@ extension AutodownloadSelectionViewController : UITableViewDelegate,UITableViewD
             switch sectionName[0].sectionValues[indexPath.row] {
                 
             case .Photos:
-                mobiledata["photo"] = !(mobiledata["photo"] ?? false)
-                print(mobiledata["photo"])
+                let isPhotoEnabled = !(mobiledata["photo"] ?? false)
+                mobiledata["photo"] = isPhotoEnabled
+                FlyDefaults.autoDownloadTimeMobileDataImage = isPhotoEnabled ? FlyUtils.getTimeInMillis() : 0
             case .Videos:
-                mobiledata["videos"]  = !(mobiledata["videos"] ?? false)
-                
+                let isVideoEnabled = !(mobiledata["videos"] ?? false)
+                mobiledata["videos"]  = isVideoEnabled
+                FlyDefaults.autoDownloadTimeMobileDataVideo = isVideoEnabled ? FlyUtils.getTimeInMillis() : 0
             case .Audios:
-                mobiledata["audio"] = !(mobiledata["audio"] ?? false)
+                let isAudioEnabled = !(mobiledata["audio"] ?? false)
+                mobiledata["audio"] = isAudioEnabled
+                FlyDefaults.autoDownloadTimeMobileDataAudio = isAudioEnabled ? FlyUtils.getTimeInMillis() : 0
             case .Documents:
-                mobiledata["documents"] = !(mobiledata["documents"] ?? false)
+                let isDocumentEnalbed = !(mobiledata["documents"] ?? false)
+                mobiledata["documents"] = isDocumentEnalbed
+                FlyDefaults.autoDownloadTimeMobileDataDocument = isDocumentEnalbed ? FlyUtils.getTimeInMillis() : 0
             }
         case 1:
             switch sectionName[1].sectionValues[indexPath.row] {
                
             case .Photos:
-                wifi["photo"] = !(wifi["photo"] ?? false)
+                let isPhotoEnabled = !(wifi["photo"] ?? false)
+                wifi["photo"] = isPhotoEnabled
+                FlyDefaults.autoDownloadTimeWifiImage = isPhotoEnabled ? FlyUtils.getTimeInMillis() : 0
             case .Videos:
-                wifi["videos"] = !(wifi["videos"] ?? false)
+                let isVideoEnabled = !(wifi["videos"] ?? false)
+                wifi["videos"] = isVideoEnabled
+                FlyDefaults.autoDownloadTimeWifiVideo = isVideoEnabled ? FlyUtils.getTimeInMillis() : 0
             case .Audios:
-                wifi["audio"] = !(wifi["audio"] ?? false)
+                let isAudioEnabled = !(wifi["audio"] ?? false)
+                wifi["audio"] = isAudioEnabled
+                FlyDefaults.autoDownloadTimeWifiAudio = isAudioEnabled ? FlyUtils.getTimeInMillis() : 0
             case .Documents:
-                wifi["documents"] = !(wifi["documents"] ?? false)
+                let isDocumentDownload = !(wifi["documents"] ?? false)
+                wifi["documents"] = isDocumentDownload
+                FlyDefaults.autoDownloadTimeWifiDocument = isDocumentDownload ? FlyUtils.getTimeInMillis() : 0
             }
         default:
             break

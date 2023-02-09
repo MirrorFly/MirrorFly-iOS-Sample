@@ -17,10 +17,10 @@ enum ChatSettingList: String, CaseIterable {
     case ArchiveSettings = "Archive Settings"
     case TranslateMessage = "Translate Message"
     case lastseen = "Last Seen"
-    //case UserBusyStatus = "User Busy Status"
-    //case autodownload = "Auto Download"
-    //case chatBackup = "ChatBackup"
-    //case clearAllConversation = "Clear All Conversation"
+    case UserBusyStatus = "User Busy Status"
+    case autodownload = "Auto Download"
+    case chatBackup = "ChatBackup"
+    case clearAllConversation = "Clear All Conversation"
 
 }
 
@@ -28,7 +28,7 @@ class ChatSettingsViewController: UIViewController {
 
     @IBOutlet weak var chatSettingsTable: UITableView!
     private var chatSettingsArray = ChatSettingList.allCases
-    let selectedCellHeight: CGFloat = 160.0
+    let selectedCellHeight: CGFloat = 180.0
     let unselectedCellHeight: CGFloat = 80.0
     let clearAllChatsHeight: CGFloat = 60.0
     var clearBadgeCountDelegate : ClearAllChatsDelegate?
@@ -80,7 +80,9 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 cell.helpTextLabel.text =  enableTranslateMessageToChooseTranslationLanguage
                 cell.ChooseLangugaeLabel.text = chooseTranslationLaguage
                 cell.doubleTapLabel.text =  doubleTapTheReceivedMessageToTranslate
-                cell.separaterView.isHidden = true
+                cell.separaterView.isHidden = FlyDefaults.isTranlationEnabled ? false : true
+                cell.helpTextView.isHidden = FlyDefaults.isTranlationEnabled ? false : true
+                cell.formaImageView.isHidden = FlyDefaults.isTranlationEnabled ? false : true
                 cell.selectedImageView.image = FlyDefaults.isTranlationEnabled ? UIImage(named: ImageConstant.ic_selected) : UIImage(named: ImageConstant.Translate_Unselected)
                 let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
                 let formaImageViewTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
@@ -96,27 +98,31 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 cell.helpTextLabel.text = hidingLastSeenActivityToOtherusers
                 cell.selectedImageView.image = FlyDefaults.hideLastSeen ? UIImage(named: ImageConstant.ic_selected) : UIImage(named: ImageConstant.Translate_Unselected)
                 cell.separaterView.isHidden = true
+                cell.helpTextView.isHidden = true
+                cell.formaImageView.isHidden = true
                 cell.setCell(isArchive: false)
                 return cell
 
-//            case .autodownload:
-//                let cell : ChatSettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatSettingsTableViewCell, for: indexPath) as! ChatSettingsTableViewCell
-//                cell.lblTitle.text = self.chatSettingsArray[indexPath.row].rawValue
-//                cell.helpTextLabel.text = enableAutodownlaodToTurnAllTypes
-//                cell.selectedImageView.image = FlyDefaults.autoDownloadEnable ? UIImage(named: ImageConstant.ic_selected) : UIImage(named: ImageConstant.Translate_Unselected)
-//                cell.defaultLanguageLabel.isHidden = true
-//                cell.ChooseLangugaeLabel.text = dataUsageSettings
-//                cell.doubleTapLabel.text = setupYourMobileAndWifiDataUsageBasedOnMediaType
-//                cell.separaterView.isHidden = FlyDefaults.autoDownloadEnable ? false : true
-//                cell.defaultLanguageHeight.constant = 0
-//                cell.doubleTapHeight.constant = 5
-//                let tap = UITapGestureRecognizer(target: self, action: #selector(self.download(_:)))
-//                let formaImageViewTap = UITapGestureRecognizer(target: self, action: #selector(self.download(_:)))
-//                cell.helpTextView.addGestureRecognizer(tap)
-//                cell.formaImageView.isUserInteractionEnabled = true
-//                cell.formaImageView.addGestureRecognizer(formaImageViewTap)
-//                cell.setCell(isArchive: false)
-//                return cell
+            case .autodownload:
+                let cell : ChatSettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatSettingsTableViewCell, for: indexPath) as! ChatSettingsTableViewCell
+                cell.lblTitle.text = self.chatSettingsArray[indexPath.row].rawValue
+                cell.helpTextLabel.text = enableAutodownlaodToTurnAllTypes
+                cell.selectedImageView.image = FlyDefaults.autoDownloadEnable ? UIImage(named: ImageConstant.ic_selected) : UIImage(named: ImageConstant.Translate_Unselected)
+                cell.defaultLanguageLabel.isHidden = true
+                cell.ChooseLangugaeLabel.text = dataUsageSettings
+                cell.doubleTapLabel.text = setupYourMobileAndWifiDataUsageBasedOnMediaType
+                cell.separaterView.isHidden = FlyDefaults.autoDownloadEnable ? false : true
+                cell.helpTextView.isHidden = FlyDefaults.autoDownloadEnable ? false : true
+                cell.formaImageView.isHidden = FlyDefaults.autoDownloadEnable ? false : true
+                cell.defaultLanguageHeight.constant = 0
+                cell.doubleTapHeight.constant = 5
+                let tap = UITapGestureRecognizer(target: self, action: #selector(self.download(_:)))
+                let formaImageViewTap = UITapGestureRecognizer(target: self, action: #selector(self.download(_:)))
+                cell.helpTextView.addGestureRecognizer(tap)
+                cell.formaImageView.isUserInteractionEnabled = true
+                cell.formaImageView.addGestureRecognizer(formaImageViewTap)
+                cell.setCell(isArchive: false)
+                return cell
 
             case .ArchiveSettings:
                 let cell : ChatSettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatSettingsTableViewCell, for: indexPath) as! ChatSettingsTableViewCell
@@ -124,63 +130,49 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 cell.helpTextLabel.text = ArchiveSettingsDescription
                 cell.selectSwitch.isOn = FlyDefaults.isArchivedChatEnabled
                 cell.selectSwitch.isUserInteractionEnabled = false
+                cell.helpTextView.isHidden = true
+                cell.separaterView.isHidden = true
+                cell.formaImageView.isHidden = true
                 //cell.selectSwitch.addTarget(self, action: #selector(handleSwitch), for: .touchUpInside)
                 cell.setCell(isArchive: true)
                 return cell
-//            case .chatBackup:
-//                let cell : ChatBackupTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatBackupTableViewCell, for: indexPath) as! ChatBackupTableViewCell
-//                return cell
-//            case .clearAllConversation:
-//                let cell = chatSettingsTable.dequeueReusableCell(withIdentifier: Identifiers.clearAllChatTableViewCell, for: indexPath) as! ClearAllChatTableViewCell
-//                cell.clearAllChat.text = self.chatSettingsArray[indexPath.row].rawValue
-//                cell.clearAllChat.font = AppFont.Medium.size(14)
-//                cell.clearAllChat.textColor = Color.clearAllConversation
-//                return cell
-//            case .UserBusyStatus:
-//
-//
-//                let cell : ChatSettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatSettingsTableViewCell, for: indexPath) as! ChatSettingsTableViewCell
-//                cell.lblTitle.text = self.chatSettingsArray[indexPath.row].rawValue
-//                cell.helpTextLabel.text = setBusyStatusDescription
-//                cell.selectedImageView.image = ChatManager.shared.isBusyStatusEnabled() ? UIImage(named: ImageConstant.ic_selected) : UIImage(named: ImageConstant.Translate_Unselected)
-//                cell.defaultLanguageLabel.isHidden = true
-//                cell.ChooseLangugaeLabel.text = editBusyStatus
-//                cell.doubleTapLabel.text = ChatManager.shared.getMyBusyStatus().status
-//                cell.separaterView.isHidden = ChatManager.shared.isBusyStatusEnabled() ? false : true
-//                cell.defaultLanguageHeight.constant = 0
-//                cell.doubleTapHeight.constant = 5
-//                let tap = UITapGestureRecognizer(target: self, action: #selector(self.busyStatusHandle(_:)))
-//                let formaImageViewTap = UITapGestureRecognizer(target: self, action: #selector(self.busyStatusHandle(_:)))
-//                cell.helpTextView.addGestureRecognizer(tap)
-//                cell.formaImageView.isUserInteractionEnabled = true
-//                cell.formaImageView.addGestureRecognizer(formaImageViewTap)
-//                cell.setCell(isArchive: false)
-//                return cell
+            case .chatBackup:
+                let cell : ChatBackupTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatBackupTableViewCell, for: indexPath) as! ChatBackupTableViewCell
+                return cell
+            case .clearAllConversation:
+                let cell = chatSettingsTable.dequeueReusableCell(withIdentifier: Identifiers.clearAllChatTableViewCell, for: indexPath) as! ClearAllChatTableViewCell
+                cell.clearAllChat.text = self.chatSettingsArray[indexPath.row].rawValue
+                cell.clearAllChat.font = AppFont.Medium.size(14)
+                cell.clearAllChat.textColor = Color.clearAllConversation
+                return cell
+            case .UserBusyStatus:
+
+
+                let cell : ChatSettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatSettingsTableViewCell, for: indexPath) as! ChatSettingsTableViewCell
+                cell.lblTitle.text = self.chatSettingsArray[indexPath.row].rawValue
+                cell.helpTextLabel.text = setBusyStatusDescription
+                cell.selectedImageView.image = ChatManager.shared.isBusyStatusEnabled() ? UIImage(named: ImageConstant.ic_selected) : UIImage(named: ImageConstant.Translate_Unselected)
+                cell.defaultLanguageLabel.isHidden = true
+                cell.ChooseLangugaeLabel.text = editBusyStatus
+                cell.doubleTapLabel.text = ChatManager.shared.getMyBusyStatus().status
+                cell.separaterView.isHidden = ChatManager.shared.isBusyStatusEnabled() ? false : true
+                cell.helpTextView.isHidden = ChatManager.shared.isBusyStatusEnabled() ? false : true
+                cell.formaImageView.isHidden = ChatManager.shared.isBusyStatusEnabled() ? false : true
+                cell.defaultLanguageHeight.constant = 0
+                cell.doubleTapHeight.constant = 5
+                let tap = UITapGestureRecognizer(target: self, action: #selector(self.busyStatusHandle(_:)))
+                let formaImageViewTap = UITapGestureRecognizer(target: self, action: #selector(self.busyStatusHandle(_:)))
+                cell.helpTextView.addGestureRecognizer(tap)
+                cell.formaImageView.isUserInteractionEnabled = true
+                cell.formaImageView.addGestureRecognizer(formaImageViewTap)
+                cell.setCell(isArchive: false)
+                return cell
             }
             return UITableViewCell()
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch chatSettingsArray[indexPath.row] {
-        case .TranslateMessage:
-            return FlyDefaults.isTranlationEnabled ? selectedCellHeight : unselectedCellHeight
-
-        case .lastseen:
-            return unselectedCellHeight
-
-//        case .clearAllConversation:
-//            return clearAllChatsHeight
-//
-//        case .autodownload:
-//            return FlyDefaults.autoDownloadEnable ? selectedCellHeight : unselectedCellHeight
-
-        case .ArchiveSettings:
-            return unselectedCellHeight
-//        case .chatBackup:
-//            return 60
-//        case .UserBusyStatus:
-//            return ChatManager.shared.isBusyStatusEnabled() ? (selectedCellHeight - 22) : unselectedCellHeight
-        }
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -190,6 +182,7 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
         switch chatSettingsArray[indexPath.row]{
         case .TranslateMessage:
             let cell:ChatSettingsTableViewCell = tableView.cellForRow(at: indexPath) as! ChatSettingsTableViewCell
+
             if isInternetConnected {
                 FlyDefaults.isTranlationEnabled = !FlyDefaults.isTranlationEnabled
                 cell.defaultLanguageLabel.text = FlyDefaults.selectedLanguage
@@ -202,41 +195,44 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 }
             }
 
-//        case .clearAllConversation:
-//            if isInternetConnected {
-//                AppAlert.shared.showAlert(view: self,
-//                                          message: clearAllChat,
-//                                          buttonOneTitle: yesButton,
-//                                          buttonTwoTitle: noButton)
-//                AppAlert.shared.onAlertAction = { [weak self] (result) ->
-//                    Void in
-//                    if result == 0 {
-//                        print("clearAllConversation")
-//                        self?.startLoading(withText: "")
-//                        ChatManager.shared.clearAllConversation{ isSuccess, error, data in
-//                            executeOnMainThread {
-//                                AppAlert.shared.onAlertAction = nil
-//                            }
-//                            if isSuccess{
-//                                self?.clearBadgeCountDelegate?.clearAllConversations(isCleared: true)
-//                                self?.stopLoading()
-//                                AppAlert.shared.showToast(message: allYourConversationareCleared )
-//                            }
-//                            else{
-//                                self?.clearBadgeCountDelegate?.clearAllConversations(isCleared: false)
-//                                print("failed")
-//                                self?.stopLoading()
-//                                AppAlert.shared.showToast(message: serverError )
-//                            }
-//                        }
-//                    }else {
-//                    }
-//                }
-//            }
-//
-//        case.autodownload:
-//            FlyDefaults.autoDownloadEnable = !FlyDefaults.autoDownloadEnable
-//            FlyDefaults.autoDownloadLastEnabledTime = FlyDefaults.autoDownloadEnable ? FlyUtils.getTimeInMillis() : 0
+        case .clearAllConversation:
+            if isInternetConnected {
+                AppAlert.shared.showAlert(view: self,
+                                          message: clearAllChat,
+                                          buttonOneTitle: cancel,
+                                          buttonTwoTitle: clearAll, buttonTwoColor: Color.color_FD3B2F)
+                AppAlert.shared.onAlertAction = { [weak self] (result) ->
+                    Void in
+                    if result == 1 {
+                        print("clearAllConversation")
+                        self?.startLoading(withText: "")
+                        ChatManager.shared.clearAllConversation{ isSuccess, error, data in
+                            executeOnMainThread {
+                                AppAlert.shared.onAlertAction = nil
+                            }
+                            if isSuccess{
+                                self?.clearBadgeCountDelegate?.clearAllConversations(isCleared: true)
+                                self?.stopLoading()
+                                UIApplication.shared.applicationIconBadgeNumber = 0
+                                NotificationCenter.default.post(name: NSNotification.Name("updateMessageUnreadCount"), object: 0)
+                                ChatUtils.clearAllPushNotifications()
+                                AppAlert.shared.showToast(message: allYourChatsAreCleared )
+                            }
+                            else{
+                                self?.clearBadgeCountDelegate?.clearAllConversations(isCleared: false)
+                                print("failed")
+                                self?.stopLoading()
+                                AppAlert.shared.showToast(message: serverError )
+                            }
+                        }
+                    }else {
+                    }
+                }
+            }
+
+        case.autodownload:
+            FlyDefaults.autoDownloadEnable = !FlyDefaults.autoDownloadEnable
+            FlyDefaults.autoDownloadLastEnabledTime = FlyDefaults.autoDownloadEnable ? FlyUtils.getTimeInMillis() : 0
 
         case .ArchiveSettings:
             if isInternetConnected {
@@ -248,17 +244,17 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 }
             }
 
-//        case .chatBackup:
-//            //             let vc = BackupViewController(nibName: "BackupViewController", bundle: nil)
-//            if let vc = UIStoryboard.init(name: Storyboards.backupRestore, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.backupViewController) as? BackupViewController {
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }
-//
-//
-//        case .UserBusyStatus:
-//            ChatManager.shared.enableDisableBusyStatus(!FlyDefaults.isUserBusyStatusEnabled)
+        case .chatBackup:
+            //             let vc = BackupViewController(nibName: "BackupViewController", bundle: nil)
+            if let vc = UIStoryboard.init(name: Storyboards.backupRestore, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.backupViewController) as? BackupViewController {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+
+
+        case .UserBusyStatus:
+            ChatManager.shared.enableDisableBusyStatus(!FlyDefaults.isUserBusyStatusEnabled)
         }
-        if !isInternetConnected {
+        if !isInternetConnected && chatSettingsArray[indexPath.row] != .UserBusyStatus {
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
         animateCellHeighChangeForTableView(tableView: tableView, withDuration: 0.3)

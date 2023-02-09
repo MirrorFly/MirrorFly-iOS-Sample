@@ -26,6 +26,8 @@ class ChatSettingsTableViewCell: UITableViewCell {
             selectSwitch.transform = CGAffineTransform(scaleX: 0.50, y: 0.50)
         }
     }
+    @IBOutlet weak var switchMainView: UIView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -35,7 +37,7 @@ class ChatSettingsTableViewCell: UITableViewCell {
     }
 
     func setCell(isArchive: Bool) {
-        selectSwitch.isHidden = !isArchive
+        switchMainView.isHidden = !isArchive
         selectedImageMainView.isHidden = isArchive
     }
     

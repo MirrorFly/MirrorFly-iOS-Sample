@@ -25,10 +25,12 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     var noFingerprintAdded : Bool = false
     var  disableBothPIN : Bool = false
     
+    var chatId = String()
+    
     
     public var verificationId = ""
     var isAuthorizedSuccess: Bool = false
-    var secondsRemaining = otpTimer
+    var secondsRemaining = passwordResetTimer
     var timer: Timer?
     var currentBackgroundDate = Date()
     
@@ -71,7 +73,10 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         handleBackgroundAndForground()
         didMoveToBackground()
         willCometoForeground()
-       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     func setupUI() {
@@ -93,7 +98,25 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         else if fingerPrintLogout == true || logout == true || disableBothPIN == true || fingerPrintEnable == true{
             self.forgotButtonoutlet.isHidden = true
         }
-       
+        
+        txtFirst.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+        txtSecond.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+        txtThird.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+        txtForth.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+        txtFifth.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+        txtSixth.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+        txtFirst.delegate = self
+        txtSecond.delegate = self
+        txtThird.delegate = self
+        txtForth.delegate = self
+        txtFifth.delegate = self
+        txtSixth.delegate = self
+        txtFirst.textContentType = .oneTimeCode
+        txtSecond.textContentType = .none
+        txtThird.textContentType = .none
+        txtForth.textContentType = .none
+        txtFifth.textContentType = .none
+        txtSixth.textContentType = .none
     }
     func textfieldBackgroundcolour(){
         txtFirst.backgroundColor = UIColor.white
@@ -103,10 +126,10 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         txtFifth.backgroundColor = UIColor.white
         txtSixth.backgroundColor = UIColor.white
     }
-   
+    
     func configureDefaults(){
-
-        self.timeout.text = "01:30"
+        
+        self.timeout.text = "01:00"
         sheduletimer()
         txtFirst.textContentType = .username
         txtSecond.textContentType = .username
@@ -159,11 +182,11 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
             self.timeout.text = "\(Utility.timeString(time: TimeInterval(self.secondsRemaining)))"
             self.sheduletimer()
         }else {
-            self.timeout.text = "00:00"
+            self.timeout.text = ""
         }
     }
     
-
+    
     func sheduletimer() {
         self.resendHideView.isHidden = true
         self.timeout.isHidden = false
@@ -174,7 +197,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                 self?.timeout.text = Utility.timeString(time: TimeInterval(self?.secondsRemaining ?? 0))
                 self?.secondsRemaining -= 1
             } else {
-                self?.timeout.text = "00:00"
+                self?.timeout.text = ""
                 self?.stopTimer()
             }
         }
@@ -205,10 +228,18 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         forgotpinBottomConstraint.constant = 0
     }
     
-   
+    
     
     
     @IBAction func cancelButton(_ sender: Any) {
+        clearTextFields()
+        stopTimer()
+        stopLoading()
+        self.timeout.text = "01:00"
+        secondsRemaining = passwordResetTimer
+        resendHideView.isHidden = true
+        timeout.isHidden = false
+        
         self.initialmainView.backgroundColor = UIColor.clear
         self.hideForgotView.isHidden = true
     }
@@ -236,7 +267,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                     DispatchQueue.main.async { [weak self] in
                         self?.stopTimer()
                         self?.stopLoading()
-                        self?.secondsRemaining = otpTimer
+                        self?.secondsRemaining = passwordResetTimer
                         self?.sheduletimer()
                         AppAlert.shared.showToast(message: SuccessMessage.successOTP)
                         
@@ -299,7 +330,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     
     //PIN VALIDATION
     func validateAppPIN() {
-
+        
         if pinInput == FlyDefaults.appLockPassword  {
             if login == true {
                 FlyDefaults.appLockenable = true
@@ -313,7 +344,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                     FlyDefaults.appLockenable = false
                     FlyDefaults.appFingerprintenable = false
                 }
-              else if fingerPrintEnable == true{
+                else if fingerPrintEnable == true{
                     FlyDefaults.appFingerprintenable = true
                     FlyDefaults.appLockenable = true
                 }
@@ -332,21 +363,28 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                 if noFingerprintAdded == true{
                     FlyDefaults.appFingerprintenable = false
                 }
-                let controller = self.navigationController?.viewControllers
-                if let vc = controller {
-                    self.navigationController?.popToViewController(vc[vc.count - 3], animated: true)
-                }
+                FlyDefaults.showAppLock = false
+                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                let navigationController =  UINavigationController(rootViewController: initialViewController)
+                UIApplication.shared.windows.first?.rootViewController = navigationController
+                UIApplication.shared.windows.first?.makeKeyAndVisible()
             } else {
-                self.navigationController?.popViewController(animated: true)
+                FlyDefaults.showAppLock = false
+                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                let navigationController =  UINavigationController(rootViewController: initialViewController)
+                UIApplication.shared.windows.first?.rootViewController = navigationController
+                UIApplication.shared.windows.first?.makeKeyAndVisible()
             }
         }
         else {
-        AppAlert.shared.showToast(message: ErrorMessage.validateAppLock)
+            AppAlert.shared.showToast(message: ErrorMessage.validateAppLock)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.pinInput = ""
             self?.pinEnteredcollectionview.reloadData()
-                }
+        }
     }
     
     @IBAction func forgotbutton(_ sender: Any) {
@@ -371,6 +409,8 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                 if let verificationId = verificationID {
                     DispatchQueue.main.async { [weak self] in
                         self?.stopLoading()
+                        self?.stopTimer()
+                        self?.sheduletimer()
                         AppAlert.shared.showToast(message: SuccessMessage.successOTP)
                         self?.initialmainView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
                         self?.hideForgotView.isHidden = false
@@ -413,7 +453,7 @@ extension AuthenticationPINViewController: UICollectionViewDelegate,UICollection
             }
             cell.labeloutlet.layer.cornerRadius = 27
             cell.labeloutlet.clipsToBounds = true
-           
+            
             return cell
         }
         else {
@@ -459,172 +499,154 @@ extension AuthenticationPINViewController: UICollectionViewDelegate,UICollection
                 print("Removing PIN",pinInput)
                 
             }
-           
+            
             self.pinEnteredcollectionview.reloadData()
         }
-       
+        
     }
     
 }
 
 extension AuthenticationPINViewController:  CustomTextFieldDelegate{
     func textField(_ textField: UITextField, didDeleteBackwardAnd wasEmpty: Bool) {
-        if wasEmpty {
-            if textField == txtSixth {
-                txtFifth?.becomeFirstResponder()
-                txtSixth.backgroundColor = Color.textFieldDefault
+    }
+    
+    
+    @objc func textFieldDidChange(textField: UITextField) {
+        let text = textField.text
+        if  text?.count == 1 {
+            switch textField {
+            case txtFirst:
+                txtSecond.becomeFirstResponder()
+            case txtSecond:
+                txtThird.becomeFirstResponder()
+            case txtThird:
+                txtForth.becomeFirstResponder()
+            case txtForth:
+                txtFifth.becomeFirstResponder()
+            case txtFifth:
+                txtSixth.becomeFirstResponder()
+            case txtSixth:
+                if txtFirst.text?.count == 1 && txtSecond.text?.count == 1 && txtThird.text?.count == 1 && txtForth.text?.count == 1 && txtFifth.text?.count == 1 && txtSixth.text?.count == 1 {
+                    txtSixth.resignFirstResponder()
+                }
+            default:
+                break
             }
-            if textField == txtFifth {
-                txtForth?.becomeFirstResponder()
-                txtFifth.backgroundColor = Color.textFieldDefault
+        }
+        if  text?.count == 0 {
+            switch textField {
+            case txtFirst:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.txtFirst.text = ""
+                }
+                txtFirst.becomeFirstResponder()
+            case txtSecond:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.txtSecond.text = ""
+                }
+                txtFirst.becomeFirstResponder()
+            case txtThird:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.txtThird.text = ""
+                }
+                txtSecond.becomeFirstResponder()
+            case txtForth:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.txtForth.text = ""
+                }
+                txtThird.becomeFirstResponder()
+            case txtFifth:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.txtFifth.text = ""
+                }
+                txtForth.becomeFirstResponder()
+            case txtSixth:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.txtSixth.text = ""
+                }
+                txtFifth.becomeFirstResponder()
+            default:
+                break
             }
-            if textField == txtForth {
-                txtThird?.becomeFirstResponder()
-                txtForth.backgroundColor = Color.textFieldDefault
-            }
-            if textField == txtThird {
-                txtSecond?.becomeFirstResponder()
-                txtThird.backgroundColor = Color.textFieldDefault
-            }
-            if textField == txtSecond {
-                txtFirst?.becomeFirstResponder()
-                txtSecond.backgroundColor = Color.textFieldDefault
-            }
-            if textField == txtFirst {
-                txtFirst?.resignFirstResponder()
-                txtFirst.backgroundColor = Color.textFieldDefault
+        }
+        
+        if (txtFirst.text?.count ?? 0) >= 1 && txtFirst.text != "" {
+            txtFirst.backgroundColor = Color.textFieldBackground
+        } else {
+            txtFirst.backgroundColor = UIColor.white
+        }
+        if (txtSecond.text?.count ?? 0) >= 1 && txtSecond.text != "" {
+            txtSecond.backgroundColor = Color.textFieldBackground
+        } else {
+            txtSecond.backgroundColor = UIColor.white
+        }
+        if (txtThird.text?.count ?? 0) >= 1 && txtThird.text != "" {
+            txtThird.backgroundColor = Color.textFieldBackground
+        } else {
+            txtThird.backgroundColor = UIColor.white
+        }
+        if (txtForth.text?.count ?? 0) >= 1 && txtForth.text != "" {
+            txtForth.backgroundColor = Color.textFieldBackground
+        } else {
+            txtForth.backgroundColor = UIColor.white
+        }
+        if (txtFifth.text?.count ?? 0) >= 1 && txtFifth.text != "" {
+            txtFifth.backgroundColor = Color.textFieldBackground
+        } else {
+            txtFifth.backgroundColor = UIColor.white
+        }
+        if (txtSixth.text?.count ?? 0) >= 1 && txtSixth.text != "" {
+            txtSixth.backgroundColor = Color.textFieldBackground
+        } else {
+            txtSixth.backgroundColor = UIColor.white
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            if self.txtFirst.text?.count == 1
+                && self.txtSecond.text?.count == 1
+                && self.txtThird.text?.count == 1
+                && self.txtForth.text?.count == 1
+                && self.txtFifth.text?.count == 1
+                && self.txtSixth.text?.count == 1 {
+                if self.txtFirst.text != ""
+                    && self.txtSecond.text != ""
+                    && self.txtThird.text != ""
+                    && self.txtForth.text != ""
+                    && self.txtFifth.text != ""
+                    && self.txtSixth.text != "" {
+                    self.dismissKeyboard()
+                } else {
+                }
+            } else {
             }
         }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        if string.isEmpty {
-            if textField == txtSixth {
-                txtFifth?.becomeFirstResponder()
-                txtSixth.backgroundColor = UIColor.white
-            }
-            if textField == txtFifth {
-                txtForth?.becomeFirstResponder()
-                txtFifth.backgroundColor = UIColor.white
-            }
-            if textField == txtForth {
-                txtThird?.becomeFirstResponder()
-                txtForth.backgroundColor = UIColor.white
-            }
-            if textField == txtThird {
-                txtSecond?.becomeFirstResponder()
-                txtThird.backgroundColor = UIColor.white
-            }
-            if textField == txtSecond {
-                txtFirst?.becomeFirstResponder()
-                txtSecond.backgroundColor = UIColor.white
-            }
-            if textField == txtFirst {
-                txtFirst?.resignFirstResponder()
-                txtFirst.backgroundColor = UIColor.white
-            }
-            textField.text? = string
-            return false
-        }
-        if Int(string) == nil {
-            return false
-        }
-        if string.count == 6 {
-            let otpCode = string
-            txtFirst.text = String(otpCode[otpCode.startIndex])
-            txtSecond.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 1)])
-            txtThird.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 2)])
-            txtForth.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 3)])
-            txtFifth.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 4)])
-            txtSixth.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 6)])
-            
-            DispatchQueue.main.async { [weak self] in
-                self?.dismissKeyboard()
-            }
-        }
-        if string.count == 1 {
-            if (textField.text?.count ?? 0) == 1 && textField.tag == 0 {
-                if (txtSecond.text?.count ?? 0) == 1 {
-                    if (txtThird.text?.count ?? 0) == 1 {
-                        if (txtForth.text?.count ?? 0) == 1 {
-                            if (txtFifth.text?.count ?? 0) == 1 {
-                                txtSixth.text = string
-                                DispatchQueue.main.async { [weak self] in
-                                    self?.dismissKeyboard()
-                                }
-                                return false
-                            }else{
-                                txtFifth.text = string
-                                return false
-                            }
-                        }else{
-                            txtForth.text = string
-                            return false
-                        }
-                    }else{
-                        txtThird.text = string
-                        return false
+        if let text = textField.text,
+           let textRange = Range(range, in: text) {
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
+            if (updatedText.count) <= 1 {
+                if string == "" {
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        textField.text = string
                     }
-                }else{
-                    txtSecond.text = string
+                }
+            } else {
+                if string == "" {
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        textField.text = string
+                    }
+                }
+                if (updatedText.count) > 1 {
                     return false
                 }
             }
         }
-        guard let textFieldText = textField.text,
-              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                  return false
-              }
-        let substringToReplace = textFieldText[rangeOfTextToReplace]
-        let count = textFieldText.count - substringToReplace.count + string.count
-        
-        
-        if count == 1{
-            if textField == txtFirst{
-                DispatchQueue.main.async { [weak self] in
-                    self?.txtSecond.becomeFirstResponder()
-                    self?.txtFirst.backgroundColor = Color.textFieldBackground
-                }
-                
-            }else if textField == txtSecond{
-                DispatchQueue.main.async { [weak self] in
-                    self?.txtThird.becomeFirstResponder()
-                    self?.txtSecond.backgroundColor = Color.textFieldBackground
-                }
-                
-            }else if textField == txtThird{
-                DispatchQueue.main.async { [weak self] in
-                    self?.txtForth.becomeFirstResponder()
-                    self?.txtThird.backgroundColor = Color.textFieldBackground
-                }
-                
-            }else if textField == txtForth{
-                DispatchQueue.main.async { [weak self] in
-                    self?.txtFifth.becomeFirstResponder()
-                    self?.txtForth.backgroundColor = Color.textFieldBackground
-                }
-                
-            }else if textField == txtFifth {
-                DispatchQueue.main.async { [weak self] in
-                    self?.txtSixth.becomeFirstResponder()
-                    self?.txtFifth.backgroundColor = Color.textFieldBackground
-                }
-                
-            }
-            else if textField == txtSixth{
-                DispatchQueue.main.async { [weak self] in
-                    self?.txtSixth.backgroundColor = Color.textFieldBackground
-                }
-            }
-                else {
-                DispatchQueue.main.async { [weak self] in
-                    self?.dismissKeyboard()
-                }
-            }
-        }
-        
-        return count <= 1
+        return true
     }
     
 }

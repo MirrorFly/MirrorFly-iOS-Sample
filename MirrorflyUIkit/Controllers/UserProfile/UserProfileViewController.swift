@@ -101,11 +101,13 @@ class UserProfileViewController : UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         ChatManager.shared.availableFeaturesDelegate = self
+        ContactManager.shared.profileDelegate = self
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         ChatManager.shared.availableFeaturesDelegate = nil
+        ContactManager.shared.profileDelegate = nil
     }
     
     override func viewDidLayoutSubviews(){
@@ -709,4 +711,70 @@ extension UserProfileViewController : AvailableFeaturesDelegate {
         }
     }
 
+}
+
+// Profile Event Delegate
+extension UserProfileViewController : ProfileEventsDelegate {
+    func userCameOnline(for jid: String) {
+        getProfile()
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: FlyCommon.ProfileDetails?) {
+        
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        
+    }
+    
+    func blockedThisUser(jid: String) {
+        
+    }
+    
+    func unblockedThisUser(jid: String) {
+        
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+        
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
+        
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+        
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
+        
+    }
+    
+    
+    
 }

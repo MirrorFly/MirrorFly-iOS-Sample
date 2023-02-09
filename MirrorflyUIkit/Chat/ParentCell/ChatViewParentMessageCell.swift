@@ -11,6 +11,7 @@ import MapKit
 import GoogleMaps
 import Alamofire
 import FlyCore
+import SDWebImage
 
 protocol RefreshBubbleImageViewDelegate {
     func refreshBubbleImageView(indexPath: IndexPath,isSelected: Bool,title: String?)
@@ -35,7 +36,15 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     @IBOutlet weak var favouriteImageView: UIImageView?
     @IBOutlet weak var textMessageTimeLabel: UILabel?
     @IBOutlet weak var messageStatusImageView: UIImageView?
-    
+    @IBOutlet weak var senderProfileImage: UIImageView?
+    @IBOutlet weak var senderTimeLabel: UILabel?
+    @IBOutlet weak var senderStackView: UIStackView?
+    @IBOutlet weak var starredMessageView: UIView?
+    @IBOutlet weak var bubbleImageBottomCons: NSLayoutConstraint?
+    @IBOutlet weak var bubbleImageTopCons: NSLayoutConstraint?
+    @IBOutlet weak var sendFromLabel: UILabel?
+    @IBOutlet weak var senderToLabel: UILabel?
+    @IBOutlet weak var senderImageView: UIImageView?
     @IBOutlet weak var chatLocationMapView: GMSMapView?
     @IBOutlet weak var mediaLocationMapView: GMSMapView?
     
@@ -85,11 +94,14 @@ class ChatViewParentMessageCell: BaseTableViewCell {
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     var selectedForwardMessage: [SelectedMessages]? = []
     var isDeleteSelected: Bool = false
+    var isStarredMessagePage: Bool = false
+    var searchText: String?
        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         textMessageTimeLabel?.font = UIFont.font9px_appLight()
+        starredMessageView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
     }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -98,6 +110,52 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         // Configure the view for the selected state
     }
     
+    func showHideStarredMessageView() {
+        starredMessageView?.isHidden = isStarredMessagePage == true ? false : true
+        baseViewTopConstraint?.isActive = isStarredMessagePage == true ? false : true
+        bubbleImageTopCons?.isActive = isStarredMessagePage == true ? false : true
+        senderStackView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageBottomCons?.constant = isStarredMessagePage == true ? 10 : 3
+    }
+    
+    func hideGroupMsgNameView() {
+        groupMsgNameView?.isHidden = true
+        groupMsgSenderName?.text = ""
+    }
+    
+    func setUserProfileInfo(message: ChatMessage?,isBlocked: Bool) {
+        let getProfileDetails = ChatManager.profileDetaisFor(jid: message?.chatUserJid ?? "")
+        let senderProfileDetails = ChatManager.profileDetaisFor(jid: message?.senderUserJid ?? "")
+        if !(message?.isMessageSentByMe ?? false) {
+            senderToLabel?.text = message?.messageChatType == .singleChat ? "You" : getUserName(jid : getProfileDetails?.jid ?? "" ,name: getProfileDetails?.name ?? "", nickName: getProfileDetails?.nickName ?? "", contactType: getProfileDetails?.contactType ?? .local)
+            sendFromLabel?.text = getUserName(jid : senderProfileDetails?.jid ?? "" ,name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local)
+            senderImageView?.image = UIImage(named: "Receiver")
+        } else {
+            sendFromLabel?.text = message?.isMessageSentByMe == true ? "You" : message?.senderUserName
+            senderToLabel?.text = getUserName(jid : getProfileDetails?.jid ?? "" ,name: getProfileDetails?.name ?? "", nickName: getProfileDetails?.nickName ?? "", contactType: getProfileDetails?.contactType ?? .local)
+            senderImageView?.image = UIImage(named: "Sender")
+        }
+        let timeStamp =  message?.messageSentTime
+        senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
+        senderProfileImage?.sd_imageIndicator = SDWebImageActivityIndicator.gray
+        senderProfileImage?.makeRounded()
+        let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
+        setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
+    }
+    
+    private func getisBlockedMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
+    func setImage(imageURL: String, name: String, color: UIColor, chatType : ChatType,jid: String) {
+        if !getisBlockedMe(jid: jid) {
+            senderProfileImage?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType, jid: jid)
+        } else if chatType == .groupChat {
+            senderProfileImage?.image = UIImage(named: ImageConstant.ic_group_small_placeholder)!
+        }  else {
+            senderProfileImage?.image = UIImage(named: ImageConstant.ic_profile_placeholder)!
+        }
+    }
     
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> ChatViewParentMessageCell? {
         currentIndexPath = nil
@@ -123,7 +181,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if (message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true) {
+        if (message?.messageStatus == .notAcknowledged || message?.messageStatus == .sent || isShowForwardView == true || isStarredMessagePage == true) {
             quickForwardView?.isHidden = true
             quickForwardButton?.isHidden = true
             isAllowSwipe = false
@@ -156,10 +214,11 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         
         
         // Reply view elements and its data
-       if(message!.isReplyMessage) {
+       let isReplyMessage = message?.isReplyMessage ?? false
+       if isReplyMessage {
             replyView?.isHidden = false
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
-           if message?.replyParentChatMessage?.isMessageRecalled == true || message?.replyParentChatMessage?.isMessageDeleted == true {
+           if message?.replyParentChatMessage?.isMessageRecalled == true || message?.replyParentChatMessage?.isMessageDeleted == true || replyMessage == nil {
                replyTextLabel?.text = "Original message not available"
                mediaImageView?.isHidden = true
                messageIconView?.isHidden = true
@@ -173,7 +232,7 @@ class ChatViewParentMessageCell: BaseTableViewCell {
            } else {
             let getReplymessage =  replyMessage?.messageTextContent
            replyViewHeightCons?.isActive = (getReplymessage?.count ?? 0 > 20) ? false : true
-               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
+               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch,isSystemBlue: false)
            if replyMessage?.mediaChatMessage != nil {
                mediaImageViewWidthCons?.constant = 50
                replyMessageIconWidthCons?.constant = 12
@@ -369,8 +428,10 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         switch  message?.messageType {
         case .text:
             if let label = messageLabel {
+
                 messageLabel?.attributedText = processTextMessage(message: message?.messageTextContent ?? "", uiLabel: label, fromChat: fromChat, isMessageSearch: isMessageSearch, searchText: searchText, isSentByMe: message?.isMessageSentByMe ?? false)
                 print("message label width = \(messageLabel?.frame.size.width)")
+
             }
         case .location:
             
@@ -405,8 +466,10 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         
         if (message!.isMessageTranslated && FlyDefaults.isTranlationEnabled) {
             guard let chatMessage = message,let messageLabeltemp = messageLabel, let translatedTextLabeltemp = translatedTextLabel else {return self }
+
             messageLabel?.attributedText = processTextMessage(message: chatMessage.messageTextContent , uiLabel: messageLabeltemp, fromChat: fromChat, isMessageSearch: isMessageSearch, searchText: searchText, isSentByMe: message?.isMessageSentByMe ?? false)
             translatedTextLabel?.attributedText = processTextMessage(message: chatMessage.translatedMessageTextContent , uiLabel: translatedTextLabeltemp, fromChat: fromChat, isMessageSearch: isMessageSearch, searchText: searchText, isSentByMe: message?.isMessageSentByMe ?? false)
+
         }
         return self
     }
@@ -440,14 +503,18 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         
     }
     
+
     func processTextMessage(message : String, uiLabel : UILabel, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "", isSentByMe: Bool) -> NSMutableAttributedString? {
+
         var attributedString : NSMutableAttributedString?
         if !message.isEmpty {
             attributedString = NSMutableAttributedString(string: message)
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapTextLabel(sender:)))
             let textArray = message.trim().split(separator: " ")
-            
-            
+            if isStarredMessagePage == true && searchText.trim().isNotEmpty == true {
+                let urlRange = (message.capitalized as NSString).range(of: searchText.trim().capitalized)
+                attributedString?.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: urlRange)
+            }
             for (index, tempText) in textArray.enumerated() {
                 print("processTextMessage index \(index) item \(tempText)")
                 print("processTextMessage tempText \(tempText)")

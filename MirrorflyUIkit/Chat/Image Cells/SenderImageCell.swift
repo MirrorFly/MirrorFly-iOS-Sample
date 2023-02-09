@@ -239,7 +239,8 @@ class SenderImageCell: BaseTableViewCell {
                replyWithMediaCons?.isActive = false
                replyWithoutMediaCons?.isActive = true
            }
-        if(replyMessage!.isMessageSentByMe) {
+           let isSentByMe = replyMessage?.isMessageSentByMe ?? false
+        if isSentByMe {
             userLabel?.text = you.localized
         }
         else {

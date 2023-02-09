@@ -136,24 +136,23 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-
-	<key>Privacy - Face ID Usage Description</key>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>NSFaceIDUsageDescription</key>
 	<string>Identify Yourself!</string>
-    <key>UIFileSharingEnabled</key>
-        <true/>
-    <key>LSSupportsOpeningDocumentsInPlace</key>
-    <true/>
-    <key>NSUbiquitousContainers</key>
-        <dict>
-            <key>iCloud.$(PRODUCT_BUNDLE_IDENTIFIER)</key>
-            <dict>
-                <key>NSUbiquitousContainerIsDocumentScopePublic</key>
-                <true/>
-                <key>NSUbiquitousContainerName</key>
-                <string>${PRODUCT_NAME}</string>
-                <key>NSUbiquitousContainerSupportedFolderLevels</key>
-                <string>Any</string>
-            </dict>
-        </dict>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.$(PRODUCT_BUNDLE_IDENTIFIER)</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>${PRODUCT_NAME}</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

@@ -39,6 +39,8 @@ class ImageEditController: UIViewController {
     public var imageAray = [ImageData]()
     public var mediaData = [MediaData]()
     public var selectedAssets = [PHAsset]()
+    public var currentSelectedAssets = [PHAsset]()
+    public var currentDeSelectedAssets = [PHAsset]()
     var imageEditIndex = Int()
     var botmImageIndex = Int()
     weak var delegate: EditImageDelegate? = nil
@@ -47,6 +49,7 @@ class ImageEditController: UIViewController {
     public var iscamera = false
     var mediaProcessed = [String]()
     var id : String = emptyString()
+    var isKeyboardDisabled: Bool? = false
     
     let backgroundQueue = DispatchQueue.init(label: "mediaQueue")
     
@@ -175,10 +178,13 @@ class ImageEditController: UIViewController {
     }
     
     @objc func appMovedToForeground() {
-        captionTxt?.becomeFirstResponder()
+        if isKeyboardDisabled == false {
+            captionTxt?.becomeFirstResponder()
+        }
     }
     
     @IBAction func addMoreImages(_ sender: Any) {
+        isKeyboardDisabled = true
         addMoreImages()
     }
     
@@ -264,17 +270,24 @@ class ImageEditController: UIViewController {
     
     @IBAction func deleteAction(_ sender: Any) {
         if imageAray.count > 0 {
-        self.selectedAssets.remove(at: imageEditIndex)
-        imageAray.remove(at: imageEditIndex)
-        topCollection?.reloadData()
-        topCollection?.performBatchUpdates(nil, completion: {
-            (result) in
-            self.refresh()
-            self.showHideDeleteView()
-            self.showHideAddMoreOption()
-            self.setCaption()
-        })
-        self.botomCollection.reloadData()
+            if imageEditIndex < imageAray.count {
+                self.selectedAssets.remove(at: imageEditIndex)
+                imageAray.remove(at: imageEditIndex)
+            } else {
+                if imageAray.count > 0 {
+                    botmImageIndex = imageEditIndex - 1
+                    self.botomCollection.reloadData()
+                }
+            }
+            topCollection?.reloadData()
+            topCollection?.performBatchUpdates(nil, completion: {
+                (result) in
+                self.refresh()
+                self.showHideDeleteView()
+                self.showHideAddMoreOption()
+                self.setCaption()
+            })
+            self.botomCollection.reloadData()
         }
     }
     
@@ -313,6 +326,8 @@ class ImageEditController: UIViewController {
     }
     
     func addMoreImages() {
+        currentSelectedAssets.removeAll()
+        currentDeSelectedAssets.removeAll()
         let imagePicker = ImagePickerController(selectedAssets: selectedAssets)
         imagePicker.settings.theme.selectionStyle = .numbered
         imagePicker.settings.fetch.assets.supportedMediaTypes = [.image,.video]
@@ -324,9 +339,24 @@ class ImageEditController: UIViewController {
                 if  let assetName = asset.value(forKey: "filename") as? String {
                     let fileExtension = URL(fileURLWithPath: assetName).pathExtension
                     if ChatUtils.checkImageFileFormat(format: fileExtension) {
-                        strongSelf.selectedAssets.append(asset)
+                        var imageSize = ChatUtils.getImageSize(asset: asset)
+                        imageSize = imageSize/(1024*1024)
+                        print("image size: ",imageSize)
+                        if imageSize >= Float(10) {
+                            AppAlert.shared.showToast(message: ErrorMessage.largeImageFile)
+                            imagePicker.deselect(asset: asset)
+                        } else {
+                            strongSelf.selectedAssets.append(asset)
+                            strongSelf.currentSelectedAssets.append(asset)
+                        }
                     } else if asset.mediaType == PHAssetMediaType.video {
-                        strongSelf.selectedAssets.append(asset)
+                        if MediaUtils.isVideoLimit(asset: asset, videoLimit: 30) {
+                            strongSelf.selectedAssets.append(asset)
+                            strongSelf.currentSelectedAssets.append(asset)
+                        } else {
+                            AppAlert.shared.showToast(message: ErrorMessage.largeVideoFile)
+                            imagePicker.deselect(asset: asset)
+                        }
                     } else {
                         AppAlert.shared.showToast(message: fileformat_NotSupport)
                     }
@@ -340,14 +370,32 @@ class ImageEditController: UIViewController {
             if let strongSelf = self {
                 strongSelf.selectedAssets.enumerated().forEach { index , element in
                     if element == asset {
+                        strongSelf.currentDeSelectedAssets.append(element)
                         strongSelf.selectedAssets.remove(at: index)
                     }
                 }
             }
-        }, cancel: { (assets) in
+        }, cancel: { [weak self] (assets) in
             // User canceled selection.
+            self?.isKeyboardDisabled = false
+            self?.currentSelectedAssets.forEach({ asset in
+                self?.selectedAssets.enumerated().forEach({ (index,element) in
+                    if element == asset {
+                        self?.selectedAssets.remove(at: index)
+                    }
+                })
+            })
+            self?.currentDeSelectedAssets.forEach({ asset in
+                self?.selectedAssets.append(asset)
+            })
+            if self?.selectedAssets.count == 0 {
+                self?.popView()
+            }
         }, finish: { [weak self] (assets) in
             if let strongSelf = self {
+                strongSelf.currentSelectedAssets.removeAll()
+                strongSelf.currentDeSelectedAssets.removeAll()
+                strongSelf.isKeyboardDisabled = false
                 strongSelf.tempImageAray = strongSelf.imageAray
                 strongSelf.imageAray.removeAll()
                 DispatchQueue.main.async { [weak self] in
@@ -360,6 +408,7 @@ class ImageEditController: UIViewController {
                             strongSelf.botomCollection.reloadData()
                         }
                         strongSelf.setDefault()
+                        strongSelf.refresh()
                         strongSelf.showHideDeleteView()
                         strongSelf.showHideAddMoreOption()
                     }
@@ -542,7 +591,7 @@ extension ImageEditController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func setCaption() {
-        if imageEditIndex <= imageAray.count && !(imageAray.isEmpty) {
+        if imageEditIndex < imageAray.count && !(imageAray.isEmpty) {
             let imgDetail = imageAray[imageEditIndex]
             if let caption = imgDetail.caption, caption != "" {
                 captionTxt?.text = imgDetail.caption

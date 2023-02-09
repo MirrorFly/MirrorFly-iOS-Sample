@@ -62,6 +62,7 @@ class ImagePreview: UIViewController  {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     func setupUI() {
@@ -229,7 +230,6 @@ extension ImagePreview : RefreshMessagesDelegate {
 }
 
 extension ImagePreview : MessageEventsDelegate {
-   
     func onMessageReceived(message: FlyCommon.ChatMessage, chatJid: String) {
         
     }
@@ -278,4 +278,5 @@ extension ImagePreview : MessageEventsDelegate {
     func onMessageTranslated(message: FlyCommon.ChatMessage, jid: String) {
         
     }
+    func clearAllConversationForSyncedDevice() {}
 }

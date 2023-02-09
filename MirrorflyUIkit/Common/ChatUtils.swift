@@ -63,12 +63,12 @@ class ChatUtils {
         return NSMutableAttributedString()
     }
 
-    static func getAttributedMessage(message: String, searchText: String, isMessageSearch: Bool) -> NSMutableAttributedString {
+    static func getAttributedMessage(message: String, searchText: String, isMessageSearch: Bool,isSystemBlue: Bool) -> NSMutableAttributedString {
         if isMessageSearch {
             let range = (message.lowercased() as NSString).range(of: searchText.lowercased())
             let mutableAttributedString = NSMutableAttributedString.init(string: message, attributes: [NSAttributedString.Key.backgroundColor: UIColor.clear])
-            mutableAttributedString.addAttribute(NSAttributedString.Key.backgroundColor, value: Color.color_3276E2 ?? .blue, range: range)
-            mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: range)
+            mutableAttributedString.addAttribute(NSAttributedString.Key.backgroundColor, value: isSystemBlue ? .clear : Color.color_3276E2 ?? .blue, range: range)
+            mutableAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: isSystemBlue ? UIColor.systemBlue : UIColor.black, range: range)
             return mutableAttributedString
         } else {
             return NSMutableAttributedString.init(string: message, attributes: [NSAttributedString.Key.backgroundColor: UIColor.clear])
@@ -381,22 +381,6 @@ class ChatUtils {
         return fileURL
         
     }
-
-    static func checkForAutoDownload(messageTypeKey : String) -> Bool{
-        
-        if  FlyDefaults.autoDownloadEnable {
-            if NetworkReachability.shared.isCellular && FlyDefaults.autoDownloadMobile[messageTypeKey] ?? false {
-                return true
-            }
-            
-            else if NetworkReachability.shared.isWifi && FlyDefaults.autoDownloadWifi[messageTypeKey] ?? false {
-                return true
-            }
-            
-        }
-        return false
-
-    }
     
     static func getLinksFrom(text : String) -> [String] {
         if !text.isEmpty {
@@ -415,6 +399,25 @@ class ChatUtils {
         } else {
             return [String]()
         }
+    }
+    
+    static func clearAllPushNotifications() {
+        let center = UNUserNotificationCenter.current()
+        center.removeAllPendingNotificationRequests()
+        center.removeAllDeliveredNotifications() 
+    }
+    
+    static func getImageSize(asset : PHAsset) -> Float {
+        var imageSize : Float = 0.0
+        let manager = PHImageManager.default()
+        let options = PHImageRequestOptions()
+        options.version = .original
+        options.isSynchronous = true
+        manager.requestImageData(for: asset, options: options) { data, _, _, _ in
+            print("getAssetThumbnail \(asset.mediaType)")
+            imageSize = Float(data?.count ?? 0)
+        }
+        return imageSize
     }
 
 }

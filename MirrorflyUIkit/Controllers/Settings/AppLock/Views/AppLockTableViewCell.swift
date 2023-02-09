@@ -12,7 +12,11 @@ class AppLockTableViewCell: UITableViewCell {
    
     @IBOutlet weak var separaterView: UIView!
     @IBOutlet weak var bottomlabeloutlet: UILabel!
-    @IBOutlet weak var switchOutlet: UISwitch!
+    @IBOutlet weak var switchOutlet: UISwitch! {
+        didSet {
+            switchOutlet.transform = CGAffineTransform(scaleX: 0.50, y: 0.50)
+        }
+    }
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var helpTextLabel: UILabel!
     @IBOutlet weak var helpTextView: UIView!

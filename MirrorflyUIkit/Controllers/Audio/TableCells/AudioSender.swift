@@ -9,6 +9,7 @@ import NicoProgress
 import MapKit
 import GoogleMaps
 import FlyCore
+import SDWebImage
 
 class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var uploadCancel: UIImageView?
@@ -27,8 +28,18 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var audioView: UIView?
     @IBOutlet weak var timeView: UIView?
     @IBOutlet weak var audioSenderIcon: UIImageView?
+    
     // Starred Messages Outlet
     @IBOutlet weak var favImageView: UIImageView?
+    @IBOutlet weak var senderStackView: UIStackView?
+    @IBOutlet weak var senderToLabel: UILabel?
+    @IBOutlet weak var senderTimeLabel: UILabel?
+    @IBOutlet weak var senderProfileImageView: UIImageView?
+    @IBOutlet weak var bubbleImageBottomCons: NSLayoutConstraint?
+    @IBOutlet weak var bubbleImageTopCons: NSLayoutConstraint?
+    @IBOutlet weak var starredMessageView: UIView?
+    @IBOutlet weak var senderFromLabel: UILabel?
+    
     // Reply View Outlet
     @IBOutlet weak var mediaLocationMap: GMSMapView?
     @IBOutlet weak var bubbleImageView: UIImageView?
@@ -47,6 +58,9 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var forwardLeadingCons: NSLayoutConstraint?
     @IBOutlet weak var forwardButton: UIButton?
     
+    // Starred Messages Outlet
+    @IBOutlet weak var starredMessagesView: UIView?
+    
     var message : ChatMessage?
     var sendMediaMessages: [ChatMessage]? = []
     var selectedForwardMessage: [SelectedMessages]? = []
@@ -56,7 +70,8 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     var isShowAudioLoadingIcon: Bool? = false
     var updater : CADisplayLink! = nil
     typealias AudioCallBack = (_ sliderValue : Float) -> Void
-        var audioCallBack: AudioCallBack? = nil
+    var audioCallBack: AudioCallBack? = nil
+    var isStarredMessagePage: Bool? = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -64,10 +79,10 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         setupUI()
     }
     
-    
     func setupUI() {
         sentTime?.font = UIFont.font9px_appLight()
         autioDuration?.font = UIFont.font8px_appLight()
+        starredMessageView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
         audioView?.roundCorners(corners: [.topLeft, .topRight], radius: 8.0)
         timeView?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft], radius: 8.0)
         var thumbImage = UIImage(named: ImageConstant.ic_slider_white)
@@ -80,6 +95,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         nicoProgressBar?.primaryColor = .white
         nicoProgressBar?.secondaryColor = .clear
     }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         // Configure the view for the selected state
@@ -105,6 +121,41 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         }
     }
     
+    func showHideStarredMessageView() {
+        starredMessageView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageTopCons?.isActive = isStarredMessagePage == true ? false : true
+        senderStackView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageBottomCons?.constant = isStarredMessagePage == true ? 10 : 3
+    }
+    
+    func setUserProfileInfo(message: ChatMessage?,isBlocked: Bool) {
+        let getProfileDetails = ChatManager.profileDetaisFor(jid: message?.chatUserJid ?? "")
+        let senderProfileDetails = ChatManager.profileDetaisFor(jid: message?.senderUserJid ?? "")
+        senderFromLabel?.text = "You"
+        senderToLabel?.text = getUserName(jid : getProfileDetails?.jid ?? "" ,name: getProfileDetails?.name ?? "", nickName: getProfileDetails?.nickName ?? "", contactType: getProfileDetails?.contactType ?? .local)
+    
+        let timeStamp =  message?.messageSentTime
+        senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
+        senderProfileImageView?.sd_imageIndicator = SDWebImageActivityIndicator.gray
+        senderProfileImageView?.makeRounded()
+        let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
+        setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
+    }
+    
+    private func getisBlockedMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
+    func setImage(imageURL: String, name: String, color: UIColor, chatType : ChatType,jid: String) {
+        if !getisBlockedMe(jid: jid) {
+            senderProfileImageView?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType, jid: jid)
+        } else if chatType == .groupChat {
+            senderProfileImageView?.image = UIImage(named: ImageConstant.ic_group_small_placeholder)!
+        }  else {
+            senderProfileImageView?.image = UIImage(named: ImageConstant.ic_profile_placeholder)!
+        }
+    }
+    
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isPlaying: Bool,audioClosureCallBack : @escaping AudioCallBack,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> AudioSender? {
         audioCallBack = audioClosureCallBack
         currentIndexPath = nil
@@ -125,7 +176,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         if message?.isCarbonMessage == true {
-            if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+            if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed || message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true || isStarredMessagePage == true) {
                 fwdViw?.isHidden = true
                 fwdBtn?.isHidden = true
                 isAllowSwipe = false
@@ -135,7 +186,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 isAllowSwipe = true
             }
         } else {
-            if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .failed || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+            if  (message?.mediaChatMessage?.mediaUploadStatus == .not_uploaded || message?.mediaChatMessage?.mediaUploadStatus == .failed || message?.mediaChatMessage?.mediaUploadStatus == .uploading || message?.messageStatus == .notAcknowledged || isShowForwardView == true || isStarredMessagePage == true) {
                 fwdViw?.isHidden = true
                 fwdBtn?.isHidden = true
                 isAllowSwipe = false
@@ -157,14 +208,14 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
            replyView?.isHidden = false
             let getReplymessage =  message?.replyParentChatMessage?.messageTextContent
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
-           if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true {
+           if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true || replyMessage == nil {
                userTextLabel?.text = "Original message not available"
                messageTypeIconView?.isHidden = true
                mediaLocationMap?.isHidden = true
                mediaImageView?.isHidden = true
            } else {
                mediaLocationMap?.isHidden = true
-               userTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
+               userTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: false)
                if replyMessage?.mediaChatMessage?.messageType == .document {
                    mediaImageView?.contentMode = .scaleAspectFit
                } else {
@@ -403,7 +454,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     }
     
     func showHideForwardView(message: ChatMessage?,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?) {
-        if isDeleteMessageSelected ?? false {
+        if isDeleteMessageSelected ?? false || isStarredMessagePage == true {
             // Forward view elements and its data
             forwardView?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaUploadStatus == .uploading)  || (message?.isMessageRecalled == true) ? true : false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)

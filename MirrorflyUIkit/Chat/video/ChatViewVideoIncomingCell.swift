@@ -11,6 +11,7 @@ import FlyCore
 import MapKit
 import GoogleMaps
 import NicoProgress
+import SDWebImage
 
 class ChatViewVideoIncomingCell: BaseTableViewCell {
    
@@ -48,9 +49,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     @IBOutlet weak var replyUserLabel: UILabel?
     @IBOutlet weak var replyView: UIView?
     @IBOutlet weak var bubbleImageView: UIImageView?
-    
     @IBOutlet weak var replyWithMediaCons: NSLayoutConstraint?
-
     @IBOutlet weak var replyWithoutMediaCOns: NSLayoutConstraint?
     
     // Forward Outlet
@@ -59,11 +58,18 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     @IBOutlet weak var forwardLeadingCons: NSLayoutConstraint?
     @IBOutlet weak var bubbleLeadingCons: NSLayoutConstraint?
     @IBOutlet weak var quickForwardButton: UIButton?
-    
     @IBOutlet weak var emptyView: UIView!
     @IBOutlet weak var emptyViewHeight: NSLayoutConstraint!
-
     @IBOutlet weak var captionView: UIView!
+    
+    @IBOutlet weak var starredMessageView: UIView?
+    @IBOutlet weak var senderTimeLabel: UILabel?
+    @IBOutlet weak var senderTextLabel: UILabel?
+    @IBOutlet weak var senderProfileImageView: UIImageView?
+    @IBOutlet weak var senderStackView: UIStackView?
+    
+    @IBOutlet weak var sendToLabel: UILabel?
+    @IBOutlet weak var bubbleImageBottomView: NSLayoutConstraint?
     
     //Translated Outlet
     @IBOutlet weak var translatedCaptionLabel: UILabel!
@@ -74,6 +80,8 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     var message : ChatMessage?
     var selectedForwardMessage: [SelectedMessages]? = []
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
+    var isStarredMessagePage: Bool? = false
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -90,6 +98,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         fileSizeLabel.font = UIFont.font12px_appSemibold()
         progressView.layer.cornerRadius = 4
         downloadView.layer.cornerRadius = 4
+        starredMessageView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
         baseView.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
         imageContainer.layer.cornerRadius = 5.0
         imageContainer.clipsToBounds = true
@@ -114,7 +123,42 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         downloadView.isHidden = false
     }
     
+    func showHideStarredMessageView() {
+        starredMessageView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageTopConstraint?.isActive = isStarredMessagePage == true ? false : true
+        senderStackView?.isHidden = isStarredMessagePage == true ? false : true
+        bubbleImageBottomView?.constant = isStarredMessagePage == true ? 10 : 3
+    }
+    
+    func setUserProfileInfo(message: ChatMessage?,isBlocked: Bool) {
+        let getProfileDetails = ChatManager.profileDetaisFor(jid: message?.chatUserJid ?? "")
+        let senderProfileDetails = ChatManager.profileDetaisFor(jid: message?.senderUserJid ?? "")
+        sendToLabel?.text = message?.messageChatType == .singleChat ? "You" : getUserName(jid : getProfileDetails?.jid ?? "" ,name: getProfileDetails?.name ?? "", nickName: getProfileDetails?.nickName ?? "", contactType: getProfileDetails?.contactType ?? .local)
+        senderTextLabel?.text = getUserName(jid : senderProfileDetails?.jid ?? "" ,name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local)
+        
+        let timeStamp =  message?.messageSentTime
+        senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
+        senderProfileImageView?.sd_imageIndicator = SDWebImageActivityIndicator.gray
+        senderProfileImageView?.makeRounded()
+        let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
+        setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
+    }
+    
+    private func getisBlockedMe(jid: String) -> Bool {
+        return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
+    }
+    
+    func setImage(imageURL: String, name: String, color: UIColor, chatType : ChatType,jid: String) {
+        if !getisBlockedMe(jid: jid) {
+            senderProfileImageView?.loadFlyImage(imageURL: imageURL, name: name, chatType: chatType, jid: jid)
+        } else {
+            senderProfileImageView?.image = UIImage(named: ImageConstant.ic_profile_placeholder)!
+        }
+    }
+    
+
     func getCellFor(_ message: ChatMessage?, at indexPath: IndexPath?,isShowForwardView: Bool?,isDeleteMessageSelected: Bool?, fromChat: Bool = false, isMessageSearch: Bool = false, searchText: String = "") -> ChatViewVideoIncomingCell? {
+
         currentIndexPath = nil
         currentIndexPath = indexPath
         replyTextLabel?.text = ""
@@ -134,7 +178,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)
         }
         
-        if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed ||  message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true) {
+        if  (message?.mediaChatMessage?.mediaDownloadStatus == .not_downloaded || message?.mediaChatMessage?.mediaDownloadStatus == .failed ||  message?.mediaChatMessage?.mediaDownloadStatus == .downloading || message?.messageStatus == .notAcknowledged || isShowForwardView == true || isStarredMessagePage == true) {
             quickForwardView?.isHidden = true
             quickForwardButton?.isHidden = true
             isAllowSwipe = true
@@ -149,11 +193,11 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             replyView?.isHidden = false
           let getReplymessage =  message?.replyParentChatMessage?.messageTextContent
            let replyMessage = FlyMessenger.getMessageOfId(messageId: message?.replyParentChatMessage?.messageId ?? "")
-           if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true {
+           if message?.replyParentChatMessage?.isMessageDeleted == true || message?.replyParentChatMessage?.isMessageRecalled == true || replyMessage == nil {
                replyTextLabel?.text = "Original message not available"
            } else {
                messageIconView?.isHidden = true
-               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch)
+               replyTextLabel?.attributedText = ChatUtils.getAttributedMessage(message: getReplymessage ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: false)
                mapView?.isHidden = true
                if replyMessage?.mediaChatMessage != nil {
                    messageTypeIcon?.isHidden = false
@@ -240,7 +284,8 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                    replyWithMediaCons?.isActive = false
                }
            }
-        if(replyMessage!.isMessageSentByMe) {
+        let isSentByMe = replyMessage?.isMessageSentByMe ?? false
+        if isSentByMe {
             replyUserLabel?.text = you.localized
         }
         else {
@@ -264,7 +309,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         }
         
         if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt != "" {
-            caption.attributedText = ChatUtils.getAttributedMessage(message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch)
+            caption.attributedText = ChatUtils.getAttributedMessage(message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch ? true : false)
             timeOverlay.isHidden = true
             reecivedTime.isHidden = true
             captionTime?.isHidden = false
@@ -343,7 +388,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     }
     
     func showHideForwardView(message : ChatMessage?,isDeletedSelected: Bool?,isShowForwardView: Bool?) {
-        if isDeletedSelected ?? false {
+        if isDeletedSelected ?? false || isStarredMessagePage == true {
             // Forward view elements and its data
             forwardView?.isHidden = (isShowForwardView == false || message?.mediaChatMessage?.mediaDownloadStatus == .downloading) ? true : false
             forwardView?.makeCircleView(borderColor: Color.forwardCircleBorderColor.cgColor, borderWidth: 1.5)

@@ -52,6 +52,7 @@ let allowCamera = "Allow Camera"
 
 //MARK: - Profile Edit Status
 let editStatusSectionTitle = "Select your new status"
+let editBusyStatusSectionTitle = "Select your busy status"
 let meeting = "Meeting"
 let atTheMovies = "At the movies"
 let urgentCalls = "Urgent Calls Only"
@@ -218,7 +219,7 @@ let setupYourMobileAndWifiDataUsageBasedOnMediaType = "Setup your mobile and wif
 let ArchiveSettingsDescription = "Archived chats will remain archived when you receive a new message"
 
 let addMoresecurityWith4DigitsecretPIN = "Add more security with 4 digit secret PIN"
-let useFingerPrintIDorFaceID = "Use Fingerprint ID"
+let useFingerPrintIDorFaceID = "Use Fingerprint ID or Face id to unlock your phone"
 let changeThe4DigitSecurityPIN = "Change the 4 digit security PIN"
 let changePIN = "Change PIN"
 
@@ -241,14 +242,18 @@ let adminEmail = "mirrorflyadminsupport@gmail.com"
 let chatActions = "Chat Actions"
 let message = "Message"
 let clearChatMessage = "Do you want to clear all Conversation?"
-let clearAllChat = "Are you sure want to clear your conversation history?"
+
+let clearAllChat = "Are you sure you want to clear your conversation history?"
 let unblockTOMakeAudioCall = "Unblock to make an audio call"
 let unblockToMakeVideocall = "Unblock to make a video call"
 let allYourConversationareCleared = "All your conversation are cleared"
+let allYourChatsAreCleared = "All your chats are cleared"
 let serverError = "Server error, kindly try again later" 
 let clearAll = "Clear All"
+let clearExceptStarred = "Clear except starred"
+let deleteforMe = "Delete for me"
+let deleteforEveryone = "Delete for everyone"
 let thereIsNoConversation = "There is no conversation"
-
 let setBusyStatusDescription = "Set busy status as the Auto response to the message recieved from the individuals"
 let editBusyStatus = "Edit Busy Status Message"
 
@@ -327,6 +332,8 @@ let starTitle = "Star"
 let shareTitle = "Share"
 let unStarTitle = "Unstar"
 
+let cannotShareMoreThan10 = "Cannot share more than 10 files."
+
 //MARK: DeleteMessages
 let originalMessageDeleted = "Can't forward because the original message is deleted"
 
@@ -374,12 +381,14 @@ public struct ErrorMessage {
     public static let restrictedforwardUsers = NSLocalizedString("You can only forward with up to 5 users or groups", comment: "")
     public static let checkYourInternet = NSLocalizedString("Please check your internet connection", comment: "")
     public static let fileSizeLarge = NSLocalizedString("File size is too large", comment: "")
+    public static let largeImageFile = NSLocalizedString("File size is too large. Try uploading file size below 10MB", comment: "")
     public static let largeVideoFile = NSLocalizedString("File size is too large. Try uploading file size below 30MB", comment: "")
     public static let numberDoesntMatch =  NSLocalizedString("mobileNumberDoesntMatch", comment: "")
     public static let invalidPIN = NSLocalizedString("Invalid PIN! Try again", comment: "")
     public static let invalidOLDPIN = NSLocalizedString("Invalid old PIN", comment: "")
     public static let enternewPIN = NSLocalizedString("Enter the New PIN", comment: "")
     public static let enterconfirmPIN = NSLocalizedString("Enter the Confirm PIN", comment: "")
+    public static let enterValidPIN = NSLocalizedString("PIN must be of 4 digits", comment: "")
     public static let enterthePIN = NSLocalizedString("Enter the PIN", comment: "")
     public static let passwordShouldbeSame = NSLocalizedString(" PIN and Confirm PIN must be same", comment: "")
     public static let oldPINnewPINsholdnotSame = NSLocalizedString("Old PIN and new PIN should not be same", comment: "")
@@ -424,14 +433,14 @@ enum ChatActions : String, CaseIterable {
 
 enum MessageActions : String, CaseIterable {
     case reply = "Reply"
-//    case share = "Share"
+    case share = "Share"
     case copy = "Copy"
     case forward = "Forward"
     case info = "Info"
     case report = "Report"
     case delete = "Delete"
-//    case star = "Star"
-//    case unStar = "Unstar"
+    case star = "Star"
+    case unStar = "Unstar"
 }
 
 enum GroupReportActions : String, CaseIterable {

@@ -134,7 +134,7 @@
                                                 <constraint firstAttribute="width" constant="70" id="BdH-Iq-Cud"/>
                                             </constraints>
                                         </imageView>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iXv-Gg-3ME" customClass="GMSMapView" customModule="Mirrorfly" customModuleProvider="target">
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iXv-Gg-3ME" customClass="GMSMapView">
                                             <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </view>
