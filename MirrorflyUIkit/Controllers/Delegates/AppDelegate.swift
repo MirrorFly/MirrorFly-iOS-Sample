@@ -20,7 +20,7 @@ import RxSwift
 import Contacts
 import CallKit
 
-let BASE_URL = "xxxxxxxxxxxx"
+let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let LICENSE_KEY = "xxxxxxxxxxxx"
 let XMPP_DOMAIN = "xmpp-uikit-qa.contus.us"
 let XMPP_PORT = 5249
