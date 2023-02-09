@@ -14,7 +14,7 @@ import AVFoundation
 import FlyDatabase
 import AudioToolbox
 
-let BASE_URL =  "xxxxxxxxxxxxxxx"
+let BASE_URL =  "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let CONTAINER_ID = "group.com.mirrorfly.qa"
 let LICENSE_KEY = "xxxxxxxxxxxxxx"
 let IS_LIVE = false
