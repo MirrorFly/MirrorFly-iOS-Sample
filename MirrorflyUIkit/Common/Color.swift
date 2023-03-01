@@ -83,7 +83,7 @@ enum Color {
     static let resendButtonActivation = UIColor.init(hex: "#FF1E1E")
     static let backupOptionGreenColor = UIColor.init(hex: "30C076")
     static let restoreShadowColor = UIColor.init(hex: "000029")
-
+    static let color_7B7B7B = UIColor.init(hex: "7B7B7B")
 }
 
 extension UIColor {

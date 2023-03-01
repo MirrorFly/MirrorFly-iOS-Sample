@@ -47,10 +47,10 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8r3-QW-ptJ">
-                        <rect key="frame" x="10" y="0.0" width="315" height="3"/>
+                        <rect key="frame" x="10" y="-59" width="315" height="62"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="0OX-0e-y6J">
-                                <rect key="frame" x="0.0" y="0.0" width="310" height="3"/>
+                                <rect key="frame" x="0.0" y="0.0" width="310" height="62"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b1q-Ix-8sz">
                                         <rect key="frame" x="0.0" y="0.0" width="35" height="55"/>
@@ -126,6 +126,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstAttribute="height" constant="62" id="2eh-YR-0Jv"/>
                             <constraint firstAttribute="trailing" secondItem="0OX-0e-y6J" secondAttribute="trailing" constant="5" id="8SQ-Tt-gNF"/>
                             <constraint firstItem="0OX-0e-y6J" firstAttribute="top" secondItem="8r3-QW-ptJ" secondAttribute="top" id="Gt5-Tc-ZLh"/>
                             <constraint firstItem="0OX-0e-y6J" firstAttribute="leading" secondItem="8r3-QW-ptJ" secondAttribute="leading" id="bma-Cv-e25"/>

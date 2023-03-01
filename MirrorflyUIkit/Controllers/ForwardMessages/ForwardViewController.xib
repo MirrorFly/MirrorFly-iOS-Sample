@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -23,6 +23,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ForwardViewController" customModule="Mirrorfly" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicator" destination="tb9-HY-rnW" id="9um-iW-vhn"/>
                 <outlet property="descriptionLabel" destination="PQe-PS-CB6" id="GUr-qT-giI"/>
                 <outlet property="emptyMessageView" destination="S4I-r3-xb7" id="IVp-VU-pmp"/>
                 <outlet property="forwardHeaderView" destination="rMs-eC-RmW" id="XEm-BX-IVb"/>
@@ -169,9 +170,14 @@
                                     <color key="textColor" name="SecondaryTextColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="tb9-HY-rnW">
+                                    <rect key="frame" x="166" y="112" width="20" height="20"/>
+                                </activityIndicatorView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
+                                <constraint firstItem="tb9-HY-rnW" firstAttribute="centerX" secondItem="S4I-r3-xb7" secondAttribute="centerX" id="6ws-rL-lTE"/>
+                                <constraint firstItem="tb9-HY-rnW" firstAttribute="centerY" secondItem="S4I-r3-xb7" secondAttribute="centerY" id="KA9-Sb-ByK"/>
                                 <constraint firstItem="PQe-PS-CB6" firstAttribute="centerX" secondItem="S4I-r3-xb7" secondAttribute="centerX" id="Vca-1J-Ez1"/>
                                 <constraint firstItem="PQe-PS-CB6" firstAttribute="centerY" secondItem="S4I-r3-xb7" secondAttribute="centerY" id="efT-hm-lQ8"/>
                             </constraints>

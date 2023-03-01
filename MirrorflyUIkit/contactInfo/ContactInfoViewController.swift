@@ -24,6 +24,8 @@ class ContactInfoViewController: ViewController {
     let contactInfoIcon = [ImageConstant.ic_info_email, ImageConstant.ic_info_phone, ImageConstant.ic_info_status]
     var delegate: RefreshProfileInfo?
     
+    var availableFeatures = ChatManager.getAvailableFeatures()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setConfiguration()
@@ -39,6 +41,7 @@ class ContactInfoViewController: ViewController {
         ContactManager.shared.profileDelegate = self
         ChatManager.shared.adminBlockDelegate = self
         ChatManager.shared.connectionDelegate = self
+        ChatManager.shared.availableFeaturesDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -46,10 +49,12 @@ class ContactInfoViewController: ViewController {
         ContactManager.shared.profileDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
         ChatManager.shared.connectionDelegate = nil
+        ChatManager.shared.availableFeaturesDelegate = nil
         delegate = nil
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        availableFeatures = ChatManager.getAvailableFeatures()
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
@@ -246,10 +251,26 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
             
             return cell
         } else if indexPath.section == 3 {
-            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
-            let tap = UITapGestureRecognizer(target: self, action: #selector(self.didTapViewAllMedia(_:)))
-            cell.addGestureRecognizer(tap)
-            return cell
+            if availableFeatures.isViewAllMediasEnabled {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
+                cell.nextImage.isHidden = false
+                cell.titleLabel.text = "View All Media"
+                cell.titleLabel.textColor = Color.primaryTextColor
+                cell.iconImageView.image = UIImage(named:"infoViewAllMedia")
+                let tap = UITapGestureRecognizer(target: self, action: #selector(self.didTapViewAllMedia(_:)))
+                cell.addGestureRecognizer(tap)
+                return cell
+            } else {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
+                cell.nextImage.isHidden = true
+                cell.titleLabel.text = report
+                cell.titleLabel.textColor = Color.leaveGroupTextColor
+                cell.iconImageView.image = UIImage(named: ImageConstant.ic_info_report)
+                let tap = UITapGestureRecognizer(target: self, action: #selector(self.didTapReport(_:)))
+                cell.addGestureRecognizer(tap)
+                return cell
+            }
+            
         } else if indexPath.section == 4 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
             cell.nextImage.isHidden = true
@@ -267,7 +288,17 @@ extension ContactInfoViewController : UITableViewDelegate, UITableViewDataSource
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if (profileDetails?.contactType != .deleted){
-            return 5
+            
+            if (!(availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled)){
+                return 3
+            }
+            else if((availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled)) || (!(availableFeatures.isViewAllMediasEnabled) && (availableFeatures.isReportEnabled)) {
+                return 4
+            }
+            else{
+                return 5
+            }
+            
         }else{
             return 1
         }
@@ -320,7 +351,8 @@ extension ContactInfoViewController : ProfileEventsDelegate {
     }
     
     func usersBlockedMeListFetched(jidList: [String]) {
-        
+        setConfiguration()
+        contactInfoTableView?.reloadData()
     }
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
@@ -466,5 +498,27 @@ extension ContactInfoViewController: ConnectionEventDelegate {
     
     func onConnectionNotAuthorized() {
         
+    }
+}
+
+extension ContactInfoViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
+        }
+        
+        refreshData()
     }
 }

@@ -56,6 +56,7 @@ enum Identifiers {
     static let changeAppLockViewController = "ChangeAppLockViewController"
     static let pinEnteredCollectionViewCell = "PINenteredCollectionViewCell"
     static let authenticationPINCollectionViewCell = "AuthenticationPINCollectionViewCell"
+    static let AppLockDescriptionCell = "AppLockDescriptionCell"
     
     //MARK: - Audio
     static let audioSender = "AudioSender"

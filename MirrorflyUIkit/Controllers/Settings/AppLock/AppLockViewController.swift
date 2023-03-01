@@ -11,8 +11,8 @@ import LocalAuthentication
 
 enum AppLockList: String, CaseIterable {
     case pinlock = "PIN Lock"
-    case fingerPrintID = "FingerPrint ID"
-    
+    case fingerPrintID = "Fingerprint ID / Face ID"
+    case appLockDescription = "appLockDescription"
 }
 
 class AppLockViewController: UIViewController {
@@ -30,6 +30,7 @@ class AppLockViewController: UIViewController {
         super.viewDidLoad()
         
         self.AppLockTableview.register(UINib(nibName: Identifiers.appLockTableViewCell, bundle: nil), forCellReuseIdentifier: Identifiers.appLockTableViewCell)
+        self.AppLockTableview.register(UINib(nibName: Identifiers.AppLockDescriptionCell, bundle: nil), forCellReuseIdentifier: Identifiers.AppLockDescriptionCell)
         self.AppLockTableview.delegate = self
         self.AppLockTableview.dataSource = self
     }
@@ -81,6 +82,18 @@ extension AppLockViewController: UITableViewDelegate,UITableViewDataSource {
             
        
             break
+        case .appLockDescription:
+            let cell : AppLockDescriptionCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.AppLockDescriptionCell, for: indexPath) as! AppLockDescriptionCell
+
+            var attributedText = NSMutableAttributedString(string: "If App Lock enabled the app will be locked automatically after 32 sec when it is not in use.\n")
+            var attrs = [NSAttributedString.Key.font : UIFont(name: "SFUIDisplay-Medium", size: 13), NSAttributedString.Key.foregroundColor : Color.color_7B7B7B]
+            attributedText.append(NSMutableAttributedString(string: "Note: ", attributes:attrs as [NSAttributedString.Key : Any]))
+            attributedText.append(NSMutableAttributedString(string: "Once PIN is set, it will be expired in 31 days and has to be renewed."))
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 5
+            attributedText.addAttribute(NSAttributedString.Key.paragraphStyle, value:paragraphStyle, range:NSMakeRange(0, attributedText.length))
+            cell.descriptionLabel.attributedText = attributedText
+            return cell
         }
         return cell
     }
@@ -93,6 +106,8 @@ extension AppLockViewController: UITableViewDelegate,UITableViewDataSource {
         case .fingerPrintID:
             break
             
+        case .appLockDescription:
+            break
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -106,6 +121,8 @@ extension AppLockViewController: UITableViewDelegate,UITableViewDataSource {
             }
         case.fingerPrintID:
             return unselectedCellHeight
+        case .appLockDescription:
+            return UITableView.automaticDimension
         }
     }
     
@@ -172,5 +189,18 @@ extension AppLockViewController: UITableViewDelegate,UITableViewDataSource {
         }
        
         self.AppLockTableview.reloadData()
+    }
+}
+
+extension NSAttributedString {
+    func withLineSpacing(_ spacing: CGFloat) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString(attributedString: self)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byTruncatingTail
+        paragraphStyle.lineSpacing = spacing
+        attributedString.addAttribute(.paragraphStyle,
+                                      value: paragraphStyle,
+                                      range: NSRange(location: 0, length: string.count))
+        return NSAttributedString(attributedString: attributedString)
     }
 }

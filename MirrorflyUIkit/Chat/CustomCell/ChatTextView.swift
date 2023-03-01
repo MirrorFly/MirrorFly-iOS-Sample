@@ -9,6 +9,7 @@ import UIKit
 import FlyCommon
 import MapKit
 import GoogleMaps
+import FlyCore
 class ChatTextView: UIView, UITextViewDelegate {
     @IBOutlet weak var messageTypeView: UIView?
     @IBOutlet weak var mediaMessageImageView: UIImageView?
@@ -65,9 +66,54 @@ class ChatTextView: UIView, UITextViewDelegate {
         messageTypeImage?.isHidden = message.messageType == .text || message.isMessageRecalled == true ? true : false
         if message.messageType != .text {
             let thumbImage = message.mediaChatMessage?.mediaThumbImage ?? ""
-            let converter = ImageConverter()
-            let image =  converter.base64ToImage(thumbImage)
-            mediaMessageImageView?.image = image
+            if let mediaMessage = ChatManager.getMessageOfId(messageId: message.messageId) {
+                if mediaMessage.isMessageSentByMe {
+                    if mediaMessage.mediaChatMessage?.mediaUploadStatus == .uploaded {
+                        if let localPath = mediaMessage.mediaChatMessage?.mediaFileName {
+                            let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                            let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                            let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                            if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+                                do {
+                                    let data = try Data(contentsOf: fileURL)
+                                    let image = UIImage(data: data)
+                                    mediaMessageImageView?.backgroundColor = .white
+                                    mediaMessageImageView?.image = image
+                                } catch let error {
+                                    print("Error loading image : \(error)")
+                                }
+                            }
+                        }
+                    } else {
+                        let converter = ImageConverter()
+                        let image =  converter.base64ToImage(thumbImage)
+                        mediaMessageImageView?.image = image
+                    }
+                } else {
+                    if mediaMessage.mediaChatMessage?.mediaDownloadStatus == .downloaded {
+                        if let localPath = mediaMessage.mediaChatMessage?.mediaFileName {
+                            let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                            let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+                            let fileURL: URL = folderPath.appendingPathComponent(localPath)
+                            if FileManager.default.fileExists(atPath: fileURL.relativePath) {
+                                do {
+                                    let data = try Data(contentsOf: fileURL)
+                                    let image = UIImage(data: data)
+                                    mediaMessageImageView?.backgroundColor = .white
+                                    mediaMessageImageView?.image = image
+                                } catch let error {
+                                    print("Error loading image : \(error)")
+                                }
+                            }
+                        }
+                    } else {
+                        let converter = ImageConverter()
+                        let image =  converter.base64ToImage(thumbImage)
+                        mediaMessageImageView?.image = image
+                    }
+                }
+            }
+            mediaMessageImageView?.contentMode = .redraw
             mediaMessageImageView?.isHidden = false
         } else {
             mediaMessageImageView?.isHidden = true

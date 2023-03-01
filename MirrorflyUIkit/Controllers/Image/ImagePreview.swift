@@ -12,6 +12,8 @@ class ImagePreview: UIViewController  {
     
     @IBOutlet weak var imageList: UICollectionView!
     @IBOutlet weak var videoPlayButton: UIButton?
+    var availableFeatures = ChatManager.getAvailableFeatures()
+    
  
     func shareMedia(media: MediaChatMessage?) {
         var type = String()
@@ -58,11 +60,23 @@ class ImagePreview: UIViewController  {
         super.viewWillAppear(true)
         navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        
+        availableFeatures = ChatManager.getAvailableFeatures()
+        ChatManager.shared.availableFeaturesDelegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ChatManager.shared.messageEventsDelegate = self
+        FlyMessenger.shared.messageEventsDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         navigationController?.setNavigationBarHidden(true, animated: true)
+        ChatManager.shared.availableFeaturesDelegate = nil
+        ChatManager.shared.messageEventsDelegate = nil
+        FlyMessenger.shared.messageEventsDelegate = nil
     }
     
     func setupUI() {
@@ -73,7 +87,8 @@ class ImagePreview: UIViewController  {
         layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
         imageList!.collectionViewLayout = layout
-      imageList.isPagingEnabled = false
+        imageList.isPagingEnabled = false
+        imageList.isScrollEnabled = availableFeatures.isViewAllMediasEnabled ? true : false
     }
     
     func congfigureDefaults() {
@@ -184,7 +199,6 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
             let imgeDetail = imageAray[indexPath.row]
             currentIndexPath = indexPath
             if imgeDetail.messageType == .image || imgeDetail.messageType == .video || imgeDetail.messageType == .audio {
-                cell.videoPlayButton?.isHidden = (imgeDetail.messageType == .video) ? false : true
                 cell.videoPlayButton?.tag = indexPath.row
                 cell.videoPlayButton?.addTarget(self, action: #selector(didTapPlayButton(sender:)),
                                                 for: .touchUpInside)
@@ -195,6 +209,7 @@ extension ImagePreview: UICollectionViewDelegate, UICollectionViewDataSource, UI
                 cell = cell.getCellFor(imgeDetail, at: indexPath)!
                 cell.audioButton.isHidden = imgeDetail.messageType == .audio ? false : true
                 cell.audioImage.isHidden = imgeDetail.messageType == .audio ? false : true
+                cell.videoPlayButton?.isHidden = (imgeDetail.messageType == .video || imgeDetail.messageType == .audio) ? false : true
             }
         }
         return cell
@@ -279,4 +294,25 @@ extension ImagePreview : MessageEventsDelegate {
         
     }
     func clearAllConversationForSyncedDevice() {}
+}
+
+extension ImagePreview : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+        }
+        imageList.isScrollEnabled = availableFeatures.isViewAllMediasEnabled ? true : false
+    }
+
 }

@@ -208,6 +208,7 @@ extension QRCodeScanner: QRScannerViewDelegate {
             if isSuccess {
                 self?.navigateBack()
             } else {
+                AppAlert.shared.showToastWithDuration(message: invalidQRMessage, duration: 1.0)
                 self?.checkForLogin()
             }
             self?.stopLoading()

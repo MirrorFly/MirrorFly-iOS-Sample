@@ -19,13 +19,13 @@ class AppActionSheet : NSObject {
         return AppActionSheet()
     }()
     
-    func showActionSeet(title : String, message : String, actions: [(String, UIAlertAction.Style)], titleBold : Bool = false ,sheetCallBack : @escaping SheetCallBack) {
+    func showActionSeet(title : String, message : String, showCancel: Bool = true, actions: [(String, UIAlertAction.Style)], titleBold : Bool = false , style: UIAlertController.Style = .actionSheet, sheetCallBack : @escaping SheetCallBack) {
         
         let mTitle = title.isEmpty ? nil : title
         let mMessage = message.isEmpty ? nil : message
         
         if !actions.isEmpty {
-            alertController = UIAlertController(title: mTitle, message: mMessage, preferredStyle: .actionSheet)
+            alertController = UIAlertController(title: mTitle, message: mMessage, preferredStyle: style)
             
             if let mTitle = mTitle, mTitle.isNotEmpty, titleBold {
                 
@@ -40,14 +40,18 @@ class AppActionSheet : NSObject {
                 let alertAction = UIAlertAction(title: title, style: style) { (action) -> Void in
                     sheetCallBack(false, title)
                 }
-                alertAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+                if style != .destructive {
+                    alertAction.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+                }
                 alertController?.addAction(alertAction)
             }
-            let cancel = UIAlertAction(title: cancelUppercase, style: .cancel, handler: { (action) -> Void in
-                sheetCallBack(true, cancelUppercase)
-            })
-            cancel.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
-            alertController?.addAction(cancel)
+            if showCancel {
+                let cancel = UIAlertAction(title: cancelUppercase, style: .cancel, handler: { (action) -> Void in
+                    sheetCallBack(true, cancelUppercase)
+                })
+                cancel.setValue(Color.primaryAppColor!, forKey: "titleTextColor")
+                alertController?.addAction(cancel)
+            }
             UIApplication.shared.keyWindow?.rootViewController?.present(alertController ?? UIAlertController(), animated: true, completion:nil)
         }
     }

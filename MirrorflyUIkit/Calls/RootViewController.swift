@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import FlyCall
 import FlyCommon
+import LocalAuthentication
 
 @objc class RootViewController : NSObject {
     public static var sharedInstance = RootViewController()
@@ -68,6 +69,14 @@ extension RootViewController : CallManagerDelegate {
             
             switch callStatus {
             case .ATTENDED:
+
+                if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
+                    let secondsDifference = Calendar.current.dateComponents([.minute, .second], from: FlyDefaults.appBackgroundTime, to: Date())
+                    if secondsDifference.second ?? 0 > 32 {
+                        FlyDefaults.showAppLock = true
+                    }
+                }
+
                 let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
                 if  let navigationController = window?.rootViewController as? UINavigationController {
                     if CallManager.getCallDirection() == .Incoming &&  (navigationController.presentedViewController?.isKind(of: CallViewController.self) == false || navigationController.presentedViewController == nil){

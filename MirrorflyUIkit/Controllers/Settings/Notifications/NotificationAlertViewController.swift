@@ -86,7 +86,7 @@ extension NotificationAlertViewController : UITableViewDelegate,UITableViewDataS
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return selectedCellHeight
+        return UITableView.automaticDimension
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch self.NotificationList[indexPath.row]{

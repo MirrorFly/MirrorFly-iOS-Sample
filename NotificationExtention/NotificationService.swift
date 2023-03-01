@@ -14,11 +14,13 @@ import AVFoundation
 import FlyDatabase
 import AudioToolbox
 
+
 let BASE_URL =  "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let CONTAINER_ID = "group.com.mirrorfly.qa"
-let LICENSE_KEY = "xxxxxxxxxxxxxx"
+let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let IS_LIVE = false
-let APP_NAME = "UiKitQa"
+let APP_NAME = "UiKit"
+
 
 class NotificationService: UNNotificationServiceExtension {
     
@@ -26,13 +28,13 @@ class NotificationService: UNNotificationServiceExtension {
     var bestAttemptContent: UNMutableNotificationContent?
     
     var notificationIDs = [String]()
-    
+
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         let payloadType = bestAttemptContent?.userInfo["type"] as? String
         try? ChatSDK.Builder.setAppGroupContainerID(containerID: CONTAINER_ID)
-            .isTrialLicense(isTrial: !IS_LIVE)
+            .isTrialLicense(isTrial: false)
             .setLicenseKey(key: LICENSE_KEY)
             .setDomainBaseUrl(baseUrl: BASE_URL)
             .buildAndInitialize()
@@ -81,12 +83,12 @@ class NotificationService: UNNotificationServiceExtension {
                 if !FlyCoreController.shared.isContactMuted(jid: bestAttemptContents?.userInfo["from_user"] as? String ?? "") || !(FlyDefaults.isArchivedChatEnabled && ChatManager.getRechtChat(jid: bestAttemptContents?.userInfo["from_user"] as? String ?? "")?.isChatArchived ?? false){
                     bestAttemptContents?.badge = messageCount as? NSNumber
                 }
-                
+
                 let chatType = (bestAttemptContents?.userInfo["chat_type"] as? String ?? "")
                 let messageId = (self.bestAttemptContent?.userInfo["message_id"] as? String ?? "").components(separatedBy: ",").last ?? ""
-                
+
                 self.bestAttemptContent = bestAttemptContents
-                
+
                 if FlyDatabaseController.shared.messageManager.getMessageFor(id: messageId)?.senderUserJid == FlyDefaults.myJid && (chatType == "chat" || chatType == "normal") {
                     if !FlyUtils.isValidGroupJid(groupJid: FlyDatabaseController.shared.messageManager.getMessageFor(id: messageId)?.chatUserJid) {
                         self.bestAttemptContent?.title = "You"

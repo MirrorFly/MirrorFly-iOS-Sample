@@ -43,6 +43,8 @@ class CallLogViewController: UIViewController {
     }
 
     @IBOutlet weak var noCallLogView: UIView!
+    @IBOutlet weak var searchCallLogLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpStatusBar()
@@ -112,9 +114,11 @@ class CallLogViewController: UIViewController {
                             Utility.saveInPreference(key: "clLastTotalRecords", value: "\(self.callLogsTotalRecords)")
                         }
                         
-                        self.callLogArray = CallLogManager.getAllCallLogs()
+                        if !self.isSearchEnabled {
+                            self.callLogArray = CallLogManager.getAllCallLogs()
+                            self.noCallLogView.isHidden = !self.callLogArray.isEmpty
+                        }
                         self.allCallLogArray = self.callLogArray
-                        self.noCallLogView.isHidden = !self.callLogArray.isEmpty
                         self.deleteAllBtn.isHidden = self.callLogArray.isEmpty
                         self.callLogTableView.reloadData()
                         
@@ -140,12 +144,15 @@ class CallLogViewController: UIViewController {
         if !isSearchEnabled {
             callLogArray = CallLogManager.getAllCallLogs()
             allCallLogArray = callLogArray
+        } else {
+            noCallLogView.isHidden = true
         }
         deleteAllBtn.isHidden = callLogArray.isEmpty
         if let fab = floaty{
             fab.removeFromSuperview()
         }
         floaty = Floaty(frame:  CGRect(x: (view.bounds.maxX - 68), y:  (view.bounds.maxY - 160), width: 56, height: 56))
+        floaty?.respondsToKeyboard = false
         floaty?.addItem("", icon: UIImage(named: "audio_call")!, handler: { item in
             let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
             let controller = storyboard.instantiateViewController(withIdentifier: Identifiers.contactViewController) as! ContactViewController
@@ -258,6 +265,7 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
         let memberCell = tableView.dequeueReusableCell(withIdentifier: "CCFCallLogListCell") as? CCFCallLogListCell
         memberCell?.callInitiateBtn.isUserInteractionEnabled = true
         memberCell?.callInitiateBtn.tag = indexPath.row
+        memberCell?.callInitiateBtn.makeCircleView(borderColor: UIColor.clear.cgColor, borderWidth: 0.0)
         memberCell?.callInitiateBtn.addTarget(self, action: #selector(buttonClicked(sender:)), for: .touchUpInside)
         let callLog = callLogArray[indexPath.row]
         let isGroupCall =  (callLog.groupId?.count ?? 0 != 0)
@@ -272,7 +280,7 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
             }
             let jid =  (callLog.groupId?.count ?? 0 == 0) ? jidString : callLog.groupId!
             if let contact = rosterManager.getContact(jid: jid){
-                memberCell?.contactNamelabel.attributedText = getAttributedUserName(name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), searchText: callLogSearchBar.text ?? "")
+                memberCell?.contactNamelabel.attributedText = getAttributedUserName(name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), searchText: (callLogSearchBar.text ?? "").trim())
                 memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
                 memberCell?.userImageView.layer.masksToBounds = true
                 memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType, jid: contact.jid, isBlockedByAdmin: ContactManager.shared.getUserProfileDetails(for: contact.jid)?.isBlockedByAdmin ?? false)
@@ -309,9 +317,9 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
                 }
             }
             if callLog.groupId?.count ?? 0 > 0 {
-                memberCell?.contactNamelabel.attributedText =  getAttributedUserName(name: rosterManager.getContact(jid: callLog.groupId!)?.name ?? "", searchText: callLogSearchBar.text ?? "")
+                memberCell?.contactNamelabel.attributedText =  getAttributedUserName(name: rosterManager.getContact(jid: callLog.groupId!)?.name ?? "", searchText: (callLogSearchBar.text ?? "").trim())
             } else {
-                memberCell?.contactNamelabel.attributedText =  getAttributedUserName(name: contactArr.componentsJoined(by: ","), searchText: callLogSearchBar.text ?? "")
+                memberCell?.contactNamelabel.attributedText =  getAttributedUserName(name: contactArr.componentsJoined(by: ","), searchText: (callLogSearchBar.text ?? "").trim())
             }
             if contactJidArr.count == 1 {
                 
@@ -459,6 +467,16 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
     }
     
     @objc func buttonClicked(sender: UIButton) {
+
+        if #available(iOS 13.0, *) {
+            sender.backgroundColor = .opaqueSeparator
+        } else {
+            sender.backgroundColor = .lightText
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.5 ) { [weak self] in
+            sender.backgroundColor = .clear
+        }
+
         let buttonRow = sender.tag
         print(buttonRow)
         let callLog = callLogArray[buttonRow]
@@ -511,7 +529,10 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
             AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
             return
         }
-
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            return
+        }
         if callLog.callMode == .ONE_TO_ONE {
             var jidString = String()
             if callLog.fromUserId == FlyDefaults.myJid {
@@ -731,20 +752,26 @@ extension CallLogViewController {
             }
         }
     }
-    
+
     func refreshTableview() {
         callLogArray.removeAll()
         callLogArray = CallLogManager.getAllCallLogs()
         allCallLogArray = callLogArray
-        noCallLogView.isHidden = !callLogArray.isEmpty
+        if isSearchEnabled {
+            noCallLogView.isHidden = true
+            searchCallLogLabel.isHidden = !callLogArray.isEmpty
+        } else {
+            noCallLogView.isHidden = !callLogArray.isEmpty
+            searchCallLogLabel.isHidden = true
+        }
         callLogTableView.reloadData()
     }
-    
+
     func refreshToken(onCompletion: @escaping (_ isSuccess: Bool) -> Void) {
 
         VOIPManager.sharedInstance.refreshToken { isSuccess in
-           if isSuccess{
-               FlyCallUtils.sharedInstance.setConfigUserDefaults(FlyDefaults.authtoken, withKey: "token")
+            if isSuccess{
+                FlyCallUtils.sharedInstance.setConfigUserDefaults(FlyDefaults.authtoken, withKey: "token")
                 onCompletion(true)
             }else{
                 onCompletion(false)
@@ -944,17 +971,7 @@ extension CallLogViewController: UIScrollViewDelegate {
         refreshTableview()
         callLogSearchBar.text = ""
     }
-
-    func refreshFloatButton() {
-        if let fab = floaty{
-            fab.removeFromSuperview()
-        }
-        floaty?.frame = CGRect(x: (view.bounds.maxX - 68), y:  (view.bounds.maxY - 160), width: 56, height: 56)
-        if let floaty = floaty {
-            floaty.overlayColor = UIColor(white: 1, alpha: 0.0)
-            view.addSubview(floaty)
-        }
-    }
+    
 }
 
 extension CallLogViewController : AvailableFeaturesDelegate {
@@ -994,7 +1011,7 @@ extension CallLogViewController : AdminBlockDelegate {
 extension CallLogViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.count > 0 {
+        if searchText.trim().count > 0 {
             callLogArray = allCallLogArray.filter {
                 let isGroupCall =  ($0.groupId?.count ?? 0 != 0)
                 if $0.callMode == .ONE_TO_ONE || isGroupCall {
@@ -1006,7 +1023,7 @@ extension CallLogViewController: UISearchBarDelegate {
                     }
                     let jid =  ($0.groupId?.count ?? 0 == 0) ? jidString : $0.groupId!
                     if let contact = rosterManager.getContact(jid: jid){
-                        return getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType).localizedCaseInsensitiveContains(searchText)
+                        return getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType).localizedCaseInsensitiveContains(searchText.trim())
                     }
                 }else{
                     var userList = $0.userList
@@ -1023,9 +1040,9 @@ extension CallLogViewController: UISearchBarDelegate {
                         }
                     }
                     if $0.groupId?.count ?? 0 > 0 {
-                        return (rosterManager.getContact(jid: $0.groupId!)?.name ?? "").localizedCaseInsensitiveContains(searchText)
+                        return (rosterManager.getContact(jid: $0.groupId!)?.name ?? "").localizedCaseInsensitiveContains(searchText.trim())
                     } else {
-                        return contactArr.componentsJoined(by: ",").localizedCaseInsensitiveContains(searchText)
+                        return contactArr.componentsJoined(by: ",").localizedCaseInsensitiveContains(searchText.trim())
                     }
                 }
                 return false
@@ -1034,17 +1051,19 @@ extension CallLogViewController: UISearchBarDelegate {
             callLogArray = allCallLogArray
         }
         callLogTableView.reloadData()
-        noCallLogView.isHidden = !callLogArray.isEmpty
+        searchCallLogLabel.isHidden = !callLogArray.isEmpty
+        noCallLogView.isHidden = true
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        refreshFloatButton()
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchCallLogLabel.isHidden = true
         refreshCallLogs()
-        refreshFloatButton()
+        deleteAllBtn.isHidden = callLogArray.isEmpty
+        noCallLogView.isHidden = !callLogArray.isEmpty
     }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {

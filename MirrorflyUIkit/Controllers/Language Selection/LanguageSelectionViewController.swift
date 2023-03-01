@@ -5,6 +5,7 @@
 import UIKit
 import FlyCommon
 import FlyTranslate
+import FlyCore
 
 class LanguageSelectionViewController: UIViewController {
     
@@ -13,6 +14,7 @@ class LanguageSelectionViewController: UIViewController {
     var isSelected:Bool = false
     var checkedRow: Int?
     var test: String?
+    var availableFeatures = ChatManager.getAvailableFeatures()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +27,13 @@ class LanguageSelectionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
+        availableFeatures = ChatManager.getAvailableFeatures()
+        ChatManager.shared.availableFeaturesDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ChatManager.shared.availableFeaturesDelegate = nil
     }
     
     @IBAction func onTapBack(_ sender: UIButton) {
@@ -32,6 +41,11 @@ class LanguageSelectionViewController: UIViewController {
     }
     
     func fetchSupportedLanguages() {
+        
+        if(!availableFeatures.isTranslationEnabled){
+            return
+        }
+        
         FlyTranslationManager.shared.supportedTranslationLanguages(TargetLanguageCode: "en", GooogleAPIKey: googleApiKey_Translation){ (languageList,isSuccess,errorMessage) in
             if isSuccess {
                 self.languageArray = languageList.filter({$0.name != ""})
@@ -75,6 +89,33 @@ extension LanguageSelectionViewController: UITableViewDataSource, UITableViewDel
         FlyDefaults.selectedLanguage = self.languageArray[indexPath.row].name ?? ""
         FlyDefaults.targetLanguageCode = self.languageArray[indexPath.row].language ?? ""
         self.navigationController?.popViewController(animated: true)
+    }
+}
+
+extension LanguageSelectionViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
+        }
+        
+        if !(availableFeatures.isTranslationEnabled) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                AppAlert.shared.showAlert(view: self!, title: "" , message: FlyConstants.ErrorMessage.forbidden, buttonTitle: "OK")
+            }
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 }
 

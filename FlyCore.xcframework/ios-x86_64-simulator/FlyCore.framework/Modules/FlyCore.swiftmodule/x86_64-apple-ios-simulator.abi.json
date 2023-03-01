@@ -2577,8 +2577,8 @@
           },
           {
             "kind": "Function",
-            "name": "deleteRecentChat",
-            "printedName": "deleteRecentChat(jid:)",
+            "name": "deleteRecentChats",
+            "printedName": "deleteRecentChats(jids:completionHandler:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -2587,14 +2587,80 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
+                "name": "Array",
+                "printedName": "[Swift.String]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Tuple",
+                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "FlyCommon.FlyError?",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "FlyError",
+                            "printedName": "FlyCommon.FlyError",
+                            "usr": "s:9FlyCommon0A5ErrorO"
+                          }
+                        ],
+                        "usr": "s:Sq"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Dictionary",
+                        "printedName": "[Swift.String : Any]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ],
+                        "usr": "s:SD"
+                      }
+                    ]
+                  }
+                ]
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC012deleteRecentC03jidySS_tFZ",
-            "mangledName": "$s7FlyCore11ChatManagerC012deleteRecentC03jidySS_tFZ",
+            "usr": "s:7FlyCore11ChatManagerC17deleteRecentChats4jids17completionHandlerySaySSG_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
+            "mangledName": "$s7FlyCore11ChatManagerC17deleteRecentChats4jids17completionHandlerySaySSG_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
             "moduleName": "FlyCore",
             "static": true,
             "declAttributes": [
@@ -3946,7 +4012,7 @@
           {
             "kind": "Function",
             "name": "onReceivedMessageStatusUpdated",
-            "printedName": "onReceivedMessageStatusUpdated(toJid:messageId:updateType:)",
+            "printedName": "onReceivedMessageStatusUpdated(toJid:messageId:updateType:fromJid:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -3970,11 +4036,17 @@
                 "name": "MessageStatus",
                 "printedName": "FlyCommon.MessageStatus",
                 "usr": "c:@M@FlyCommon@E@MessageStatus"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC30onReceivedMessageStatusUpdated5toJid9messageId10updateTypeySS_SS0A6Common0gH0OtF",
-            "mangledName": "$s7FlyCore11ChatManagerC30onReceivedMessageStatusUpdated5toJid9messageId10updateTypeySS_SS0A6Common0gH0OtF",
+            "usr": "s:7FlyCore11ChatManagerC30onReceivedMessageStatusUpdated5toJid9messageId10updateType04fromK0ySS_SS0A6Common0gH0OSStF",
+            "mangledName": "$s7FlyCore11ChatManagerC30onReceivedMessageStatusUpdated5toJid9messageId10updateType04fromK0ySS_SS0A6Common0gH0OSStF",
             "moduleName": "FlyCore",
             "declAttributes": [
               "AccessControl"
@@ -4113,7 +4185,7 @@
           {
             "kind": "Function",
             "name": "deleteBusyStatus",
-            "printedName": "deleteBusyStatus(_:)",
+            "printedName": "deleteBusyStatus(statusId:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -4122,14 +4194,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "BusyStatus",
-                "printedName": "FlyCommon.BusyStatus",
-                "usr": "s:9FlyCommon10BusyStatusV"
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC16deleteBusyStatusyy0A6Common0fG0VF",
-            "mangledName": "$s7FlyCore11ChatManagerC16deleteBusyStatusyy0A6Common0fG0VF",
+            "usr": "s:7FlyCore11ChatManagerC16deleteBusyStatus8statusIdySS_tF",
+            "mangledName": "$s7FlyCore11ChatManagerC16deleteBusyStatus8statusIdySS_tF",
             "moduleName": "FlyCore",
             "declAttributes": [
               "AccessControl"
@@ -4581,7 +4653,7 @@
           {
             "kind": "Function",
             "name": "registerApiService",
-            "printedName": "registerApiService(for:deviceToken:voipDeviceToken:isExport:isForceRegister:completionHandler:)",
+            "printedName": "registerApiService(for:deviceToken:voipDeviceToken:isExport:completionHandler:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -4607,13 +4679,6 @@
                 "printedName": "Swift.String",
                 "hasDefaultArg": true,
                 "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "hasDefaultArg": true,
-                "usr": "s:Sb"
               },
               {
                 "kind": "TypeNominal",
@@ -4682,8 +4747,8 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC18registerApiService3for11deviceToken010voipDeviceJ08isExport0M13ForceRegister17completionHandlerySS_S2SS2bySb_0A6Common0A5ErrorOSgSDySSypGtctKFZ",
-            "mangledName": "$s7FlyCore11ChatManagerC18registerApiService3for11deviceToken010voipDeviceJ08isExport0M13ForceRegister17completionHandlerySS_S2SS2bySb_0A6Common0A5ErrorOSgSDySSypGtctKFZ",
+            "usr": "s:7FlyCore11ChatManagerC18registerApiService3for11deviceToken010voipDeviceJ08isExport17completionHandlerySS_S2SSbySb_0A6Common0A5ErrorOSgSDySSypGtctKFZ",
+            "mangledName": "$s7FlyCore11ChatManagerC18registerApiService3for11deviceToken010voipDeviceJ08isExport17completionHandlerySS_S2SSbySb_0A6Common0A5ErrorOSgSDySSypGtctKFZ",
             "moduleName": "FlyCore",
             "static": true,
             "declAttributes": [
@@ -6085,7 +6150,7 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Swift.Bool) -> ()",
+                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -6094,16 +6159,56 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
+                    "name": "Tuple",
+                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "FlyCommon.FlyError?",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "FlyError",
+                            "printedName": "FlyCommon.FlyError",
+                            "usr": "s:9FlyCommon0A5ErrorO"
+                          }
+                        ],
+                        "usr": "s:Sq"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Dictionary",
+                        "printedName": "[Swift.String : Any]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ],
+                        "usr": "s:SD"
+                      }
+                    ]
                   }
                 ]
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC13reportMessageAD17completionHanldery0A6Common06ReportF0V_ySbctFZ",
-            "mangledName": "$s7FlyCore11ChatManagerC13reportMessageAD17completionHanldery0A6Common06ReportF0V_ySbctFZ",
+            "usr": "s:7FlyCore11ChatManagerC13reportMessageAD17completionHanldery0A6Common06ReportF0V_ySb_AF0A5ErrorOSgSDySSypGtctFZ",
+            "mangledName": "$s7FlyCore11ChatManagerC13reportMessageAD17completionHanldery0A6Common06ReportF0V_ySb_AF0A5ErrorOSgSDySSypGtctFZ",
             "moduleName": "FlyCore",
             "static": true,
             "declAttributes": [
@@ -6622,7 +6727,7 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "([[FlyCommon.ChatMessage]]) -> ()",
+                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -6631,32 +6736,56 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "Array",
-                    "printedName": "[[FlyCommon.ChatMessage]]",
+                    "name": "Tuple",
+                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "Array",
-                        "printedName": "[FlyCommon.ChatMessage]",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "FlyCommon.FlyError?",
                         "children": [
                           {
                             "kind": "TypeNominal",
-                            "name": "ChatMessage",
-                            "printedName": "FlyCommon.ChatMessage",
-                            "usr": "c:@M@FlyCommon@objc(cs)ChatMessage"
+                            "name": "FlyError",
+                            "printedName": "FlyCommon.FlyError",
+                            "usr": "s:9FlyCommon0A5ErrorO"
                           }
                         ],
-                        "usr": "s:Sa"
+                        "usr": "s:Sq"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Dictionary",
+                        "printedName": "[Swift.String : Any]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ],
+                        "usr": "s:SD"
                       }
-                    ],
-                    "usr": "s:Sa"
+                    ]
                   }
                 ]
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC37getVedioImageAudioMessageGroupByMonth3jid17completionHandlerySS_ySaySay0A6Common0cI0CGGctFZ",
-            "mangledName": "$s7FlyCore11ChatManagerC37getVedioImageAudioMessageGroupByMonth3jid17completionHandlerySS_ySaySay0A6Common0cI0CGGctFZ",
+            "usr": "s:7FlyCore11ChatManagerC37getVedioImageAudioMessageGroupByMonth3jid17completionHandlerySS_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
+            "mangledName": "$s7FlyCore11ChatManagerC37getVedioImageAudioMessageGroupByMonth3jid17completionHandlerySS_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
             "moduleName": "FlyCore",
             "static": true,
             "declAttributes": [
@@ -6685,7 +6814,7 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "([[FlyCommon.ChatMessage]]) -> ()",
+                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -6694,32 +6823,56 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "Array",
-                    "printedName": "[[FlyCommon.ChatMessage]]",
+                    "name": "Tuple",
+                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "Array",
-                        "printedName": "[FlyCommon.ChatMessage]",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "FlyCommon.FlyError?",
                         "children": [
                           {
                             "kind": "TypeNominal",
-                            "name": "ChatMessage",
-                            "printedName": "FlyCommon.ChatMessage",
-                            "usr": "c:@M@FlyCommon@objc(cs)ChatMessage"
+                            "name": "FlyError",
+                            "printedName": "FlyCommon.FlyError",
+                            "usr": "s:9FlyCommon0A5ErrorO"
                           }
                         ],
-                        "usr": "s:Sa"
+                        "usr": "s:Sq"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Dictionary",
+                        "printedName": "[Swift.String : Any]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ],
+                        "usr": "s:SD"
                       }
-                    ],
-                    "usr": "s:Sa"
+                    ]
                   }
                 ]
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC30getDocumentMessageGroupByMonth3jid17completionHandlerySS_ySaySay0A6Common0cG0CGGctFZ",
-            "mangledName": "$s7FlyCore11ChatManagerC30getDocumentMessageGroupByMonth3jid17completionHandlerySS_ySaySay0A6Common0cG0CGGctFZ",
+            "usr": "s:7FlyCore11ChatManagerC30getDocumentMessageGroupByMonth3jid17completionHandlerySS_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
+            "mangledName": "$s7FlyCore11ChatManagerC30getDocumentMessageGroupByMonth3jid17completionHandlerySS_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
             "moduleName": "FlyCore",
             "static": true,
             "declAttributes": [
@@ -6748,7 +6901,7 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "([[FlyCommon.LinkMessage]]) -> ()",
+                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -6757,32 +6910,56 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "Array",
-                    "printedName": "[[FlyCommon.LinkMessage]]",
+                    "name": "Tuple",
+                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "Array",
-                        "printedName": "[FlyCommon.LinkMessage]",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "FlyCommon.FlyError?",
                         "children": [
                           {
                             "kind": "TypeNominal",
-                            "name": "LinkMessage",
-                            "printedName": "FlyCommon.LinkMessage",
-                            "usr": "s:9FlyCommon11LinkMessageV"
+                            "name": "FlyError",
+                            "printedName": "FlyCommon.FlyError",
+                            "usr": "s:9FlyCommon0A5ErrorO"
                           }
                         ],
-                        "usr": "s:Sa"
+                        "usr": "s:Sq"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Dictionary",
+                        "printedName": "[Swift.String : Any]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ],
+                        "usr": "s:SD"
                       }
-                    ],
-                    "usr": "s:Sa"
+                    ]
                   }
                 ]
               }
             ],
             "declKind": "Func",
-            "usr": "s:7FlyCore11ChatManagerC26getLinkMessageGroupByMonth3jid17completionHandlerySS_ySaySay0A6Common0fG0VGGctFZ",
-            "mangledName": "$s7FlyCore11ChatManagerC26getLinkMessageGroupByMonth3jid17completionHandlerySS_ySaySay0A6Common0fG0VGGctFZ",
+            "usr": "s:7FlyCore11ChatManagerC26getLinkMessageGroupByMonth3jid17completionHandlerySS_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
+            "mangledName": "$s7FlyCore11ChatManagerC26getLinkMessageGroupByMonth3jid17completionHandlerySS_ySb_0A6Common0A5ErrorOSgSDySSypGtctFZ",
             "moduleName": "FlyCore",
             "static": true,
             "declAttributes": [
@@ -7708,6 +7885,302 @@
             "declKind": "EnumElement",
             "usr": "s:7FlyCore8FeaturesO10attachmentyA2CmF",
             "mangledName": "$s7FlyCore8FeaturesO10attachmentyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "star_message",
+            "printedName": "star_message",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO12star_messageyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO12star_messageyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "clear_chat",
+            "printedName": "clear_chat",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO10clear_chatyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO10clear_chatyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "delete_chat",
+            "printedName": "delete_chat",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO11delete_chatyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO11delete_chatyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "translation",
+            "printedName": "translation",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO11translationyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO11translationyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "block",
+            "printedName": "block",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO5blockyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO5blockyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "report",
+            "printedName": "report",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO6reportyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO6reportyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "delete_message",
+            "printedName": "delete_message",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO14delete_messageyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO14delete_messageyA2CmF",
+            "moduleName": "FlyCore"
+          },
+          {
+            "kind": "Var",
+            "name": "viewall_medias",
+            "printedName": "viewall_medias",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(FlyCore.Features.Type) -> FlyCore.Features",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Features",
+                    "printedName": "FlyCore.Features",
+                    "usr": "s:7FlyCore8FeaturesO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "FlyCore.Features.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Features",
+                        "printedName": "FlyCore.Features",
+                        "usr": "s:7FlyCore8FeaturesO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7FlyCore8FeaturesO14viewall_mediasyA2CmF",
+            "mangledName": "$s7FlyCore8FeaturesO14viewall_mediasyA2CmF",
             "moduleName": "FlyCore"
           },
           {
@@ -21545,70 +22018,63 @@
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 38948,
+      "offset": 40511,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 42029,
+      "offset": 44336,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "StringLiteral",
-      "offset": 54778,
+      "offset": 59448,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 54800,
+      "offset": 59470,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "StringLiteral",
-      "offset": 62310,
+      "offset": 67016,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 79375,
+      "offset": 84215,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 79406,
-      "length": 4,
-      "value": "true"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
-      "kind": "BooleanLiteral",
-      "offset": 93012,
+      "offset": 97788,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 97897,
+      "offset": 102673,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ChatManager.swift",
       "kind": "StringLiteral",
-      "offset": 103951,
+      "offset": 108798,
       "length": 2,
       "value": "\"\""
     },
@@ -21790,21 +22256,21 @@
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ContactManager.swift",
       "kind": "StringLiteral",
-      "offset": 27746,
+      "offset": 29880,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ContactManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 29818,
+      "offset": 31952,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/ContactManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 29837,
+      "offset": 31971,
       "length": 2,
       "value": "50"
     },
@@ -21895,7 +22361,7 @@
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCore\/FlyCore\/FlyCore\/GroupManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 47993,
+      "offset": 48060,
       "length": 5,
       "value": "false"
     },

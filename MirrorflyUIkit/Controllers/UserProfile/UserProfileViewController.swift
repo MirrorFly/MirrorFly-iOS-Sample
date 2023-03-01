@@ -102,12 +102,14 @@ class UserProfileViewController : UIViewController {
         super.viewDidAppear(animated)
         ChatManager.shared.availableFeaturesDelegate = self
         ContactManager.shared.profileDelegate = self
+        ChatManager.shared.connectionDelegate = self
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         ChatManager.shared.availableFeaturesDelegate = nil
         ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.connectionDelegate = nil
     }
     
     override func viewDidLayoutSubviews(){
@@ -250,6 +252,7 @@ extension UserProfileViewController {
                     if isRemovedProfileImage == false {
                         AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
                     }
+                    print("getProfile() updateMyProfile")
                     self?.getProfile()
                     Utility.saveInPreference(key: isProfileSaved, value: true)
                 } else {
@@ -282,6 +285,7 @@ extension UserProfileViewController {
         else {
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
+        ContactManager.shared.profileDelegate = self
     }
 }
 
@@ -642,6 +646,7 @@ extension UserProfileViewController: CropperViewControllerDelegate {
                 self?.updateMyProfile(isRemovedProfileImage: false)
             }
         }
+        ContactManager.shared.profileDelegate = self
     }
 }
 
@@ -693,6 +698,24 @@ extension UserProfileViewController: TatsiPickerViewControllerDelegate {
     func setCroppedImage(_ croppedImage: UIImage) {
         self.profileImage?.image = croppedImage
     }
+
+    func updateChanges(profileDetails: ProfileDetails?) {
+        if(profileDetails?.image != "") {
+            setImage(imageURL: profileDetails?.image ?? "", completionHandler: { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.stopLoading()
+                }
+            })
+        } else {
+            getUserNameInitial()
+        }
+        nameTextField?.text = profileDetails?.name
+        emailTextField?.text = profileDetails?.email
+        getUserMobileNumber = profileDetails!.mobileNumber
+        let mobileNumberWithoutCountryCode = AppUtils.shared.mobileNumberParse(phoneNo: (profileDetails!.mobileNumber))
+        mobileNumberLabel?.text = mobileNumberWithoutCountryCode
+        statusLabel?.text = profileDetails?.status
+    }
 }
 
 extension UserProfileViewController : AvailableFeaturesDelegate {
@@ -716,7 +739,7 @@ extension UserProfileViewController : AvailableFeaturesDelegate {
 // Profile Event Delegate
 extension UserProfileViewController : ProfileEventsDelegate {
     func userCameOnline(for jid: String) {
-        getProfile()
+        //getProfile()
     }
     
     func userWentOffline(for jid: String) {
@@ -724,11 +747,13 @@ extension UserProfileViewController : ProfileEventsDelegate {
     }
     
     func userProfileFetched(for jid: String, profileDetails: FlyCommon.ProfileDetails?) {
-        
+        if profileDetails?.jid == FlyDefaults.myJid {
+            updateChanges(profileDetails: profileDetails)
+        }
     }
     
     func myProfileUpdated() {
-        
+
     }
     
     func usersProfilesFetched() {
@@ -752,7 +777,9 @@ extension UserProfileViewController : ProfileEventsDelegate {
     }
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
-        
+        if profileDetails.jid == FlyDefaults.myJid {
+            updateChanges(profileDetails: profileDetails)
+        }
     }
     
     func userBlockedMe(jid: String) {
@@ -777,4 +804,18 @@ extension UserProfileViewController : ProfileEventsDelegate {
     
     
     
+}
+
+extension UserProfileViewController: ConnectionEventDelegate {
+    func onConnected() {
+        getProfile()
+    }
+
+    func onDisconnected() {
+
+    }
+
+    func onConnectionNotAuthorized() {
+
+    }
 }

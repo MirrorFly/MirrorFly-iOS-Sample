@@ -84,7 +84,7 @@ extension FlyCore.ChatManager {
   public static func updateRecentChatPinStatus(jid: Swift.String, pinRecentChat: Swift.Bool)
   public static func recentChatPinnedCount() -> Swift.Int
   public static func updateChatMuteStatus(jid: Swift.String, muteStatus: Swift.Bool)
-  public static func deleteRecentChat(jid: Swift.String)
+  public static func deleteRecentChats(jids: [Swift.String], completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func clearChat(toJid: Swift.String, chatType: FlyCommon.ChatType, clearChatExceptStarred: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func clearAllConversation(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public func clearAllConversationForSyncedDevice()
@@ -110,13 +110,13 @@ extension FlyCore.ChatManager : FlyXmpp.XMPPMessageDelegate {
   public func processAndSaveDataFromPush(messageId: Swift.String, fromJid: Swift.String, toJid: Swift.String, body: Swift.String, time: Swift.String, groupJid: Swift.String = "", isCarbon: Swift.Bool = false, pd: FlyCommon.ProfileDetails? = nil) -> (Swift.String, FlyCommon.ChatMessage?, Swift.Bool)
   public func didReciveSingleChatCorbonMessage(messageId: Swift.String, from: Swift.String, to: Swift.String, body: Swift.String, time: Swift.String) -> Swift.String
   public func setOrUpdateFavourite(messageId: Swift.String, favourite: Swift.Bool, removeAllFavourite: Swift.Bool)
-  public func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus)
+  public func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, fromJid: Swift.String)
   public func getMyBusyStatus() -> FlyCommon.BusyStatus
   public func setMyBusyStatus(_ status: Swift.String)
   public func enableDisableBusyStatus(_ status: Swift.Bool)
   public func isBusyStatusEnabled() -> Swift.Bool
   public func getBusyStatusList() -> [FlyCommon.BusyStatus]
-  public func deleteBusyStatus(_ status: FlyCommon.BusyStatus)
+  public func deleteBusyStatus(statusId: Swift.String)
   public func didReceivedSingleChatMessage(messageId: Swift.String, from: Swift.String, body: Swift.String, time: Swift.String, groupJid: Swift.String = "") -> Swift.String
   public func didReceiveGroupChatMessage(messageId: Swift.String, from: Swift.String, groupJid: Swift.String, body: Swift.String, time: Swift.String)
   public func onSentMessageStatusUpdated(from: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, time: Swift.String?)
@@ -128,7 +128,7 @@ extension FlyCore.ChatManager : FlyXmpp.XMPPMessageDelegate {
 }
 extension FlyCore.ChatManager {
   public static func requestOTPApiService(for mobilenumber: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
-  public static func registerApiService(for uniqueIdentifier: Swift.String, deviceToken: Swift.String = emptyString(), voipDeviceToken: Swift.String = emptyString(), isExport: Swift.Bool = false, isForceRegister: Swift.Bool = true, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
+  public static func registerApiService(for uniqueIdentifier: Swift.String, deviceToken: Swift.String = emptyString(), voipDeviceToken: Swift.String = emptyString(), isExport: Swift.Bool = false, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
   public static func enableDisableHideLastSeen(EnableLastSeen: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func getUserLastSeen(for Jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func markConversationAsRead(for jids: [Swift.String])
@@ -174,7 +174,7 @@ extension FlyCore.ChatManager : FlyXmpp.XMPPAdminBlockDelegate {
 extension FlyCore.ChatManager {
   public static func getMessagesForReporting(message: FlyCommon.ChatMessage, messagesCount: Swift.Int) -> FlyCommon.ReportMessage?
   public static func getMessagesForReporting(chatUserJid: Swift.String, messagesCount: Swift.Int) -> FlyCommon.ReportMessage?
-  public static func reportMessage(reportMessage: FlyCommon.ReportMessage, completionHanlder: @escaping (_ isSuccess: Swift.Bool) -> Swift.Void)
+  public static func reportMessage(reportMessage: FlyCommon.ReportMessage, completionHanlder: @escaping FlyCommon.FlyCompletionHandler)
   public static func isMessagesAvailableFor(jid: Swift.String) -> Swift.Bool
 }
 extension FlyCore.ChatManager {
@@ -195,9 +195,9 @@ extension FlyCore.ChatManager : FlyCore.GroupEventsDelegate {
   @objc dynamic public func didFetchGroups(groups: [FlyCommon.ProfileDetails])
 }
 extension FlyCore.ChatManager {
-  public static func getVedioImageAudioMessageGroupByMonth(jid: Swift.String, completionHandler: @escaping (_ chatMessages: [[FlyCommon.ChatMessage]]) -> Swift.Void)
-  public static func getDocumentMessageGroupByMonth(jid: Swift.String, completionHandler: @escaping (_ chatMessages: [[FlyCommon.ChatMessage]]) -> Swift.Void)
-  public static func getLinkMessageGroupByMonth(jid: Swift.String, completionHandler: @escaping (_ linkMessages: [[FlyCommon.LinkMessage]]) -> Swift.Void)
+  public static func getVedioImageAudioMessageGroupByMonth(jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public static func getDocumentMessageGroupByMonth(jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
+  public static func getLinkMessageGroupByMonth(jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
 }
 extension FlyCore.ChatManager {
   public func getConfigurationSettings()
@@ -216,6 +216,14 @@ public enum Features {
   case contact_attachment
   case location_attachment
   case attachment
+  case star_message
+  case clear_chat
+  case delete_chat
+  case translation
+  case block
+  case report
+  case delete_message
+  case viewall_medias
   public static func == (a: FlyCore.Features, b: FlyCore.Features) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {

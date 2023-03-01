@@ -187,6 +187,7 @@ extension ProfileViewController {
                             print(data.getData() as! ProfileDetails)
                             self?.profileDetails = data.getData() as? ProfileDetails
                             let mobileNumber = self?.profileDetails?.mobileNumber ?? ""
+                            FlyDefaults.myImageToken = self?.profileDetails?.image ?? ""
                             if(self?.profileDetails?.image != "") {
                                 self?.setImage(imageURL: self?.profileDetails?.image ?? "", completionHandler: { _ in
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

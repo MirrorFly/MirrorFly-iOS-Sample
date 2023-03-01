@@ -136,6 +136,7 @@ extension FlyDatabase.FileStreamReader : Swift.Sequence {
   public func getVcardAsProfileDetails(forJid: Swift.String) -> FlyCommon.ProfileDetails?
   public func blockUnblockUser(for jid: Swift.String, isBlock: Swift.Bool)
   public func setUnblockForAllContact()
+  public func resetBlockedMeUsers()
   public func updateUserBlockedMeStatus(forJid: Swift.String, isBlockedMe: Swift.Bool)
   public func saveUserBlockList(jidList: [Swift.String], isBlockedMe: Swift.Bool)
   public func getUserBlockedList(isBlockedMe: Swift.Bool) -> [FlyCommon.ProfileDetails]
@@ -163,7 +164,7 @@ extension FlyDatabase.FileStreamReader : Swift.Sequence {
 }
 @objc @_inheritsConvenienceInitializers public class UserBusyStatusManager : ObjectiveC.NSObject {
   public func saveStatus(busyStatus: FlyCommon.BusyStatus) -> Swift.Bool
-  public func deleteBusyStatus(status: FlyCommon.BusyStatus)
+  public func deleteBusyStatus(statusId: Swift.String)
   public func getAllUserBusyStatus(_ busyStatus: [FlyCommon.BusyStatus]) -> [FlyCommon.BusyStatus]
   public func getCurrentBusyStatus() -> FlyCommon.BusyStatus
   public func updateBusyStatus(busyStatus: Swift.String)
@@ -188,6 +189,14 @@ extension FlyDatabase.FileStreamReader : Swift.Sequence {
   public func isContactAttachmentAvailable() -> Swift.Bool
   public func isLocationAttachmentAvailable() -> Swift.Bool
   public func isAttachmentAvailable() -> Swift.Bool
+  public func isStarMessageAvailable() -> Swift.Bool
+  public func isClearChatAvailable() -> Swift.Bool
+  public func isDeleteChatAvailable() -> Swift.Bool
+  public func isTranslationAvailable() -> Swift.Bool
+  public func isBlockAvailable() -> Swift.Bool
+  public func isReportAvailable() -> Swift.Bool
+  public func isDeleteMessageAvailable() -> Swift.Bool
+  public func isViewAllMediasAvailable() -> Swift.Bool
   @objc override dynamic public init()
   @objc deinit
 }
@@ -220,7 +229,7 @@ extension FlyDatabase.FileStreamReader : Swift.Sequence {
 }
 @objc @_inheritsConvenienceInitializers public class MessageManager : ObjectiveC.NSObject {
   public func updateTranslatedMessage(messageId: Swift.String, translatedText: Swift.String)
-  public func updateMessageStatus(messageId: Swift.String, type: FlyCommon.MessageStatus)
+  public func updateMessageStatus(messageId: Swift.String, type: FlyCommon.MessageStatus, fromJid: Swift.String? = nil)
   public func updateMediaMessageStatus(messageId: Swift.String, fileUrl: Swift.String)
   public func updateMediaDownloadMessageStatus(messageId: Swift.String, localPath: Swift.String, fileName: Swift.String)
   public func updateMediaProgressStatus(percent: Swift.Float, messageId: Swift.String)

@@ -130,6 +130,10 @@ class GroupCallViewController: UIViewController {
             AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
             return
         }
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+            return
+        }
         let fullNameArr = callLog.userList
         var callUserProfiles = [ProfileDetails]()
         for JID in fullNameArr{

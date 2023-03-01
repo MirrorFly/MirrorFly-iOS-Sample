@@ -25,6 +25,10 @@ class AppAlert: NSObject {
          toast.show()
     }
     
+    func showToastWithDuration(message : String, duration: Double){
+        let toast = Toast(text: message, duration: duration)
+         toast.show()
+    }
     func showAlert(view: UIViewController, buttonTitle: String) {
 
         let alert = UIAlertController(title: "", message: "", preferredStyle: UIAlertController.Style.alert)

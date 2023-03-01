@@ -43,10 +43,14 @@ class ViewAllMediaController: BaseViewController {
     //Links Variables
     var linkModels = [[LinkModel]]()
     
+    var availableFeatures = ChatManager.getAvailableFeatures()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpStatusBar()
-       
+        
+        handleBackgroundAndForground()
+        
         intializeMediaUI()
         initializeDocLinkUI()
        
@@ -57,6 +61,8 @@ class ViewAllMediaController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
+        
+        availableFeatures = ChatManager.getAvailableFeatures()
     }
     
     
@@ -80,13 +86,26 @@ class ViewAllMediaController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         ChatManager.shared.messageEventsDelegate = self
+        FlyMessenger.shared.messageEventsDelegate = self
+        ChatManager.shared.availableFeaturesDelegate = self
+        if segmentControl.selectedSegmentIndex == 0 {
+            getMediaMessages()
+        } else if segmentControl.selectedSegmentIndex == 1 {
+            getDocumentMessages()
+            handleNoMediaMessage(sectionType: .document)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         ChatManager.shared.messageEventsDelegate = nil
+        ChatManager.shared.availableFeaturesDelegate = nil
+        FlyMessenger.shared.messageEventsDelegate = nil
     }
     
+    override func willCometoForeground() {
+        getLinkMessages()
+    }
 }
 
 // To hanlde no media or no documetns or no links
@@ -135,8 +154,17 @@ extension ViewAllMediaController {
     }
     
     private func getDocumentMessages() {
-        viewModel.getDocumentMessage(jid: jid) { chatMessages in
-            self.docChatMessages = chatMessages
+        viewModel.getDocumentMessage(jid: jid) { isSuccess,error,data  in
+            
+            if !isSuccess {
+                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                return
+            }
+            var result = data
+            if let chatMessages = result.getData() as? [[ChatMessage]] {
+                self.docChatMessages = chatMessages
+            }
         }
     }
 }
@@ -155,10 +183,20 @@ extension ViewAllMediaController {
     }
     
     private func getMediaMessages() {
-        viewModel.getVideoAudioImageMessage(jid: jid) { [weak self] chatMessages in
-            self?.mediaChatMessages = chatMessages
-            executeOnMainThread {
-                self?.handleNoMediaMessage(sectionType: .media)
+        viewModel.getVideoAudioImageMessage(jid: jid) { [weak self] isSuccess,error,data  in
+            
+            if !isSuccess {
+                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                return
+            }
+            var result = data
+            if let chatMessages = result.getData() as? [[ChatMessage]] {
+               
+                self?.mediaChatMessages = chatMessages
+                executeOnMainThread {
+                    self?.handleNoMediaMessage(sectionType: .media)
+                }
             }
         }
     }
@@ -167,21 +205,33 @@ extension ViewAllMediaController {
 // link functions
 extension ViewAllMediaController {
     private func getLinkMessages() {
-        viewModel.getLinkMessage(jid: jid) { [weak self] linkModel in
-            self?.linkModels = linkModel
-            self?.viewModel.processLink(linkModelList: linkModel) { linkModel in
-                let section = linkModel.section
-                let row = linkModel.row
-                self?.linkModels[section][row] = linkModel
-                if let showDoc =  self?.showDocument, !showDoc {
-                    let indexPath = IndexPath(row: row, section: section)
-                    executeOnMainThread {
-                        self?.docLinkTableView.reloadRows(at: [indexPath], with: .none)
+        viewModel.getLinkMessage(jid: jid) { [weak self] isSuccess,error,data  in
+            
+            if !isSuccess {
+                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                return
+            }
+            
+            var result = data
+            if let linkModel = result.getData() as? [[LinkModel]] {
+                
+                self?.linkModels = linkModel
+                self?.viewModel.processLink(linkModelList: linkModel) { linkModel in
+                    let section = linkModel.section
+                    let row = linkModel.row
+                    self?.linkModels[section][row] = linkModel
+                    if let showDoc =  self?.showDocument, !showDoc {
+                        let indexPath = IndexPath(row: row, section: section)
+                        executeOnMainThread {
+                            if self?.segmentControl.selectedSegmentIndex == 2 {
+                                self?.docLinkTableView.reloadRows(at: [indexPath], with: .none)
+                            }
+                        }
                     }
                 }
             }
         }
-
     }
     
     @objc func didTapUrl(sender: UITapGestureRecognizer){
@@ -232,9 +282,8 @@ extension ViewAllMediaController : UICollectionViewDelegate, UICollectionViewDat
         // get a reference to our storyboard cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.mediaCell, for: indexPath) as! MediaCell
         let chatMessage = mediaChatMessages[indexPath.section][indexPath.row]
-        if let thumbImage = viewModel.getThumbImage(chatMessage: chatMessage) {
-            cell.mediaImage.image = thumbImage
-        }
+        
+        cell.mediaImage.image = viewModel.getImage(chatMessage: chatMessage)
         
         switch chatMessage.messageType {
         case .image:
@@ -498,31 +547,23 @@ extension ViewAllMediaController : MessageEventsDelegate {
                       
                     }
                 } else {
-                    docChatMessages.append([message])
-                    if segmentControl.selectedSegmentIndex == 1 {
-                        executeOnMainThread { [weak self] in
-                            self?.docLinkTableView.reloadData()
-                        }
-                      
-                    }
+                    getDocumentMessages()
+                    showDocument = true
+                    handleNoMediaMessage(sectionType: .document)
                 }
             } else {
-                if docChatMessages.count > 0 {
+                if mediaChatMessages.count > 0 {
                     mediaChatMessages[0].insert(message, at: 0)
                     if segmentControl.selectedSegmentIndex == 0 {
                         executeOnMainThread { [weak self] in
                             self?.collectionView.reloadData()
                         }
-                      
                     }
                 } else {
-                    mediaChatMessages.append([message])
-                    if segmentControl.selectedSegmentIndex == 0 {
-                        executeOnMainThread { [weak self] in
-                            self?.collectionView.reloadData()
-                        }
-                      
+                    executeOnMainThread { [weak self] in
+                        self?.intializeMediaUI()
                     }
+                    getMediaMessages()
                 }
             }
         }
@@ -592,6 +633,30 @@ extension ViewAllMediaController {
         linkModels.removeAll()
         docLinkTableView.reloadData()
         collectionView.reloadData()
+    }
+}
+
+extension ViewAllMediaController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
+        }
+        
+        if !(availableFeatures.isViewAllMediasEnabled) {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 }
 

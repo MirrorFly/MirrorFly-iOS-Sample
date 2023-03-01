@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -39,19 +39,19 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="idZ-PX-TJD">
-                    <rect key="frame" x="0.0" y="-5" width="414" height="49"/>
+                    <rect key="frame" x="0.0" y="-1" width="414" height="49"/>
                     <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="49" id="SMO-CI-qZg"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Ms-ME-Jqj">
-                    <rect key="frame" x="0.0" y="44" width="414" height="80"/>
+                    <rect key="frame" x="0.0" y="48" width="414" height="50"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="exI-3q-zFW">
-                            <rect key="frame" x="20" y="25" width="30" height="31"/>
+                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="exI-3q-zFW">
+                            <rect key="frame" x="10" y="16" width="50" height="18"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="30" id="RiY-BM-hXH"/>
+                                <constraint firstAttribute="width" constant="50" id="RiY-BM-hXH"/>
                             </constraints>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" image="backArrow"/>
@@ -60,10 +60,7 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change PIN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FGP-tx-vD0">
-                            <rect key="frame" x="152.5" y="27.5" width="109.5" height="25"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="25" id="eqJ-JZ-8qE"/>
-                            </constraints>
+                            <rect key="frame" x="152.5" y="13" width="109.5" height="24"/>
                             <fontDescription key="fontDescription" name="SFUIDisplay-Bold" family="SF UI Display" pointSize="20"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -71,16 +68,15 @@
                     </subviews>
                     <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
+                        <constraint firstItem="exI-3q-zFW" firstAttribute="centerY" secondItem="FGP-tx-vD0" secondAttribute="centerY" id="6c9-bY-i7U"/>
                         <constraint firstItem="FGP-tx-vD0" firstAttribute="centerY" secondItem="0Ms-ME-Jqj" secondAttribute="centerY" id="75O-mC-dFs"/>
-                        <constraint firstAttribute="height" constant="80" id="Jl6-X5-5v3"/>
-                        <constraint firstItem="exI-3q-zFW" firstAttribute="leading" secondItem="0Ms-ME-Jqj" secondAttribute="leading" constant="20" id="K8c-hb-qXL"/>
-                        <constraint firstItem="exI-3q-zFW" firstAttribute="top" secondItem="0Ms-ME-Jqj" secondAttribute="top" constant="25" id="hP8-TR-4jv"/>
+                        <constraint firstAttribute="height" constant="50" id="Jl6-X5-5v3"/>
+                        <constraint firstItem="exI-3q-zFW" firstAttribute="leading" secondItem="0Ms-ME-Jqj" secondAttribute="leading" constant="10" id="K8c-hb-qXL"/>
                         <constraint firstItem="FGP-tx-vD0" firstAttribute="centerX" secondItem="0Ms-ME-Jqj" secondAttribute="centerX" id="iC1-Gn-nu5"/>
-                        <constraint firstAttribute="bottom" secondItem="exI-3q-zFW" secondAttribute="bottom" constant="24" id="zIz-v5-UjR"/>
                     </constraints>
                 </view>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zps-oD-n22">
-                    <rect key="frame" x="0.0" y="124" width="414" height="738"/>
+                    <rect key="frame" x="0.0" y="98" width="414" height="764"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QQY-t2-Lho">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="330"/>
@@ -459,9 +455,9 @@
         </view>
     </objects>
     <resources>
-        <image name="Pin_Locked" width="6.5" height="8.5"/>
+        <image name="Pin_Locked" width="13" height="17"/>
         <image name="backArrow" width="19.5" height="14"/>
-        <image name="hide_Password" width="9.5" height="8"/>
+        <image name="hide_Password" width="19" height="15.5"/>
         <namedColor name="changeNumber">
             <color red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

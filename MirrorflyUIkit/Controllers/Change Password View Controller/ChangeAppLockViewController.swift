@@ -82,6 +82,7 @@ class ChangeAppLockViewController: UIViewController, UITextFieldDelegate {
         }
         if enterOldPassword.text == FlyDefaults.appLockPassword &&  enterNewPassword.text == confirmNewPassword.text{
             FlyDefaults.appLockPassword = confirmNewPassword.text ?? ""
+            FlyDefaults.appLockPasswordDate = Date()
             print(confirmNewPassword.text ?? "")
             AppAlert.shared.showToast(message: SuccessMessage.PINsetsuccessfully)
         }

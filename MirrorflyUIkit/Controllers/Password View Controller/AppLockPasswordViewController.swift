@@ -70,6 +70,8 @@ class AppLockPasswordViewController: UIViewController, UITextFieldDelegate {
             }
             FlyDefaults.appLockenable = true
             FlyDefaults.appLockPassword = confirmNewPassword.text ?? ""
+            FlyDefaults.appLockPasswordDate = Date()
+            FlyDefaults.passwordAuthenticationAttemps = 0
             AppAlert.shared.showToast(message: SuccessMessage.PINsetsuccessfully)
             self.navigationController?.popViewController(animated: true)
         }

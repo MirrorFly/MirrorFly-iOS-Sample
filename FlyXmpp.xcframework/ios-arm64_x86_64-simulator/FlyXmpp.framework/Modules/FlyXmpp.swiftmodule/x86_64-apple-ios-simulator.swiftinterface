@@ -21,7 +21,7 @@ public protocol XMPPMessageDelegate : ObjectiveC.NSObjectProtocol {
   func didReceivedSingleChatMessage(messageId: Swift.String, from: Swift.String, body: Swift.String, time: Swift.String, groupJid: Swift.String) -> Swift.String
   func didReceiveGroupChatMessage(messageId: Swift.String, from: Swift.String, groupJid: Swift.String, body: Swift.String, time: Swift.String)
   func onSentMessageStatusUpdated(from: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, time: Swift.String?)
-  func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus)
+  func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, fromJid: Swift.String)
   func onMessagesCleared(toJid: Swift.String?, favourite: Swift.String?, deleteType: Swift.String?)
   func onMessagesClearedOrDeleted(messageIds: Swift.Array<Swift.String>)
   func onMessagesDeletedforEveryone(messageIds: Swift.Array<Swift.String>)
@@ -156,6 +156,7 @@ extension FlyXmpp.FlyXmppController {
   public func getArchivedChatList(callback: FlyCommon.FlyCompletionHandler? = nil)
   public func enableDisablearchiveChat(status: Swift.Bool, callback: FlyCommon.FlyCompletionHandler? = nil)
   public func getArchivedSettingsStatus(callback: FlyCommon.FlyCompletionHandler? = nil)
+  public func getLatestProfileUpdates(callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendCallMessage(for status: Swift.String, roomId: Swift.String, groupId: Swift.String, callType: Swift.String, callMode: Swift.String, callTime: Swift.String, startTime: Swift.String, endTime: Swift.String, callStatus: Swift.String, callFrom: Swift.String, users: [Swift.String], inviteUsers: [Swift.String], callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendWebLogout(socketId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendRegisterUpdate(callback: @escaping FlyCommon.FlyCompletionHandler)

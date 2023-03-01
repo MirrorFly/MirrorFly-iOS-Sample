@@ -21,6 +21,7 @@ class ContactImageCell: UITableViewCell {
     @IBOutlet weak var userImage: UIImageView?
     
     weak var delegate: ContactImageCellDelegate? = nil
+    let groupCreationViewModel = GroupCreationViewModel()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -42,11 +43,13 @@ extension ContactImageCell: UITextFieldDelegate {
                    shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
         
-        let currentCharacterCount = textField.text?.count ?? 0
-        if range.length + range.location > currentCharacterCount {
-            return false
-        }
-        let newLength = currentCharacterCount + string.count - range.length
-        return newLength <= 25
+        var tempString : String = string
+              if string.count > 25 {
+                  tempString = tempString.substring(to: 25)
+                  textField.text = tempString
+              }
+              let count = groupCreationViewModel.calculateTextLength(startingLength: textField.text?.count ?? 0, lengthToAdd: tempString.count, lengthToReplace: range.length)
+              let countToDisplay = groupNameCharLimit - count
+              return groupCreationViewModel.textLimit(existingText: textField.text ?? "", newText: tempString, limit: groupNameCharLimit);
     }
 }

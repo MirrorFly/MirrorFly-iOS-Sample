@@ -47,13 +47,13 @@ class VerifyOTPViewModel : NSObject
         }
         
     }
-    func registration(uniqueIdentifier: String, isForceRegister: Bool, completionHandler:  @escaping ([String: Any]?, String?)-> Void) {
+    func registration(uniqueIdentifier: String, completionHandler:  @escaping ([String: Any]?, String?)-> Void) {
         let deviceToken = Utility.getStringFromPreference(key: googleToken)
         var voipToken = Utility.getStringFromPreference(key: voipToken)
         print(deviceToken, mobileNumber)
         voipToken = voipToken.isEmpty ? deviceToken : voipToken
 
-        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: ISEXPORT, isForceRegister: isForceRegister) { isSuccess, flyError, flyData in
+        try! ChatManager.registerApiService(for: uniqueIdentifier, deviceToken: deviceToken, voipDeviceToken: voipToken, isExport: ISEXPORT) { isSuccess, flyError, flyData in
             var data = flyData
             if isSuccess {
                 if  data["newLogin"] as? Bool ?? false{

@@ -9,10 +9,12 @@ import UIKit
 import FlyCore
 import FlyCommon
 import FlyCall
+import FirebaseRemoteConfig
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var remoteConfig: RemoteConfig!
     static var sharedAppDelegateVar: SceneDelegate? = nil
     
     var postNotificationdidEnterBackground : NotificationCenter? = nil
@@ -22,6 +24,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+
+        if FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable {
+            FlyDefaults.showAppLock = true
+        }
+
         if FlyDefaults.isBlockedByAdmin {
             navigateToBlockedScreen()
         } else if Utility.getBoolFromPreference(key: isProfileSaved) {
@@ -32,32 +39,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
                     navigationController =  UINavigationController(rootViewController: initialViewController)
                 }else{
-                    if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable {
-                        let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-                        navigationController =  UINavigationController(rootViewController: initialViewController)
-                    }
-                    else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
-                        let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-                        navigationController =  UINavigationController(rootViewController: initialViewController)
-                    } else {
-                        let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                        let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                        navigationController =  UINavigationController(rootViewController: initialViewController)
-                    }
+                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                    let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
                 }
             }else{
-                if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable {
-                    let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }
-                else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
-                    let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                } else {
-                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }
+                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                navigationController =  UINavigationController(rootViewController: initialViewController)
             }
             self.window?.rootViewController = navigationController
             self.window?.makeKeyAndVisible()
@@ -89,7 +78,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     @available(iOS 13.0, *)
     func sceneDidDisconnect(_ scene: UIScene) {
-        FlyDefaults.showAppLock = true
+        if FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable {
+            FlyDefaults.showAppLock = true
+        }
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -106,6 +97,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
+        NotificationCenter.default.post(name: NSNotification.Name(didBecomeActive), object: nil)
+        //setup remote config
+        setupRemoteConfig()
+        ForceUpdateChecker(listener: self).checkIsNeedUpdate()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
         iCloudmanager().checkAutoBackupSchedule()
         ChatManager.shared.startAutoDownload()
@@ -116,7 +111,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     @available(iOS 13.0, *)
     func sceneWillResignActive(_ scene: UIScene) {
-
+        //FlyDefaults.appBackgroundTime = Date()
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
@@ -124,18 +119,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneWillEnterForeground(_ scene: UIScene) {
         NetworkReachability.shared.startMonitoring()
-        if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable && FlyDefaults.showAppLock {
-            let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-            let navigationController =  UINavigationController(rootViewController: initialViewController)
-            self.window?.rootViewController = navigationController
-            self.window?.makeKeyAndVisible()
-        }
-        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false && FlyDefaults.showAppLock {
-            let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-            initialViewController.login = true
-            let navigationController =  UINavigationController(rootViewController: initialViewController)
-            self.window?.rootViewController = navigationController
-            self.window?.makeKeyAndVisible()
+
+        if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
+            let secondsDifference = Calendar.current.dateComponents([.minute, .second], from: FlyDefaults.appBackgroundTime, to: Date())
+            if secondsDifference.second ?? 0 > 32 {
+                FlyDefaults.showAppLock = true
+            }
         }
         print("#scene sceneWillEnterForeground \(FlyDefaults.isLoggedIn)")
         // Called as the scene transitions from the background to the foreground.
@@ -145,6 +134,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     @available(iOS 13.0, *)
     func sceneDidEnterBackground(_ scene: UIScene) {
         print("#scene sceneDidEnterBackground")
+        FlyDefaults.appBackgroundTime = Date()
         postNotificationdidEnterBackground = NotificationCenter.default
         postNotificationdidEnterBackground?.post(name: Notification.Name(didEnterBackground), object: nil)
         if Utility.getBoolFromPreference(key: isLoggedIn){
@@ -175,3 +165,60 @@ extension SceneDelegate {
     }
 }
 
+//Mark:- RemoteConfig Setup
+extension SceneDelegate {
+    func setupRemoteConfig(){
+        
+        remoteConfig = RemoteConfig.remoteConfig()
+        let settings = RemoteConfigSettings()
+        settings.minimumFetchInterval = 0
+        remoteConfig.configSettings = settings
+        remoteConfig.setDefaults(fromPlist: "RemoteConfigDefaults")
+        var expirationDuration = 60
+        
+        remoteConfig?.fetch(withExpirationDuration: TimeInterval(expirationDuration)) { [weak self] (status, error) in
+            if status == .success {
+                print("config fetch done")
+                self?.remoteConfig?.activate()
+                self?.setVersionDetails()
+            } else {
+                print("Config not fetched")
+                print("Error: \(error?.localizedDescription ?? "No error available.")")
+            }
+        }
+    }
+    
+    func setVersionDetails() {
+        let isUpdateNeed = remoteConfig?.configValue(forKey: "iOS_remote_Update_IsNeed").boolValue
+        let liveAppVersion = remoteConfig?.configValue(forKey: "iOS_remote_Update_Version").stringValue
+        let remoteStoreURL = remoteConfig?.configValue(forKey: "iOS_force_update_store_url").stringValue
+        let remoteTitle = remoteConfig?.configValue(forKey: "iOS_remote_title").stringValue
+        let remote_Description = remoteConfig?.configValue(forKey: "iOS_remote_description").stringValue
+        
+        //set in app defaults
+        let defaults : [String : Any] = [
+            ForceUpdateChecker.FORCE_UPDATE_REQUIRED : isUpdateNeed ?? false,
+            ForceUpdateChecker.FORCE_UPDATE_CURRENT_VERSION : liveAppVersion ?? "",
+            ForceUpdateChecker.FORCE_UPDATE_STORE_URL : remoteStoreURL ?? "",
+            ForceUpdateChecker.FORCE_UPDATE_TITLE : remoteTitle ?? "",
+            ForceUpdateChecker.FORCE_UPDATE_DESCRIPTION : remote_Description ?? ""
+        ]
+        remoteConfig?.setDefaults(defaults as? [String : NSObject])
+    }
+}
+
+extension SceneDelegate : OnUpdateNeededListener {
+    func onUpdateNeeded(updateUrl: String) {
+        let initialViewController = ForceUpdateAlertViewController(nibName: "ForceUpdateAlert", bundle: nil)
+        initialViewController.modalPresentationStyle = .overFullScreen
+        let current = UIApplication.shared.keyWindow?.getTopViewController()
+        if current is ForceUpdateAlertViewController {
+           return
+        }
+        current?.present(initialViewController, animated: true,completion: nil)
+    }
+    
+    func onNoUpdateNeeded() {
+        print("onNoUpdateNeeded()")
+    }
+}

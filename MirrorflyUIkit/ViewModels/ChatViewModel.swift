@@ -45,13 +45,8 @@ RecentChatViewModel  {
         }
     }
     
-    func getDeleteChat(jid: String, completionHandler:  @escaping (Bool?)-> Void) {
-        if !jid.isEmpty {
-            ChatManager.deleteRecentChat(jid: jid)
-            completionHandler(true)
-        } else {
-            completionHandler(false)
-        }
+    func deleteRecentChats(jids: [String], completionHandler: @escaping FlyCompletionHandler) {
+        ChatManager.deleteRecentChats(jids: jids, completionHandler: completionHandler)
     }
 
     func getPinChat(jid: String, isPin: Bool, completionHandler:  @escaping (Bool?)-> Void) {

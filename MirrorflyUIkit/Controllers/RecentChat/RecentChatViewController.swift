@@ -146,27 +146,30 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),
                                                name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+
         getRecentChatList()
         if ENABLE_CONTACT_SYNC{
             getContactList()
         }else{
             resetDataAndFetchUsersList()
         }
-        
+
+        ChatManager.shared.availableFeaturesDelegate = self
         availableFeatures = ChatManager.getAvailableFeatures()
         searchBar?.isHidden = !(availableFeatures.isRecentChatSearchEnabled) ? true : false
+        if !FlyDefaults.showAppLock {
+            openChat(jid: pushChatId ?? "")
+        }
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //openChat(jid: pushChatId ?? "")
         chatManager.connectionDelegate = self
         ContactManager.shared.profileDelegate = self
         chatManager.messageEventsDelegate = self
         FlyMessenger.shared.messageEventsDelegate = self
         GroupManager.shared.groupDelegate = self
         ChatManager.shared.adminBlockDelegate = self
-        ChatManager.shared.availableFeaturesDelegate = self
         chatManager.archiveEventsDelegate = self
     }
     
@@ -193,9 +196,11 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         if !ENABLE_CONTACT_SYNC && isSearchEnabled{
             resetDataAndFetchUsersList()
         }
-        openChat(jid: pushChatId ?? "")
+        if !FlyDefaults.showAppLock {
+            openChat(jid: pushChatId ?? "")
+        }
     }
-    
+
     private func configTableView() {
         searchBar?.delegate = self
         recentChatTableView?.estimatedRowHeight = 65.0
@@ -603,25 +608,16 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     @objc func deleteAction(_ sender: UIButton) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
             self?.dismiss(animated: true) {
-                self?.selectionRecentChatList.forEach { deleteRecentChat in
-                    self?.recentChatViewModel?.getDeleteChat(jid: deleteRecentChat.jid, completionHandler: { isSuccess in
-                        if isSuccess == true {
-                            self?.getRecentChat.enumerated().forEach({ (index,recentChat) in
-                                if recentChat.jid == deleteRecentChat.jid {
-                                    self?.getRecentChat.remove(at: index)
-                                    self?.recentChatTableView?.reloadData()
-                                    self?.getOverallUnreadCount()
-                                }
-                            })
-                            self?.getArchiveChat.enumerated().forEach({ (index,archiveChat) in
-                                if archiveChat.jid == deleteRecentChat.jid {
-                                    self?.getArchiveChat.remove(at: index)
-                                    self?.recentChatTableView?.reloadData()
-                                }
-                            })
+                self?.recentChatViewModel?.deleteRecentChats(jids: self?.selectionRecentChatList.compactMap{$0.jid} ?? [], completionHandler: { isSuccess, error, data in
+                    if isSuccess {
+                        var flydata = data
+                        if let jid = flydata.getData() as? String, let index = self?.getRecentChat.firstIndex(where: {$0.jid == jid}) {
+                            self?.getRecentChat.remove(at: index)
+                            self?.recentChatTableView?.reloadData()
+                            self?.getOverallUnreadCount()
                         }
-                    })
-                }
+                    }
+                })
                 self?.clearSelectedColor()
                 self?.showHideEmptyMessage()
                 self?.longPressCount = 0
@@ -1208,29 +1204,30 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
     }
 
     func openChat(jid: String) {
-        if let profile = recentChatViewModel?.getRecentChat(jid: jid) {
-            pushChatId = nil
-            let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
-            let profileDetails = ProfileDetails(jid: profile.jid)
-            profileDetails.name = profile.profileName
-            profileDetails.nickName = profile.nickName
-            profileDetails.image = profile.profileImage ?? ""
-            profileDetails.profileChatType = profile.profileType
-            if profile.isDeletedUser{
-                profileDetails.contactType = .deleted
-            }else{
-                profileDetails.contactType = profile.isItSavedContact == true ? .live : .unknown
+        if FlyDefaults.myJid != jid {
+            if let profile = recentChatViewModel?.getRecentChat(jid: jid) {
+                let vc = UIStoryboard.init(name: Storyboards.chat, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.chatViewParentController) as? ChatViewParentController
+                let profileDetails = ProfileDetails(jid: profile.jid)
+                profileDetails.name = profile.profileName
+                profileDetails.nickName = profile.nickName
+                profileDetails.image = profile.profileImage ?? ""
+                profileDetails.profileChatType = profile.profileType
+                if profile.isDeletedUser{
+                    profileDetails.contactType = .deleted
+                }else{
+                    profileDetails.contactType = profile.isItSavedContact == true ? .live : .unknown
+                }
+                profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
+                vc?.getProfileDetails = profileDetails
+                let color = getColor(userName: profile.profileName)
+                vc?.contactColor = color
+                vc?.replyMessagesDelegate = self
+                vc?.replyMessageObj = replyMessageObj
+                vc?.replyJid = replyJid
+                vc?.ismarkMessagesAsRead = true
+                vc?.navigationController?.modalPresentationStyle = .overFullScreen
+                self.navigationController?.pushViewController(vc!, animated: true)
             }
-            profileDetails.isBlockedByAdmin = profile.isBlockedByAdmin
-            vc?.getProfileDetails = profileDetails
-            let color = getColor(userName: profile.profileName)
-            vc?.contactColor = color
-            vc?.replyMessagesDelegate = self
-            vc?.replyMessageObj = replyMessageObj
-            vc?.replyJid = replyJid
-            vc?.ismarkMessagesAsRead = true
-            vc?.navigationController?.modalPresentationStyle = .overFullScreen
-            self.navigationController?.pushViewController(vc!, animated: true)
         }
     }
     
@@ -1359,18 +1356,6 @@ extension RecentChatViewController {
             }
         }
     }
-    
-    private func deleteRecentChat(jid: String) {
-        recentChatViewModel?.getDeleteChat(jid: jid, completionHandler: { [weak self] isSuccess in
-            if isSuccess ?? false {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute:  { [weak self] in
-                    self?.getRecentChat = []
-                    self?.refreshRecentChatMessages()
-                })
-                self?.hideMultipleSelectionView()
-            }
-        })
- }
     
     func getRecentChatList() {
         recentChatListBuilder?.changeLimit(limit:  getAllRecentChat.isEmpty ? 80 : ((getAllRecentChat.count < 40 ? 40 : getAllRecentChat.count)))
@@ -1613,11 +1598,32 @@ extension RecentChatViewController {
     
     
     private func showHideDeleteButton() {
-        if selectionRecentChatList.filter({$0.profileType == .groupChat}).count == 0  {
-            deleteChatButton?.isHidden = false
-        } else {
+        
+        if !availableFeatures.isDeleteChatEnabled {
             deleteChatButton?.isHidden = true
+        }else {
+            if selectionRecentChatList.filter({$0.profileType == .groupChat}).count == 0  {
+                deleteChatButton?.isHidden = false
+            } else {
+                
+                let groups = selectionRecentChatList.filter({$0.profileType == .groupChat})
+                print("groupss count ==> \(groups.count)")
+                
+                for group in groups {
+                    let result = isParticipantExist(groupJid: group.jid)
+                    if result.doesExist {
+                        deleteChatButton?.isHidden = true
+                        return
+                    }else{
+                        deleteChatButton?.isHidden = false
+                    }
+                }
+            }
         }
+    }
+    
+    func isParticipantExist(groupJid: String) -> (doesExist : Bool, message : String) {
+       return GroupManager.shared.isParticiapntExistingIn(groupJid: groupJid, participantJid: FlyDefaults.myJid)
     }
     
     func getPlaceholder(name: String, color: UIColor)->UIImage {
@@ -1814,7 +1820,10 @@ extension RecentChatViewController : ProfileEventsDelegate {
 
     func usersIBlockedListFetched(jidList: [String]) {}
     
-    func usersBlockedMeListFetched(jidList: [String]) {}
+    func usersBlockedMeListFetched(jidList: [String]) {
+        recentChatTableView?.reloadData()
+        setProfile()
+    }
     
     func userBlockedMe(jid: String) {
         if let recentChat = ChatManager.getRechtChat(jid: jid){
@@ -2401,6 +2410,7 @@ extension RecentChatViewController : AvailableFeaturesDelegate {
         if !(availableFeatures.isRecentChatSearchEnabled){
             refreshRecentChatMessages()
         }
+        showHideDeleteButton()
         
         let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
         

@@ -9893,6 +9893,28 @@
           },
           {
             "kind": "Function",
+            "name": "checkIsUserCanceled",
+            "printedName": "checkIsUserCanceled()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FlyCall0B7ManagerC19checkIsUserCanceledSbyFZ",
+            "mangledName": "$s7FlyCall0B7ManagerC19checkIsUserCanceledSbyFZ",
+            "moduleName": "FlyCall",
+            "static": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "cancelVideoCallSwitch",
             "printedName": "cancelVideoCallSwitch()",
             "children": [
@@ -13931,7 +13953,14 @@
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "BooleanLiteral",
-      "offset": 2267,
+      "offset": 2233,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "kind": "BooleanLiteral",
+      "offset": 2268,
       "length": 5,
       "value": "false"
     },
@@ -13939,13 +13968,6 @@
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "BooleanLiteral",
       "offset": 2302,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
-      "kind": "BooleanLiteral",
-      "offset": 2336,
       "length": 5,
       "value": "false"
     },
@@ -14365,7 +14387,7 @@
     {
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 11172,
+      "offset": 11174,
       "length": 5,
       "value": "false"
     },
@@ -15612,6 +15634,20 @@
       "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 6376,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "kind": "BooleanLiteral",
+      "offset": 6408,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "kind": "BooleanLiteral",
+      "offset": 6444,
       "length": 5,
       "value": "false"
     },

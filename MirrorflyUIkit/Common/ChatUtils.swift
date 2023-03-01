@@ -75,6 +75,24 @@ class ChatUtils {
         }
     }
     
+    static func highlight(uilabel: UILabel,message: String, searchText: String, isMessageSearch: Bool,isSystemBlue: Bool)  {
+        if isMessageSearch && searchText.trim().lowercased().count > 0 {
+            let mutableString = NSMutableAttributedString(string: message)
+            do {
+                let attributedString = NSMutableAttributedString(attributedString: mutableString)
+                let regex = try NSRegularExpression(pattern:  NSRegularExpression.escapedPattern(for: searchText.trim().lowercased()).folding(options: .regularExpression, locale: .current), options: .caseInsensitive)
+                let range = NSRange(location: 0, length: message.utf16.count)
+                for match in regex.matches(in: message.folding(options: .regularExpression, locale: .current), options: .withTransparentBounds, range: range) {
+                    attributedString.addAttribute(NSAttributedString.Key.backgroundColor, value: Color.color_3276E2 ?? .blue, range: match.range)
+                }
+                uilabel.attributedText = attributedString
+            } catch {
+            }
+        } else {
+            uilabel.attributedText = NSMutableAttributedString.init(string: message, attributes: [NSAttributedString.Key.backgroundColor: UIColor.clear])
+        }
+    }
+    
     static func compressSlowMotionVideo(asset : AVComposition, onCompletion: @escaping (Bool, URL?) -> Void){
         let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + NSUUID().uuidString + ".mp4")
         print(compressedURL)
@@ -266,30 +284,30 @@ class ChatUtils {
         return getUserName(jid: messsage?.senderUserJid ?? "", name: result.name, nickName: result.nickName, contactType: result.contactType)
     }
     
-    static func reportFor(chatUserJid : String, completionHandler : @escaping (_ isSuccess : Bool) -> Void) {
+    static func reportFor(chatUserJid : String, completionHandler : @escaping FlyCompletionHandler) {
         guard let lastFiveMessages = ChatManager.getMessagesForReporting(chatUserJid: chatUserJid, messagesCount: 5) else {
-            completionHandler(false)
+            completionHandler(false,nil,[:])
             return
         }
-        report(reportMessage: lastFiveMessages) { isSuccess in
-            completionHandler(isSuccess)
+        report(reportMessage: lastFiveMessages) {  isSuccess, error, data in
+            completionHandler(isSuccess,error,data)
         }
     }
     
-    static func reportFrom(message : ChatMessage, completionHandler : @escaping (_ isSuccess : Bool) -> Void) {
+    static func reportFrom(message : ChatMessage, completionHandler : @escaping FlyCompletionHandler) {
         guard let lastFiveMessages = ChatManager.getMessagesForReporting(message: message, messagesCount: 5) else {
-            completionHandler(false)
+            completionHandler(false,nil,[:])
             return
         }
-        report(reportMessage: lastFiveMessages) { isSuccess in
-            completionHandler(isSuccess)
+        report(reportMessage: lastFiveMessages) { isSuccess, error, data in
+            completionHandler(isSuccess,error,data)
         }
         
     }
     
-    private static func report(reportMessage : ReportMessage, completionHandler : @escaping (_ isSuccess : Bool) -> Void) {
-        ChatManager.reportMessage(reportMessage: reportMessage) { isSent in
-            completionHandler(isSent)
+    private static func report(reportMessage : ReportMessage, completionHandler : @escaping FlyCompletionHandler) {
+        ChatManager.reportMessage(reportMessage: reportMessage) { isSuccess, error, data in
+            completionHandler(isSuccess,error,data)
         }
     }
     
