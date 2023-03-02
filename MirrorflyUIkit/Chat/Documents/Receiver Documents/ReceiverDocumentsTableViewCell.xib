@@ -381,13 +381,6 @@
                         <rect key="frame" x="54" y="87" width="247" height="72"/>
                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CNi-he-DtY">
-                        <rect key="frame" x="268" y="93" width="28" height="28"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain"/>
-                    </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Cd-tM-HRF">
                         <rect key="frame" x="316" y="71" width="24" height="24"/>
                         <constraints>
@@ -398,6 +391,13 @@
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UIM-Md-6dR">
                         <rect key="frame" x="20" y="11" width="385" height="140"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CNi-he-DtY">
+                        <rect key="frame" x="268" y="93" width="28" height="28"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain"/>
                     </button>
                 </subviews>
                 <constraints>
@@ -486,7 +486,7 @@
     <resources>
         <image name="Receiver" width="10" height="10"/>
         <image name="foward" width="24" height="24"/>
-        <image name="ic_favouriteStarGray" width="16" height="16"/>
+        <image name="ic_favouriteStarGray" width="100" height="100"/>
         <image name="ic_pdf" width="48" height="48"/>
         <image name="test-image.jpg" width="269" height="187"/>
         <namedColor name="color_181818">

@@ -19,19 +19,20 @@ import FlyCall
 import RxSwift
 import Contacts
 import CallKit
+import FirebaseRemoteConfig
 
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let LICENSE_KEY = "xxxxxxxxxxxx"
-let XMPP_DOMAIN = "xmpp-uikit-qa.contus.us"
-let XMPP_PORT = 5249
-let SOCKETIO_SERVER_HOST = "xxxxxxxxxxxx"
-let JANUS_URL = "xxxxxxxxxxxx"
+let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
+let XMPP_PORT = 5222
+let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
+let JANUS_URL = "wss://janus.mirrorfly.com"
 let CONTAINER_ID = "group.com.mirrorfly.qa"
 let ENABLE_CONTACT_SYNC = false
 let IS_LIVE = false
-let WEB_LOGIN_URL = "https://webchat-uikit-qa.contus.us/"
+let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
 let IS_MOBILE_NUMBER_LOGIN = false
-let APP_NAME = "UiKitQa"
+let APP_NAME = "UiKit"
 let ICLOUD_CONTAINER_ID = "iCloud.com.mirrorfly.qa"
 
 
@@ -54,13 +55,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     static var sharedAppDelegateVar: AppDelegate? = nil
     let contactSyncSubject = PublishSubject<Bool>()
     var contactSyncSubscription : Disposable? = nil
-    
+
     var postNotificationdidEnterBackground : NotificationCenter? = nil
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        //        if !Utility.getBoolFromPreference(key: isMigrationDone) {
-        //            resetData()
-        //        }
+//        if !Utility.getBoolFromPreference(key: isMigrationDone) {
+//            resetData()
+//        }
         
         let groupConfig = try? GroupConfig.Builder.enableGroupCreation(groupCreation: true)
             .onlyAdminCanAddOrRemoveMembers(adminOnly: true)
@@ -70,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         try? ChatSDK.Builder.setAppGroupContainerID(containerID: CONTAINER_ID)
             .setLicenseKey(key: LICENSE_KEY)
-            .isTrialLicense(isTrial: !IS_LIVE)
+            .isTrialLicense(isTrial: false)
             .setDomainBaseUrl(baseUrl: BASE_URL)
             .setGroupConfiguration(groupConfig: groupConfig!)
             .buildAndInitialize()
@@ -91,7 +92,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         IQKeyboardManager.shared.shouldResignOnTouchOutside = true
         IQKeyboardManager.shared.disabledDistanceHandlingClasses.append(ChatViewParentController.self)
         NetworkReachability.shared.startMonitoring()
-        
+
+        if FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable {
+            FlyDefaults.showAppLock = true
+        }
+
         // Clear Push
         clearPushNotifications()
         registerForPushNotifications()
@@ -180,19 +185,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
             navigateToBlockedScreen()
             return
         }
-        
+
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
         ChatManager.shared.startAutoDownload()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
     }
-    
+
     func applicationDidEnterBackground(_ application: UIApplication) {
         print("#appDelegate applicationDidEnterBackground")
+        FlyDefaults.appBackgroundTime = Date()
         postNotificationdidEnterBackground = NotificationCenter.default
         postNotificationdidEnterBackground?.post(name: Notification.Name(didEnterBackground), object: nil)
-        
+
         if (FlyDefaults.isLoggedIn) {
             ChatManager.disconnectXMPPConnection()
         }
@@ -203,8 +209,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         NetStatus.shared.stopMonitoring()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.CNContactStoreDidChange, object: nil)
     }
-    
-    
+
+    func applicationProtectedDataDidBecomeAvailable(_ application: UIApplication) {
+        print("applicationProtectedDataDidBecomeAvailable")
+        if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
+            FlyDefaults.showAppLock = true
+            navigateTo()
+        }
+    }
+
 }
 
 // MARK:- Push Notifications
@@ -259,21 +272,15 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
             } else {
                 let messageId = response.notification.request.content.userInfo["message_id"] as? String ?? ""
                 let message = FlyMessenger.getMessageOfId(messageId: messageId)
-                pushChatId = message?.chatUserJid ?? ""
-                
-                //                if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
-                //                    if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable  && FlyDefaults.showAppLock {
-                //                        let vc = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-                //                        vc.chatId = message?.chatUserJid ?? ""
-                //                        navigationController.pushViewController(vc, animated: false)
-                //                    }
-                //                    else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false  && FlyDefaults.showAppLock {
-                //                        let vc = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-                //                        vc.chatId = message?.chatUserJid ?? ""
-                //                        //vc.login = true
-                //                        navigationController.pushViewController(vc, animated: false)
-                //                    }
-                //                }
+                if response.notification.request.trigger is UNPushNotificationTrigger {
+                    pushChatId = message?.chatUserJid ?? ""
+                } else {
+                    pushChatId = message?.chatUserJid ?? ""
+                    if !FlyDefaults.showAppLock {
+                        pushChatId = nil
+                        navigateToChatScreen(chatId: message?.chatUserJid ?? "", completionHandler: completionHandler)
+                    }
+                }
             }
         }
     }
@@ -312,7 +319,7 @@ extension AppDelegate {
             if bool{
                 if !FlyDefaults.isContactPermissionSkipped{
                     ContactSyncManager.shared.syncContacts(){ isSuccess,_,_ in
-                        print("#contact Sync status => \(isSuccess)")
+                       print("#contact Sync status => \(isSuccess)")
                     }
                 }
             }
@@ -397,7 +404,7 @@ extension AppDelegate {
         }
         Utility.saveInPreference(key: isMigrationDone, value: true)
     }
-    
+
 }
 // If a user logged in a new device this delegate will be triggered.otpViewController
 extension AppDelegate : LogoutDelegate {
@@ -450,11 +457,11 @@ extension AppDelegate : AdminBlockCurrentUserDelegate {
 extension AppDelegate {
     
     func logoutLocally(){
-        Utility.saveInPreference(key: isProfileSaved, value: false)
-        Utility.saveInPreference(key: isLoggedIn, value: false)
-        ChatManager.disconnect()
-        ChatManager.shared.resetFlyDefaults()
-        FlyDefaults.isBlockedByAdmin = false
+           Utility.saveInPreference(key: isProfileSaved, value: false)
+           Utility.saveInPreference(key: isLoggedIn, value: false)
+           ChatManager.disconnect()
+           ChatManager.shared.resetFlyDefaults()
+           FlyDefaults.isBlockedByAdmin = false
     }
     
     func navigateToBlockedScreen() {
@@ -477,35 +484,14 @@ extension AppDelegate {
                     let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.contactSyncController) as! ContactSyncController
                     navigationController =  UINavigationController(rootViewController: initialViewController)
                 }else{
-                    if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable {
-                        let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-                        navigationController =  UINavigationController(rootViewController: initialViewController)
-                    }
-                    else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
-                        let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-                        navigationController =  UINavigationController(rootViewController: initialViewController)
-                    }
-                    else{
-                        let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                        let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                        navigationController =  UINavigationController(rootViewController: initialViewController)
-                    }
+                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                    let initialViewController =  storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                    navigationController =  UINavigationController(rootViewController: initialViewController)
                 }
             }else{
-                if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable {
-                    let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }
-                else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
-                    let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }
-                else{
-                    let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                    let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                    navigationController =  UINavigationController(rootViewController: initialViewController)
-                }
-                
+                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                navigationController =  UINavigationController(rootViewController: initialViewController)
             }
             UIApplication.shared.keyWindow?.rootViewController = navigationController
             UIApplication.shared.keyWindow?.makeKeyAndVisible()

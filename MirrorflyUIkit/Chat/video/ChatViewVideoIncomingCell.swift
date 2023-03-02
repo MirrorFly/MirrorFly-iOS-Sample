@@ -62,6 +62,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     @IBOutlet weak var emptyViewHeight: NSLayoutConstraint!
     @IBOutlet weak var captionView: UIView!
     
+    @IBOutlet weak var captionFavImageView: UIImageView?
     @IBOutlet weak var starredMessageView: UIView?
     @IBOutlet weak var senderTimeLabel: UILabel?
     @IBOutlet weak var senderTextLabel: UILabel?
@@ -166,7 +167,14 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         translatedCaptionLabel?.text = ""
         captionViewHolder?.spacing = FlyDefaults.isTranlationEnabled && message?.isMessageTranslated ?? false ? 10 : 0
         // Starred Messages
-        favImageView?.isHidden =  message!.isMessageStarred ? false : true
+        // Starred Messages
+        if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt == "" {
+            favImageView?.isHidden =  message!.isMessageStarred ? false : true
+            captionFavImageView?.isHidden = true
+        } else {
+            captionFavImageView?.isHidden =  message!.isMessageStarred ? false : true
+            favImageView?.isHidden = true
+        }
         showHideForwardView(message: message, isDeletedSelected: isDeleteMessageSelected, isShowForwardView: isShowForwardView)
         if selectedForwardMessage?.filter({$0.chatMessage.messageId == message?.messageId}).first?.isSelected == true {
             forwardImageView?.image = UIImage(named: "forwardSelected")
@@ -309,7 +317,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         }
         
         if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt != "" {
-            caption.attributedText = ChatUtils.getAttributedMessage(message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch ? true : false)
+            ChatUtils.highlight(uilabel: caption, message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch ? true : false)
             timeOverlay.isHidden = true
             reecivedTime.isHidden = true
             captionTime?.isHidden = false

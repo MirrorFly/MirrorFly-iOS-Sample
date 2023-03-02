@@ -454,9 +454,8 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         } else {
             documentSizeLabel?.text = ""
         }
-    
-        if (isStarredMessagePage == true && isMessageSearch == true) {
-            documentNameLabel?.attributedText = ChatUtils.getAttributedMessage(message: message?.mediaChatMessage?.mediaFileName ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: true)
+        if (isStarredMessagePage == true || isMessageSearch == true) {
+            ChatUtils.highlight(uilabel: documentNameLabel ?? UILabel(), message: message?.mediaChatMessage?.mediaFileName ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch == true ? true : false)
         } else {
             documentNameLabel?.text = message?.mediaChatMessage?.mediaFileName
         }

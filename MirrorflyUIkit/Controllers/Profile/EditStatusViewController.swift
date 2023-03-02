@@ -422,7 +422,7 @@ extension EditStatusViewController {
     }
 
     func deleteBusyStatus(status: BusyStatus) {
-        ChatManager.shared.deleteBusyStatus(status)
+        ChatManager.shared.deleteBusyStatus(statusId:status.id)
     }
     
     @objc func alertControllerBackgroundTapped()

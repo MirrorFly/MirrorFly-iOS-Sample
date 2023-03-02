@@ -28,10 +28,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nad-CC-gR6">
-                        <rect key="frame" x="10" y="0.0" width="300" height="3"/>
+                        <rect key="frame" x="10" y="-59" width="300" height="62"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Juy-Ne-wZj" userLabel="SenderView">
-                                <rect key="frame" x="0.0" y="0.0" width="295" height="3"/>
+                                <rect key="frame" x="0.0" y="0.0" width="295" height="62"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="gDd-yF-SVe">
                                         <rect key="frame" x="0.0" y="0.0" width="255" height="18"/>
@@ -101,6 +101,7 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstAttribute="height" constant="62" id="6Np-x6-E9Y"/>
                             <constraint firstItem="Juy-Ne-wZj" firstAttribute="leading" secondItem="Nad-CC-gR6" secondAttribute="leading" id="MbT-Mv-STA"/>
                             <constraint firstItem="Juy-Ne-wZj" firstAttribute="top" secondItem="Nad-CC-gR6" secondAttribute="top" id="dGf-bW-WNb"/>
                             <constraint firstAttribute="trailing" secondItem="Juy-Ne-wZj" secondAttribute="trailing" constant="5" id="ft9-jr-NS2"/>
@@ -408,7 +409,7 @@
     </objects>
     <resources>
         <image name="Sender" width="10" height="10"/>
-        <image name="ic_favouriteStar" width="8" height="8"/>
+        <image name="ic_favouriteStar" width="100" height="100"/>
         <image name="imageView:G4X-EP-iVS:image" width="8" height="8">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T

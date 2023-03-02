@@ -10,6 +10,7 @@ import FlyCore
 import FlyDatabase
 import FlyCommon
 import Contacts
+import FlyCall
 
 class MainTabBarController: UITabBarController{
     @IBOutlet weak var chatTabBars: UITabBar?
@@ -26,17 +27,6 @@ class MainTabBarController: UITabBarController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//         if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable  {
-//            let vc = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
-//             self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false {
-//            let vc = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
-//            vc.login = true
-//             self.navigationController?.pushViewController(vc, animated: true)
-//
-//        }
         self.delegate = self
         if let vcs = self.viewControllers{
             tabViewControllers = vcs
@@ -54,6 +44,42 @@ class MainTabBarController: UITabBarController{
         NotificationCenter.default.addObserver(self, selector: #selector(updateUnReadMissedCallCount(notification:)), name: NSNotification.Name("updateUnReadMissedCallCount"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateMessageUnreadCount(notification:)), name: NSNotification.Name("updateMessageUnreadCount"), object: nil)
         handleBackgroundAndForground()
+        navigateToAuthentication()
+
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didBecomeActive), object: nil)
+    }
+
+    func navigateToAuthentication() {
+
+        if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
+            let secondsDifference = Calendar.current.dateComponents([.minute, .second], from: FlyDefaults.appBackgroundTime, to: Date())
+            if secondsDifference.second ?? 0 > 32 {
+                FlyDefaults.showAppLock = true
+            }
+        }
+
+        if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable && FlyDefaults.showAppLock {
+            if !FlyDefaults.faceOrFingerAuthenticationFails {
+                let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+                let navigationController =  UINavigationController(rootViewController: initialViewController)
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                self.navigationController?.pushViewController(initialViewController, animated: false)
+            } else {
+                let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+                initialViewController.login = true
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                self.navigationController?.pushViewController(initialViewController, animated: false)
+            }
+        }
+        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false && FlyDefaults.showAppLock {
+            let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+            initialViewController.login = true
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+            self.navigationController?.pushViewController(initialViewController, animated: false)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -100,6 +126,7 @@ class MainTabBarController: UITabBarController{
     
     @objc override func willCometoForeground() {
         updateUnReadMissedCallBadgeCount()
+        navigateToAuthentication()
     }
     
     @objc func updateUnReadMissedCallCount(notification: NSNotification) {

@@ -24,9 +24,9 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     var fingerPrintEnable : Bool = false
     var noFingerprintAdded : Bool = false
     var  disableBothPIN : Bool = false
-    
-    var chatId = String()
-    
+
+    var isResetByFailedAttempts = false
+    var authenticationFails = true
     
     public var verificationId = ""
     var isAuthorizedSuccess: Bool = false
@@ -63,7 +63,8 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     @IBOutlet weak var collectionview: UICollectionView!
     
     @IBOutlet weak var pinEnteredcollectionview: UICollectionView!
-    
+
+    var isDisablePin = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,7 +74,111 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         handleBackgroundAndForground()
         didMoveToBackground()
         willCometoForeground()
+
+        if FlyDefaults.showAppLock {
+            if FlyDefaults.passwordAuthenticationAttemps > 5 {
+                showfailedAttempsActionAlert()
+            } else if daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) > 31-5 {
+                if FlyDefaults.pinChangeAlertShownDate != Date().xmppDateString {
+                    showChangePinAlert()
+                }
+            } else if daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) > 31 {
+                showPinActionAlert()
+            }
+        }
+
     }
+
+    func showPinActionAlert() {
+
+        let values : [String] = AppLockActions.allCases.map { $0.rawValue }
+        var actions = [(String, UIAlertAction.Style)]()
+        values.forEach { title in
+            if title == AppLockActions.forgotPin.rawValue {
+                actions.append((title, UIAlertAction.Style.destructive))
+            } else {
+                actions.append((title, UIAlertAction.Style.default))
+            }
+
+        }
+        AppActionSheet.shared.showActionSeet(title : "", message: "Your current PIN has been expired. Please set a new PIN to continue further", showCancel: false, actions: actions, style: .alert, sheetCallBack: { [weak self] didCancelTap, tappedTitle in
+            if !didCancelTap {
+                switch tappedTitle {
+                case AppLockActions.changePin.rawValue:
+                    self?.isDisablePin = false
+                    let vc = ChangeAppLockViewController(nibName:Identifiers.changeAppLockViewController, bundle: nil)
+                    self?.navigationController?.pushViewController(vc, animated: false)
+                case AppLockActions.forgotPin.rawValue:
+                    self?.isDisablePin = false
+                    self?.forgotbutton(tappedTitle)
+                case AppLockActions.disablePin.rawValue:
+                    self?.isDisablePin = true
+                    AppAlert.shared.showToast(message: "Enter current pin to disable pin and fingerprint")
+                default:
+                    print(" \(tappedTitle)")
+                }
+            } else {
+                print("createGroup Cancel")
+            }
+        })
+
+    }
+
+    func showfailedAttempsActionAlert() {
+        let values : [String] = ["Cancel", "Generate OTP"]
+        var actions = [(String, UIAlertAction.Style)]()
+        values.forEach { title in
+            actions.append((title, UIAlertAction.Style.default))
+        }
+
+        AppActionSheet.shared.showActionSeet(title : "", message: "Invalid PIN, Generate OTP to your registered mobile number", showCancel: false, actions: actions, style: .alert, sheetCallBack: { [weak self] didCancelTap, tappedTitle in
+            if !didCancelTap {
+                switch tappedTitle {
+                case "Generate OTP":
+                    self?.clearTextFields()
+                    self?.timeout.text = "01:00"
+                    self?.secondsRemaining = passwordResetTimer
+                    self?.resendHideView.isHidden = true
+                    self?.timeout.isHidden = false
+                    self?.forgotPassword()
+                    self?.isResetByFailedAttempts = true
+                default:
+                    print(" \(tappedTitle)")
+                }
+            } else {
+                print("createGroup Cancel")
+            }
+        })
+    }
+
+    func showChangePinAlert() {
+        FlyDefaults.pinChangeAlertShownDate = Date().xmppDateString
+
+        let values : [String] = ["Change PIN", "OK"]
+        var actions = [(String, UIAlertAction.Style)]()
+        values.forEach { title in
+            actions.append((title, UIAlertAction.Style.default))
+        }
+
+        AppActionSheet.shared.showActionSeet(title : "", message: "Your PIN will be expired in \(31 - daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date())) day(s)", showCancel: false, actions: actions, style: .alert, sheetCallBack: { [weak self] didCancelTap, tappedTitle in
+            if !didCancelTap {
+                switch tappedTitle {
+                case "Change PIN":
+                    let vc = ChangeAppLockViewController(nibName:Identifiers.changeAppLockViewController, bundle: nil)
+                    self?.navigationController?.pushViewController(vc, animated: false)
+                default:
+                    print(" \(tappedTitle)")
+                }
+            } else {
+                print("createGroup Cancel")
+            }
+        })
+    }
+
+    func daysBetween(start: Date, end: Date) -> Int {
+        return Calendar.current.dateComponents([.day], from: start, to: end).day!
+    }
+
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
@@ -91,20 +196,12 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         hideForgotView.layer.cornerRadius = 15
         hideForgotView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         self.initialmainView.backgroundColor = UIColor.clear
-        self.hideForgotView.isHidden = true
         if fingerPrintLogin == true || login == true{
             self.forgotButtonoutlet.isHidden = false
         }
-        else if fingerPrintLogout == true || logout == true || disableBothPIN == true || fingerPrintEnable == true{
+        else if fingerPrintLogout == true || logout == true || disableBothPIN == true || fingerPrintEnable == true {
             self.forgotButtonoutlet.isHidden = true
         }
-        
-        txtFirst.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
-        txtSecond.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
-        txtThird.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
-        txtForth.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
-        txtFifth.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
-        txtSixth.addTarget(self, action: #selector(self.textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
         txtFirst.delegate = self
         txtSecond.delegate = self
         txtThird.delegate = self
@@ -118,6 +215,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         txtFifth.textContentType = .none
         txtSixth.textContentType = .none
     }
+    
     func textfieldBackgroundcolour(){
         txtFirst.backgroundColor = UIColor.white
         txtSecond.backgroundColor = UIColor.white
@@ -330,55 +428,82 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     
     //PIN VALIDATION
     func validateAppPIN() {
+        if FlyDefaults.passwordAuthenticationAttemps > 4 {
+            showfailedAttempsActionAlert()
+        }
         
         if pinInput == FlyDefaults.appLockPassword  {
-            if login == true {
-                FlyDefaults.appLockenable = true
-            }
-            else if logout == true{
+            if isResetByFailedAttempts {
+                if FlyDefaults.showAppLock {
+                    self.navigationController?.popToRootViewController(animated: false)
+                } else {
+                    self.navigationController?.popViewController(animated: true)
+                }
+                FlyDefaults.showAppLock = false
+                FlyDefaults.faceOrFingerAuthenticationFails = false
+            } else if isDisablePin {
                 FlyDefaults.appLockenable = false
-                requestLogout()
-            }
-            else if FlyDefaults.appLockenable == true {
-                if  disableBothPIN == true {
-                    FlyDefaults.appLockenable = false
-                    FlyDefaults.appFingerprintenable = false
-                }
-                else if fingerPrintEnable == true{
-                    FlyDefaults.appFingerprintenable = true
-                    FlyDefaults.appLockenable = true
-                }
-            }
-            
-            if FlyDefaults.appFingerprintenable == true && FlyDefaults.appLockenable == true {
-                if fingerPrintLogin == true {
-                    FlyDefaults.appFingerprintenable = true
-                    FlyDefaults.appLockenable = true
-                }
-                else if fingerPrintLogout == true  {
-                    FlyDefaults.appFingerprintenable = false
-                }
-            }
-            if fingerPrintLogin || noFingerprintAdded{
-                if noFingerprintAdded == true{
-                    FlyDefaults.appFingerprintenable = false
+                FlyDefaults.appFingerprintenable = false
+                if FlyDefaults.showAppLock {
+                    self.navigationController?.popToRootViewController(animated: false)
+                } else {
+                    self.navigationController?.popViewController(animated: true)
                 }
                 FlyDefaults.showAppLock = false
-                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                let navigationController =  UINavigationController(rootViewController: initialViewController)
-                UIApplication.shared.windows.first?.rootViewController = navigationController
-                UIApplication.shared.windows.first?.makeKeyAndVisible()
+                FlyDefaults.faceOrFingerAuthenticationFails = false
             } else {
-                FlyDefaults.showAppLock = false
-                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
-                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-                let navigationController =  UINavigationController(rootViewController: initialViewController)
-                UIApplication.shared.windows.first?.rootViewController = navigationController
-                UIApplication.shared.windows.first?.makeKeyAndVisible()
+                if login == true {
+                    FlyDefaults.appLockenable = true
+                }
+                else if logout == true{
+                    FlyDefaults.appLockenable = false
+                    requestLogout()
+                }
+                else if FlyDefaults.appLockenable == true {
+                    if  disableBothPIN == true {
+                        FlyDefaults.appLockenable = false
+                        FlyDefaults.appFingerprintenable = false
+                    }
+                    else if fingerPrintEnable == true{
+                        FlyDefaults.appFingerprintenable = true
+                        FlyDefaults.appLockenable = true
+                    }
+                }
+
+                if FlyDefaults.appFingerprintenable == true && FlyDefaults.appLockenable == true {
+                    if fingerPrintLogin == true {
+                        FlyDefaults.appFingerprintenable = true
+                        FlyDefaults.appLockenable = true
+                    }
+                    else if fingerPrintLogout == true  {
+                        FlyDefaults.appFingerprintenable = false
+                    }
+                }
+                if fingerPrintLogin || noFingerprintAdded{
+                    if noFingerprintAdded == true{
+                        FlyDefaults.appFingerprintenable = false
+                    }
+                    if FlyDefaults.showAppLock {
+                        self.navigationController?.popToRootViewController(animated: false)
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    FlyDefaults.showAppLock = false
+                    FlyDefaults.faceOrFingerAuthenticationFails = false
+                } else {
+
+                    if FlyDefaults.showAppLock {
+                        self.navigationController?.popToRootViewController(animated: false)
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    FlyDefaults.showAppLock = false
+                    FlyDefaults.faceOrFingerAuthenticationFails = false
+                }
             }
         }
         else {
+            FlyDefaults.passwordAuthenticationAttemps+=1
             AppAlert.shared.showToast(message: ErrorMessage.validateAppLock)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
@@ -388,6 +513,10 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     }
     
     @IBAction func forgotbutton(_ sender: Any) {
+        forgotPassword()
+    }
+
+    func forgotPassword() {
         phoneNumber = "+"+FlyDefaults.myMobileNumber
         if NetworkReachability.shared.isConnected {
             startLoading(withText: pleaseWait)
@@ -507,146 +636,168 @@ extension AuthenticationPINViewController: UICollectionViewDelegate,UICollection
     
 }
 
-extension AuthenticationPINViewController:  CustomTextFieldDelegate{
-    func textField(_ textField: UITextField, didDeleteBackwardAnd wasEmpty: Bool) {
+extension AuthenticationPINViewController:  CustomTextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == txtSixth {
+            txtSixth?.becomeFirstResponder()
+        }
+        if textField == txtFifth {
+            txtFifth?.becomeFirstResponder()
+        }
+        if textField == txtForth {
+            txtForth?.becomeFirstResponder()
+        }
+        if textField == txtThird {
+            txtThird?.becomeFirstResponder()
+        }
+        if textField == txtSecond {
+            txtSecond?.becomeFirstResponder()
+        }
+        if textField == txtFirst {
+            txtFirst?.becomeFirstResponder()
+        }
     }
     
-    
-    @objc func textFieldDidChange(textField: UITextField) {
-        let text = textField.text
-        if  text?.count == 1 {
-            switch textField {
-            case txtFirst:
-                txtSecond.becomeFirstResponder()
-            case txtSecond:
-                txtThird.becomeFirstResponder()
-            case txtThird:
-                txtForth.becomeFirstResponder()
-            case txtForth:
-                txtFifth.becomeFirstResponder()
-            case txtFifth:
-                txtSixth.becomeFirstResponder()
-            case txtSixth:
-                if txtFirst.text?.count == 1 && txtSecond.text?.count == 1 && txtThird.text?.count == 1 && txtForth.text?.count == 1 && txtFifth.text?.count == 1 && txtSixth.text?.count == 1 {
-                    txtSixth.resignFirstResponder()
-                }
-            default:
-                break
+    func textField(_ textField: UITextField, didDeleteBackwardAnd wasEmpty: Bool) {
+        if wasEmpty {
+            if textField == txtSixth {
+                txtFifth?.becomeFirstResponder()
             }
-        }
-        if  text?.count == 0 {
-            switch textField {
-            case txtFirst:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.txtFirst.text = ""
-                }
-                txtFirst.becomeFirstResponder()
-            case txtSecond:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.txtSecond.text = ""
-                }
-                txtFirst.becomeFirstResponder()
-            case txtThird:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.txtThird.text = ""
-                }
-                txtSecond.becomeFirstResponder()
-            case txtForth:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.txtForth.text = ""
-                }
-                txtThird.becomeFirstResponder()
-            case txtFifth:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.txtFifth.text = ""
-                }
-                txtForth.becomeFirstResponder()
-            case txtSixth:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.txtSixth.text = ""
-                }
-                txtFifth.becomeFirstResponder()
-            default:
-                break
+            if textField == txtFifth {
+                txtForth?.becomeFirstResponder()
             }
-        }
-        
-        if (txtFirst.text?.count ?? 0) >= 1 && txtFirst.text != "" {
-            txtFirst.backgroundColor = Color.textFieldBackground
-        } else {
-            txtFirst.backgroundColor = UIColor.white
-        }
-        if (txtSecond.text?.count ?? 0) >= 1 && txtSecond.text != "" {
-            txtSecond.backgroundColor = Color.textFieldBackground
-        } else {
-            txtSecond.backgroundColor = UIColor.white
-        }
-        if (txtThird.text?.count ?? 0) >= 1 && txtThird.text != "" {
-            txtThird.backgroundColor = Color.textFieldBackground
-        } else {
-            txtThird.backgroundColor = UIColor.white
-        }
-        if (txtForth.text?.count ?? 0) >= 1 && txtForth.text != "" {
-            txtForth.backgroundColor = Color.textFieldBackground
-        } else {
-            txtForth.backgroundColor = UIColor.white
-        }
-        if (txtFifth.text?.count ?? 0) >= 1 && txtFifth.text != "" {
-            txtFifth.backgroundColor = Color.textFieldBackground
-        } else {
-            txtFifth.backgroundColor = UIColor.white
-        }
-        if (txtSixth.text?.count ?? 0) >= 1 && txtSixth.text != "" {
-            txtSixth.backgroundColor = Color.textFieldBackground
-        } else {
-            txtSixth.backgroundColor = UIColor.white
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            if self.txtFirst.text?.count == 1
-                && self.txtSecond.text?.count == 1
-                && self.txtThird.text?.count == 1
-                && self.txtForth.text?.count == 1
-                && self.txtFifth.text?.count == 1
-                && self.txtSixth.text?.count == 1 {
-                if self.txtFirst.text != ""
-                    && self.txtSecond.text != ""
-                    && self.txtThird.text != ""
-                    && self.txtForth.text != ""
-                    && self.txtFifth.text != ""
-                    && self.txtSixth.text != "" {
-                    self.dismissKeyboard()
-                } else {
-                }
-            } else {
+            if textField == txtForth {
+                txtThird?.becomeFirstResponder()
+            }
+            if textField == txtThird {
+                txtSecond?.becomeFirstResponder()
+            }
+            if textField == txtSecond {
+                txtFirst?.becomeFirstResponder()
+            }
+            if textField == txtFirst {
+                txtFirst?.resignFirstResponder()
             }
         }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        if let text = textField.text,
-           let textRange = Range(range, in: text) {
-            let updatedText = text.replacingCharacters(in: textRange, with: string)
-            if (updatedText.count) <= 1 {
-                if string == "" {
-                } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        textField.text = string
+        if string.isEmpty {
+            if textField == txtSixth {
+                txtFifth?.becomeFirstResponder()
+            }
+            if textField == txtFifth {
+                txtForth?.becomeFirstResponder()
+            }
+            if textField == txtForth {
+                txtThird?.becomeFirstResponder()
+            }
+            if textField == txtThird {
+                txtSecond?.becomeFirstResponder()
+            }
+            if textField == txtSecond {
+                txtFirst?.becomeFirstResponder()
+            }
+            if textField == txtFirst {
+                txtFirst?.resignFirstResponder()
+            }
+            textField.text? = string
+            return false
+        }
+        if Int(string) == nil {
+            return false
+        }
+        if string.count == 6 {
+            let otpCode = string
+            txtFirst.text = String(otpCode[otpCode.startIndex])
+            txtSecond.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 1)])
+            txtThird.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 2)])
+            txtForth.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 3)])
+            txtFifth.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 4)])
+            txtSixth.text = String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: 5)])
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.dismissKeyboard()
+            }
+        }
+        if string.count == 1 {
+            if (textField.text?.count ?? 0) == 1 && textField.tag == 0 {
+                if (txtFirst.text?.count ?? 0) == 1 {
+                    if (txtSecond.text?.count ?? 0) == 1 {
+                        if (txtThird.text?.count ?? 0) == 1 {
+                            if (txtForth.text?.count ?? 0) == 1 {
+                                if (txtFifth.text?.count ?? 0) == 1 {
+                                    txtSixth.text = string
+                                    DispatchQueue.main.async { [weak self] in
+                                        self?.dismissKeyboard()
+                                    }
+                                    return false
+                                }else{
+                                    txtFifth.text = string
+                                    return false
+                                }
+                            }else{
+                                txtForth.text = string
+                                return false
+                            }
+                        }else{
+                            txtThird.text = string
+                            return false
+                        }
+                    }else{
+                        txtSecond.text = string
+                        return false
                     }
-                }
-            } else {
-                if string == "" {
                 } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        textField.text = string
-                    }
-                }
-                if (updatedText.count) > 1 {
+                    txtFirst.text = string
                     return false
                 }
             }
         }
-        return true
+        guard let textFieldText = textField.text,
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+            return false
+        }
+        let substringToReplace = textFieldText[rangeOfTextToReplace]
+        let count = textFieldText.count - substringToReplace.count + string.count
+        
+        
+        if count == 1{
+            if textField == txtFirst{
+                DispatchQueue.main.async { [weak self] in
+                    self?.txtSecond.becomeFirstResponder()
+                }
+                
+            }else if textField == txtSecond{
+                DispatchQueue.main.async { [weak self] in
+                    self?.txtThird.becomeFirstResponder()
+                }
+                
+            }else if textField == txtThird{
+                DispatchQueue.main.async { [weak self] in
+                    self?.txtForth.becomeFirstResponder()
+                }
+                
+            }else if textField == txtForth{
+                DispatchQueue.main.async { [weak self] in
+                    self?.txtFifth.becomeFirstResponder()
+                }
+                
+            }else if textField == txtFifth {
+                DispatchQueue.main.async { [weak self] in
+                    self?.txtSixth.becomeFirstResponder()
+                }
+                
+            }else {
+                DispatchQueue.main.async { [weak self] in
+                    self?.dismissKeyboard()
+                }
+            }
+        }
+        
+        return count <= 1
     }
     
 }

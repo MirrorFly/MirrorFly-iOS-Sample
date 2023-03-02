@@ -18,11 +18,11 @@
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		j8W1wavC3oy3L+Ydgm/ncB94vuA=
+		uvoaoMoxbtONv6UGoYbJIzTksV0=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		nqxjYIbA9f5Xw8tL3gbMORYnvNM=
+		XkzYpzXxMCEFVQg69sxidUlkpMU=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -30,19 +30,19 @@
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		nqxjYIbA9f5Xw8tL3gbMORYnvNM=
+		XkzYpzXxMCEFVQg69sxidUlkpMU=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		juZK6qNd5bJ0decDfvASpx9UtA8=
+		z+b1bXEIqIUR6y7eoU5WnRtqk6Q=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		j8W1wavC3oy3L+Ydgm/ncB94vuA=
+		uvoaoMoxbtONv6UGoYbJIzTksV0=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		5OEIzD3rA/6mbfH8LvCTFZqMROo=
+		5JV+8R9ehKT2GsOqn8ECg/r0tr4=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -50,11 +50,11 @@
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		5OEIzD3rA/6mbfH8LvCTFZqMROo=
+		5JV+8R9ehKT2GsOqn8ECg/r0tr4=
 		</data>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		45NKtsSHIIMfdHbV84pfAujY9ww=
+		1E7VToNzab3JkGEq3vQ7qgrAPpw=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -81,14 +81,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			vVAlk5hlSa1DNvBrDk6Ofiz9mOsuSMvo1mrhAtYuAiY=
+			bZM5mAb+itwH3Q6kGt7ZuEOlvOQ5RcYTrg7ruM27UxI=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			AXsGKQCT4+mJz2hRStSUGjY6MlP07hGJvHqa/yKG3Os=
+			KitJ4A2G726kqeh7D62no8HsMckv8NCcPRpYDSAKNPY=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
@@ -102,28 +102,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			AXsGKQCT4+mJz2hRStSUGjY6MlP07hGJvHqa/yKG3Os=
+			KitJ4A2G726kqeh7D62no8HsMckv8NCcPRpYDSAKNPY=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5I65nQQ2uMAeAlGC3njk5qm7qTLmnBno85E1FSlMhok=
+			u0TwjxDN1WUpFsQS2AEqjZoF1kReouGFZsjXkwwnOwE=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vVAlk5hlSa1DNvBrDk6Ofiz9mOsuSMvo1mrhAtYuAiY=
+			bZM5mAb+itwH3Q6kGt7ZuEOlvOQ5RcYTrg7ruM27UxI=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mys1xWe27qliN8S4tvOdx7itn4csFYMl5OpyfP4Ms8s=
+			pjSfvVWsRjuE/kXGuVoI4kZZUQVOYBiInAKE2/as1A0=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -137,14 +137,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			mys1xWe27qliN8S4tvOdx7itn4csFYMl5OpyfP4Ms8s=
+			pjSfvVWsRjuE/kXGuVoI4kZZUQVOYBiInAKE2/as1A0=
 			</data>
 		</dict>
 		<key>Modules/FlyXmpp.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			PjqePrgMNY8puuKizPNgjlrIUj7jcnZDAsqU4833FO0=
+			wREE4WqxGjgzmb6HCuC9t2ggvBVtWfg5KewV1J4iDcc=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

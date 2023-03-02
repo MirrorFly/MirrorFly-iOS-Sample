@@ -113,18 +113,44 @@ class ViewAllMediaViewModel {
 // media (video audio image) functions
 extension ViewAllMediaViewModel {
     
-    func getVideoAudioImageMessage(jid : String, completionHandler : @escaping (_ chatMessages :[[ChatMessage]]) -> Void){
-        ChatManager.getVedioImageAudioMessageGroupByMonth(jid: jid) { chatMessages in
-           completionHandler(chatMessages)
+    func getVideoAudioImageMessage(jid : String, completionHandler : @escaping FlyCompletionHandler){
+        ChatManager.getVedioImageAudioMessageGroupByMonth(jid: jid) { isSuccess,error,data  in
+           completionHandler(isSuccess,error,data)
         }
     }
     
-    func getThumbImage(chatMessage : ChatMessage) -> UIImage? {
+    private func getThumbImage(chatMessage : ChatMessage) -> UIImage? {
         if let thumbImage = chatMessage.mediaChatMessage?.mediaThumbImage {
             let converter = ImageConverter()
             return  converter.base64ToImage(thumbImage)
         }
         return nil
+    }
+    
+    func getImage(chatMessage : ChatMessage) -> UIImage {
+        var uiImage = UIImage()
+        var isThumbImage = false
+        if let localPath = chatMessage.mediaChatMessage?.mediaFileName {
+            let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)
+            let fileURL: URL = folderPath.appendingPathComponent(localPath)
+            if FileManager.default.fileExists(atPath:fileURL.relativePath) {
+                let data = NSData(contentsOf: fileURL)
+                uiImage = UIImage(data: data! as Data) ?? UIImage()
+            }else {
+                isThumbImage = true
+            }
+        } else {
+           isThumbImage = true
+        }
+        
+        if isThumbImage {
+            if let thumImage = getThumbImage(chatMessage: chatMessage) {
+                uiImage = thumImage
+            }
+        }
+        
+        return uiImage
     }
     
     func getMediaCount(chatMessages : [[ChatMessage]]) -> String {
@@ -170,9 +196,9 @@ extension ViewAllMediaViewModel {
 
 // Document functions
 extension ViewAllMediaViewModel {
-    func getDocumentMessage(jid : String, completioHandler : @escaping (_ chatMessages :[[ChatMessage]]) -> Void) {
-        ChatManager.getDocumentMessageGroupByMonth(jid: jid) { chatMessages in
-            completioHandler(chatMessages)
+    func getDocumentMessage(jid : String, completioHandler : @escaping FlyCompletionHandler) {
+        ChatManager.getDocumentMessageGroupByMonth(jid: jid) { isSuccess,error,data  in
+            completioHandler(isSuccess,error,data)
         }
     }
     func getDocumentDate(chatMessage: ChatMessage?) -> String {
@@ -200,29 +226,42 @@ extension ViewAllMediaViewModel {
 
 // Link functions
 extension ViewAllMediaViewModel {
-    func getLinkMessage(jid : String, completionHandler : @escaping (_ linkModels : [[LinkModel]]) -> Void) {
-        ChatManager.getLinkMessageGroupByMonth(jid: jid) { linkMessages in
-            var linkModels = [[LinkModel]]()
-            var section = 0
-            linkMessages.forEach { linkMessageArray in
-                var linkModelArray = [LinkModel]()
-                var row = 0
-                linkMessageArray.forEach { linkMessage in
-                    var linkModel = LinkModel()
-                    let urlLink = linkMessage.link
-                    linkModel.linkMessage = linkMessage
-                    linkModel.row = row
-                    linkModel.section = section
-                    linkModel.title = urlLink
-                    linkModel.description = urlLink
-                    linkModel.domain = self.getDomain(urlString: urlLink)
-                    linkModelArray.append(linkModel)
-                    row += 1
+    func getLinkMessage(jid : String, completionHandler : @escaping FlyCompletionHandler) {
+        ChatManager.getLinkMessageGroupByMonth(jid: jid) { isSuccess,error,result  in
+            
+            var resultDict : [String: Any] = [:]
+            
+            if isSuccess {
+                var data = result
+                if let linkMessages = data.getData() as? [[LinkMessage]] {
+                    
+                    var linkModels = [[LinkModel]]()
+                    var section = 0
+                    linkMessages.forEach { linkMessageArray in
+                        var linkModelArray = [LinkModel]()
+                        var row = 0
+                        linkMessageArray.forEach { linkMessage in
+                            var linkModel = LinkModel()
+                            let urlLink = linkMessage.link
+                            linkModel.linkMessage = linkMessage
+                            linkModel.row = row
+                            linkModel.section = section
+                            linkModel.title = urlLink
+                            linkModel.description = urlLink
+                            linkModel.domain = self.getDomain(urlString: urlLink)
+                            linkModelArray.append(linkModel)
+                            row += 1
+                        }
+                        linkModels.append(linkModelArray)
+                        section += 1
+                    }
+                    resultDict.addData(data: linkModels)
                 }
-                linkModels.append(linkModelArray)
-                section += 1
+                
+                completionHandler(isSuccess,error,resultDict)
+            } else {
+                completionHandler(isSuccess,error,resultDict)
             }
-            completionHandler(linkModels)
         }
     }
 

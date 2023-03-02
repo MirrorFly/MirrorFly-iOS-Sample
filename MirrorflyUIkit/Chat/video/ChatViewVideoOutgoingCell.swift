@@ -66,7 +66,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
     @IBOutlet weak var quickfwdView: UIView?
     @IBOutlet weak var forwardButton: UIButton?
     @IBOutlet weak var quickFwdBtn: UIButton?
-    
+    @IBOutlet weak var captionfavImageView: UIImageView?
     @IBOutlet weak var videoTimeStackView: UIStackView!
     @IBOutlet weak var captionHolder: UIView!
     var message : ChatMessage?
@@ -156,7 +156,15 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         currentIndexPath = nil
         currentIndexPath = indexPath
         // Starred Messages
-        favImageView?.isHidden =  message!.isMessageStarred ? false : true
+        if let captionTxt = message?.mediaChatMessage?.mediaCaptionText, captionTxt == "" {
+            favImageView?.isHidden =  message!.isMessageStarred ? false : true
+            captionfavImageView?.isHidden = true
+        } else {
+            captionfavImageView?.isHidden =  message!.isMessageStarred ? false : true
+            favImageView?.isHidden = true
+        }
+        
+       
         
         showHideForwardView(message: message, isShowForwardView: isShowForwardView, isDeleteMessageSelected: isDeleteMessageSelected)
 
@@ -314,7 +322,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
         }else {
             let captionTxt = message?.mediaChatMessage?.mediaCaptionText ?? ""
             captionHolder.isHidden = false
-            captionLabel.attributedText = ChatUtils.getAttributedMessage(message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch ? true : false)
+            ChatUtils.highlight(uilabel: captionLabel, message: captionTxt, searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch ? true : false)
             captionHolder.roundCorners(corners: [.bottomLeft], radius: 5.0)
             cellView.roundCorners(corners: [.topLeft, .topRight], radius: 5.0)
             sentTime.isHidden = true
@@ -329,7 +337,7 @@ class ChatViewVideoOutgoingCell: BaseTableViewCell {
             videoTimeLabel.text = ""
         }
         
-        if (message?.messageType == .image && message?.mediaChatMessage?.mediaUploadStatus == .uploaded) {
+        if (message?.messageType == .image && (message?.mediaChatMessage?.mediaUploadStatus == .uploaded || message?.mediaChatMessage?.mediaDownloadStatus == .downloaded)) {
             if let localPath = message?.mediaChatMessage?.mediaFileName {
                 let directoryURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 let folderPath: URL = directoryURL.appendingPathComponent("FlyMedia/Image", isDirectory: true)

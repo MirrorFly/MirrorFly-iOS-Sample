@@ -402,8 +402,8 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
         
         let mediaUrl = message?.mediaChatMessage?.mediaFileUrl
         checkFileType(urlExtension: ((mediaUrl?.isEmpty ?? false ? (message?.mediaChatMessage?.mediaLocalStoragePath.components(separatedBy: ".").last as? String) : mediaUrl?.components(separatedBy: ".").last) ?? ""), typeImageView: documetTypeImage)
-        if (isStarredMessagePage == true && isMessageSearch == true) {
-            documentNameLabel?.attributedText = ChatUtils.getAttributedMessage(message: message?.mediaChatMessage?.mediaFileName ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: true)
+       if (isStarredMessagePage == true || isMessageSearch == true) {
+           ChatUtils.highlight(uilabel: documentNameLabel ?? UILabel(), message: message?.mediaChatMessage?.mediaFileName ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch == true ? true : false)
         } else {
             documentNameLabel?.text = message?.mediaChatMessage?.mediaFileName
         }

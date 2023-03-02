@@ -186,18 +186,29 @@ extension UIViewController {
     }
     
     private func reportUserOrGroup(jid : String) {
-        ChatUtils.reportFor(chatUserJid: jid) { [weak self] isSuccess in
-            self?.stopLoader(isSuccess: isSuccess)
+        ChatUtils.reportFor(chatUserJid: jid) { [weak self] isSuccess, error, data in
+            if isSuccess{
+                self?.stopLoader(isSuccess: isSuccess)
+            }else{
+                self?.stopLoading()
+                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? reportFailure)
+                AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                return
+            }
         }
     }
     
     public func reportAndExitFromGroup(jid : String, completionHandler : @escaping (_ isReported : Bool) -> Void) {
         startLoading(withText: pleaseWait)
-        ChatUtils.reportFor(chatUserJid: jid) { [weak self] isSuccess in
+        ChatUtils.reportFor(chatUserJid: jid) { [weak self] isSuccess, error, data in
             self?.stopLoading()
             completionHandler(isSuccess)
             if !isSuccess {
-                AppAlert.shared.showToast(message: reportFailure)
+                //AppAlert.shared.showToast(message: reportFailure)
+                
+                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? reportFailure)
+                AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                return
             }
         }
     }
@@ -211,8 +222,16 @@ extension UIViewController {
         showConfirmDialogToReport(profileDetail: profileDetail, isFromMessage: true) { [weak self] didTapReport in
             if didTapReport {
                 self?.startLoading(withText: pleaseWait)
-                ChatUtils.reportFrom(message: chatMessage) { [weak self] isSuccess in
-                    self?.stopLoader(isSuccess: isSuccess)
+                ChatUtils.reportFrom(message: chatMessage) { [weak self]  isSuccess, error, data in
+                    
+                    if isSuccess{
+                        self?.stopLoader(isSuccess: isSuccess)
+                    }else{
+                        self?.stopLoading()
+                        let message = AppUtils.shared.getErrorMessage(description: error?.description ?? reportFailure)
+                        AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                        return
+                    }
                 }
             }
         }

@@ -14,10 +14,16 @@ class SettingsViewController : BaseViewController {
     @IBOutlet weak var tblSettings : UITableView!
     @IBOutlet weak var lblVersion: UILabel!
     //@IBOutlet weak var lblLatestRelease: UILabel!
-
-    private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
+    
+    var availableFeatures = ChatManager.getAvailableFeatures()
+    
+    //private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","Archived Chats","About and Help","App Lock","Connection Label", "Logout"]
+    
+    private var settingsArr = [String]()
+    
 
     override func viewDidLoad() {
+        getSettingsArray()
         let info = Bundle.main.infoDictionary
         let appVersion = info?["CFBundleShortVersionString"] as? String ?? "Unknown"
         let appBuild = info?[kCFBundleVersionKey as String] as? String ?? "Unknown"
@@ -32,11 +38,15 @@ class SettingsViewController : BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+         ChatManager.shared.availableFeaturesDelegate = self
+         availableFeatures = ChatManager.getAvailableFeatures()
+         getSettingsArray()
+         tblSettings.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        ChatManager.shared.availableFeaturesDelegate = self
+      
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -152,6 +162,8 @@ extension SettingsViewController : AvailableFeaturesDelegate {
     
     func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
         
+        availableFeatures = features
+        
         let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
         
         if (!(features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount == 5) {
@@ -162,6 +174,22 @@ extension SettingsViewController : AvailableFeaturesDelegate {
                 MainTabBarController.tabBarDelegagte?.resetTabs()
             }
         }
+        getSettingsArray()
+        tblSettings.reloadData()
+    }
+    
+    func getSettingsArray() {
+        
+        if (!availableFeatures.isStarMessageEnabled && !availableFeatures.isBlockEnabled){
+            settingsArr = ["Chats","Notifications","About and Help","App Lock","Delete My Account","Logout"]
+        }else if (!availableFeatures.isStarMessageEnabled && availableFeatures.isBlockEnabled) {
+            settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
+        }else if (availableFeatures.isStarMessageEnabled && !availableFeatures.isBlockEnabled) {
+            settingsArr = ["Chats","Starred Messages","Notifications","About and Help","App Lock","Delete My Account","Logout"]
+        }else {
+            settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
+        }
+        
     }
 
 }

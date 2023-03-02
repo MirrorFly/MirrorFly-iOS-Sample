@@ -422,6 +422,9 @@ class ContactViewController: UIViewController {
     }
     
     func setProfile() {
+        if !(currentIndex > -1) || !(contacts.count > currentIndex){
+            return
+        }
         tappedProfile = contacts[currentIndex]
         if let profile =  tappedProfile{
             let name = getUserName(jid: profile.jid,name: profile.name, nickName: profile.nickName, contactType: profile.contactType)
@@ -487,6 +490,10 @@ class ContactViewController: UIViewController {
         let profile = contacts[currentIndex]
         if CallManager.isAlreadyOnAnotherCall(){
             AppAlert.shared.showToast(message: "You’re already on call, can't make new Mirrorfly call")
+            return
+        }
+        if !NetworkReachability.shared.isConnected {
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
             return
         }
         let callType = CallType.Audio
@@ -690,6 +697,7 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
             cell.profileButton.tag = indexPath.row
             cell.profileButton.addTarget(self, action: #selector( imageButtonAction(_:)), for: .touchUpInside)
             cell.name.text = name
+            cell.status.text = profile.status
             if getIsBlockedByMe(jid: profile.jid) {
                 cell.profile.image = UIImage(named: "ic_profile_placeholder")
                 cell.status.text = ""
@@ -864,7 +872,13 @@ extension ContactViewController : ProfileEventsDelegate {
     }
     
     func usersBlockedMeListFetched(jidList: [String]) {
-        
+        for jid in jidList{
+            if let blockedIndex = contacts.firstIndex(where: { profile in
+                profile.jid == jid
+            }) {
+                contactList.reloadRows(at: [IndexPath(row: blockedIndex, section: 0)], with: .none)
+            }
+        }
     }
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
@@ -896,11 +910,21 @@ extension ContactViewController : ProfileEventsDelegate {
     
     func userBlockedMe(jid: String) {
         getCotactFromLocal(fromServer: false)
+        if let blockedIndex = contacts.firstIndex(where: { profile in
+            profile.jid == jid
+        }) {
+            contactList.reloadRows(at: [IndexPath(row: blockedIndex, section: 0)], with: .none)
+        }
         setProfile()
     }
     
     func userUnBlockedMe(jid: String) {
         getCotactFromLocal(fromServer: false)
+        if let unBlockedIndex = contacts.firstIndex(where: { profile in
+            profile.jid == jid
+        }) {
+            contactList.reloadRows(at: [IndexPath(row: unBlockedIndex, section: 0)], with: .none)
+        }
         setProfile()
     }
     
@@ -1245,14 +1269,20 @@ extension ContactViewController {
     private func blockUser(jid: String?,name: String?) {
         do {
             try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
-                executeOnMainThread { [weak self] in
-                    self?.getCotactFromLocal(fromServer: false)
-                    self?.contacts.enumerated().forEach { (index, value) in
-                        if value.jid == jid {
-                            self?.contactList.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                if isSuccess {
+                    executeOnMainThread { [weak self] in
+                        self?.getCotactFromLocal(fromServer: false)
+                        self?.contacts.enumerated().forEach { (index, value) in
+                            if value.jid == jid {
+                                self?.contactList.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                            }
                         }
+                        AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
                     }
-                    AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                }else{
+                    let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                    AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                    return
                 }
             }
         } catch let error as NSError {
@@ -1264,14 +1294,20 @@ extension ContactViewController {
     private func UnblockUser(jid: String?,name: String?) {
         do {
             try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
-                executeOnMainThread { [weak self] in
-                    self?.getCotactFromLocal(fromServer: false)
-                    self?.contacts.enumerated().forEach { (index, value) in
-                        if value.jid == jid {
-                            self?.contactList.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                if isSuccess {
+                    executeOnMainThread { [weak self] in
+                        self?.getCotactFromLocal(fromServer: false)
+                        self?.contacts.enumerated().forEach { (index, value) in
+                            if value.jid == jid {
+                                self?.contactList.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+                            }
                         }
+                        AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
                     }
-                    AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                }else {
+                    let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                    AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                    return
                 }
             }
         } catch let error as NSError {

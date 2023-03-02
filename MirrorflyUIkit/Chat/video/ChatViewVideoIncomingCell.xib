@@ -437,13 +437,13 @@
                                 <rect key="frame" x="0.0" y="310" width="457" height="166"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="j5s-YY-Ve5">
-                                        <rect key="frame" x="0.0" y="0.0" width="457" height="166"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="454" height="163"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BVG-lV-riH">
-                                                <rect key="frame" x="0.0" y="0.0" width="457" height="85"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="454" height="96"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" ambiguous="YES" text="Caption...." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w0F-w3-AHu">
-                                                        <rect key="frame" x="12" y="6" width="437" height="438"/>
+                                                        <rect key="frame" x="12" y="6" width="434" height="96"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="14"/>
                                                         <color key="textColor" name="imageCaption"/>
                                                         <nil key="highlightedColor"/>
@@ -461,10 +461,10 @@
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AsZ-My-Svg" userLabel="Translated View">
-                                                <rect key="frame" x="0.0" y="95" width="457" height="50"/>
+                                                <rect key="frame" x="0.0" y="106" width="452" height="47"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="54c-7t-V64" userLabel="Translate Label">
-                                                        <rect key="frame" x="12" y="0.0" width="445" height="50"/>
+                                                        <rect key="frame" x="12" y="0.0" width="440" height="50"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Regular" family="SF UI Display" pointSize="14"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -488,39 +488,51 @@
                                                     <constraint firstAttribute="height" secondItem="54c-7t-V64" secondAttribute="height" id="lU8-e7-tCb"/>
                                                 </constraints>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5ua-NN-wkD">
-                                                <rect key="frame" x="0.0" y="148" width="457" height="18"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="3ye-4T-g0j">
+                                                <rect key="frame" x="0.0" y="153" width="454" height="10"/>
                                                 <subviews>
+                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="2" verticalHuggingPriority="2" horizontalCompressionResistancePriority="2" verticalCompressionResistancePriority="2" translatesAutoresizingMaskIntoConstraints="NO" id="stQ-y3-xQi">
+                                                        <rect key="frame" x="0.0" y="0.0" width="395.5" height="10"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_favouriteStarGray" translatesAutoresizingMaskIntoConstraints="NO" id="BB5-GA-UT3">
+                                                        <rect key="frame" x="400.5" y="0.0" width="10" height="10"/>
+                                                        <accessibility key="accessibilityConfiguration">
+                                                            <accessibilityTraits key="traits" none="YES"/>
+                                                        </accessibility>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="10" id="Zm2-dM-ehC"/>
+                                                            <constraint firstAttribute="height" constant="10" id="z2I-D7-0Mo"/>
+                                                        </constraints>
+                                                    </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6:30 pm" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g3m-wB-3Ep">
-                                                        <rect key="frame" x="3" y="0.0" width="444" height="10"/>
+                                                        <rect key="frame" x="415.5" y="0.0" width="32.5" height="10"/>
                                                         <fontDescription key="fontDescription" name="SFUIDisplay-Light" family="SF UI Display" pointSize="9"/>
                                                         <color key="textColor" name="receivedTimeCaption"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
+                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="2" verticalHuggingPriority="2" horizontalCompressionResistancePriority="2" verticalCompressionResistancePriority="2" translatesAutoresizingMaskIntoConstraints="NO" id="AC3-z0-GPg">
+                                                        <rect key="frame" x="453" y="0.0" width="1" height="10"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="1" id="ahk-Oy-P1h"/>
+                                                        </constraints>
+                                                    </view>
                                                 </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstItem="g3m-wB-3Ep" firstAttribute="leading" secondItem="5ua-NN-wkD" secondAttribute="leading" constant="3" id="4UU-JA-EXy"/>
-                                                    <constraint firstAttribute="bottom" secondItem="g3m-wB-3Ep" secondAttribute="bottom" constant="8" id="8nD-SG-j8O"/>
-                                                    <constraint firstAttribute="trailing" secondItem="g3m-wB-3Ep" secondAttribute="trailing" constant="10" id="sjS-Fw-uLu"/>
-                                                    <constraint firstItem="g3m-wB-3Ep" firstAttribute="top" secondItem="5ua-NN-wkD" secondAttribute="top" id="wN8-VE-mBx"/>
-                                                    <constraint firstAttribute="height" constant="18" id="yiJ-8D-thE"/>
-                                                </constraints>
-                                            </view>
+                                            </stackView>
                                         </subviews>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="AsZ-My-Svg" secondAttribute="trailing" constant="5" id="9wz-da-Wwk"/>
                                             <constraint firstItem="AsZ-My-Svg" firstAttribute="top" secondItem="BVG-lV-riH" secondAttribute="bottom" constant="10" id="Cbh-uv-T8Z"/>
-                                            <constraint firstItem="5ua-NN-wkD" firstAttribute="top" secondItem="AsZ-My-Svg" secondAttribute="bottom" constant="3" id="gar-IP-j9u"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="j5s-YY-Ve5" secondAttribute="bottom" id="44m-Ic-fkP"/>
+                                    <constraint firstAttribute="bottom" secondItem="j5s-YY-Ve5" secondAttribute="bottom" constant="3" id="44m-Ic-fkP"/>
                                     <constraint firstItem="j5s-YY-Ve5" firstAttribute="top" secondItem="zlH-n8-XGc" secondAttribute="top" id="D7H-H5-baO"/>
                                     <constraint firstItem="j5s-YY-Ve5" firstAttribute="leading" secondItem="zlH-n8-XGc" secondAttribute="leading" id="aS3-h3-CID"/>
-                                    <constraint firstAttribute="trailing" secondItem="j5s-YY-Ve5" secondAttribute="trailing" id="w01-Q0-C7n"/>
+                                    <constraint firstAttribute="trailing" secondItem="j5s-YY-Ve5" secondAttribute="trailing" constant="3" id="w01-Q0-C7n"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -585,6 +597,7 @@
                 <outlet property="bubbleImageView" destination="Jjs-hD-R5J" id="xQ8-Te-7Ny"/>
                 <outlet property="bubbleLeadingCons" destination="PBX-TV-K9a" id="q8Z-mO-aWr"/>
                 <outlet property="caption" destination="w0F-w3-AHu" id="j1x-4Z-RMB"/>
+                <outlet property="captionFavImageView" destination="BB5-GA-UT3" id="kIr-zI-bum"/>
                 <outlet property="captionTime" destination="g3m-wB-3Ep" id="G4D-q5-lRm"/>
                 <outlet property="captionView" destination="zlH-n8-XGc" id="bmP-qS-ecm"/>
                 <outlet property="captionViewHolder" destination="j5s-YY-Ve5" id="iqd-zB-AGq"/>

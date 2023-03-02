@@ -22,14 +22,21 @@ class BlockedContactsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        ContactManager.shared.getUsersIBlocked(fetchFromServer: false) { [weak self] isSuccess, error, data in
-            if let blocked = data["data"] as? [ProfileDetails] {
-                self?.blockedList = blocked
-            }
-            self?.blockedContactsTableView.reloadData()
-        }
+        getBLockedList()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ChatManager.shared.availableFeaturesDelegate = self
+        ContactManager.shared.profileDelegate = self
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ChatManager.shared.availableFeaturesDelegate = nil
+        ContactManager.shared.profileDelegate = nil
+    }
+    
     
 
     @IBAction func backAction(_ sender: UIButton) {
@@ -50,6 +57,23 @@ class BlockedContactsViewController: UIViewController {
         }
     }
 
+    
+    public func getBLockedList(){
+        ContactManager.shared.getUsersIBlocked(fetchFromServer: false) { [weak self] isSuccess, error, data in
+            
+            if isSuccess{
+                if let blocked = data["data"] as? [ProfileDetails] {
+                    self?.blockedList = blocked
+                }
+                self?.blockedContactsTableView.reloadData()
+            } else {
+                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                return
+            }
+        }
+    }
+    
 }
 
 extension BlockedContactsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -84,4 +108,94 @@ extension BlockedContactsViewController: UITableViewDelegate, UITableViewDataSou
     }
 
 
+}
+
+extension BlockedContactsViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((features.isGroupCallEnabled || features.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+        }
+        
+        if !features.isBlockEnabled {
+            AppActionSheet.shared.dismissActionSeet(animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                AppAlert.shared.showAlert(view: self!, title: "" , message: FlyConstants.ErrorMessage.forbidden, buttonTitle: "OK")
+            }
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+
+}
+
+extension BlockedContactsViewController : ProfileEventsDelegate{
+    func userCameOnline(for jid: String) {
+        
+    }
+    
+    func userWentOffline(for jid: String) {
+        
+    }
+    
+    func userProfileFetched(for jid: String, profileDetails: FlyCommon.ProfileDetails?) {
+        
+    }
+    
+    func myProfileUpdated() {
+        
+    }
+    
+    func usersProfilesFetched() {
+        
+    }
+    
+    func blockedThisUser(jid: String) {
+        getBLockedList()
+    }
+    
+    func unblockedThisUser(jid: String) {
+        getBLockedList()
+    }
+    
+    func usersIBlockedListFetched(jidList: [String]) {
+        getBLockedList()
+    }
+    
+    func usersBlockedMeListFetched(jidList: [String]) {
+        
+    }
+    
+    func userUpdatedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
+        
+    }
+    
+    func userBlockedMe(jid: String) {
+        
+    }
+    
+    func userUnBlockedMe(jid: String) {
+       
+    }
+    
+    func hideUserLastSeen() {
+        
+    }
+    
+    func getUserLastSeen() {
+        
+    }
+    
+    func userDeletedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
+        
+    }
+    
+    
 }

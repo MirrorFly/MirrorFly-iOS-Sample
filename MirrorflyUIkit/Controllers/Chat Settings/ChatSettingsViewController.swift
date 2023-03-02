@@ -32,10 +32,12 @@ class ChatSettingsViewController: UIViewController {
     let unselectedCellHeight: CGFloat = 80.0
     let clearAllChatsHeight: CGFloat = 60.0
     var clearBadgeCountDelegate : ClearAllChatsDelegate?
+    var availableFeatures = ChatManager.getAvailableFeatures()
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        getChatSettingsArray()
         self.chatSettingsTable.register(UINib(nibName: Identifiers.chatSettingsTableViewCell, bundle: nil), forCellReuseIdentifier: Identifiers.chatSettingsTableViewCell)
         self.chatSettingsTable.register(UINib(nibName: Identifiers.chatBackupTableViewCell, bundle: nil), forCellReuseIdentifier: Identifiers.chatBackupTableViewCell)
         self.chatSettingsTable.register(UINib(nibName: Identifiers.clearAllChatTableViewCell, bundle: nil), forCellReuseIdentifier: Identifiers.clearAllChatTableViewCell)
@@ -45,16 +47,20 @@ class ChatSettingsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        availableFeatures = ChatManager.getAvailableFeatures()
+        getChatSettingsArray()
         self.chatSettingsTable.reloadData()
         self.navigationController?.isNavigationBarHidden = true
     }
 
     override func viewDidAppear(_ animated: Bool) {
         ChatManager.shared.archiveEventsDelegate = self
+        ChatManager.shared.availableFeaturesDelegate = self
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         ChatManager.shared.archiveEventsDelegate = nil
+        ChatManager.shared.availableFeaturesDelegate = nil
     }
 
     @IBAction func onTapBack(_ sender: UIButton) {
@@ -222,7 +228,9 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                                 self?.clearBadgeCountDelegate?.clearAllConversations(isCleared: false)
                                 print("failed")
                                 self?.stopLoading()
-                                AppAlert.shared.showToast(message: serverError )
+                                let message = AppUtils.shared.getErrorMessage(description: error?.description ?? serverError)
+                                AppAlert.shared.showAlert(view: self!, title: "" , message: message, buttonTitle: "OK")
+                                return
                             }
                         }
                     }else {
@@ -322,3 +330,43 @@ extension ChatSettingsViewController: ArchiveEventsDelegate {
 
 
 }
+
+extension ChatSettingsViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
+        }
+        
+        getChatSettingsArray()
+        self.chatSettingsTable.reloadData()
+    }
+    
+    func getChatSettingsArray() {
+        if availableFeatures.isTranslationEnabled && availableFeatures.isClearChatEnabled {
+            chatSettingsArray = ChatSettingList.allCases
+        }else if !availableFeatures.isTranslationEnabled && !availableFeatures.isClearChatEnabled {
+            FlyDefaults.isTranlationEnabled = false
+            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,.chatBackup]
+        }else if !availableFeatures.isTranslationEnabled && availableFeatures.isClearChatEnabled {
+            FlyDefaults.isTranlationEnabled = false
+            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,.chatBackup,.clearAllConversation]
+        }else if availableFeatures.isTranslationEnabled && !availableFeatures.isClearChatEnabled {
+            chatSettingsArray = [.ArchiveSettings,.TranslateMessage,.lastseen,.UserBusyStatus,.autodownload,.chatBackup]
+        }else{
+            chatSettingsArray = ChatSettingList.allCases
+        }
+    }
+}
+

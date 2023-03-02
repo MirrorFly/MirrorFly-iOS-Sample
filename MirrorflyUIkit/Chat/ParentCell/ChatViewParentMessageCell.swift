@@ -454,7 +454,11 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             
            break
         case .contact:
-            contactName?.text = message?.contactChatMessage?.contactName ?? ""
+            if isMessageSearch == true || isStarredMessagePage {
+                ChatUtils.highlight(uilabel: contactName ?? UILabel(), message: message?.contactChatMessage?.contactName ?? "", searchText: searchText, isMessageSearch: isMessageSearch, isSystemBlue: isStarredMessagePage == true && isMessageSearch == true ? true : false)
+            } else {
+                contactName?.attributedText =  ChatUtils.getAttributedMessage(message: message?.contactChatMessage?.contactName ?? "", searchText: searchText, isMessageSearch: isMessageSearch,isSystemBlue: isStarredMessagePage == true && isMessageSearch == true ? true : false)
+            }
             break
         
         default:
@@ -512,8 +516,8 @@ class ChatViewParentMessageCell: BaseTableViewCell {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapTextLabel(sender:)))
             let textArray = message.trim().split(separator: " ")
             if isStarredMessagePage == true && searchText.trim().isNotEmpty == true {
-                let urlRange = (message.capitalized as NSString).range(of: searchText.trim().capitalized)
-                attributedString?.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: urlRange)
+                let range = (message.lowercased() as NSString).range(of: searchText.lowercased())
+                attributedString?.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemBlue], range: range)
             }
             for (index, tempText) in textArray.enumerated() {
                 print("processTextMessage index \(index) item \(tempText)")
@@ -533,12 +537,17 @@ class ChatViewParentMessageCell: BaseTableViewCell {
                  }
 
                 if fromChat && isMessageSearch {
-                    let range = (message.lowercased() as NSString).range(of: searchText.lowercased())
-                    attributedString?.addAttribute(NSAttributedString.Key.backgroundColor, value: Color.color_3276E2 ?? .blue, range: range)
+                    do {
+                        let regex = try NSRegularExpression(pattern:  NSRegularExpression.escapedPattern(for: searchText.trim().lowercased()).folding(options: .regularExpression, locale: .current), options: .caseInsensitive)
+                        let range = NSRange(location: 0, length: message.utf16.count)
+                        for match in regex.matches(in: message.lowercased().folding(options: .regularExpression, locale: .current), options: .withTransparentBounds, range: range) {
+                            attributedString?.addAttribute(NSAttributedString.Key.backgroundColor, value: Color.color_3276E2 ?? .blue, range: match.range)
+                        }
+                    }
+                    catch {
+                    }
                 }
-
                  print("processTextMessage After else \(tempText)")
-
             }
         } else {
             attributedString = NSMutableAttributedString(string: message)

@@ -26,6 +26,7 @@ class ForwardViewController: UIViewController {
     @IBOutlet weak var forwardHeaderView: UIView?
     @IBOutlet weak var forwardViewHeightCons: NSLayoutConstraint?
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     private var contactViewModel : ContactViewModel?
     private var recentChatViewModel: RecentChatViewModel?
     var getRecentChat: [RecentChat] = []
@@ -36,7 +37,7 @@ class ForwardViewController: UIViewController {
     var randomColors = [UIColor?]()
     var segmentSelectedIndex: Int? = 0
     var selectedMessages: [Profile] = []
-    var pageDismissClosure:(()-> ())?
+    var pageDismissClosure:(() -> Void)?
     var selectedUserDelegate: SendSelectecUserDelegate? = nil
     var getProfileDetails: ProfileDetails?
     var forwardMessages: [SelectedMessages] = []
@@ -335,6 +336,7 @@ class ForwardViewController: UIViewController {
     
     private func showEmptyMessage() {
         emptyMessageView?.isHidden = false
+        activityIndicator.isHidden = true
         if segmentSelectedIndex == 0 && !ENABLE_CONTACT_SYNC {
             if NetworkReachability.shared.isConnected{
                 if isFirstPageLoaded && loadingCompleted{
@@ -397,6 +399,13 @@ class ForwardViewController: UIViewController {
                 self?.sendButton?.isEnabled = true
             }
         }
+    }
+    
+    func initalLoader() {
+        emptyMessageView?.isHidden = false
+        descriptionLabel?.isHidden = true
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
     }
 }
 
@@ -1279,7 +1288,7 @@ extension ForwardViewController : UIScrollViewDelegate {
         print("#fetch request \(pageNo) \(pageSize) \(searchTerm) \(isFirstPageLoaded)")
         if pageNo == 1{
             isFirstPageLoaded = false
-            forwardTableView.tableFooterView = createTableFooterView()
+            initalLoader()
         }
         if !NetStatus.shared.isConnected{
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
@@ -1382,14 +1391,11 @@ extension ForwardViewController : UIScrollViewDelegate {
         }
     }
     
-    public func createTableFooterView() -> UIView{
-        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: forwardTableView.frame.size.width, height: 64))
-        let spinner = UIActivityIndicatorView()
-        spinner.center = footerView.center
-        footerView.addSubview(spinner)
+    public func createTableFooterView() -> UIView {
+        let spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
-        footerView.contentMode = .center
-        return footerView
+        spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: forwardTableView.bounds.size.width, height: CGFloat(64))
+        return spinner
     }
     
     @objc func networkChange(_ notification: NSNotification) {
@@ -1446,9 +1452,15 @@ extension ForwardViewController {
     private func blockUser(jid: String?,name: String?) {
         do {
             try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
-                executeOnMainThread { [weak self] in
-                    self?.loadChatList()
-                    AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                if isSuccess {
+                    executeOnMainThread { [weak self] in
+                        self?.loadChatList()
+                        AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                    }
+                }else{
+                    let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                    AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                    return
                 }
             }
         } catch let error as NSError {
@@ -1460,9 +1472,15 @@ extension ForwardViewController {
     private func UnblockUser(jid: String?,name: String?) {
         do {
             try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
-                executeOnMainThread { [weak self] in
-                    self?.loadChatList()
-                    AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                if isSuccess {
+                    executeOnMainThread { [weak self] in
+                        self?.loadChatList()
+                        AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                    }
+                }else {
+                    let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                    AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                    return
                 }
             }
         } catch let error as NSError {

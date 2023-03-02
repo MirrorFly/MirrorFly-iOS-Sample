@@ -66,6 +66,8 @@ class GroupInfoViewController: UIViewController {
         }
     }
     
+    var availableFeatures = ChatManager.getAvailableFeatures()
+    
     var optionsController : GroupInfoOptionsViewController?
     
     override func viewDidLoad() {
@@ -87,6 +89,8 @@ class GroupInfoViewController: UIViewController {
         if groupInfoViewModel.isBlockedByAdmin(groupJid: groupID) {
             navigateOnGroupBlock()
         }
+        
+        availableFeatures = ChatManager.getAvailableFeatures()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -94,6 +98,7 @@ class GroupInfoViewController: UIViewController {
         GroupManager.shared.groupDelegate = self
         ContactManager.shared.profileDelegate = self
         ChatManager.shared.adminBlockDelegate = self
+        ChatManager.shared.availableFeaturesDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -101,6 +106,7 @@ class GroupInfoViewController: UIViewController {
         GroupManager.shared.groupDelegate = nil
         ContactManager.shared.profileDelegate = nil
         ChatManager.shared.adminBlockDelegate = nil
+        ChatManager.shared.availableFeaturesDelegate = nil
     }
     
     private func setUpUI() {
@@ -161,8 +167,10 @@ class GroupInfoViewController: UIViewController {
     @objc
     func stateChanged(switchState: UISwitch) {
         if switchState.isOn {
+            profileDetails?.isMuted = true
             groupInfoViewModel.muteNotification(jid: groupID, mute: true)
         } else {
+            profileDetails?.isMuted = false
             groupInfoViewModel.muteNotification(jid: groupID, mute: false)
         }
     }
@@ -266,7 +274,23 @@ class GroupInfoViewController: UIViewController {
 extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 7
+        if ((availableFeatures.isViewAllMediasEnabled) && (availableFeatures.isReportEnabled) && (availableFeatures.isDeleteChatEnabled)){
+            return 7
+        }else if (!(availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == false)){
+            return 4
+        }else if (!(availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == true)){
+            return 5
+        }
+        else if((availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == false)) || (!(availableFeatures.isViewAllMediasEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == false) && (availableFeatures.isReportEnabled)) || (!(availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled) && (availableFeatures.isDeleteChatEnabled)) {
+            return 5
+        }else if((availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == true)) || (!(availableFeatures.isViewAllMediasEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == true) && (availableFeatures.isReportEnabled)) {
+            return 6
+        }
+        else if(!(availableFeatures.isViewAllMediasEnabled) && (availableFeatures.isReportEnabled) && (availableFeatures.isDeleteChatEnabled)) || ((availableFeatures.isViewAllMediasEnabled) && !(availableFeatures.isReportEnabled) && (availableFeatures.isDeleteChatEnabled)) || ((availableFeatures.isViewAllMediasEnabled) && (availableFeatures.isReportEnabled) && (!(availableFeatures.isDeleteChatEnabled) && isExistMember == false)) {
+            return 6
+        }else {
+            return 7
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -346,14 +370,48 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             cell.getGroupInfo(groupInfo: groupMembers)
             return cell
         } else if indexPath.section == 4 {
-            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
-            return cell
+            if availableFeatures.isViewAllMediasEnabled {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.viewAllMediaCell, for: indexPath) as? ViewAllMediaCell)!
+                return cell
+            }else if availableFeatures.isReportEnabled {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
+                cell.optionImageview.image = UIImage(named: ImageConstant.ic_group_report)
+                cell.optionLabel.textColor = Color.leaveGroupTextColor
+                cell.optionLabel.text = reportGroup
+                return cell
+            }else {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
+                if isExistMember == true {
+                    cell.optionImageview.image = UIImage(named: "leave_group")
+                    cell.optionLabel.textColor = Color.leaveGroupTextColor
+                    cell.optionLabel.text = leavegroup
+                } else {
+                    cell.optionImageview.image = UIImage(named: "ic_deletegroup")
+                    cell.optionLabel.textColor = Color.leaveGroupTextColor
+                    cell.optionLabel.text = deleteGroup
+                }
+                return cell
+            }
         } else if indexPath.section == 5 {
-            let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
-            cell.optionImageview.image = UIImage(named: ImageConstant.ic_group_report)
-            cell.optionLabel.textColor = Color.leaveGroupTextColor
-            cell.optionLabel.text = reportGroup
-            return cell
+            if availableFeatures.isViewAllMediasEnabled && availableFeatures.isReportEnabled {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
+                cell.optionImageview.image = UIImage(named: ImageConstant.ic_group_report)
+                cell.optionLabel.textColor = Color.leaveGroupTextColor
+                cell.optionLabel.text = reportGroup
+                return cell
+            } else {
+                let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
+                if isExistMember == true {
+                    cell.optionImageview.image = UIImage(named: "leave_group")
+                    cell.optionLabel.textColor = Color.leaveGroupTextColor
+                    cell.optionLabel.text = leavegroup
+                } else {
+                    cell.optionImageview.image = UIImage(named: "ic_deletegroup")
+                    cell.optionLabel.textColor = Color.leaveGroupTextColor
+                    cell.optionLabel.text = deleteGroup
+                }
+                return cell
+            }
         } else if indexPath.section == 6 {
             let cell = (tableView.dequeueReusableCell(withIdentifier: Identifiers.groupOptionsTableViewCell, for: indexPath) as? GroupOptionsTableViewCell)!
             if isExistMember == true {
@@ -410,12 +468,116 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         } else if indexPath.section == 4 {
-            let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
-            let viewAllMediaVC = storyboard.instantiateViewController(withIdentifier: Identifiers.viewAllMediaVC) as! ViewAllMediaController
-            viewAllMediaVC.jid = groupID
-            self.navigationController?.pushViewController(viewAllMediaVC, animated: true)
+            if availableFeatures.isViewAllMediasEnabled {
+                let storyboard = UIStoryboard.init(name: Storyboards.chat, bundle: nil)
+                let viewAllMediaVC = storyboard.instantiateViewController(withIdentifier: Identifiers.viewAllMediaVC) as! ViewAllMediaController
+                viewAllMediaVC.jid = groupID
+                self.navigationController?.pushViewController(viewAllMediaVC, animated: true)
+            } else if availableFeatures.isReportEnabled {
+                showReportOptions()
+            }else{
+                if isExistMember == true {
+                    AppAlert.shared.showAlert(view: self,
+                                              title: exitGroup,
+                                              message: exitGroupMessage,
+                                              buttonOneTitle: exitButton,
+                                              buttonTwoTitle: noButton)
+                    AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+                        
+                        let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                        
+                        if result == 0 && !isBlocked{
+                            let groupMembers = self?.groupMembers[indexPath.row]
+                            self?.leaveFromGroup()
+                        }
+                    }
+                } else {
+                    if(availableFeatures.isDeleteChatEnabled) {
+                        AppAlert.shared.showAlert(view: self,
+                                                  title: deleteGroup,
+                                                  message: deleteGroupDescription,
+                                                  buttonOneTitle: deleteText,
+                                                  buttonTwoTitle: cancelUppercase)
+                        AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+                        
+                        let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                        
+                        if result == 0 && !isBlocked{
+                            
+                            self?.groupInfoViewModel.deleteGroup(groupID: self?.groupID ?? "") {
+                                [weak self] success, error, result  in
+                                if success {
+                                    AppAlert.shared.showToast(message: deleteGroupMessage)
+                                    self?.navigationController?.navigationBar.isHidden = false
+                                    self?.navigationController?.popToRootViewController(animated: true)
+                                } else {
+                                    AppActionSheet.shared.dismissActionSeet(animated: true)
+                                    AppAlert.shared.showAlert(view: self!, title: "" , message: (result["message"] as? String ?? ""), buttonTitle: "OK")
+                                    AppAlert.shared.onAlertAction = nil
+                                }
+                            }
+                        }
+                    }
+                    }else {
+                        AppActionSheet.shared.dismissActionSeet(animated: true)
+                        AppAlert.shared.showAlert(view: self, title: "" , message: FlyConstants.ErrorMessage.forbidden, buttonTitle: "OK")
+                        AppAlert.shared.onAlertAction = nil
+                    }
+                }
+            }
         } else if indexPath.section == 5 {
-            showReportOptions()
+            if availableFeatures.isViewAllMediasEnabled && availableFeatures.isReportEnabled {
+                showReportOptions()
+            }else {
+                if isExistMember == true {
+                    AppAlert.shared.showAlert(view: self,
+                                              title: exitGroup,
+                                              message: exitGroupMessage,
+                                              buttonOneTitle: exitButton,
+                                              buttonTwoTitle: noButton)
+                    AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+                        
+                        let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                        
+                        if result == 0 && !isBlocked{
+                            let groupMembers = self?.groupMembers[indexPath.row]
+                            self?.leaveFromGroup()
+                        }
+                    }
+                } else {
+                    if(availableFeatures.isDeleteChatEnabled) {
+                        AppAlert.shared.showAlert(view: self,
+                                                  title: deleteGroup,
+                                                  message: deleteGroupDescription,
+                                                  buttonOneTitle: deleteText,
+                                                  buttonTwoTitle: cancelUppercase)
+                        AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
+                            
+                            let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                            
+                            if result == 0 && !isBlocked{
+                                
+                                self?.groupInfoViewModel.deleteGroup(groupID: self?.groupID ?? "") {
+                                    [weak self] success, error, result  in
+                                    if success {
+                                        AppAlert.shared.showToast(message: deleteGroupMessage)
+                                        self?.navigationController?.navigationBar.isHidden = false
+                                        self?.navigationController?.popToRootViewController(animated: true)
+                                    } else {
+                                        AppActionSheet.shared.dismissActionSeet(animated: true)
+                                        AppAlert.shared.showAlert(view: self!, title: "" , message: (result["message"] as? String ?? ""), buttonTitle: "OK")
+                                        AppAlert.shared.onAlertAction = nil
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        AppActionSheet.shared.dismissActionSeet(animated: true)
+                        AppAlert.shared.showAlert(view: self, title: "" , message: FlyConstants.ErrorMessage.forbidden, buttonTitle: "OK")
+                        AppAlert.shared.onAlertAction = nil
+                    }
+                }
+            }
         } else if indexPath.section == 6 {
             if isExistMember == true {
                 AppAlert.shared.showAlert(view: self,
@@ -433,28 +595,36 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             } else {
-                AppAlert.shared.showAlert(view: self,
-                                          title: deleteGroup,
-                                          message: deleteGroupDescription,
-                                          buttonOneTitle: deleteText,
-                                          buttonTwoTitle: cancelUppercase)
-                AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
-                    
-                    let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
-                    
-                    if result == 0 && !isBlocked{
+                if(availableFeatures.isDeleteChatEnabled) {
+                    AppAlert.shared.showAlert(view: self,
+                                              title: deleteGroup,
+                                              message: deleteGroupDescription,
+                                              buttonOneTitle: deleteText,
+                                              buttonTwoTitle: cancelUppercase)
+                    AppAlert.shared.onAlertAction = { [weak self] (result) -> Void in
                         
-                        self?.groupInfoViewModel.deleteGroup(groupID: self?.groupID ?? "") {
-                            [weak self] success, error, result  in
-                            if success {
-                                AppAlert.shared.showToast(message: deleteGroupMessage)
-                                self?.navigationController?.navigationBar.isHidden = false
-                                self?.navigationController?.popToRootViewController(animated: true)
-                            } else {
-                                AppAlert.shared.showToast(message: (result["message"] as? String)!)
+                        let isBlocked = self?.groupInfoViewModel.isBlockedByAdmin(groupJid: self?.groupID ?? "") ?? false
+                        
+                        if result == 0 && !isBlocked{
+                            
+                            self?.groupInfoViewModel.deleteGroup(groupID: self?.groupID ?? "") {
+                                [weak self] success, error, result  in
+                                if success {
+                                    AppAlert.shared.showToast(message: deleteGroupMessage)
+                                    self?.navigationController?.navigationBar.isHidden = false
+                                    self?.navigationController?.popToRootViewController(animated: true)
+                                } else {
+                                    AppActionSheet.shared.dismissActionSeet(animated: true)
+                                    AppAlert.shared.showAlert(view: self!, title: "" , message: (result["message"] as? String ?? ""), buttonTitle: "OK")
+                                    AppAlert.shared.onAlertAction = nil
+                                }
                             }
                         }
                     }
+                } else {
+                    AppActionSheet.shared.dismissActionSeet(animated: true)
+                    AppAlert.shared.showAlert(view: self, title: "" , message: FlyConstants.ErrorMessage.forbidden, buttonTitle: "OK")
+                    AppAlert.shared.onAlertAction = nil
                 }
             }
         }
@@ -548,7 +718,9 @@ extension GroupInfoViewController: GroupInfoOptionsDelegate {
                         AppAlert.shared.showToast(message: adminAccess)
                     }
                     executeOnMainThread {
-                        self?.stopLoading()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self?.stopLoading()
+                        }
                     }
                 }
             }
@@ -634,7 +806,7 @@ extension GroupInfoViewController: ProfileEventsDelegate {
     }
     
     func usersProfilesFetched() {
-        
+        getGroupMembers()
     }
     
     func blockedThisUser(jid: String) {
@@ -650,13 +822,20 @@ extension GroupInfoViewController: ProfileEventsDelegate {
     }
     
     func usersBlockedMeListFetched(jidList: [String]) {
-        
+        setupConfiguration()
+        refreshData()
     }
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         if jid ==  groupID {
             self.profileDetails = profileDetails
             refreshData()
+        }else{
+            if let updatedUser = groupMembers.firstIndex(where: { detail in
+                detail.memberJid == jid
+            }){
+                getGroupMembers()
+            }
         }
     }
     
@@ -684,11 +863,16 @@ extension GroupInfoViewController: ProfileEventsDelegate {
 extension GroupInfoViewController : GroupEventsDelegate {
     
     func didAddNewMemeberToGroup(groupJid: String, newMemberJid: String, addedByMemberJid: String) {
-        
+        getGroupMembers()
     }
     
     func didRemoveMemberFromGroup(groupJid: String, removedMemberJid: String, removedByMemberJid: String) {
-        
+        if let row = self.groupMembers.firstIndex(where: {$0.memberJid == removedMemberJid}) {
+            groupMembers.remove(at: row)
+        }
+        checkMemberExist()
+        refreshData()
+        //tableView.reloadSections(IndexSet(integer: 3), with: .none)
     }
     
     func didFetchGroupProfile(groupJid: String) {
@@ -696,15 +880,22 @@ extension GroupInfoViewController : GroupEventsDelegate {
     }
     
     func didUpdateGroupProfile(groupJid: String) {
-        
+        setupConfiguration()
+        refreshData()
     }
     
     func didMakeMemberAsAdmin(groupJid: String, newAdminMemberJid: String, madeByMemberJid: String) {
-        
+        if let row = self.groupMembers.firstIndex(where: {$0.memberJid == newAdminMemberJid}) {
+            groupMembers[row].isAdminMember = true
+        }
+        tableView.reloadSections(IndexSet(integer: 3), with: .none)
     }
     
     func didRemoveMemberFromAdmin(groupJid: String, removedAdminMemberJid: String, removedByMemberJid: String) {
-        
+        if let row = self.groupMembers.firstIndex(where: {$0.memberJid == removedAdminMemberJid}) {
+            groupMembers[row].isAdminMember = false
+        }
+        tableView.reloadSections(IndexSet(integer: 3), with: .none)
     }
     
     func didDeleteGroupLocally(groupJid: String) {
@@ -713,6 +904,8 @@ extension GroupInfoViewController : GroupEventsDelegate {
     
     func didLeftFromGroup(groupJid: String, leftUserJid: String) {
         getGroupMembers()
+        checkMemberExist()
+        refreshData()
     }
     
     func didCreateGroup(groupJid: String) {
@@ -1072,5 +1265,27 @@ extension GroupInfoViewController {
 //        }
     }
 }
+
+extension GroupInfoViewController : AvailableFeaturesDelegate {
+    
+    func didUpdateAvailableFeatures(features: AvailableFeaturesModel) {
+        
+        availableFeatures = features
+        
+        let tabCount =  MainTabBarController.tabBarDelegagte?.currentTabCount()
+        
+        if (!(availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount == 5) {
+            MainTabBarController.tabBarDelegagte?.removeTabAt(index: 2)
+        }else {
+            
+            if ((availableFeatures.isGroupCallEnabled || availableFeatures.isOneToOneCallEnabled) && tabCount ?? 0 < 5){
+                MainTabBarController.tabBarDelegagte?.resetTabs()
+            }
+            
+        }
+        refreshData()
+    }
+}
+
 
 

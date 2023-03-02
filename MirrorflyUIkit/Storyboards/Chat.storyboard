@@ -260,8 +260,8 @@
                                             <action selector="starredBackButtonAction:" destination="U3O-Rv-gdd" eventType="touchUpInside" id="g7Y-lS-Wwk"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Starred Message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qvU-nE-4CW">
-                                        <rect key="frame" x="113.66666666666667" y="0.0" width="165.66666666666663" height="60"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Starred Messages" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qvU-nE-4CW">
+                                        <rect key="frame" x="108" y="0.0" width="177" height="60"/>
                                         <fontDescription key="fontDescription" name="SFUIDisplay-Bold" family="SF UI Display" pointSize="21"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -384,38 +384,42 @@
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Rn-uK-goY">
                                 <rect key="frame" x="0.0" y="768" width="393" height="50"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ADq-t1-ldT">
-                                        <rect key="frame" x="343" y="0.0" width="40" height="50"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="40" id="JLk-u2-GRJ"/>
-                                        </constraints>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="up_arrow"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIf-J7-mzg">
-                                        <rect key="frame" x="295" y="0.0" width="40" height="50"/>
+                                    <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIf-J7-mzg">
+                                        <rect key="frame" x="303" y="5" width="40" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="Iaa-Vy-NvA"/>
                                         </constraints>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="down_arrow"/>
+                                        <state key="normal" image="down_arrow">
+                                            <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ADq-t1-ldT">
+                                        <rect key="frame" x="343" y="5" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="JLk-u2-GRJ"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="up_arrow">
+                                            <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" name="NavigationColor"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="ADq-t1-ldT" secondAttribute="trailing" constant="10" id="1Nr-oQ-Pqp"/>
-                                    <constraint firstAttribute="bottom" secondItem="ADq-t1-ldT" secondAttribute="bottom" id="1ft-ib-RMm"/>
+                                    <constraint firstAttribute="bottom" secondItem="ADq-t1-ldT" secondAttribute="bottom" constant="5" id="1ft-ib-RMm"/>
                                     <constraint firstAttribute="height" constant="50" id="5PH-28-2E9"/>
-                                    <constraint firstItem="ADq-t1-ldT" firstAttribute="leading" secondItem="DIf-J7-mzg" secondAttribute="trailing" constant="8" symbolic="YES" id="85R-Tl-Ssw"/>
-                                    <constraint firstItem="DIf-J7-mzg" firstAttribute="top" secondItem="1Rn-uK-goY" secondAttribute="top" id="M53-df-OzY"/>
-                                    <constraint firstItem="ADq-t1-ldT" firstAttribute="top" secondItem="1Rn-uK-goY" secondAttribute="top" id="ZOM-xD-tVN"/>
-                                    <constraint firstAttribute="bottom" secondItem="DIf-J7-mzg" secondAttribute="bottom" id="dni-5r-ZzX"/>
+                                    <constraint firstItem="ADq-t1-ldT" firstAttribute="leading" secondItem="DIf-J7-mzg" secondAttribute="trailing" id="85R-Tl-Ssw"/>
+                                    <constraint firstItem="DIf-J7-mzg" firstAttribute="top" secondItem="1Rn-uK-goY" secondAttribute="top" constant="5" id="M53-df-OzY"/>
+                                    <constraint firstItem="ADq-t1-ldT" firstAttribute="top" secondItem="1Rn-uK-goY" secondAttribute="top" constant="5" id="ZOM-xD-tVN"/>
+                                    <constraint firstAttribute="bottom" secondItem="DIf-J7-mzg" secondAttribute="bottom" constant="5" id="dni-5r-ZzX"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sAz-2n-OhK">
                                 <rect key="frame" x="0.0" y="413.66666666666669" width="393" height="50"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No messages found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D5z-sL-2EN">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No results found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D5z-sL-2EN">
                                         <rect key="frame" x="10" y="10" width="373" height="30"/>
                                         <fontDescription key="fontDescription" name="SFUIDisplay-Medium" family="SF UI Display" pointSize="14"/>
                                         <color key="textColor" name="SecondaryTextColor"/>
@@ -482,6 +486,7 @@
                         <outlet property="containerView" destination="ooK-05-PDO" id="Y0g-Zo-4eO"/>
                         <outlet property="copyButton" destination="ZZN-zj-qzJ" id="EDL-Xc-Iih"/>
                         <outlet property="deleteButton" destination="ovK-6c-rBe" id="xCt-9x-x2y"/>
+                        <outlet property="emptyMessageLabel" destination="D5z-sL-2EN" id="Dcl-Q1-0fY"/>
                         <outlet property="emptyMessageView" destination="sAz-2n-OhK" id="BvB-2k-cAI"/>
                         <outlet property="groupMemberLable" destination="C6I-tW-scf" id="Tvx-j9-zEq"/>
                         <outlet property="headerView" destination="tYR-ZY-lng" id="1bI-bs-eWy"/>

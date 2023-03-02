@@ -683,9 +683,15 @@ extension AddParticipantsViewController {
     private func blockUser(jid: String?,name: String?) {
         do {
             try ContactManager.shared.blockUser(for: jid ?? "") { isSuccess, error, data in
-                executeOnMainThread { [weak self] in
-                    self?.getContacts()
-                    AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                if isSuccess {
+                    executeOnMainThread { [weak self] in
+                        self?.getContacts()
+                        AppAlert.shared.showToast(message: "\(name ?? "") has been Blocked")
+                    }
+                }else{
+                    let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                    AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                    return
                 }
             }
         } catch let error as NSError {
@@ -697,9 +703,15 @@ extension AddParticipantsViewController {
     private func UnblockUser(jid: String?,name: String?) {
         do {
             try ContactManager.shared.unblockUser(for: jid ?? "") { isSuccess, error, data in
-                executeOnMainThread { [weak self] in
-                    self?.getContacts()
-                    AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                if isSuccess {
+                    executeOnMainThread { [weak self] in
+                        self?.getContacts()
+                        AppAlert.shared.showToast(message: "\(name ?? "") has been Unblocked")
+                    }
+                }else{
+                    let message = AppUtils.shared.getErrorMessage(description: error?.description ?? "")
+                    AppAlert.shared.showAlert(view: self, title: "" , message: message, buttonTitle: "OK")
+                    return
                 }
             }
         } catch let error as NSError {

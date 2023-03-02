@@ -152,6 +152,7 @@ let biometricAuthentication = "You need to set pin first in order to enable bio 
 let contactAccessTitle = "Allow Contact Access"
 let contactAccessMessage = "Allow Contact access in your device settings"
 
+let invalidQRMessage = "No valid QR Code detected"
 
 let cancel = NSLocalizedString("cancel", comment: "")
 let warning = NSLocalizedString("warning", comment: "")
@@ -302,6 +303,7 @@ let noMessgesToReport = "No messges to Report"
 let unableToReportDeletedUser = "Cannot report deleted user"
 let unableToReportDeletedUserMessage =  "Cannot report deleted user's message"
 
+let didBecomeActive = "didBecomeActive"
 let didEnterBackground = "DidEnterBackground"
 let recordingReachedMaximumTime = "You can record maximum 300 seconds for audio recording"
 let recordingIsTooSmall = "Recorded audio time is too short"
@@ -429,6 +431,12 @@ enum ChatActions : String, CaseIterable {
     case search = "Search"
     case block = "Block"
     case unblock = "Unblock"
+}
+
+enum AppLockActions : String, CaseIterable {
+    case disablePin = "Disable PIN"
+    case changePin = "Change PIN"
+    case forgotPin = "Forgot PIN?"
 }
 
 enum MessageActions : String, CaseIterable {
