@@ -1607,7 +1607,6 @@
                                                             <subviews>
                                                                 <view contentMode="scaleToFill" horizontalHuggingPriority="2" verticalHuggingPriority="2" horizontalCompressionResistancePriority="2" verticalCompressionResistancePriority="2" translatesAutoresizingMaskIntoConstraints="NO" id="s9v-gL-v4g">
                                                                     <rect key="frame" x="0.0" y="0.0" width="217" height="5.666666666666667"/>
-                                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 </view>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" placeholderIntrinsicWidth="217" placeholderIntrinsicHeight="21" text="Test user" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hL8-B5-sFS" userLabel="UserName">
                                                                     <rect key="frame" x="0.0" y="10.666666666666668" width="217" height="21"/>
@@ -1972,21 +1971,27 @@
                                         <rect key="frame" x="77.666666666666657" y="14" width="326.33333333333337" height="22"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" horizontalHuggingPriority="2" verticalHuggingPriority="2" horizontalCompressionResistancePriority="2" verticalCompressionResistancePriority="2" translatesAutoresizingMaskIntoConstraints="NO" id="YcC-U9-4N3">
-                                                <rect key="frame" x="0.0" y="0.0" width="182.33333333333334" height="22"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="146.33333333333334" height="22"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </view>
-                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ud-22-ZeJ">
-                                                <rect key="frame" x="185.33333333333331" y="0.0" width="0.0" height="22"/>
-                                                <state key="normal" image="ic_deleteInfo"/>
-                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gJQ-mF-wJ0">
-                                                <rect key="frame" x="188.33333333333331" y="0.0" width="30" height="22"/>
+                                                <rect key="frame" x="152.33333333333331" y="0.0" width="30" height="22"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="30" id="wka-PH-UKD"/>
                                                 </constraints>
                                                 <state key="normal" image="ic_delete"/>
                                                 <connections>
                                                     <action selector="deleteRecentChatButtonTapped:" destination="JcZ-jW-HL8" eventType="touchUpInside" id="vAF-7E-ddX"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ud-22-ZeJ">
+                                                <rect key="frame" x="188.33333333333331" y="0.0" width="30" height="22"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="30" id="tft-St-SHb"/>
+                                                </constraints>
+                                                <state key="normal" image="messageRead"/>
+                                                <connections>
+                                                    <action selector="messageReadUnReadAction:" destination="JcZ-jW-HL8" eventType="touchUpInside" id="k0B-kE-cpL"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FLm-im-7Tt">
@@ -2303,6 +2308,7 @@
                         <outlet property="noNewMsgText" destination="T8z-gc-JnP" id="Pxb-up-KGI"/>
                         <outlet property="pinChatButton" destination="FLm-im-7Tt" id="OrE-dv-uPL"/>
                         <outlet property="profilePopupContainer" destination="s24-Ca-ZvS" id="Bqi-RK-yLR"/>
+                        <outlet property="readUnreadButton" destination="5Ud-22-ZeJ" id="iIT-fE-qSJ"/>
                         <outlet property="recentChatTableView" destination="KDz-My-Afz" id="ZCf-3c-bzS"/>
                         <outlet property="searchBar" destination="jp8-Sy-uzd" id="I7a-Rv-2IO"/>
                         <outlet property="searchView" destination="7ae-7r-TMF" id="wbA-4E-kCv"/>
@@ -5397,7 +5403,6 @@
         <image name="ic_audiocall" width="29" height="29"/>
         <image name="ic_close" width="20" height="20"/>
         <image name="ic_delete" width="20" height="20"/>
-        <image name="ic_deleteInfo" width="20" height="20"/>
         <image name="ic_email" width="22" height="22"/>
         <image name="ic_empty state_img" width="152" height="143.33332824707031"/>
         <image name="ic_info" width="29" height="29"/>
@@ -5409,6 +5414,7 @@
         <image name="ic_selected" width="17" height="17"/>
         <image name="ic_status" width="22" height="22"/>
         <image name="ic_videocall" width="29" height="29"/>
+        <image name="messageRead" width="20" height="20"/>
         <image name="mute" width="15.666666984558105" height="15.333333015441895"/>
         <image name="muted" width="12" height="12"/>
         <image name="noCall" width="89.333335876464844" height="88"/>

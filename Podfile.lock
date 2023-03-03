@@ -23,6 +23,11 @@ PODS:
   - Firebase/Messaging (10.4.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.4.0)
+  - Firebase/RemoteConfig (10.4.0):
+    - Firebase/CoreOnly
+    - FirebaseRemoteConfig (~> 10.4.0)
+  - FirebaseABTesting (10.4.0):
+    - FirebaseCore (~> 10.0)
   - FirebaseAnalytics (10.4.0):
     - FirebaseAnalytics/AdIdSupport (= 10.4.0)
     - FirebaseCore (~> 10.0)
@@ -73,6 +78,12 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseRemoteConfig (10.4.0):
+    - FirebaseABTesting (~> 10.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - Floaty (4.2.0)
   - GoogleAppMeasurement (10.4.0):
     - GoogleAppMeasurement/AdIdSupport (= 10.4.0)
@@ -191,6 +202,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Crashlytics
   - Firebase/Messaging
+  - Firebase/RemoteConfig
   - Floaty (~> 4.2.0)
   - GoogleMaps
   - GoogleWebRTC
@@ -222,6 +234,7 @@ SPEC REPOS:
     - CocoaAsyncSocket
     - CocoaLumberjack
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseAuth
     - FirebaseCore
@@ -229,6 +242,7 @@ SPEC REPOS:
     - FirebaseCrashlytics
     - FirebaseInstallations
     - FirebaseMessaging
+    - FirebaseRemoteConfig
     - Floaty
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -270,6 +284,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   CocoaLumberjack: 78abfb691154e2a9df8ded4350d504ee19d90732
   Firebase: ba3501b5142a57747eac74d27c96d2b313bdec90
+  FirebaseABTesting: ae3b32fe26e761fd54c68e37a632a0097b599c87
   FirebaseAnalytics: 0be84b933ca3222bca03e8cccf020ad9b1c3c6ff
   FirebaseAuth: 5608282535d6f2dc902b2b88a379aaf6912fb837
   FirebaseCore: b8697a177690b69b0dbce9d612b69b893be70469
@@ -277,6 +292,7 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: 52e821fd4d36eba20a251a53549c2778b455f360
   FirebaseInstallations: 36b38c733fd37e50857e5e8d74138648f466f18c
   FirebaseMessaging: e7304d6ce5f83d9139f0a61383a2302beb99b111
+  FirebaseRemoteConfig: bf23f54161ebad4fb4acb1ac44ad7783a784f3ab
   Floaty: e2bd5a0f6f7f70899e26ff2da31081c8bee8d1b0
   GoogleAppMeasurement: 173fa22ce7d62c29332568e853b39b2525a0e584
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
@@ -312,6 +328,6 @@ SPEC CHECKSUMS:
   Toaster: c3473963c78e8cabbf6ea6f11ad0fdaae6f54987
   XMPPFramework: 5d31ff9f73dce031b24bc49bcf88093627a3a86e
 
-PODFILE CHECKSUM: 26e395d876699b75e5f0605c30d1807e4ad99bc6
+PODFILE CHECKSUM: a14ebbbb6d7ce04190bb4b7d50316044a67d94b8
 
 COCOAPODS: 1.11.0

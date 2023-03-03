@@ -2222,7 +2222,7 @@
           {
             "kind": "Function",
             "name": "registerApiService",
-            "printedName": "registerApiService(uniqueIdentifier:deviceToken:voipDeviceToken:mode:completionHandler:)",
+            "printedName": "registerApiService(uniqueIdentifier:deviceToken:voipDeviceToken:mode:isForceRegister:completionHandler:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -2246,6 +2246,12 @@
                 "name": "String",
                 "printedName": "Swift.String",
                 "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
               },
               {
                 "kind": "TypeNominal",
@@ -2313,8 +2319,8 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:10FlyNetwork0aB10ControllerC18registerApiService16uniqueIdentifier11deviceToken010voipDeviceJ04mode17completionHandlerySS_S2SSbySb_0A6Common0A5ErrorOSgSDySSypGtctF",
-            "mangledName": "$s10FlyNetwork0aB10ControllerC18registerApiService16uniqueIdentifier11deviceToken010voipDeviceJ04mode17completionHandlerySS_S2SSbySb_0A6Common0A5ErrorOSgSDySSypGtctF",
+            "usr": "s:10FlyNetwork0aB10ControllerC18registerApiService16uniqueIdentifier11deviceToken010voipDeviceJ04mode15isForceRegister17completionHandlerySS_S2SS2bySb_0A6Common0A5ErrorOSgSDySSypGtctF",
+            "mangledName": "$s10FlyNetwork0aB10ControllerC18registerApiService16uniqueIdentifier11deviceToken010voipDeviceJ04mode15isForceRegister17completionHandlerySS_S2SS2bySb_0A6Common0A5ErrorOSgSDySSypGtctF",
             "moduleName": "FlyNetwork",
             "declAttributes": [
               "AccessControl"
@@ -3869,336 +3875,343 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyDownloader.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyDownloader.swift",
       "kind": "IntegerLiteral",
       "offset": 244,
       "length": 1,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyDownloader.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyDownloader.swift",
       "kind": "StringLiteral",
       "offset": 433,
       "length": 24,
       "value": "\"downloadRequestDetails\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyDownloader.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyDownloader.swift",
       "kind": "StringLiteral",
       "offset": 485,
       "length": 11,
       "value": "\"messageID\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RequestManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RequestManager.swift",
       "kind": "StringLiteral",
       "offset": 416,
       "length": 6,
       "value": "\"POST\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RequestManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RequestManager.swift",
       "kind": "StringLiteral",
       "offset": 444,
       "length": 5,
       "value": "\"GET\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RequestManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RequestManager.swift",
       "kind": "IntegerLiteral",
       "offset": 600,
       "length": 1,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RegisterModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RegisterModel.swift",
       "kind": "IntegerLiteral",
       "offset": 548,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/Socket.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/RegisterModel.swift",
+      "kind": "BooleanLiteral",
+      "offset": 720,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/Socket.swift",
       "kind": "StringLiteral",
       "offset": 614,
       "length": 18,
       "value": "\"SocketConnection\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/MediaManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/MediaManager.swift",
       "kind": "Array",
       "offset": 333,
       "length": 2,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/MediaManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/MediaManager.swift",
       "kind": "Dictionary",
       "offset": 398,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 208,
       "length": 12,
       "value": "\"requestotp\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 238,
       "length": 7,
       "value": "\"login\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 266,
       "length": 10,
       "value": "\"register\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 294,
       "length": 8,
       "value": "\"media\/\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 323,
       "length": 12,
       "value": "\"image.jpeg\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 360,
       "length": 7,
       "value": "\"media\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 387,
       "length": 15,
       "value": "\"media\/forward\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 433,
       "length": 17,
       "value": "\"users\/delivered\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 469,
       "length": 8,
       "value": "\"logout\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 501,
       "length": 26,
       "value": "\"contacts\/syncContactsNew\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 555,
       "length": 18,
       "value": "\"sandbox\/register\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 595,
       "length": 21,
       "value": "\"moderation\/feedback\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 635,
       "length": 19,
       "value": "\"moderation\/report\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 680,
       "length": 23,
       "value": "\"users\/deleteMyAccount\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 725,
       "length": 19,
       "value": "\"contacts\/userList\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 763,
       "length": 14,
       "value": "\"users\/config\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 208,
       "length": 12,
       "value": "\"requestotp\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 238,
       "length": 7,
       "value": "\"login\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 266,
       "length": 10,
       "value": "\"register\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 294,
       "length": 8,
       "value": "\"media\/\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 323,
       "length": 12,
       "value": "\"image.jpeg\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 360,
       "length": 7,
       "value": "\"media\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 387,
       "length": 15,
       "value": "\"media\/forward\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 433,
       "length": 17,
       "value": "\"users\/delivered\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 469,
       "length": 8,
       "value": "\"logout\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 501,
       "length": 26,
       "value": "\"contacts\/syncContactsNew\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 555,
       "length": 18,
       "value": "\"sandbox\/register\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 595,
       "length": 21,
       "value": "\"moderation\/feedback\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 635,
       "length": 19,
       "value": "\"moderation\/report\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 680,
       "length": 23,
       "value": "\"users\/deleteMyAccount\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 725,
       "length": 19,
       "value": "\"contacts\/userList\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 763,
       "length": 14,
       "value": "\"users\/config\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
       "offset": 922,
       "length": 19,
       "value": "\"NetworkController\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
-      "offset": 9566,
+      "offset": 9579,
       "length": 3,
       "value": "\" \""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyNetworkController.swift",
       "kind": "StringLiteral",
-      "offset": 9592,
+      "offset": 9605,
       "length": 4,
       "value": "\"\n\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyUploader.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyUploader.swift",
       "kind": "IntegerLiteral",
       "offset": 275,
       "length": 1,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyUploader.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyUploader.swift",
       "kind": "StringLiteral",
       "offset": 451,
       "length": 22,
       "value": "\"uploadRequestDetails\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyUploader.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleNetwork\/FlyNetwork\/FlyNetwork\/FlyUploader.swift",
       "kind": "StringLiteral",
       "offset": 501,
       "length": 11,

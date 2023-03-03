@@ -14,12 +14,10 @@ class SettingsViewController : BaseViewController {
     @IBOutlet weak var tblSettings : UITableView!
     @IBOutlet weak var lblVersion: UILabel!
     //@IBOutlet weak var lblLatestRelease: UILabel!
+
+    private var settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
     
     var availableFeatures = ChatManager.getAvailableFeatures()
-    
-    //private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","Archived Chats","About and Help","App Lock","Connection Label", "Logout"]
-    
-    private var settingsArr = [String]()
     
 
     override func viewDidLoad() {
@@ -181,13 +179,13 @@ extension SettingsViewController : AvailableFeaturesDelegate {
     func getSettingsArray() {
         
         if (!availableFeatures.isStarMessageEnabled && !availableFeatures.isBlockEnabled){
-            settingsArr = ["Chats","Notifications","About and Help","App Lock","Delete My Account","Logout"]
+            settingsArr = ["Chats","Notifications","About and Help","Delete My Account","Logout"]
         }else if (!availableFeatures.isStarMessageEnabled && availableFeatures.isBlockEnabled) {
-            settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
+            settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
         }else if (availableFeatures.isStarMessageEnabled && !availableFeatures.isBlockEnabled) {
-            settingsArr = ["Chats","Starred Messages","Notifications","About and Help","App Lock","Delete My Account","Logout"]
+            settingsArr = ["Chats","Starred Messages","Notifications","About and Help","Delete My Account","Logout"]
         }else {
-            settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
+            settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
         }
         
     }

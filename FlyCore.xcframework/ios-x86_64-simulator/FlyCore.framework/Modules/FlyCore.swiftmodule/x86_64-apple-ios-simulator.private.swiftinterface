@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
 // swift-module-flags: -target x86_64-apple-ios12.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyCore
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
@@ -128,7 +128,7 @@ extension FlyCore.ChatManager : FlyXmpp.XMPPMessageDelegate {
 }
 extension FlyCore.ChatManager {
   public static func requestOTPApiService(for mobilenumber: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
-  public static func registerApiService(for uniqueIdentifier: Swift.String, deviceToken: Swift.String = emptyString(), voipDeviceToken: Swift.String = emptyString(), isExport: Swift.Bool = false, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
+  public static func registerApiService(for uniqueIdentifier: Swift.String, deviceToken: Swift.String = emptyString(), voipDeviceToken: Swift.String = emptyString(), isExport: Swift.Bool = false, isForceRegister: Swift.Bool = true, completionHandler: @escaping FlyCommon.FlyCompletionHandler) throws
   public static func enableDisableHideLastSeen(EnableLastSeen: Swift.Bool, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func getUserLastSeen(for Jid: Swift.String, completionHandler: @escaping FlyCommon.FlyCompletionHandler)
   public static func markConversationAsRead(for jids: [Swift.String])
@@ -250,6 +250,14 @@ extension FlyCore.ChatManager {
 extension FlyCore.ChatManager {
   public func exportChatConversationToEmail(jid: Swift.String, completionHandler: @escaping (_ chatDataModel: FlyCommon.ChatDataModel) -> Swift.Void)
 }
+@_hasMissingDesignatedInitializers @objcMembers public class GroupConfig {
+  public static var Builder: FlyCore.GroupConfig
+  public func enableGroupCreation(groupCreation: Swift.Bool) -> FlyCore.GroupConfig
+  public func onlyAdminCanAddOrRemoveMembers(adminOnly: Swift.Bool) -> FlyCore.GroupConfig
+  public func setMaximumMembersInAGroup(membersCount: Swift.Int) -> FlyCore.GroupConfig
+  public func build() throws -> FlyCore.GroupConfig
+  @objc deinit
+}
 public protocol BackupEventDelegate {
   func backupProgressDidReceive(completedCount: Swift.String, completedSize: Swift.String)
   func backupDidFinish(fileUrl: Swift.String)
@@ -260,12 +268,16 @@ public protocol RestoreEventDelegate {
   func restoreDidFinish()
   func restoreDidFailed(errorMessage: Swift.String)
 }
-@_hasMissingDesignatedInitializers @objcMembers public class GroupConfig {
-  public static var Builder: FlyCore.GroupConfig
-  public func enableGroupCreation(groupCreation: Swift.Bool) -> FlyCore.GroupConfig
-  public func onlyAdminCanAddOrRemoveMembers(adminOnly: Swift.Bool) -> FlyCore.GroupConfig
-  public func setMaximumMembersInAGroup(membersCount: Swift.Int) -> FlyCore.GroupConfig
-  public func build() throws -> FlyCore.GroupConfig
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class BackupManager : ObjectiveC.NSObject {
+  public var backupDelegate: FlyCore.BackupEventDelegate?
+  public var restoreDelegate: FlyCore.RestoreEventDelegate?
+  public static let shared: FlyCore.BackupManager
+  public func startBackup()
+  public func removeAllMessages()
+  public func restoreMessages(url: Foundation.URL)
+  public func cancelBackup()
+  public func calculatePercentage(value: Swift.Int, percentageVal: Swift.Int) -> Swift.Double
+  public func calculateProgress(value: Swift.Int, percentageVal: Swift.Int) -> Swift.Double
   @objc deinit
 }
 @objc public protocol GroupEventsDelegate : ObjectiveC.NSObjectProtocol {
@@ -296,11 +308,6 @@ public protocol RestoreEventDelegate {
   @objc func onMessageTranslated(message: FlyCommon.ChatMessage, jid: Swift.String)
   @objc func clearAllConversationForSyncedDevice()
 }
-public protocol AdminBlockCurrentUserDelegate : ObjectiveC.NSObjectProtocol {
-  func didBlockOrUnblockCurrentUser(userJid: Swift.String, isBlocked: Swift.Bool)
-  func didBlockOrUnblockGroup(groupJid: Swift.String, isBlocked: Swift.Bool)
-  func didBlockOrUnblockContact(userJid: Swift.String, isBlocked: Swift.Bool)
-}
 @objc @_inheritsConvenienceInitializers public class ContactSyncManager : ObjectiveC.NSObject {
   public static let shared: FlyCore.ContactSyncManager
   @objc override dynamic public init()
@@ -323,6 +330,33 @@ public enum ContactSyncState : Swift.String {
 public protocol AvailableFeaturesDelegate : ObjectiveC.NSObjectProtocol {
   func didUpdateAvailableFeatures(features: FlyCommon.AvailableFeaturesModel)
 }
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class WebLoginsManager : ObjectiveC.NSObject {
+  public static let shared: FlyCore.WebLoginsManager
+  public var webLogoutDelegate: FlyCore.WebLogoutDelegate?
+  public func handleQrCodeData(qrCodeString: Swift.String, completionHandler: @escaping (_ isSuccess: Swift.Bool, _ message: Swift.String) -> Swift.Void)
+  public func getSocketId(completionHandler: @escaping (_ isSuccess: Swift.Bool, _ message: Swift.String) -> Swift.Void)
+  public func reset()
+  public func logoutFromDevices()
+  @objc deinit
+}
+extension FlyCore.WebLoginsManager : FlyNetwork.WebLoginDelegate {
+  public func didGetSocketId(data: [Any])
+  public func didLogin(data: [Any])
+}
+extension FlyCore.WebLoginsManager : FlyNetwork.SocketDelegate {
+  public func didConnect()
+  public func onError()
+  public func didDisconnect()
+  public func onReconnecting()
+}
+extension FlyCore.WebLoginsManager : FlyXmpp.XMPPWebLogoutDelegate {
+  public func didLogoutWeb(socketId: Swift.String)
+}
+extension FlyCore.WebLoginsManager {
+  public func saveWebLogin(qrData: Swift.String)
+  public func getWebLogins() -> [FlyCommon.WebLoginInfo?]
+  public func getRecentWebLogin() -> [FlyCommon.WebLoginInfo?]
+}
 @_hasMissingDesignatedInitializers @objcMembers public class ChatSDK {
   public static let Builder: FlyCore.ChatSDK
   public func setDomainBaseUrl(baseUrl: Swift.String) -> FlyCore.ChatSDK
@@ -343,10 +377,6 @@ public protocol AvailableFeaturesDelegate : ObjectiveC.NSObjectProtocol {
   @objc public func initializeDelegate()
   @objc deinit
 }
-@objc public protocol ArchiveEventsDelegate : ObjectiveC.NSObjectProtocol {
-  @objc func updateArchiveUnArchiveChats(toUser: Swift.String, archiveStatus: Swift.Bool)
-  @objc func updateArchivedSettings(archivedSettingsStatus: Swift.Bool)
-}
 @objc public class FetchMessageListQuery : ObjectiveC.NSObject {
   public init(fetchMessageListParams: FlyCommon.FetchMessageListParams)
   public func loadMessages(completionHandler: @escaping FlyCommon.FlyCompletionHandler)
@@ -358,13 +388,14 @@ public protocol AvailableFeaturesDelegate : ObjectiveC.NSObjectProtocol {
   public func isFetchingInProgress() -> Swift.Bool
   @objc deinit
 }
-public protocol WebLogoutDelegate {
-  func didLogoutWeb(socketId: Swift.String)
-}
 @objc public protocol ConnectionEventDelegate : ObjectiveC.NSObjectProtocol {
   @objc func onConnected()
   @objc func onDisconnected()
   @objc func onConnectionNotAuthorized()
+}
+@objc public protocol ArchiveEventsDelegate : ObjectiveC.NSObjectProtocol {
+  @objc func updateArchiveUnArchiveChats(toUser: Swift.String, archiveStatus: Swift.Bool)
+  @objc func updateArchivedSettings(archivedSettingsStatus: Swift.Bool)
 }
 public protocol TypingStatusDelegate : ObjectiveC.NSObjectProtocol {
   func onChatTypingStatus(userJid: Swift.String, status: FlyCommon.TypingStatus)
@@ -430,11 +461,6 @@ extension FlyCore.FlyMessenger {
 }
 extension FlyCore.FlyMessenger {
   @objc dynamic public func deleteUnreadMessageSeparatorOfAConversation(jid: Swift.String)
-}
-public protocol AdminBlockDelegate : ObjectiveC.NSObjectProtocol {
-  func didBlockOrUnblockContact(userJid: Swift.String, isBlocked: Swift.Bool)
-  func didBlockOrUnblockSelf(userJid: Swift.String, isBlocked: Swift.Bool)
-  func didBlockOrUnblockGroup(groupJid: Swift.String, isBlocked: Swift.Bool)
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class ContactManager : ObjectiveC.NSObject {
   public var profileDelegate: FlyCore.ProfileEventsDelegate?
@@ -518,45 +544,6 @@ extension FlyCore.FlyCoreController : FlyXmpp.FlyXmppControllerDelegate {
   @objc func getUserLastSeen()
   @objc func userDeletedTheirProfile(for jid: Swift.String, profileDetails: FlyCommon.ProfileDetails)
 }
-@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class BackupManager : ObjectiveC.NSObject {
-  public var backupDelegate: FlyCore.BackupEventDelegate?
-  public var restoreDelegate: FlyCore.RestoreEventDelegate?
-  public static let shared: FlyCore.BackupManager
-  public func startBackup()
-  public func removeAllMessages()
-  public func restoreMessages(url: Foundation.URL)
-  public func cancelBackup()
-  public func calculatePercentage(value: Swift.Int, percentageVal: Swift.Int) -> Swift.Double
-  public func calculateProgress(value: Swift.Int, percentageVal: Swift.Int) -> Swift.Double
-  @objc deinit
-}
-@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class WebLoginsManager : ObjectiveC.NSObject {
-  public static let shared: FlyCore.WebLoginsManager
-  public var webLogoutDelegate: FlyCore.WebLogoutDelegate?
-  public func handleQrCodeData(qrCodeString: Swift.String, completionHandler: @escaping (_ isSuccess: Swift.Bool, _ message: Swift.String) -> Swift.Void)
-  public func getSocketId(completionHandler: @escaping (_ isSuccess: Swift.Bool, _ message: Swift.String) -> Swift.Void)
-  public func reset()
-  public func logoutFromDevices()
-  @objc deinit
-}
-extension FlyCore.WebLoginsManager : FlyNetwork.WebLoginDelegate {
-  public func didGetSocketId(data: [Any])
-  public func didLogin(data: [Any])
-}
-extension FlyCore.WebLoginsManager : FlyNetwork.SocketDelegate {
-  public func didConnect()
-  public func onError()
-  public func didDisconnect()
-  public func onReconnecting()
-}
-extension FlyCore.WebLoginsManager : FlyXmpp.XMPPWebLogoutDelegate {
-  public func didLogoutWeb(socketId: Swift.String)
-}
-extension FlyCore.WebLoginsManager {
-  public func saveWebLogin(qrData: Swift.String)
-  public func getWebLogins() -> [FlyCommon.WebLoginInfo?]
-  public func getRecentWebLogin() -> [FlyCommon.WebLoginInfo?]
-}
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GroupManager : ObjectiveC.NSObject {
   public var groupDelegate: FlyCore.GroupEventsDelegate?
   public static let shared: FlyCore.GroupManager
@@ -619,6 +606,19 @@ extension FlyCore.GroupManager : FlyXmpp.XMPPGroupDelegate {
   public func changeLimit(limit: Swift.Int)
   public func getAllRecentChatForSearch(searchTerm: Swift.String) -> [FlyCommon.RecentChat]
   @objc deinit
+}
+public protocol AdminBlockDelegate : ObjectiveC.NSObjectProtocol {
+  func didBlockOrUnblockContact(userJid: Swift.String, isBlocked: Swift.Bool)
+  func didBlockOrUnblockSelf(userJid: Swift.String, isBlocked: Swift.Bool)
+  func didBlockOrUnblockGroup(groupJid: Swift.String, isBlocked: Swift.Bool)
+}
+public protocol WebLogoutDelegate {
+  func didLogoutWeb(socketId: Swift.String)
+}
+public protocol AdminBlockCurrentUserDelegate : ObjectiveC.NSObjectProtocol {
+  func didBlockOrUnblockCurrentUser(userJid: Swift.String, isBlocked: Swift.Bool)
+  func didBlockOrUnblockGroup(groupJid: Swift.String, isBlocked: Swift.Bool)
+  func didBlockOrUnblockContact(userJid: Swift.String, isBlocked: Swift.Bool)
 }
 extension FlyCore.Features : Swift.Equatable {}
 extension FlyCore.Features : Swift.Hashable {}

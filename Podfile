@@ -18,37 +18,40 @@ def uikit_pods
   pod 'SDWebImage'
   pod 'GrowingTextViewHandler-Swift', '1.2'
   pod "BSImagePicker", "~> 3.1"
-  pod 'libPhoneNumber-iOS'
+  pod 'libPhoneNumber-iOS'#, '~> 0.8'
   pod 'GoogleMaps'
   pod 'Tatsi'
   pod 'QCropper'
   pod 'KMPlaceholderTextView', '~> 1.4.0'
   pod 'NicoProgress'
   pod 'Firebase/RemoteConfig'
+ # pod 'libPhoneNumber-iOS', '~> 0.8'
+  # Pods for FlyCall
   pod 'SocketRocket'
   pod 'Socket.IO-Client-Swift', '~> 15.2.0' # To communicte Socket I/O server
   pod 'GoogleWebRTC' # WebRTC for Calls
   pod 'Floaty', '~> 4.2.0'
   pod "PulsingHalo"
   pod 'MenuItemKit', '~> 4.0.0'
+  #pod 'Alamofire', '~> 5.3'
   pod 'RealmSwift', '10.20.1'
   pod 'MarqueeLabel'
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
   pod 'SwiftLinkPreview'
 
-
 end
 
 def notification_pods
 
-  pod 'libPhoneNumber-iOS'
-  pod 'Alamofire'
+  pod 'libPhoneNumber-iOS' #, '~> 0.8'
+  pod 'Alamofire' #, '~> 5.3'
+  # Pods for FlyCall
   pod 'SocketRocket'
   pod 'Socket.IO-Client-Swift' , '~> 15.2.0' # To communicte Socket I/O server
   pod 'GoogleWebRTC' # WebRTC for Calls
-  pod 'XMPPFramework/Swift'
   pod 'RealmSwift', '10.20.1'
+  pod 'XMPPFramework/Swift'
 end
 
 target 'UiKitQa' do

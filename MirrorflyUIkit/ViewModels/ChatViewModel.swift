@@ -49,6 +49,18 @@ RecentChatViewModel  {
         ChatManager.deleteRecentChats(jids: jids, completionHandler: completionHandler)
     }
 
+    func getChatReadUnread(jids: [String], isRead: Bool, completionHandler:  @escaping (Bool?)-> Void) {
+        if jids.count > 0 {
+            if isRead {
+                ChatManager.markConversationAsRead(for: jids)
+                completionHandler(true)
+            } else {
+                ChatManager.markConversationAsUnread(for: jids)
+                completionHandler(true)
+            }
+        }
+    }
+
     func getPinChat(jid: String, isPin: Bool, completionHandler:  @escaping (Bool?)-> Void) {
         if !jid.isEmpty {
             ChatManager.updateRecentChatPinStatus(jid: jid, pinRecentChat: isPin)

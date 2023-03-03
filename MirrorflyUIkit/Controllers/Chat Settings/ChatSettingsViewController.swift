@@ -19,7 +19,7 @@ enum ChatSettingList: String, CaseIterable {
     case lastseen = "Last Seen"
     case UserBusyStatus = "User Busy Status"
     case autodownload = "Auto Download"
-    case chatBackup = "ChatBackup"
+    //case chatBackup = "ChatBackup"
     case clearAllConversation = "Clear All Conversation"
 
 }
@@ -142,9 +142,9 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 //cell.selectSwitch.addTarget(self, action: #selector(handleSwitch), for: .touchUpInside)
                 cell.setCell(isArchive: true)
                 return cell
-            case .chatBackup:
-                let cell : ChatBackupTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatBackupTableViewCell, for: indexPath) as! ChatBackupTableViewCell
-                return cell
+//            case .chatBackup:
+//                let cell : ChatBackupTableViewCell = tableView.dequeueReusableCell(withIdentifier: Identifiers.chatBackupTableViewCell, for: indexPath) as! ChatBackupTableViewCell
+//                return cell
             case .clearAllConversation:
                 let cell = chatSettingsTable.dequeueReusableCell(withIdentifier: Identifiers.clearAllChatTableViewCell, for: indexPath) as! ClearAllChatTableViewCell
                 cell.clearAllChat.text = self.chatSettingsArray[indexPath.row].rawValue
@@ -252,11 +252,11 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
                 }
             }
 
-        case .chatBackup:
-            //             let vc = BackupViewController(nibName: "BackupViewController", bundle: nil)
-            if let vc = UIStoryboard.init(name: Storyboards.backupRestore, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.backupViewController) as? BackupViewController {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+//        case .chatBackup:
+//            //             let vc = BackupViewController(nibName: "BackupViewController", bundle: nil)
+//            if let vc = UIStoryboard.init(name: Storyboards.backupRestore, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.backupViewController) as? BackupViewController {
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
 
 
         case .UserBusyStatus:
@@ -358,12 +358,12 @@ extension ChatSettingsViewController : AvailableFeaturesDelegate {
             chatSettingsArray = ChatSettingList.allCases
         }else if !availableFeatures.isTranslationEnabled && !availableFeatures.isClearChatEnabled {
             FlyDefaults.isTranlationEnabled = false
-            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,.chatBackup]
+            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,]
         }else if !availableFeatures.isTranslationEnabled && availableFeatures.isClearChatEnabled {
             FlyDefaults.isTranlationEnabled = false
-            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,.chatBackup,.clearAllConversation]
+            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,.clearAllConversation]
         }else if availableFeatures.isTranslationEnabled && !availableFeatures.isClearChatEnabled {
-            chatSettingsArray = [.ArchiveSettings,.TranslateMessage,.lastseen,.UserBusyStatus,.autodownload,.chatBackup]
+            chatSettingsArray = [.ArchiveSettings,.TranslateMessage,.lastseen,.UserBusyStatus,.autodownload]
         }else{
             chatSettingsArray = ChatSettingList.allCases
         }

@@ -225,6 +225,10 @@ class RecentChatTableViewCell: UITableViewCell {
         countLabel?.text = recentChatMessage.unreadMessageCount > 99 ? "99+" : String(recentChatMessage.unreadMessageCount)
         chatTimeLabel?.isHidden = false
         countView?.isHidden = (recentChatMessage.unreadMessageCount > 0) ? false : true
+        //Update for Chat Read/Unread
+        countView?.isHidden = !recentChatMessage.isConversationUnRead
+        countLabel?.isHidden = !recentChatMessage.isConversationUnRead || recentChatMessage.unreadMessageCount == 0
+
         statusImage?.isHidden = (recentChatMessage.isLastMessageSentByMe == true) ? false : true
         statusView?.isHidden = (recentChatMessage.isLastMessageSentByMe == true) ? false : true
         receiverMessageTypeView?.isHidden = false
