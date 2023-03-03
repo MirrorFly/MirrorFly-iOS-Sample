@@ -35,6 +35,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var headerView: UIView?
     @IBOutlet weak var deleteChatButton: UIButton?
     @IBOutlet weak var stackView: UIStackView?
+    @IBOutlet weak var readUnreadButton: UIButton!
     @IBOutlet weak var pinChatButton: UIButton!
     @IBOutlet weak var muteChatButton: UIButton!
     @IBOutlet weak var archiveChatButton: UIButton!
@@ -95,6 +96,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        readUnreadButton.isHidden = true
         selectionCountLabel?.textColor = UIColor(named: "buttonColor")
         contactViewModel =  ContactViewModel()
         recentChatViewModel = RecentChatViewModel()
@@ -234,6 +236,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func handleCellLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        searchBar?.resignFirstResponder()
         if gestureRecognizer.state == .began && isSearchEnabled == false {
             let touchPoint = gestureRecognizer.location(in:  recentChatTableView)
             if let indexPath =  recentChatTableView?.indexPathForRow(at: touchPoint) {
@@ -261,6 +264,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
                     showHideDeleteButton()
                     recentChatTableView?.allowsMultipleSelection = true
                 updatePinIcon()
+                updateChatReadIcon()
                 updateMuteIcon()
                 updateArchiveIcon()
             }
@@ -632,6 +636,48 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         })
     }
+
+    @IBAction func messageReadUnReadAction(_ sender: UIButton) {
+
+        let isRead = isChatRead()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+            self?.dismiss(animated: true) {
+                if isRead && !NetworkReachability.shared.isConnected {
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                } else {
+                    self?.selectionRecentChatList.forEach { chat in
+                        self?.recentChatViewModel?.getChatReadUnread(jids: [chat.jid], isRead: isRead, completionHandler: { isSuccess in
+                        })
+                    }
+                    AppAlert.shared.showToast(message: "Chat\(self?.selectionRecentChatList.count ?? 0 > 1 ? "s" : "") marked as \(isRead ? "read" : "unread")")
+                    self?.longPressCount = 0
+                    self?.selectionCountLabel?.isHidden = true
+                    self?.showHeaderView()
+                    self?.isCellLongPressed = false
+                    self?.selectionRecentChatList = []
+                    self?.getRecentChatList()
+                    self?.recentChatTableView?.reloadData()
+                }
+            }
+        })
+
+    }
+
+    //Get status whether is read or unread
+    func isChatRead() -> Bool {
+        for chat in selectionRecentChatList {
+            if chat.isConversationUnRead == true {
+                return true
+            }
+        }
+        return false
+    }
+
+    //Update read/unread icon
+    func updateChatReadIcon() {
+        readUnreadButton.setImage(isChatRead() ? UIImage(named: "messageRead") : UIImage(named: "messageUnread"), for: .normal)
+    }
+    
 
     //Recent chat Pin/Unpin Action
     @IBAction func pinChatAction(_ sender: UIButton) {
@@ -1102,6 +1148,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                         }
                         selectionCountLabel?.text = String(longPressCount)
                         updatePinIcon()
+                        updateChatReadIcon()
                         updateMuteIcon()
                         updateArchiveIcon()
                     } else {
@@ -1158,6 +1205,7 @@ extension RecentChatViewController : UITableViewDataSource ,UITableViewDelegate 
                                         hideMultipleSelectionView()
                                     }
                                     updatePinIcon()
+                                    updateChatReadIcon()
                                     updateMuteIcon()
                                     updateArchiveIcon()
                                     return

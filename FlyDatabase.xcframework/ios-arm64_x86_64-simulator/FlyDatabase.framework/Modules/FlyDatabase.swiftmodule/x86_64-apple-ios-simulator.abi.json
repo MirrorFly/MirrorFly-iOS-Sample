@@ -16,6 +16,30 @@
       },
       {
         "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
         "name": "FlyCommon",
         "printedName": "FlyCommon",
         "declKind": "Import",
@@ -562,23 +586,6 @@
       },
       {
         "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
         "name": "FlyCommon",
         "printedName": "FlyCommon",
         "declKind": "Import",
@@ -593,64 +600,13 @@
       },
       {
         "kind": "TypeDecl",
-        "name": "BackupMessageManager",
-        "printedName": "BackupMessageManager",
+        "name": "WebLoginManager",
+        "printedName": "WebLoginManager",
         "children": [
           {
-            "kind": "Var",
-            "name": "shared",
-            "printedName": "shared",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "BackupMessageManager",
-                "printedName": "FlyDatabase.BackupMessageManager",
-                "usr": "c:@M@FlyDatabase@objc(cs)BackupMessageManager"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:11FlyDatabase20BackupMessageManagerC6sharedACvpZ",
-            "mangledName": "$s11FlyDatabase20BackupMessageManagerC6sharedACvpZ",
-            "moduleName": "FlyDatabase",
-            "static": true,
-            "declAttributes": [
-              "HasInitialValue",
-              "Final",
-              "HasStorage",
-              "AccessControl"
-            ],
-            "isLet": true,
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "BackupMessageManager",
-                    "printedName": "FlyDatabase.BackupMessageManager",
-                    "usr": "c:@M@FlyDatabase@objc(cs)BackupMessageManager"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:11FlyDatabase20BackupMessageManagerC6sharedACvgZ",
-                "mangledName": "$s11FlyDatabase20BackupMessageManagerC6sharedACvgZ",
-                "moduleName": "FlyDatabase",
-                "static": true,
-                "implicit": true,
-                "declAttributes": [
-                  "Final"
-                ],
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
             "kind": "Function",
-            "name": "getAllBackupMessages",
-            "printedName": "getAllBackupMessages(completionHandler:)",
+            "name": "saveWebInfo",
+            "printedName": "saveWebInfo(webLoginInfo:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -658,70 +614,93 @@
                 "printedName": "()"
               },
               {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
+                "kind": "TypeNominal",
+                "name": "WebLoginInfo",
+                "printedName": "FlyCommon.WebLoginInfo",
+                "usr": "s:9FlyCommon12WebLoginInfoV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase15WebLoginManagerC04saveC4Info03webdG0y0A6Common0cdG0V_tF",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerC04saveC4Info03webdG0y0A6Common0cdG0V_tF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "getWebInfo",
+            "printedName": "getWebInfo(bowser:platform:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "FlyCommon.WebLoginInfo?",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  },
+                    "name": "WebLoginInfo",
+                    "printedName": "FlyCommon.WebLoginInfo",
+                    "usr": "s:9FlyCommon12WebLoginInfoV"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase15WebLoginManagerC03getC4Info6bowser8platform0A6Common0cdG0VSgSS_SStF",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerC03getC4Info6bowser8platform0A6Common0cdG0VSgSS_SStF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "getAllWebInfo",
+            "printedName": "getAllWebInfo()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[FlyCommon.WebLoginInfo?]",
+                "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "Tuple",
-                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
+                    "name": "Optional",
+                    "printedName": "FlyCommon.WebLoginInfo?",
                     "children": [
                       {
                         "kind": "TypeNominal",
-                        "name": "Bool",
-                        "printedName": "Swift.Bool",
-                        "usr": "s:Sb"
-                      },
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Optional",
-                        "printedName": "FlyCommon.FlyError?",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "FlyError",
-                            "printedName": "FlyCommon.FlyError",
-                            "usr": "s:9FlyCommon0A5ErrorO"
-                          }
-                        ],
-                        "usr": "s:Sq"
-                      },
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Dictionary",
-                        "printedName": "[Swift.String : Any]",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "String",
-                            "printedName": "Swift.String",
-                            "usr": "s:SS"
-                          },
-                          {
-                            "kind": "TypeNominal",
-                            "name": "ProtocolComposition",
-                            "printedName": "Any"
-                          }
-                        ],
-                        "usr": "s:SD"
+                        "name": "WebLoginInfo",
+                        "printedName": "FlyCommon.WebLoginInfo",
+                        "usr": "s:9FlyCommon12WebLoginInfoV"
                       }
-                    ]
+                    ],
+                    "usr": "s:Sq"
                   }
                 ],
-                "typeAttributes": [
-                  "noescape"
-                ]
+                "usr": "s:Sa"
               }
             ],
             "declKind": "Func",
-            "usr": "s:11FlyDatabase20BackupMessageManagerC06getAllC8Messages17completionHandleryySb_0A6Common0A5ErrorOSgSDySSypGtXE_tF",
-            "mangledName": "$s11FlyDatabase20BackupMessageManagerC06getAllC8Messages17completionHandleryySb_0A6Common0A5ErrorOSgSDySSypGtXE_tF",
+            "usr": "s:11FlyDatabase15WebLoginManagerC06getAllC4InfoSay0A6Common0cdH0VSgGyF",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerC06getAllC4InfoSay0A6Common0cdH0VSgGyF",
             "moduleName": "FlyDatabase",
             "declAttributes": [
               "AccessControl"
@@ -730,48 +709,35 @@
           },
           {
             "kind": "Function",
-            "name": "insertMessageToDatabase",
-            "printedName": "insertMessageToDatabase(messageModel:recentModel:)",
+            "name": "getRecentWebInfo",
+            "printedName": "getRecentWebInfo()",
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "FlyCommon.BackupMessageModel?",
+                "name": "Array",
+                "printedName": "[FlyCommon.WebLoginInfo?]",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "BackupMessageModel",
-                    "printedName": "FlyCommon.BackupMessageModel",
-                    "usr": "s:9FlyCommon18BackupMessageModelV"
+                    "name": "Optional",
+                    "printedName": "FlyCommon.WebLoginInfo?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "WebLoginInfo",
+                        "printedName": "FlyCommon.WebLoginInfo",
+                        "usr": "s:9FlyCommon12WebLoginInfoV"
+                      }
+                    ],
+                    "usr": "s:Sq"
                   }
                 ],
-                "hasDefaultArg": true,
-                "usr": "s:Sq"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "FlyCommon.BackupRecentModel?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "BackupRecentModel",
-                    "printedName": "FlyCommon.BackupRecentModel",
-                    "usr": "s:9FlyCommon17BackupRecentModelV"
-                  }
-                ],
-                "hasDefaultArg": true,
-                "usr": "s:Sq"
+                "usr": "s:Sa"
               }
             ],
             "declKind": "Func",
-            "usr": "s:11FlyDatabase20BackupMessageManagerC06insertd2ToB012messageModel06recentI0y0A6Common0cdI0VSg_AG0c6RecentI0VSgtF",
-            "mangledName": "$s11FlyDatabase20BackupMessageManagerC06insertd2ToB012messageModel06recentI0y0A6Common0cdI0VSg_AG0c6RecentI0VSgtF",
+            "usr": "s:11FlyDatabase15WebLoginManagerC09getRecentC4InfoSay0A6Common0cdH0VSgGyF",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerC09getRecentC4InfoSay0A6Common0cdH0VSgGyF",
             "moduleName": "FlyDatabase",
             "declAttributes": [
               "AccessControl"
@@ -780,50 +746,8 @@
           },
           {
             "kind": "Function",
-            "name": "saveTempContact",
-            "printedName": "saveTempContact(userId:name:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "FlyCommon.ProfileDetails?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ProfileDetails",
-                    "printedName": "FlyCommon.ProfileDetails",
-                    "usr": "c:@M@FlyCommon@objc(cs)ProfileDetails"
-                  }
-                ],
-                "usr": "s:Sq"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "hasDefaultArg": true,
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase20BackupMessageManagerC15saveTempContact6userId4name0A6Common14ProfileDetailsCSgSS_SStF",
-            "mangledName": "$s11FlyDatabase20BackupMessageManagerC15saveTempContact6userId4name0A6Common14ProfileDetailsCSgSS_SStF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "removeAllMessages",
-            "printedName": "removeAllMessages()",
+            "name": "deleteAll",
+            "printedName": "deleteAll()",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -832,25 +756,77 @@
               }
             ],
             "declKind": "Func",
-            "usr": "s:11FlyDatabase20BackupMessageManagerC17removeAllMessagesyyF",
-            "mangledName": "$s11FlyDatabase20BackupMessageManagerC17removeAllMessagesyyF",
+            "usr": "s:11FlyDatabase15WebLoginManagerC9deleteAllyyF",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerC9deleteAllyyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "deleteBySocketId",
+            "printedName": "deleteBySocketId(socketId:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase15WebLoginManagerC16deleteBySocketId06socketI0ySS_tF",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerC16deleteBySocketId06socketI0ySS_tF",
             "moduleName": "FlyDatabase",
             "declAttributes": [
               "AccessControl"
             ],
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "WebLoginManager",
+                "printedName": "FlyDatabase.WebLoginManager",
+                "usr": "c:@M@FlyDatabase@objc(cs)WebLoginManager"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@FlyDatabase@objc(cs)WebLoginManager(im)init",
+            "mangledName": "$s11FlyDatabase15WebLoginManagerCACycfc",
+            "moduleName": "FlyDatabase",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
           }
         ],
         "declKind": "Class",
-        "usr": "c:@M@FlyDatabase@objc(cs)BackupMessageManager",
-        "mangledName": "$s11FlyDatabase20BackupMessageManagerC",
+        "usr": "c:@M@FlyDatabase@objc(cs)WebLoginManager",
+        "mangledName": "$s11FlyDatabase15WebLoginManagerC",
         "moduleName": "FlyDatabase",
         "declAttributes": [
           "AccessControl",
           "ObjC"
         ],
         "superclassUsr": "c:objc(cs)NSObject",
-        "hasMissingDesignatedInitializers": true,
         "inheritsConvenienceInitializers": true,
         "superclassNames": [
           "ObjectiveC.NSObject"
@@ -943,8 +919,18 @@
       },
       {
         "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
         "declKind": "Import",
         "moduleName": "FlyDatabase"
       },
@@ -3195,233 +3181,6 @@
         ]
       },
       {
-        "kind": "TypeDecl",
-        "name": "FileStreamReader",
-        "printedName": "FileStreamReader",
-        "children": [
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(path:delimiter:encoding:chunkSize:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "FlyDatabase.FileStreamReader?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "FileStreamReader",
-                    "printedName": "FlyDatabase.FileStreamReader",
-                    "usr": "s:11FlyDatabase16FileStreamReaderC"
-                  }
-                ],
-                "usr": "s:Sq"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "hasDefaultArg": true,
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Encoding",
-                "printedName": "Swift.String.Encoding",
-                "hasDefaultArg": true,
-                "usr": "s:SS10FoundationE8EncodingV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "hasDefaultArg": true,
-                "usr": "s:Si"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:11FlyDatabase16FileStreamReaderC4path9delimiter8encoding9chunkSizeACSgSS_S2S10FoundationE8EncodingVSitcfc",
-            "mangledName": "$s11FlyDatabase16FileStreamReaderC4path9delimiter8encoding9chunkSizeACSgSS_S2S10FoundationE8EncodingVSitcfc",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Function",
-            "name": "nextLine",
-            "printedName": "nextLine()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Swift.String?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "usr": "s:Sq"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase16FileStreamReaderC8nextLineSSSgyF",
-            "mangledName": "$s11FlyDatabase16FileStreamReaderC8nextLineSSSgyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl",
-              "RawDocComment"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "rewind",
-            "printedName": "rewind()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase16FileStreamReaderC6rewindyyF",
-            "mangledName": "$s11FlyDatabase16FileStreamReaderC6rewindyyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl",
-              "RawDocComment"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "close",
-            "printedName": "close()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase16FileStreamReaderC5closeyyF",
-            "mangledName": "$s11FlyDatabase16FileStreamReaderC5closeyyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl",
-              "RawDocComment"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "makeIterator",
-            "printedName": "makeIterator()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "AnyIterator",
-                "printedName": "Swift.AnyIterator<Swift.String>",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "usr": "s:s11AnyIteratorV"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase16FileStreamReaderC12makeIterators03AnyG0VySSGyF",
-            "mangledName": "$s11FlyDatabase16FileStreamReaderC12makeIterators03AnyG0VySSGyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "isFromExtension": true,
-            "funcSelfKind": "NonMutating"
-          }
-        ],
-        "declKind": "Class",
-        "usr": "s:11FlyDatabase16FileStreamReaderC",
-        "mangledName": "$s11FlyDatabase16FileStreamReaderC",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "AccessControl"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Sequence",
-            "printedName": "Sequence",
-            "children": [
-              {
-                "kind": "TypeWitness",
-                "name": "Element",
-                "printedName": "Element",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ]
-              },
-              {
-                "kind": "TypeWitness",
-                "name": "Iterator",
-                "printedName": "Iterator",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "AnyIterator",
-                    "printedName": "Swift.AnyIterator<Swift.String>",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "String",
-                        "printedName": "Swift.String",
-                        "usr": "s:SS"
-                      }
-                    ],
-                    "usr": "s:s11AnyIteratorV"
-                  }
-                ]
-              }
-            ],
-            "usr": "s:ST",
-            "mangledName": "$sST"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
         "kind": "Import",
         "name": "RealmSwift",
         "printedName": "RealmSwift",
@@ -3829,6 +3588,30 @@
             "mangledName": "$ss28CustomDebugStringConvertibleP"
           }
         ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
       },
       {
         "kind": "Import",
@@ -4629,6 +4412,1434 @@
         "declKind": "Class",
         "usr": "c:@M@FlyDatabase@objc(cs)RecentManager",
         "mangledName": "$s11FlyDatabase13RecentManagerC",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "UserBusyStatusManager",
+        "printedName": "UserBusyStatusManager",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "saveStatus",
+            "printedName": "saveStatus(busyStatus:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "BusyStatus",
+                "printedName": "FlyCommon.BusyStatus",
+                "usr": "s:9FlyCommon10BusyStatusV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase21UserBusyStatusManagerC04saveE004busyE0Sb0A6Common0dE0V_tF",
+            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC04saveE004busyE0Sb0A6Common0dE0V_tF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "deleteBusyStatus",
+            "printedName": "deleteBusyStatus(statusId:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase21UserBusyStatusManagerC06deletedE08statusIdySS_tF",
+            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC06deletedE08statusIdySS_tF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "getAllUserBusyStatus",
+            "printedName": "getAllUserBusyStatus(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[FlyCommon.BusyStatus]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "BusyStatus",
+                    "printedName": "FlyCommon.BusyStatus",
+                    "usr": "s:9FlyCommon10BusyStatusV"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[FlyCommon.BusyStatus]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "BusyStatus",
+                    "printedName": "FlyCommon.BusyStatus",
+                    "usr": "s:9FlyCommon10BusyStatusV"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase21UserBusyStatusManagerC06getAllcdE0ySay0A6Common0dE0VGAHF",
+            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC06getAllcdE0ySay0A6Common0dE0VGAHF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "getCurrentBusyStatus",
+            "printedName": "getCurrentBusyStatus()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "BusyStatus",
+                "printedName": "FlyCommon.BusyStatus",
+                "usr": "s:9FlyCommon10BusyStatusV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase21UserBusyStatusManagerC010getCurrentdE00A6Common0dE0VyF",
+            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC010getCurrentdE00A6Common0dE0VyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "updateBusyStatus",
+            "printedName": "updateBusyStatus(busyStatus:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase21UserBusyStatusManagerC06updatedE004busyE0ySS_tF",
+            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC06updatedE004busyE0ySS_tF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UserBusyStatusManager",
+                "printedName": "FlyDatabase.UserBusyStatusManager",
+                "usr": "c:@M@FlyDatabase@objc(cs)UserBusyStatusManager"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@FlyDatabase@objc(cs)UserBusyStatusManager(im)init",
+            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerCACycfc",
+            "moduleName": "FlyDatabase",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@FlyDatabase@objc(cs)UserBusyStatusManager",
+        "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "UserPrivacyManager",
+        "printedName": "UserPrivacyManager",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UserPrivacyManager",
+                "printedName": "FlyDatabase.UserPrivacyManager",
+                "usr": "c:@M@FlyDatabase@objc(cs)UserPrivacyManager"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@FlyDatabase@objc(cs)UserPrivacyManager(im)init",
+            "mangledName": "$s11FlyDatabase18UserPrivacyManagerCACycfc",
+            "moduleName": "FlyDatabase",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@FlyDatabase@objc(cs)UserPrivacyManager",
+        "mangledName": "$s11FlyDatabase18UserPrivacyManagerC",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "BackupMessageManager",
+        "printedName": "BackupMessageManager",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "shared",
+            "printedName": "shared",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "BackupMessageManager",
+                "printedName": "FlyDatabase.BackupMessageManager",
+                "usr": "c:@M@FlyDatabase@objc(cs)BackupMessageManager"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:11FlyDatabase20BackupMessageManagerC6sharedACvpZ",
+            "mangledName": "$s11FlyDatabase20BackupMessageManagerC6sharedACvpZ",
+            "moduleName": "FlyDatabase",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "BackupMessageManager",
+                    "printedName": "FlyDatabase.BackupMessageManager",
+                    "usr": "c:@M@FlyDatabase@objc(cs)BackupMessageManager"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:11FlyDatabase20BackupMessageManagerC6sharedACvgZ",
+                "mangledName": "$s11FlyDatabase20BackupMessageManagerC6sharedACvgZ",
+                "moduleName": "FlyDatabase",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "getAllBackupMessages",
+            "printedName": "getAllBackupMessages(completionHandler:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any]) -> ()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Tuple",
+                    "printedName": "(Swift.Bool, FlyCommon.FlyError?, [Swift.String : Any])",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "FlyCommon.FlyError?",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "FlyError",
+                            "printedName": "FlyCommon.FlyError",
+                            "usr": "s:9FlyCommon0A5ErrorO"
+                          }
+                        ],
+                        "usr": "s:Sq"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Dictionary",
+                        "printedName": "[Swift.String : Any]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ProtocolComposition",
+                            "printedName": "Any"
+                          }
+                        ],
+                        "usr": "s:SD"
+                      }
+                    ]
+                  }
+                ],
+                "typeAttributes": [
+                  "noescape"
+                ]
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase20BackupMessageManagerC06getAllC8Messages17completionHandleryySb_0A6Common0A5ErrorOSgSDySSypGtXE_tF",
+            "mangledName": "$s11FlyDatabase20BackupMessageManagerC06getAllC8Messages17completionHandleryySb_0A6Common0A5ErrorOSgSDySSypGtXE_tF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "insertMessageToDatabase",
+            "printedName": "insertMessageToDatabase(messageModel:recentModel:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "FlyCommon.BackupMessageModel?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "BackupMessageModel",
+                    "printedName": "FlyCommon.BackupMessageModel",
+                    "usr": "s:9FlyCommon18BackupMessageModelV"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "FlyCommon.BackupRecentModel?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "BackupRecentModel",
+                    "printedName": "FlyCommon.BackupRecentModel",
+                    "usr": "s:9FlyCommon17BackupRecentModelV"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase20BackupMessageManagerC06insertd2ToB012messageModel06recentI0y0A6Common0cdI0VSg_AG0c6RecentI0VSgtF",
+            "mangledName": "$s11FlyDatabase20BackupMessageManagerC06insertd2ToB012messageModel06recentI0y0A6Common0cdI0VSg_AG0c6RecentI0VSgtF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "saveTempContact",
+            "printedName": "saveTempContact(userId:name:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "FlyCommon.ProfileDetails?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProfileDetails",
+                    "printedName": "FlyCommon.ProfileDetails",
+                    "usr": "c:@M@FlyCommon@objc(cs)ProfileDetails"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "hasDefaultArg": true,
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase20BackupMessageManagerC15saveTempContact6userId4name0A6Common14ProfileDetailsCSgSS_SStF",
+            "mangledName": "$s11FlyDatabase20BackupMessageManagerC15saveTempContact6userId4name0A6Common14ProfileDetailsCSgSS_SStF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "removeAllMessages",
+            "printedName": "removeAllMessages()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase20BackupMessageManagerC17removeAllMessagesyyF",
+            "mangledName": "$s11FlyDatabase20BackupMessageManagerC17removeAllMessagesyyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@FlyDatabase@objc(cs)BackupMessageManager",
+        "mangledName": "$s11FlyDatabase20BackupMessageManagerC",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "hasMissingDesignatedInitializers": true,
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "FlyCommon",
+        "printedName": "FlyCommon",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "Import",
+        "name": "RealmSwift",
+        "printedName": "RealmSwift",
+        "declKind": "Import",
+        "moduleName": "FlyDatabase"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "AvailableFeaturesManager",
+        "printedName": "AvailableFeaturesManager",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "saveAvailableFeatures",
+            "printedName": "saveAvailableFeatures(jid:encryptedData:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC04savecD03jid13encryptedDataySS_SStF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC04savecD03jid13encryptedDataySS_SStF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "getAvailableFeatures",
+            "printedName": "getAvailableFeatures(jid:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AvailableFeaturesModel",
+                "printedName": "FlyCommon.AvailableFeaturesModel",
+                "usr": "s:9FlyCommon22AvailableFeaturesModelV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC03getcD03jid0A6Common0cD5ModelVSS_tF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC03getcD03jid0A6Common0cD5ModelVSS_tF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isGroupChatAvailable",
+            "printedName": "isGroupChatAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC011isGroupChatC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC011isGroupChatC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isGroupCallAvailable",
+            "printedName": "isGroupCallAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC011isGroupCallC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC011isGroupCallC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isOneToOneCallAvailable",
+            "printedName": "isOneToOneCallAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC07isOneTog4CallC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC07isOneTog4CallC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isRecentChatSearchAvailable",
+            "printedName": "isRecentChatSearchAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC018isRecentChatSearchC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC018isRecentChatSearchC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isImageAttachmentAvailable",
+            "printedName": "isImageAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC017isImageAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC017isImageAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isVideoAttachmentAvailable",
+            "printedName": "isVideoAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC017isVideoAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC017isVideoAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isAudioAttachmentAvailable",
+            "printedName": "isAudioAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC017isAudioAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC017isAudioAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isDocumentAttachmentAvailable",
+            "printedName": "isDocumentAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC020isDocumentAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC020isDocumentAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isContactAttachmentAvailable",
+            "printedName": "isContactAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC019isContactAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC019isContactAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isLocationAttachmentAvailable",
+            "printedName": "isLocationAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC020isLocationAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC020isLocationAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isAttachmentAvailable",
+            "printedName": "isAttachmentAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC012isAttachmentC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC012isAttachmentC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isStarMessageAvailable",
+            "printedName": "isStarMessageAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC013isStarMessageC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC013isStarMessageC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isClearChatAvailable",
+            "printedName": "isClearChatAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC011isClearChatC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC011isClearChatC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isDeleteChatAvailable",
+            "printedName": "isDeleteChatAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC012isDeleteChatC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC012isDeleteChatC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isTranslationAvailable",
+            "printedName": "isTranslationAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC013isTranslationC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC013isTranslationC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isBlockAvailable",
+            "printedName": "isBlockAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC07isBlockC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC07isBlockC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isReportAvailable",
+            "printedName": "isReportAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC08isReportC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC08isReportC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isDeleteMessageAvailable",
+            "printedName": "isDeleteMessageAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC015isDeleteMessageC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC015isDeleteMessageC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "isViewAllMediasAvailable",
+            "printedName": "isViewAllMediasAvailable()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC015isViewAllMediasC0SbyF",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC015isViewAllMediasC0SbyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AvailableFeaturesManager",
+                "printedName": "FlyDatabase.AvailableFeaturesManager",
+                "usr": "c:@M@FlyDatabase@objc(cs)AvailableFeaturesManager"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@FlyDatabase@objc(cs)AvailableFeaturesManager(im)init",
+            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerCACycfc",
+            "moduleName": "FlyDatabase",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@FlyDatabase@objc(cs)AvailableFeaturesManager",
+        "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC",
         "moduleName": "FlyDatabase",
         "declAttributes": [
           "AccessControl",
@@ -5870,1386 +7081,6 @@
       },
       {
         "kind": "TypeDecl",
-        "name": "UserBusyStatusManager",
-        "printedName": "UserBusyStatusManager",
-        "children": [
-          {
-            "kind": "Function",
-            "name": "saveStatus",
-            "printedName": "saveStatus(busyStatus:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "BusyStatus",
-                "printedName": "FlyCommon.BusyStatus",
-                "usr": "s:9FlyCommon10BusyStatusV"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase21UserBusyStatusManagerC04saveE004busyE0Sb0A6Common0dE0V_tF",
-            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC04saveE004busyE0Sb0A6Common0dE0V_tF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "deleteBusyStatus",
-            "printedName": "deleteBusyStatus(statusId:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase21UserBusyStatusManagerC06deletedE08statusIdySS_tF",
-            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC06deletedE08statusIdySS_tF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "getAllUserBusyStatus",
-            "printedName": "getAllUserBusyStatus(_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Array",
-                "printedName": "[FlyCommon.BusyStatus]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "BusyStatus",
-                    "printedName": "FlyCommon.BusyStatus",
-                    "usr": "s:9FlyCommon10BusyStatusV"
-                  }
-                ],
-                "usr": "s:Sa"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Array",
-                "printedName": "[FlyCommon.BusyStatus]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "BusyStatus",
-                    "printedName": "FlyCommon.BusyStatus",
-                    "usr": "s:9FlyCommon10BusyStatusV"
-                  }
-                ],
-                "usr": "s:Sa"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase21UserBusyStatusManagerC06getAllcdE0ySay0A6Common0dE0VGAHF",
-            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC06getAllcdE0ySay0A6Common0dE0VGAHF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl",
-              "RawDocComment"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "getCurrentBusyStatus",
-            "printedName": "getCurrentBusyStatus()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "BusyStatus",
-                "printedName": "FlyCommon.BusyStatus",
-                "usr": "s:9FlyCommon10BusyStatusV"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase21UserBusyStatusManagerC010getCurrentdE00A6Common0dE0VyF",
-            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC010getCurrentdE00A6Common0dE0VyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "updateBusyStatus",
-            "printedName": "updateBusyStatus(busyStatus:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase21UserBusyStatusManagerC06updatedE004busyE0ySS_tF",
-            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC06updatedE004busyE0ySS_tF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "UserBusyStatusManager",
-                "printedName": "FlyDatabase.UserBusyStatusManager",
-                "usr": "c:@M@FlyDatabase@objc(cs)UserBusyStatusManager"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "c:@M@FlyDatabase@objc(cs)UserBusyStatusManager(im)init",
-            "mangledName": "$s11FlyDatabase21UserBusyStatusManagerCACycfc",
-            "moduleName": "FlyDatabase",
-            "overriding": true,
-            "implicit": true,
-            "objc_name": "init",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Override"
-            ],
-            "init_kind": "Designated"
-          }
-        ],
-        "declKind": "Class",
-        "usr": "c:@M@FlyDatabase@objc(cs)UserBusyStatusManager",
-        "mangledName": "$s11FlyDatabase21UserBusyStatusManagerC",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "AccessControl",
-          "ObjC"
-        ],
-        "superclassUsr": "c:objc(cs)NSObject",
-        "inheritsConvenienceInitializers": true,
-        "superclassNames": [
-          "ObjectiveC.NSObject"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Hashable",
-            "printedName": "Hashable",
-            "usr": "s:SH",
-            "mangledName": "$sSH"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CVarArg",
-            "printedName": "CVarArg",
-            "usr": "s:s7CVarArgP",
-            "mangledName": "$ss7CVarArgP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObservingPublishing",
-            "printedName": "_KeyValueCodingAndObservingPublishing",
-            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
-            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObserving",
-            "printedName": "_KeyValueCodingAndObserving",
-            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
-            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomStringConvertible",
-            "printedName": "CustomStringConvertible",
-            "usr": "s:s23CustomStringConvertibleP",
-            "mangledName": "$ss23CustomStringConvertibleP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomDebugStringConvertible",
-            "printedName": "CustomDebugStringConvertible",
-            "usr": "s:s28CustomDebugStringConvertibleP",
-            "mangledName": "$ss28CustomDebugStringConvertibleP"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "UserPrivacyManager",
-        "printedName": "UserPrivacyManager",
-        "children": [
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "UserPrivacyManager",
-                "printedName": "FlyDatabase.UserPrivacyManager",
-                "usr": "c:@M@FlyDatabase@objc(cs)UserPrivacyManager"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "c:@M@FlyDatabase@objc(cs)UserPrivacyManager(im)init",
-            "mangledName": "$s11FlyDatabase18UserPrivacyManagerCACycfc",
-            "moduleName": "FlyDatabase",
-            "overriding": true,
-            "implicit": true,
-            "objc_name": "init",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Override"
-            ],
-            "init_kind": "Designated"
-          }
-        ],
-        "declKind": "Class",
-        "usr": "c:@M@FlyDatabase@objc(cs)UserPrivacyManager",
-        "mangledName": "$s11FlyDatabase18UserPrivacyManagerC",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "AccessControl",
-          "ObjC"
-        ],
-        "superclassUsr": "c:objc(cs)NSObject",
-        "inheritsConvenienceInitializers": true,
-        "superclassNames": [
-          "ObjectiveC.NSObject"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Hashable",
-            "printedName": "Hashable",
-            "usr": "s:SH",
-            "mangledName": "$sSH"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CVarArg",
-            "printedName": "CVarArg",
-            "usr": "s:s7CVarArgP",
-            "mangledName": "$ss7CVarArgP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObservingPublishing",
-            "printedName": "_KeyValueCodingAndObservingPublishing",
-            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
-            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObserving",
-            "printedName": "_KeyValueCodingAndObserving",
-            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
-            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomStringConvertible",
-            "printedName": "CustomStringConvertible",
-            "usr": "s:s23CustomStringConvertibleP",
-            "mangledName": "$ss23CustomStringConvertibleP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomDebugStringConvertible",
-            "printedName": "CustomDebugStringConvertible",
-            "usr": "s:s28CustomDebugStringConvertibleP",
-            "mangledName": "$ss28CustomDebugStringConvertibleP"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "AvailableFeaturesManager",
-        "printedName": "AvailableFeaturesManager",
-        "children": [
-          {
-            "kind": "Function",
-            "name": "saveAvailableFeatures",
-            "printedName": "saveAvailableFeatures(jid:encryptedData:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC04savecD03jid13encryptedDataySS_SStF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC04savecD03jid13encryptedDataySS_SStF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "getAvailableFeatures",
-            "printedName": "getAvailableFeatures(jid:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "AvailableFeaturesModel",
-                "printedName": "FlyCommon.AvailableFeaturesModel",
-                "usr": "s:9FlyCommon22AvailableFeaturesModelV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC03getcD03jid0A6Common0cD5ModelVSS_tF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC03getcD03jid0A6Common0cD5ModelVSS_tF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isGroupChatAvailable",
-            "printedName": "isGroupChatAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC011isGroupChatC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC011isGroupChatC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isGroupCallAvailable",
-            "printedName": "isGroupCallAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC011isGroupCallC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC011isGroupCallC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isOneToOneCallAvailable",
-            "printedName": "isOneToOneCallAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC07isOneTog4CallC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC07isOneTog4CallC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isRecentChatSearchAvailable",
-            "printedName": "isRecentChatSearchAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC018isRecentChatSearchC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC018isRecentChatSearchC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isImageAttachmentAvailable",
-            "printedName": "isImageAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC017isImageAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC017isImageAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isVideoAttachmentAvailable",
-            "printedName": "isVideoAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC017isVideoAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC017isVideoAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isAudioAttachmentAvailable",
-            "printedName": "isAudioAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC017isAudioAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC017isAudioAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isDocumentAttachmentAvailable",
-            "printedName": "isDocumentAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC020isDocumentAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC020isDocumentAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isContactAttachmentAvailable",
-            "printedName": "isContactAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC019isContactAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC019isContactAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isLocationAttachmentAvailable",
-            "printedName": "isLocationAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC020isLocationAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC020isLocationAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isAttachmentAvailable",
-            "printedName": "isAttachmentAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC012isAttachmentC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC012isAttachmentC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isStarMessageAvailable",
-            "printedName": "isStarMessageAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC013isStarMessageC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC013isStarMessageC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isClearChatAvailable",
-            "printedName": "isClearChatAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC011isClearChatC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC011isClearChatC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isDeleteChatAvailable",
-            "printedName": "isDeleteChatAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC012isDeleteChatC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC012isDeleteChatC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isTranslationAvailable",
-            "printedName": "isTranslationAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC013isTranslationC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC013isTranslationC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isBlockAvailable",
-            "printedName": "isBlockAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC07isBlockC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC07isBlockC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isReportAvailable",
-            "printedName": "isReportAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC08isReportC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC08isReportC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isDeleteMessageAvailable",
-            "printedName": "isDeleteMessageAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC015isDeleteMessageC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC015isDeleteMessageC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "isViewAllMediasAvailable",
-            "printedName": "isViewAllMediasAvailable()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase24AvailableFeaturesManagerC015isViewAllMediasC0SbyF",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC015isViewAllMediasC0SbyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "AvailableFeaturesManager",
-                "printedName": "FlyDatabase.AvailableFeaturesManager",
-                "usr": "c:@M@FlyDatabase@objc(cs)AvailableFeaturesManager"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "c:@M@FlyDatabase@objc(cs)AvailableFeaturesManager(im)init",
-            "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerCACycfc",
-            "moduleName": "FlyDatabase",
-            "overriding": true,
-            "implicit": true,
-            "objc_name": "init",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Override"
-            ],
-            "init_kind": "Designated"
-          }
-        ],
-        "declKind": "Class",
-        "usr": "c:@M@FlyDatabase@objc(cs)AvailableFeaturesManager",
-        "mangledName": "$s11FlyDatabase24AvailableFeaturesManagerC",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "AccessControl",
-          "ObjC"
-        ],
-        "superclassUsr": "c:objc(cs)NSObject",
-        "inheritsConvenienceInitializers": true,
-        "superclassNames": [
-          "ObjectiveC.NSObject"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Hashable",
-            "printedName": "Hashable",
-            "usr": "s:SH",
-            "mangledName": "$sSH"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CVarArg",
-            "printedName": "CVarArg",
-            "usr": "s:s7CVarArgP",
-            "mangledName": "$ss7CVarArgP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObservingPublishing",
-            "printedName": "_KeyValueCodingAndObservingPublishing",
-            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
-            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObserving",
-            "printedName": "_KeyValueCodingAndObserving",
-            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
-            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomStringConvertible",
-            "printedName": "CustomStringConvertible",
-            "usr": "s:s23CustomStringConvertibleP",
-            "mangledName": "$ss23CustomStringConvertibleP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomDebugStringConvertible",
-            "printedName": "CustomDebugStringConvertible",
-            "usr": "s:s28CustomDebugStringConvertibleP",
-            "mangledName": "$ss28CustomDebugStringConvertibleP"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "WebLoginManager",
-        "printedName": "WebLoginManager",
-        "children": [
-          {
-            "kind": "Function",
-            "name": "saveWebInfo",
-            "printedName": "saveWebInfo(webLoginInfo:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "WebLoginInfo",
-                "printedName": "FlyCommon.WebLoginInfo",
-                "usr": "s:9FlyCommon12WebLoginInfoV"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase15WebLoginManagerC04saveC4Info03webdG0y0A6Common0cdG0V_tF",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerC04saveC4Info03webdG0y0A6Common0cdG0V_tF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "getWebInfo",
-            "printedName": "getWebInfo(bowser:platform:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "FlyCommon.WebLoginInfo?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "WebLoginInfo",
-                    "printedName": "FlyCommon.WebLoginInfo",
-                    "usr": "s:9FlyCommon12WebLoginInfoV"
-                  }
-                ],
-                "usr": "s:Sq"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase15WebLoginManagerC03getC4Info6bowser8platform0A6Common0cdG0VSgSS_SStF",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerC03getC4Info6bowser8platform0A6Common0cdG0VSgSS_SStF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "getAllWebInfo",
-            "printedName": "getAllWebInfo()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Array",
-                "printedName": "[FlyCommon.WebLoginInfo?]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "FlyCommon.WebLoginInfo?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "WebLoginInfo",
-                        "printedName": "FlyCommon.WebLoginInfo",
-                        "usr": "s:9FlyCommon12WebLoginInfoV"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "usr": "s:Sa"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase15WebLoginManagerC06getAllC4InfoSay0A6Common0cdH0VSgGyF",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerC06getAllC4InfoSay0A6Common0cdH0VSgGyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "getRecentWebInfo",
-            "printedName": "getRecentWebInfo()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Array",
-                "printedName": "[FlyCommon.WebLoginInfo?]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "FlyCommon.WebLoginInfo?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "WebLoginInfo",
-                        "printedName": "FlyCommon.WebLoginInfo",
-                        "usr": "s:9FlyCommon12WebLoginInfoV"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "usr": "s:Sa"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase15WebLoginManagerC09getRecentC4InfoSay0A6Common0cdH0VSgGyF",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerC09getRecentC4InfoSay0A6Common0cdH0VSgGyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "deleteAll",
-            "printedName": "deleteAll()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase15WebLoginManagerC9deleteAllyyF",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerC9deleteAllyyF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl",
-              "RawDocComment"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "deleteBySocketId",
-            "printedName": "deleteBySocketId(socketId:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:11FlyDatabase15WebLoginManagerC16deleteBySocketId06socketI0ySS_tF",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerC16deleteBySocketId06socketI0ySS_tF",
-            "moduleName": "FlyDatabase",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "WebLoginManager",
-                "printedName": "FlyDatabase.WebLoginManager",
-                "usr": "c:@M@FlyDatabase@objc(cs)WebLoginManager"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "c:@M@FlyDatabase@objc(cs)WebLoginManager(im)init",
-            "mangledName": "$s11FlyDatabase15WebLoginManagerCACycfc",
-            "moduleName": "FlyDatabase",
-            "overriding": true,
-            "implicit": true,
-            "objc_name": "init",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Override"
-            ],
-            "init_kind": "Designated"
-          }
-        ],
-        "declKind": "Class",
-        "usr": "c:@M@FlyDatabase@objc(cs)WebLoginManager",
-        "mangledName": "$s11FlyDatabase15WebLoginManagerC",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "AccessControl",
-          "ObjC"
-        ],
-        "superclassUsr": "c:objc(cs)NSObject",
-        "inheritsConvenienceInitializers": true,
-        "superclassNames": [
-          "ObjectiveC.NSObject"
-        ],
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Hashable",
-            "printedName": "Hashable",
-            "usr": "s:SH",
-            "mangledName": "$sSH"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CVarArg",
-            "printedName": "CVarArg",
-            "usr": "s:s7CVarArgP",
-            "mangledName": "$ss7CVarArgP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObservingPublishing",
-            "printedName": "_KeyValueCodingAndObservingPublishing",
-            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
-            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "_KeyValueCodingAndObserving",
-            "printedName": "_KeyValueCodingAndObserving",
-            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
-            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomStringConvertible",
-            "printedName": "CustomStringConvertible",
-            "usr": "s:s23CustomStringConvertibleP",
-            "mangledName": "$ss23CustomStringConvertibleP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomDebugStringConvertible",
-            "printedName": "CustomDebugStringConvertible",
-            "usr": "s:s28CustomDebugStringConvertibleP",
-            "mangledName": "$ss28CustomDebugStringConvertibleP"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "TypeDecl",
         "name": "ReceiptsManager",
         "printedName": "ReceiptsManager",
         "children": [
@@ -7888,11 +7719,221 @@
         ]
       },
       {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
+        "kind": "TypeDecl",
+        "name": "FileStreamReader",
+        "printedName": "FileStreamReader",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(path:delimiter:encoding:chunkSize:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "FlyDatabase.FileStreamReader?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "FileStreamReader",
+                    "printedName": "FlyDatabase.FileStreamReader",
+                    "usr": "s:11FlyDatabase16FileStreamReaderC"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "hasDefaultArg": true,
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Encoding",
+                "printedName": "Swift.String.Encoding",
+                "hasDefaultArg": true,
+                "usr": "s:SS10FoundationE8EncodingV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "hasDefaultArg": true,
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:11FlyDatabase16FileStreamReaderC4path9delimiter8encoding9chunkSizeACSgSS_S2S10FoundationE8EncodingVSitcfc",
+            "mangledName": "$s11FlyDatabase16FileStreamReaderC4path9delimiter8encoding9chunkSizeACSgSS_S2S10FoundationE8EncodingVSitcfc",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "nextLine",
+            "printedName": "nextLine()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase16FileStreamReaderC8nextLineSSSgyF",
+            "mangledName": "$s11FlyDatabase16FileStreamReaderC8nextLineSSSgyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rewind",
+            "printedName": "rewind()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase16FileStreamReaderC6rewindyyF",
+            "mangledName": "$s11FlyDatabase16FileStreamReaderC6rewindyyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "close",
+            "printedName": "close()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase16FileStreamReaderC5closeyyF",
+            "mangledName": "$s11FlyDatabase16FileStreamReaderC5closeyyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "makeIterator",
+            "printedName": "makeIterator()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AnyIterator",
+                "printedName": "Swift.AnyIterator<Swift.String>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:s11AnyIteratorV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase16FileStreamReaderC12makeIterators03AnyG0VySSGyF",
+            "mangledName": "$s11FlyDatabase16FileStreamReaderC12makeIterators03AnyG0VySSGyF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:11FlyDatabase16FileStreamReaderC",
+        "mangledName": "$s11FlyDatabase16FileStreamReaderC",
+        "moduleName": "FlyDatabase",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Sequence",
+            "printedName": "Sequence",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "Element",
+                "printedName": "Element",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ]
+              },
+              {
+                "kind": "TypeWitness",
+                "name": "Iterator",
+                "printedName": "Iterator",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "AnyIterator",
+                    "printedName": "Swift.AnyIterator<Swift.String>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:s11AnyIteratorV"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:ST",
+            "mangledName": "$sST"
+          }
+        ]
       },
       {
         "kind": "Import",
@@ -7939,47 +7980,6 @@
         "kind": "Import",
         "name": "FlyCommon",
         "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "FlyCommon",
-        "printedName": "FlyCommon",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "FlyDatabase",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "RealmSwift",
-        "printedName": "RealmSwift",
         "declKind": "Import",
         "moduleName": "FlyDatabase"
       },
@@ -9623,6 +9623,54 @@
           },
           {
             "kind": "Function",
+            "name": "getUnseenMessagesWithTime",
+            "printedName": "getUnseenMessagesWithTime(chatUserJid:messageId:time:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[Swift.String]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11FlyDatabase14MessageManagerC25getUnseenMessagesWithTime11chatUserJid9messageId4timeSaySSGSS_SSSdtF",
+            "mangledName": "$s11FlyDatabase14MessageManagerC25getUnseenMessagesWithTime11chatUserJid9messageId4timeSaySSGSS_SSSdtF",
+            "moduleName": "FlyDatabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "searchMessage",
             "printedName": "searchMessage(text:)",
             "children": [
@@ -9843,632 +9891,632 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatusManager.swift",
-      "kind": "BooleanLiteral",
-      "offset": 2464,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Contact\/ContactMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 410,
-      "length": 16,
-      "value": "\"contactMessage\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Backup\/BackupMessageManager.swift",
-      "kind": "StringLiteral",
-      "offset": 6319,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Location\/LocationMessage.swift",
-      "kind": "FloatLiteral",
-      "offset": 248,
-      "length": 3,
-      "value": "0.0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Location\/LocationMessage.swift",
-      "kind": "FloatLiteral",
-      "offset": 300,
-      "length": 3,
-      "value": "0.0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Location\/LocationMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 378,
-      "length": 17,
-      "value": "\"locationMessage\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "BooleanLiteral",
       "offset": 755,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "BooleanLiteral",
       "offset": 807,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "BooleanLiteral",
       "offset": 861,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "BooleanLiteral",
       "offset": 916,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "BooleanLiteral",
       "offset": 981,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "StringLiteral",
       "offset": 1036,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/Contact.swift",
       "kind": "BooleanLiteral",
       "offset": 1135,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/GroupMember\/GroupMember.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatusManager.swift",
       "kind": "BooleanLiteral",
-      "offset": 396,
+      "offset": 2464,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 223,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 269,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 318,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 372,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 420,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 467,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 522,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "IntegerLiteral",
-      "offset": 573,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
-      "kind": "StringLiteral",
-      "offset": 699,
-      "length": 7,
-      "value": "\"vcard\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
-      "kind": "IntegerLiteral",
-      "offset": 20755,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
-      "kind": "BooleanLiteral",
-      "offset": 25113,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
-      "kind": "FloatLiteral",
-      "offset": 25140,
-      "length": 3,
-      "value": "0.0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
-      "kind": "BooleanLiteral",
-      "offset": 27213,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
-      "kind": "BooleanLiteral",
-      "offset": 27243,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/FlyDatabaseController.swift",
-      "kind": "StringLiteral",
-      "offset": 10230,
-      "length": 3,
-      "value": "\" \""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/FlyDatabaseController.swift",
-      "kind": "StringLiteral",
-      "offset": 10256,
-      "length": 4,
-      "value": "\"\n\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Backup\/FileStreamReader.swift",
-      "kind": "StringLiteral",
-      "offset": 362,
-      "length": 4,
-      "value": "\"\n\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Backup\/FileStreamReader.swift",
-      "kind": "IntegerLiteral",
-      "offset": 430,
-      "length": 4,
-      "value": "4096"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
-      "kind": "IntegerLiteral",
-      "offset": 3180,
-      "length": 2,
-      "value": "40"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
-      "kind": "IntegerLiteral",
-      "offset": 3207,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
-      "kind": "IntegerLiteral",
-      "offset": 15109,
-      "length": 2,
-      "value": "40"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
-      "kind": "IntegerLiteral",
-      "offset": 15136,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/RosterManager.swift",
-      "kind": "BooleanLiteral",
-      "offset": 921,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/OfflineReceipt.swift",
-      "kind": "StringLiteral",
-      "offset": 309,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserBusyStatus\/UserBusyStatus.swift",
-      "kind": "IntegerLiteral",
-      "offset": 322,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserBusyStatus\/UserBusyStatus.swift",
-      "kind": "BooleanLiteral",
-      "offset": 369,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserBusyStatus\/UserBusyStatus.swift",
-      "kind": "BooleanLiteral",
-      "offset": 463,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/WebLogin\/WebLoginManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/WebLogin\/WebLoginManager.swift",
       "kind": "StringLiteral",
       "offset": 3474,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/WebLogin\/WebLoginManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/WebLogin\/WebLoginManager.swift",
       "kind": "StringLiteral",
       "offset": 3524,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/WebLogin\/WebLoginManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/WebLogin\/WebLoginManager.swift",
       "kind": "StringLiteral",
       "offset": 3571,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
-      "kind": "IntegerLiteral",
-      "offset": 328,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
-      "kind": "IntegerLiteral",
-      "offset": 377,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
-      "kind": "BooleanLiteral",
-      "offset": 428,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
-      "kind": "BooleanLiteral",
-      "offset": 479,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
-      "kind": "FloatLiteral",
-      "offset": 534,
-      "length": 3,
-      "value": "0.0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
-      "kind": "BooleanLiteral",
-      "offset": 584,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "StringLiteral",
-      "offset": 278,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "StringLiteral",
-      "offset": 329,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "StringLiteral",
-      "offset": 389,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "IntegerLiteral",
-      "offset": 439,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "IntegerLiteral",
-      "offset": 495,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "IntegerLiteral",
-      "offset": 548,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
-      "kind": "IntegerLiteral",
-      "offset": 597,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
       "kind": "BooleanLiteral",
       "offset": 242,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
       "kind": "BooleanLiteral",
       "offset": 301,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
       "kind": "BooleanLiteral",
       "offset": 356,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
       "kind": "BooleanLiteral",
       "offset": 409,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
       "kind": "BooleanLiteral",
       "offset": 464,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserPrivacy\/UserPrivacy.swift",
       "kind": "StringLiteral",
       "offset": 540,
       "length": 9,
       "value": "\"privacy\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "IntegerLiteral",
-      "offset": 370,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "IntegerLiteral",
-      "offset": 525,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "IntegerLiteral",
-      "offset": 642,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Contact\/ContactMessage.swift",
       "kind": "StringLiteral",
-      "offset": 758,
-      "length": 2,
-      "value": "\"\""
+      "offset": 410,
+      "length": 16,
+      "value": "\"contactMessage\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Location\/LocationMessage.swift",
+      "kind": "FloatLiteral",
+      "offset": 248,
+      "length": 3,
+      "value": "0.0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Location\/LocationMessage.swift",
+      "kind": "FloatLiteral",
+      "offset": 300,
+      "length": 3,
+      "value": "0.0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Location\/LocationMessage.swift",
       "kind": "StringLiteral",
-      "offset": 899,
-      "length": 2,
-      "value": "\"\""
+      "offset": 378,
+      "length": 17,
+      "value": "\"locationMessage\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 1018,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 1147,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "IntegerLiteral",
-      "offset": 1284,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "IntegerLiteral",
-      "offset": 1437,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "IntegerLiteral",
-      "offset": 1583,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 1636,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 1748,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
-      "kind": "StringLiteral",
-      "offset": 2174,
-      "length": 14,
-      "value": "\"mediaMessage\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "StringLiteral",
-      "offset": 609,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "StringLiteral",
-      "offset": 662,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "StringLiteral",
-      "offset": 721,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "StringLiteral",
-      "offset": 785,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/GroupMember\/GroupMember.swift",
       "kind": "BooleanLiteral",
-      "offset": 837,
+      "offset": 396,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 223,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 269,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 318,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 372,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 420,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 467,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 522,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "IntegerLiteral",
+      "offset": 573,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Vcard\/Vcard.swift",
+      "kind": "StringLiteral",
+      "offset": 699,
+      "length": 7,
+      "value": "\"vcard\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
+      "kind": "IntegerLiteral",
+      "offset": 20755,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
       "kind": "BooleanLiteral",
-      "offset": 1086,
+      "offset": 25113,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
+      "kind": "FloatLiteral",
+      "offset": 25140,
+      "length": 3,
+      "value": "0.0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
+      "kind": "BooleanLiteral",
+      "offset": 27213,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/MessageHandler.swift",
+      "kind": "BooleanLiteral",
+      "offset": 27243,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/FlyDatabaseController.swift",
+      "kind": "StringLiteral",
+      "offset": 10230,
+      "length": 3,
+      "value": "\" \""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/FlyDatabaseController.swift",
+      "kind": "StringLiteral",
+      "offset": 10256,
       "length": 4,
-      "value": "true"
+      "value": "\"\n\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1138,
-      "length": 5,
-      "value": "false"
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
+      "kind": "IntegerLiteral",
+      "offset": 3180,
+      "length": 2,
+      "value": "40"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1190,
-      "length": 5,
-      "value": "false"
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
+      "kind": "IntegerLiteral",
+      "offset": 3207,
+      "length": 1,
+      "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1243,
-      "length": 5,
-      "value": "false"
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
+      "kind": "IntegerLiteral",
+      "offset": 15209,
+      "length": 2,
+      "value": "40"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1294,
-      "length": 5,
-      "value": "false"
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/RecentManager.swift",
+      "kind": "IntegerLiteral",
+      "offset": 15236,
+      "length": 1,
+      "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatus.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/OfflineReceipt.swift",
+      "kind": "StringLiteral",
+      "offset": 309,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatus.swift",
       "kind": "StringLiteral",
       "offset": 257,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatus.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatus.swift",
       "kind": "IntegerLiteral",
       "offset": 308,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatus.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserStatus\/UserStatus.swift",
       "kind": "BooleanLiteral",
       "offset": 355,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/MessageManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserBusyStatus\/UserBusyStatus.swift",
       "kind": "IntegerLiteral",
-      "offset": 29255,
+      "offset": 322,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserBusyStatus\/UserBusyStatus.swift",
+      "kind": "BooleanLiteral",
+      "offset": 369,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/UserBusyStatus\/UserBusyStatus.swift",
+      "kind": "BooleanLiteral",
+      "offset": 463,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
+      "kind": "IntegerLiteral",
+      "offset": 328,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
+      "kind": "IntegerLiteral",
+      "offset": 377,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
+      "kind": "BooleanLiteral",
+      "offset": 428,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
+      "kind": "BooleanLiteral",
+      "offset": 479,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
+      "kind": "FloatLiteral",
+      "offset": 534,
+      "length": 3,
+      "value": "0.0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Recent\/Recent.swift",
+      "kind": "BooleanLiteral",
+      "offset": 584,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "StringLiteral",
+      "offset": 278,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "StringLiteral",
+      "offset": 329,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "StringLiteral",
+      "offset": 389,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "IntegerLiteral",
+      "offset": 439,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "IntegerLiteral",
+      "offset": 495,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "IntegerLiteral",
+      "offset": 548,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Receipt\/Receipt.swift",
+      "kind": "IntegerLiteral",
+      "offset": 597,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Backup\/BackupMessageManager.swift",
+      "kind": "StringLiteral",
+      "offset": 6319,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Contact\/RosterManager.swift",
+      "kind": "BooleanLiteral",
+      "offset": 921,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Backup\/FileStreamReader.swift",
+      "kind": "StringLiteral",
+      "offset": 362,
+      "length": 4,
+      "value": "\"\n\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Backup\/FileStreamReader.swift",
+      "kind": "IntegerLiteral",
+      "offset": 430,
+      "length": 4,
+      "value": "4096"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "IntegerLiteral",
+      "offset": 370,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "IntegerLiteral",
+      "offset": 525,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "IntegerLiteral",
+      "offset": 642,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 758,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 899,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 1018,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 1147,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1284,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1437,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1583,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 1636,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 1748,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Media\/MediaMessage.swift",
+      "kind": "StringLiteral",
+      "offset": 2174,
+      "length": 14,
+      "value": "\"mediaMessage\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "StringLiteral",
+      "offset": 609,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "StringLiteral",
+      "offset": 662,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "StringLiteral",
+      "offset": 721,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "StringLiteral",
+      "offset": 785,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "BooleanLiteral",
+      "offset": 837,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1086,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1138,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1190,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1243,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/Message.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1294,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleDatabase\/FlyDatabase\/FlyDatabase\/Models\/Message\/MessageManager.swift",
+      "kind": "IntegerLiteral",
+      "offset": 29181,
       "length": 2,
       "value": "50"
     }

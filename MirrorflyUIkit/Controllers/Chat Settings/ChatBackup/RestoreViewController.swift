@@ -145,6 +145,9 @@ class RestoreViewController: UIViewController {
     func profileNavigation() {
         if let profileVc = UIStoryboard.init(name: Storyboards.profile, bundle: Bundle.main).instantiateViewController(withIdentifier: Identifiers.profileViewController) as? ProfileViewController {
             self.navigationController?.pushViewController(profileVc, animated: true)
+            navigationController?.viewControllers.removeAll(where: { viewControllers in
+                !viewControllers.isKind(of: ProfileViewController.self)
+            })
         }
     }
     

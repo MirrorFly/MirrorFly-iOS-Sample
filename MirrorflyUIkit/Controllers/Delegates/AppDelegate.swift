@@ -21,6 +21,7 @@ import Contacts
 import CallKit
 import FirebaseRemoteConfig
 
+
 let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
 let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
 let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
@@ -34,7 +35,6 @@ let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
 let IS_MOBILE_NUMBER_LOGIN = false
 let APP_NAME = "UiKit"
 let ICLOUD_CONTAINER_ID = "iCloud.com.mirrorfly.qa"
-
 
 
 let isMigrationDone = "isMigrationDone"
@@ -71,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         try? ChatSDK.Builder.setAppGroupContainerID(containerID: CONTAINER_ID)
             .setLicenseKey(key: LICENSE_KEY)
-            .isTrialLicense(isTrial: false)
+            .isTrialLicense(isTrial: !IS_LIVE)
             .setDomainBaseUrl(baseUrl: BASE_URL)
             .setGroupConfiguration(groupConfig: groupConfig!)
             .buildAndInitialize()

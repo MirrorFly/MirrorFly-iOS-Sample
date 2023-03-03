@@ -13657,2611 +13657,2611 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 243,
       "length": 7,
       "value": "\"janus\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 279,
       "length": 6,
       "value": "\"data\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 317,
       "length": 9,
       "value": "\"success\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 356,
       "length": 7,
       "value": "\"error\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 393,
       "length": 7,
       "value": "\"event\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 423,
       "length": 5,
       "value": "\"ack\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 454,
       "length": 8,
       "value": "\"hangup\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 490,
       "length": 10,
       "value": "\"slowlink\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 525,
       "length": 7,
       "value": "\"media\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 560,
       "length": 10,
       "value": "\"webrtcup\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 598,
       "length": 10,
       "value": "\"detached\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 637,
       "length": 11,
       "value": "\"keepalive\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 675,
       "length": 9,
       "value": "\"timeout\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "StringLiteral",
       "offset": 714,
       "length": 13,
       "value": "\"server_info\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 819,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 830,
       "length": 29,
       "value": "1"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 869,
       "length": 31,
       "value": "2"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 910,
       "length": 31,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 951,
       "length": 29,
       "value": "4"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 990,
       "length": 30,
       "value": "5"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 1030,
       "length": 30,
       "value": "6"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 819,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 830,
       "length": 29,
       "value": "1"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 869,
       "length": 31,
       "value": "2"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 910,
       "length": 31,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 951,
       "length": 29,
       "value": "4"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 990,
       "length": 30,
       "value": "5"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 1030,
       "length": 30,
       "value": "6"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 819,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 830,
       "length": 29,
       "value": "1"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 869,
       "length": 31,
       "value": "2"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 910,
       "length": 31,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 951,
       "length": 29,
       "value": "4"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 990,
       "length": 30,
       "value": "5"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 1030,
       "length": 30,
       "value": "6"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "BooleanLiteral",
       "offset": 1933,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 1963,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 1997,
       "length": 5,
       "value": "64000"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 2035,
       "length": 6,
       "value": "512000"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 2069,
       "length": 1,
       "value": "5"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 2102,
       "length": 2,
       "value": "60"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "IntegerLiteral",
       "offset": 2161,
       "length": 6,
       "value": "512000"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "BooleanLiteral",
       "offset": 2233,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "BooleanLiteral",
       "offset": 2268,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebSocketChannel.swift",
       "kind": "BooleanLiteral",
       "offset": 2302,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/ARDCaptureControllers.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/ARDCaptureControllers.swift",
       "kind": "BooleanLiteral",
       "offset": 287,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/ARDCaptureControllers.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/ARDCaptureControllers.swift",
       "kind": "StringLiteral",
       "offset": 227,
       "length": 20,
       "value": "\"FlyCall.ARDCaptureController\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
       "kind": "FloatLiteral",
       "offset": 973,
       "length": 3,
       "value": "0.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
       "kind": "FloatLiteral",
       "offset": 1138,
       "length": 3,
       "value": "0.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
       "kind": "FloatLiteral",
       "offset": 1267,
       "length": 3,
       "value": "0.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
       "kind": "StringLiteral",
       "offset": 1652,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/RealmCallLog.swift",
       "kind": "BooleanLiteral",
       "offset": 1708,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/SignalServerManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/SignalServerManager.swift",
       "kind": "StringLiteral",
       "offset": 1501,
       "length": 6,
       "value": "\"call\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 232,
       "length": 7,
       "value": "\"audio\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 258,
       "length": 7,
       "value": "\"video\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 232,
       "length": 7,
       "value": "\"audio\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 258,
       "length": 7,
       "value": "\"video\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 330,
       "length": 10,
       "value": "\"onetoone\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 364,
       "length": 11,
       "value": "\"onetomany\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 400,
       "length": 12,
       "value": "\"manytomany\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 330,
       "length": 10,
       "value": "\"onetoone\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 364,
       "length": 11,
       "value": "\"onetomany\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 400,
       "length": 12,
       "value": "\"manytomany\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 731,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 855,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 987,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1119,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1251,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1358,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1491,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1613,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1714,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 1815,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2154,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2191,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 2792,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 2824,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/GroupCallUtils.swift",
       "kind": "BooleanLiteral",
       "offset": 3056,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 178,
       "length": 10,
       "value": "\"pingTime\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 205,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 275,
       "length": 16,
       "value": "\"timeDifference\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 308,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 384,
       "length": 7,
       "value": "\"my_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 408,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 474,
       "length": 8,
       "value": "\"roomId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 499,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 567,
       "length": 12,
       "value": "\"signal_url\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 596,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 667,
       "length": 11,
       "value": "\"janus_url\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 695,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 765,
       "length": 10,
       "value": "\"base_url\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 792,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "StringLiteral",
       "offset": 861,
       "length": 19,
       "value": "\"call_db_migration\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallDefaults.swift",
       "kind": "BooleanLiteral",
       "offset": 897,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Notification\/NotificationCommonHandler.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Notification\/NotificationCommonHandler.swift",
       "kind": "BooleanLiteral",
       "offset": 251,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Notification\/NotificationCommonHandler.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Notification\/NotificationCommonHandler.swift",
       "kind": "BooleanLiteral",
       "offset": 290,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallControl.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallControl.swift",
       "kind": "BooleanLiteral",
       "offset": 1004,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/PeerConnectionClient.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/PeerConnectionClient.swift",
       "kind": "StringLiteral",
       "offset": 674,
       "length": 20,
       "value": "\"FlyCall.PeerConnectionClient\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "StringLiteral",
       "offset": 524,
       "length": 12,
       "value": "\"audioQueue\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "StringLiteral",
       "offset": 557,
       "length": 15,
       "value": "\"#audiomanager\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "BooleanLiteral",
       "offset": 703,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "BooleanLiteral",
       "offset": 742,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "BooleanLiteral",
       "offset": 779,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "BooleanLiteral",
       "offset": 828,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/AudioManager.swift",
       "kind": "BooleanLiteral",
       "offset": 11174,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/LinkManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/LinkManager.swift",
       "kind": "StringLiteral",
       "offset": 675,
       "length": 7,
       "value": "\"audio\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/LinkManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/LinkManager.swift",
       "kind": "Array",
       "offset": 719,
       "length": 2,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/LinkManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/LinkManager.swift",
       "kind": "BooleanLiteral",
       "offset": 939,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 262,
       "length": 14,
       "value": "\"INVITE_USERS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 308,
       "length": 11,
       "value": "\"MAKE_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 350,
       "length": 13,
       "value": "\"ANSWER_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 392,
       "length": 11,
       "value": "\"DENY_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 435,
       "length": 14,
       "value": "\"LOCAL_HANGUP\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 482,
       "length": 15,
       "value": "\"REMOTE_HANGUP\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 537,
       "length": 22,
       "value": "\"REMOTE_CHANGE_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 596,
       "length": 19,
       "value": "\"REMOTE_OTHER_BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 646,
       "length": 13,
       "value": "\"REMOTE_BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 693,
       "length": 16,
       "value": "\"REMOTE_ENGAGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 739,
       "length": 12,
       "value": "\"CALL_AGAIN\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 788,
       "length": 19,
       "value": "\"CANCEL_CALL_AGAIN\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 840,
       "length": 15,
       "value": "\"SWITCH_CAMERA\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 894,
       "length": 21,
       "value": "\"REMOTE_VIDEO_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 956,
       "length": 30,
       "value": "\"ACTION_VIDEO_CALL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1019,
       "length": 22,
       "value": "\"CHANGE_TO_AUDIO_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1089,
       "length": 37,
       "value": "\"ACTION_VIDEO_CALL_CANCEL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1181,
       "length": 39,
       "value": "\"ACTION_VIDEO_CALL_CONVERSION_ACCEPTED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1270,
       "length": 39,
       "value": "\"ACTION_VIDEO_CALL_CONVERSION_REJECTED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1347,
       "length": 20,
       "value": "\"REMOTE_VIDEO_ADDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1407,
       "length": 22,
       "value": "\"AUDIO_DEVICE_CHANGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1467,
       "length": 20,
       "value": "\"CAMERA_SWITCH_DONE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1524,
       "length": 19,
       "value": "\"PERMISSION_DENIED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1577,
       "length": 23,
       "value": "\"CALL_REQUEST_RESPONSE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1646,
       "length": 28,
       "value": "\"INCOMING_PERMISSION_DENIED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 262,
       "length": 14,
       "value": "\"INVITE_USERS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 308,
       "length": 11,
       "value": "\"MAKE_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 350,
       "length": 13,
       "value": "\"ANSWER_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 392,
       "length": 11,
       "value": "\"DENY_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 435,
       "length": 14,
       "value": "\"LOCAL_HANGUP\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 482,
       "length": 15,
       "value": "\"REMOTE_HANGUP\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 537,
       "length": 22,
       "value": "\"REMOTE_CHANGE_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 596,
       "length": 19,
       "value": "\"REMOTE_OTHER_BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 646,
       "length": 13,
       "value": "\"REMOTE_BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 693,
       "length": 16,
       "value": "\"REMOTE_ENGAGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 739,
       "length": 12,
       "value": "\"CALL_AGAIN\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 788,
       "length": 19,
       "value": "\"CANCEL_CALL_AGAIN\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 840,
       "length": 15,
       "value": "\"SWITCH_CAMERA\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 894,
       "length": 21,
       "value": "\"REMOTE_VIDEO_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 956,
       "length": 30,
       "value": "\"ACTION_VIDEO_CALL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1019,
       "length": 22,
       "value": "\"CHANGE_TO_AUDIO_CALL\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1089,
       "length": 37,
       "value": "\"ACTION_VIDEO_CALL_CANCEL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1181,
       "length": 39,
       "value": "\"ACTION_VIDEO_CALL_CONVERSION_ACCEPTED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1270,
       "length": 39,
       "value": "\"ACTION_VIDEO_CALL_CONVERSION_REJECTED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1347,
       "length": 20,
       "value": "\"REMOTE_VIDEO_ADDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1407,
       "length": 22,
       "value": "\"AUDIO_DEVICE_CHANGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1467,
       "length": 20,
       "value": "\"CAMERA_SWITCH_DONE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1524,
       "length": 19,
       "value": "\"PERMISSION_DENIED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1577,
       "length": 23,
       "value": "\"CALL_REQUEST_RESPONSE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1646,
       "length": 28,
       "value": "\"INCOMING_PERMISSION_DENIED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1854,
       "length": 8,
       "value": "\"ARDAMS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1897,
       "length": 10,
       "value": "\"ARDAMSa0\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "StringLiteral",
       "offset": 1942,
       "length": 10,
       "value": "\"ARDAMSv0\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "BooleanLiteral",
       "offset": 2437,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "BooleanLiteral",
       "offset": 2474,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRtcCallService.swift",
       "kind": "BooleanLiteral",
       "offset": 2511,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
       "kind": "FloatLiteral",
       "offset": 329,
       "length": 3,
       "value": "0.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
       "kind": "FloatLiteral",
       "offset": 381,
       "length": 3,
       "value": "0.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
       "kind": "FloatLiteral",
       "offset": 430,
       "length": 3,
       "value": "0.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
       "kind": "Array",
       "offset": 589,
       "length": 2,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/CallLog.swift",
       "kind": "BooleanLiteral",
       "offset": 724,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallParticipantsStatus.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallParticipantsStatus.swift",
       "kind": "StringLiteral",
       "offset": 1061,
       "length": 6,
       "value": "\"call\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
       "kind": "IntegerLiteral",
       "offset": 1397,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
       "kind": "StringLiteral",
       "offset": 1488,
       "length": 8,
       "value": "\"ARDAMS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
       "kind": "StringLiteral",
       "offset": 1532,
       "length": 10,
       "value": "\"ARDAMSa0\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
       "kind": "StringLiteral",
       "offset": 1578,
       "length": 10,
       "value": "\"ARDAMSv0\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
       "kind": "BooleanLiteral",
       "offset": 1632,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/JanusWebRtc.swift",
       "kind": "BooleanLiteral",
       "offset": 1684,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Notification\/VOIPManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Notification\/VOIPManager.swift",
       "kind": "IntegerLiteral",
       "offset": 405,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/FlyCallController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/FlyCallController.swift",
       "kind": "StringLiteral",
       "offset": 388,
       "length": 3,
       "value": "\" \""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/FlyCallController.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/FlyCallController.swift",
       "kind": "StringLiteral",
       "offset": 414,
       "length": 4,
       "value": "\"\n\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "IntegerLiteral",
       "offset": 207,
       "length": 2,
       "value": "10"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "IntegerLiteral",
       "offset": 236,
       "length": 2,
       "value": "30"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "IntegerLiteral",
       "offset": 267,
       "length": 2,
       "value": "30"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "IntegerLiteral",
       "offset": 303,
       "length": 2,
       "value": "30"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "IntegerLiteral",
       "offset": 338,
       "length": 1,
       "value": "2"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 806,
       "length": 10,
       "value": "\"ATTENDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 835,
       "length": 7,
       "value": "\"offer\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 862,
       "length": 8,
       "value": "\"answer\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 893,
       "length": 11,
       "value": "\"candidate\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 928,
       "length": 12,
       "value": "\"AUDIO_MUTE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 958,
       "length": 6,
       "value": "\"BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 983,
       "length": 7,
       "value": "\"ENDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1012,
       "length": 10,
       "value": "\"RECEIVED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1040,
       "length": 6,
       "value": "\"PING\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1067,
       "length": 8,
       "value": "\"isHold\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1093,
       "length": 6,
       "value": "\"PONG\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1120,
       "length": 9,
       "value": "\"ENGAGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1147,
       "length": 6,
       "value": "\"exit\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1183,
       "length": 18,
       "value": "\"SOCKET_RECONNECT\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1230,
       "length": 17,
       "value": "\"CALL_CONNECTION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1280,
       "length": 21,
       "value": "\"CALL_CONNECTION_ACK\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1325,
       "length": 12,
       "value": "\"VIDEO_MUTE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1362,
       "length": 13,
       "value": "\"CALL_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1404,
       "length": 17,
       "value": "\"CALL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1459,
       "length": 26,
       "value": "\"CALL_CONVERSION_RESPONSE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 806,
       "length": 10,
       "value": "\"ATTENDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 835,
       "length": 7,
       "value": "\"offer\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 862,
       "length": 8,
       "value": "\"answer\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 893,
       "length": 11,
       "value": "\"candidate\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 928,
       "length": 12,
       "value": "\"AUDIO_MUTE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 958,
       "length": 6,
       "value": "\"BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 983,
       "length": 7,
       "value": "\"ENDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1012,
       "length": 10,
       "value": "\"RECEIVED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1040,
       "length": 6,
       "value": "\"PING\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1067,
       "length": 8,
       "value": "\"isHold\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1093,
       "length": 6,
       "value": "\"PONG\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1120,
       "length": 9,
       "value": "\"ENGAGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1147,
       "length": 6,
       "value": "\"exit\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1183,
       "length": 18,
       "value": "\"SOCKET_RECONNECT\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1230,
       "length": 17,
       "value": "\"CALL_CONNECTION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1280,
       "length": 21,
       "value": "\"CALL_CONNECTION_ACK\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1325,
       "length": 12,
       "value": "\"VIDEO_MUTE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1362,
       "length": 13,
       "value": "\"CALL_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1404,
       "length": 17,
       "value": "\"CALL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1459,
       "length": 26,
       "value": "\"CALL_CONVERSION_RESPONSE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1546,
       "length": 12,
       "value": "\"Connecting\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1579,
       "length": 9,
       "value": "\"Ringing\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1610,
       "length": 10,
       "value": "\"Attended\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1643,
       "length": 11,
       "value": "\"Connected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1680,
       "length": 14,
       "value": "\"Disconnected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1715,
       "length": 14,
       "value": "\"Call on hold\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1752,
       "length": 11,
       "value": "\"ON_RESUME\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1788,
       "length": 13,
       "value": "\"User_Joined\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1824,
       "length": 11,
       "value": "\"User_Left\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1869,
       "length": 21,
       "value": "\"Invite call timeout\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1917,
       "length": 16,
       "value": "\"CALL TIME OUTt\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1959,
       "length": 14,
       "value": "\"Reconnecting\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1998,
       "length": 13,
       "value": "\"Reconnected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2032,
       "length": 19,
       "value": "\"Trying to Connect\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2076,
       "length": 33,
       "value": "\"Calling... \n Trying to Connect\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2140,
       "length": 45,
       "value": "\"User Seems to be Offline, Trying to Connect\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1546,
       "length": 12,
       "value": "\"Connecting\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1579,
       "length": 9,
       "value": "\"Ringing\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1610,
       "length": 10,
       "value": "\"Attended\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1643,
       "length": 11,
       "value": "\"Connected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1680,
       "length": 14,
       "value": "\"Disconnected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1715,
       "length": 14,
       "value": "\"Call on hold\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1752,
       "length": 11,
       "value": "\"ON_RESUME\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1788,
       "length": 13,
       "value": "\"User_Joined\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1824,
       "length": 11,
       "value": "\"User_Left\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1869,
       "length": 21,
       "value": "\"Invite call timeout\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1917,
       "length": 16,
       "value": "\"CALL TIME OUTt\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1959,
       "length": 14,
       "value": "\"Reconnecting\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 1998,
       "length": 13,
       "value": "\"Reconnected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2032,
       "length": 19,
       "value": "\"Trying to Connect\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2076,
       "length": 33,
       "value": "\"Calling... \n Trying to Connect\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2140,
       "length": 45,
       "value": "\"User Seems to be Offline, Trying to Connect\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2287,
       "length": 18,
       "value": "\"RemoteVideoTrack\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 2333,
       "length": 11,
       "value": "\"Connected\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "FloatLiteral",
       "offset": 3483,
       "length": 4,
       "value": "60.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "FloatLiteral",
       "offset": 3519,
       "length": 4,
       "value": "30.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "FloatLiteral",
       "offset": 3556,
       "length": 4,
       "value": "60.0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 3598,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 4165,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 4208,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 4251,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 4692,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 4921,
       "length": 6,
       "value": "\"PING\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 4961,
       "length": 6,
       "value": "\"PONG\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5148,
       "length": 9,
       "value": "\"ENGAGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5240,
       "length": 6,
       "value": "\"exit\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5292,
       "length": 18,
       "value": "\"SOCKET_RECONNECT\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5355,
       "length": 17,
       "value": "\"CALL_CONNECTION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5421,
       "length": 21,
       "value": "\"CALL_CONNECTION_ACK\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5537,
       "length": 12,
       "value": "\"VIDEO_MUTE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5590,
       "length": 13,
       "value": "\"CALL_STATUS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5648,
       "length": 17,
       "value": "\"CALL_CONVERSION\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 5719,
       "length": 26,
       "value": "\"CALL_CONVERSION_RESPONSE\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "IntegerLiteral",
       "offset": 5896,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 6158,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 6190,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "StringLiteral",
       "offset": 6222,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 6333,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 6376,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 6408,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/CallManager.swift",
       "kind": "BooleanLiteral",
       "offset": 6444,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
       "kind": "BooleanLiteral",
       "offset": 471,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
       "kind": "BooleanLiteral",
       "offset": 512,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
       "kind": "StringLiteral",
       "offset": 788,
       "length": 8,
       "value": "\"ARDAMS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
       "kind": "StringLiteral",
       "offset": 832,
       "length": 10,
       "value": "\"ARDAMSa0\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/JanusWebrtc\/WebRTCTrackManager.swift",
       "kind": "StringLiteral",
       "offset": 878,
       "length": 10,
       "value": "\"ARDAMSv0\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/JanusConnection.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/JanusConnection.swift",
       "kind": "BooleanLiteral",
       "offset": 307,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/JanusConnection.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/JanusConnection.swift",
       "kind": "BooleanLiteral",
       "offset": 341,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 367,
       "length": 8,
       "value": "\"isMute\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 403,
       "length": 9,
       "value": "\"userJid\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 441,
       "length": 12,
       "value": "\"kXMPPmyJID\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 480,
       "length": 8,
       "value": "\"isHold\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 517,
       "length": 10,
       "value": "\"callType\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 560,
       "length": 14,
       "value": "\"callerDevice\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 604,
       "length": 11,
       "value": "\"isRequest\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 644,
       "length": 10,
       "value": "\"callFrom\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 680,
       "length": 7,
       "value": "\"users\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 715,
       "length": 9,
       "value": "\"groupId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 754,
       "length": 11,
       "value": "\"startTime\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 793,
       "length": 9,
       "value": "\"endTime\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 829,
       "length": 8,
       "value": "\"roomId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 869,
       "length": 13,
       "value": "\"callingTime\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 911,
       "length": 10,
       "value": "\"callMode\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 945,
       "length": 5,
       "value": "\"ios\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 981,
       "length": 12,
       "value": "\"callStatus\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1021,
       "length": 13,
       "value": "\"inviteusers\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1070,
       "length": 7,
       "value": "\"video\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1107,
       "length": 7,
       "value": "\"audio\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1144,
       "length": 10,
       "value": "\"fromUser\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1181,
       "length": 8,
       "value": "\"toUser\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1218,
       "length": 10,
       "value": "\"socketId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1255,
       "length": 8,
       "value": "\"callId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1295,
       "length": 13,
       "value": "\"newSocketId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1341,
       "length": 13,
       "value": "\"oldSocketId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1414,
       "length": 9,
       "value": "\"xx000xx\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1454,
       "length": 12,
       "value": "\"message_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1493,
       "length": 6,
       "value": "\"type\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1675,
       "length": 6,
       "value": "\"call\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1721,
       "length": 12,
       "value": "\"media_call\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1762,
       "length": 11,
       "value": "\"socket_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1801,
       "length": 9,
       "value": "\"call_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1839,
       "length": 11,
       "value": "\"caller_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1881,
       "length": 13,
       "value": "\"call_status\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1923,
       "length": 11,
       "value": "\"call_from\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 1963,
       "length": 11,
       "value": "\"call_type\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2008,
       "length": 15,
       "value": "\"caller_device\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2057,
       "length": 9,
       "value": "\"CALLING\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2096,
       "length": 6,
       "value": "\"BUSY\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2135,
       "length": 9,
       "value": "\"ENGAGED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2175,
       "length": 7,
       "value": "\"ENDED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2214,
       "length": 8,
       "value": "\"ATTEND\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2256,
       "length": 10,
       "value": "\"RECEIVED\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2301,
       "length": 11,
       "value": "\"RECONNECT\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2343,
       "length": 13,
       "value": "\"INVITEUSERS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2519,
       "length": 8,
       "value": "\"recall\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2556,
       "length": 12,
       "value": "\"message_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2629,
       "length": 14,
       "value": "\"kCallKitCall\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2697,
       "length": 13,
       "value": "\"Missed Call\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2751,
       "length": 10,
       "value": "\"Incoming\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2818,
       "length": 12,
       "value": "\"deviceType\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2869,
       "length": 13,
       "value": "\"deviceToken\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2918,
       "length": 17,
       "value": "\"voipDeviceToken\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 2971,
       "length": 17,
       "value": "\"deviceOsVersion\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3033,
       "length": 19,
       "value": "\"existingTokenAPNS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3097,
       "length": 19,
       "value": "\"existingTokenVOIP\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3153,
       "length": 18,
       "value": "\"updatedTokenAPNS\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3208,
       "length": 18,
       "value": "\"updatedTokenVOIP\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3264,
       "length": 19,
       "value": "\"existingOSVersion\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3312,
       "length": 10,
       "value": "\"deviceId\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3384,
       "length": 9,
       "value": "\"room_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3421,
       "length": 10,
       "value": "\"end_time\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3461,
       "length": 12,
       "value": "\"start_time\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3502,
       "length": 11,
       "value": "\"call_time\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3541,
       "length": 10,
       "value": "\"group_id\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3585,
       "length": 16,
       "value": "\"session_status\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3630,
       "length": 11,
       "value": "\"call_mode\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3664,
       "length": 5,
       "value": "\"Jid\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3695,
       "length": 8,
       "value": "\"isVoip\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3764,
       "length": 6,
       "value": "\"time\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3853,
       "length": 7,
       "value": "\"login\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 3972,
       "length": 26,
       "value": "\"users\/calls\/validateCall\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 4028,
       "length": 14,
       "value": "\"users\/device\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/FlyCallUtils.swift",
       "kind": "StringLiteral",
       "offset": 4073,
       "length": 28,
       "value": "\"users\/calls\/getRoomDetails\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
       "kind": "StringLiteral",
       "offset": 151,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
       "kind": "StringLiteral",
       "offset": 183,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
       "kind": "StringLiteral",
       "offset": 213,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
       "kind": "StringLiteral",
       "offset": 247,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
       "kind": "StringLiteral",
       "offset": 279,
       "length": 2,
       "value": "\"\""
     },
     {
-      "filePath": "\/Users\/user\/p078-contus-instantmessenger-uikit-ios\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
+      "filePath": "\/Users\/user\/Documents\/uikit\/SubmoduleCall\/FlyCall\/FlyCall\/Classes\/Utils\/CallModel.swift",
       "kind": "StringLiteral",
       "offset": 315,
       "length": 2,

@@ -323,9 +323,9 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="18" height="24"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="downWhiteArrow" translatesAutoresizingMaskIntoConstraints="NO" id="Cty-6g-s1t">
-                                                        <rect key="frame" x="0.0" y="5.6666666666666288" width="18" height="13"/>
+                                                        <rect key="frame" x="0.0" y="4.6666666666666288" width="18" height="15"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="13" id="JeA-qG-EDW"/>
+                                                            <constraint firstAttribute="height" constant="15" id="JeA-qG-EDW"/>
                                                             <constraint firstAttribute="width" constant="18" id="iCk-81-uq7"/>
                                                         </constraints>
                                                     </imageView>
@@ -1635,7 +1635,7 @@
         <image name="backArrow" width="19.333333969116211" height="13.666666984558105"/>
         <image name="check_box" width="16" height="16"/>
         <image name="closeIcon" width="32" height="32"/>
-        <image name="downWhiteArrow" width="7" height="8.3333330154418945"/>
+        <image name="downWhiteArrow" width="24" height="24"/>
         <image name="down_arrow" width="10" height="6"/>
         <image name="groupPlaceholder" width="96" height="60.333332061767578"/>
         <image name="ic_audiocall" width="29" height="29"/>

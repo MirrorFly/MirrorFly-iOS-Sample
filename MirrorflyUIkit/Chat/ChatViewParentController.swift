@@ -1148,6 +1148,10 @@ class ChatViewParentController: BaseViewController, UITextViewDelegate,
         }
         
         // Starred Message Item
+//        if selectedChatMessage?.isMessageRecalled == false {
+//            let isStar = selectedChatMessage?.isMessageStarred ?? false
+//            menusList.append(ContextMenuItemWithImage(title: isStar ? unStarTitle : MessageActions.star.rawValue, image: !isStar ? UIImage(named: "ic_star") ?? UIImage() : UIImage(named: "Unstar") ?? UIImage()))
+//            }
         if availableFeatures.isStarMessageEnabled {
             if selectedChatMessage?.isMessageRecalled == false {
                 let isStar = selectedChatMessage?.isMessageStarred ?? false
@@ -4097,6 +4101,9 @@ extension ChatViewParentController : UITableViewDataSource ,UITableViewDelegate,
                 cell.background.backgroundColor = .clear
             } else {
                 cell.notificationLabel.text = message
+                cell.backgroundColor = .clear
+                cell.notificationLabel.textColor = Color.chatDateHeaderText
+                cell.background.backgroundColor = Color.chatDateHeaderBackground
             }
             cell.selectionStyle = .none
             cell.contentView.backgroundColor = .clear
@@ -4973,10 +4980,16 @@ extension ChatViewParentController : MessageEventsDelegate {
     
     func setOrUpdateFavourite(messageId: String, favourite: Bool, removeAllFavourite: Bool) {
         executeOnMainThread { [weak self] in
-            if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == messageId}) {
-                self?.chatMessages[indexPath.section][indexPath.row].isMessageStarred = favourite
-                self?.chatTableView.reloadRows(at: [indexPath], with: .none)
+            if self?.isStarredMessagePage ?? false {
+                self?.showHideEmptyView()
+                self?.chatTableView.reloadData()
+            }else{
+                if let indexPath = self?.chatMessages.indexPath(where: {$0.messageId == messageId}) {
+                    self?.chatMessages[indexPath.section][indexPath.row].isMessageStarred = favourite
+                    self?.chatTableView.reloadRows(at: [indexPath], with: .none)
+                }
             }
+            
         }
     }
     
@@ -7386,6 +7399,8 @@ extension ChatViewParentController {
     }
     
     @objc func didTapMenu(_ sender : UIButton) {
+      //  var values : [String] = getProfileDetails.profileChatType == .singleChat ? [ChatActions.clearAllConversation.rawValue, ChatActions.emailChat.rawValue, ChatActions.report.rawValue, (getBlocked()) ? ChatActions.unblock.rawValue : ChatActions.block.rawValue] : [ChatActions.clearAllConversation.rawValue,ChatActions.emailChat.rawValue, ChatActions.report.rawValue]
+
 //        var values : [String] = getProfileDetails.profileChatType == .singleChat ? [ChatActions.clearAllConversation.rawValue, ChatActions.emailChat.rawValue, ChatActions.report.rawValue, ChatActions.search.rawValue,(getBlocked()) ? ChatActions.unblock.rawValue : ChatActions.block.rawValue] : [ChatActions.clearAllConversation.rawValue, ChatActions.emailChat.rawValue, ChatActions.report.rawValue, ChatActions.search.rawValue]
         
         var values : [String] = []
@@ -7414,7 +7429,6 @@ extension ChatViewParentController {
             }
             values.append( ChatActions.search.rawValue)
         }
-        
         
         if getBlockedByAdmin() {
             values = values.filter({$0 == ChatActions.clearAllConversation.rawValue})
@@ -7452,6 +7466,10 @@ extension ChatViewParentController {
                     self?.resetReplyView(resignFirstResponder: false)
                     self?.messageSearchBar?.becomeFirstResponder()
                 case ChatActions.emailChat.rawValue:
+                    if self?.chatMessages.count == 0 {
+                        AppAlert.shared.showToast(message: thereIsNoConversation)
+                        return
+                    }
                     self?.exportChatToEmail()
                 default:
                     print(" \(tappedOption)")
@@ -8445,7 +8463,7 @@ extension ChatViewParentController {
     private func setUnreadCountInMessage() {
         let unreadMessageId = getUnreadMessageId()
         if let indexPath = chatMessages.indexPath(where: {$0.messageId == unreadMessageId}) {
-            chatMessages[indexPath.section][indexPath.row].messageTextContent = "\(getUnreadMessages().count) New Messages"
+            chatMessages[indexPath.section][indexPath.row].messageTextContent = "\(getUnreadMessages().count) New messages"
         }
     }
     
@@ -8462,7 +8480,7 @@ extension ChatViewParentController {
     
     private func setUnreadCountInUnreadView() {
         let unreadCount = unreadMessagesIdOnMessageReceived.count
-        unreadMessageLabel.text = "\(unreadCount) New Messages"
+        unreadMessageLabel.text = "\(unreadCount) New messages"
         
         if unreadMessageView.isHidden && unreadCount > 0 {
             showOrHideUnreadMessageView(hide: false)

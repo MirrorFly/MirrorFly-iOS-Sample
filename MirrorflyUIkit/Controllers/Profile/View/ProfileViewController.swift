@@ -373,7 +373,10 @@ extension ProfileViewController {
         RootViewController.sharedInstance.initCallSDK()
         let storyboard = UIStoryboard.init(name: Storyboards.main, bundle: nil)
         let mainTabBarController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
-         navigationController?.pushViewController(mainTabBarController, animated: true)
+        navigationController?.pushViewController(mainTabBarController, animated: true)
+        navigationController?.viewControllers.removeAll(where: { viewControllers in
+            !viewControllers.isKind(of: MainTabBarController.self)
+        })
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
