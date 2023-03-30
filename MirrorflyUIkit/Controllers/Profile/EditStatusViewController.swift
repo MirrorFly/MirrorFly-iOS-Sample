@@ -266,23 +266,16 @@ extension EditStatusViewController {
             }
         } else {
             if NetworkReachability.shared.isConnected {
-                if   statusTextview.text.isBlank {
+                if statusTextview.text.isBlank {
                     view.endEditing(true)
                     AppAlert.shared.showToast(message: emptyStatus.localized)
-                }
-                else {
-                    let trimmedStatus =   statusTextview.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    let trimmedStatus = statusTextview.text.trimmingCharacters(in: .whitespacesAndNewlines)
 
-                    if(  isStatusChanged) {
-                        var getAllStatus: [ProfileStatus] = []
-                        getAllStatus =   getStatus()
-                        for getAllStatus in   statusArray {
-                            ChatManager.updateStatus(statusId: getAllStatus.id, statusText: getAllStatus.status, currentStatus: false)
-                        }
+                    if(isStatusChanged) {
                         ChatManager.saveProfileStatus(statusText: trimmedStatus, currentStatus: true)
                     }
 
-                    delegate?.userSelectedStatus(selectedStatus: trimmedStatus)
                     navigationController?.popViewController(animated: true)
                 }
             }
@@ -456,7 +449,6 @@ extension EditStatusViewController {
                     statusArray[indexRow].isCurrentStatus = true
                     editStatusTableView.reloadData()
                     statusTextview.text =   statusArray[indexRow].status
-                    delegate?.userSelectedStatus(selectedStatus:   statusArray[indexRow].status)
 
                     var getAllStatus: [ProfileStatus] = []
                     getAllStatus =   getStatus()

@@ -114,7 +114,7 @@ class ViewAllMediaViewModel {
 extension ViewAllMediaViewModel {
     
     func getVideoAudioImageMessage(jid : String, completionHandler : @escaping FlyCompletionHandler){
-        ChatManager.getVedioImageAudioMessageGroupByMonth(jid: jid) { isSuccess,error,data  in
+        ChatManager.getVideoImageAudioMessageGroupByMonth(jid: jid) { isSuccess,error,data  in
            completionHandler(isSuccess,error,data)
         }
     }

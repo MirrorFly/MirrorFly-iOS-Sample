@@ -28,8 +28,8 @@ class OutGoingCallXib: UIView {
     @IBOutlet weak var audioMuteStackView: UIStackView!
     @IBOutlet weak var audioMutedLable: UILabel!
     @IBOutlet weak var audioMutedIcon: UIImageView!
-    @IBOutlet weak var localVideoView: RTCMTLVideoView!
-    @IBOutlet weak var remoteVideoView: RTCMTLVideoView!
+    @IBOutlet weak var localUserVideoView: UIView!
+    @IBOutlet weak var remoteUserVideoView: UIView!
     @IBOutlet weak var localVideoViewBottom: NSLayoutConstraint!
     @IBOutlet weak var localVideoViewTrailing: NSLayoutConstraint!
     @IBOutlet weak var localVideoViewWidth: NSLayoutConstraint!
@@ -46,6 +46,9 @@ class OutGoingCallXib: UIView {
     @IBOutlet weak var callEndBtn: UIButton!
     
     @IBOutlet weak var statusLble: NSLayoutConstraint!
+    @IBOutlet weak var remoteImageView: UIImageView!
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -65,6 +68,8 @@ class OutGoingCallXib: UIView {
         contentView.backgroundColor = .clear
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth,.flexibleHeight]
-        localVideoView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        localUserVideoView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        remoteImageView.layer.cornerRadius = remoteImageView.bounds.height/2
+        remoteImageView.image = UIImage(named: "default_avatar")
     }
 }

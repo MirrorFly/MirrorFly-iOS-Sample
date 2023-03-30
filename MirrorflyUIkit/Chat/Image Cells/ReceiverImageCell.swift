@@ -16,7 +16,7 @@ class ReceiverImageCell: BaseTableViewCell {
     @IBOutlet weak var captionBotom: NSLayoutConstraint?
     @IBOutlet weak var captionTop: NSLayoutConstraint?
     @IBOutlet weak var close: UIImageView!
-    @IBOutlet weak var progressBar: NicoProgressBar?
+    @IBOutlet weak var progressBar: UIView!
     @IBOutlet weak var progressView: UIView!
     @IBOutlet weak var cellView: UIView!
     @IBOutlet weak var imageContainer: UIImageView!
@@ -64,6 +64,8 @@ class ReceiverImageCell: BaseTableViewCell {
     var message : ChatMessage?
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     var selectedForwardMessage: [SelectedMessages]? = []
+    
+    var newProgressBar: ProgressBar!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -80,8 +82,9 @@ class ReceiverImageCell: BaseTableViewCell {
     cellView.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
         imageContainer.layer.cornerRadius = 5.0
         imageContainer.clipsToBounds = true
-        progressBar?.primaryColor = .white
-        progressBar?.secondaryColor = .clear
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: progressBar.frame.width, height: progressBar.frame.height))
+        newProgressBar.primaryColor = .white
+        newProgressBar.bgColor = .clear
         cellView.roundCorners(corners: [.bottomLeft, .bottomRight], radius: 10.0)
     }
     
@@ -264,15 +267,15 @@ class ReceiverImageCell: BaseTableViewCell {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                 ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                 if ((receivedMediaMessages?.count ?? 0) > 0 && (receivedMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
-                    progressBar?.isHidden = false
-                    progressBar?.transition(to: .indeterminate)
+                    progressBar.addSubview(newProgressBar)
+//                    progressBar?.transition(to: .indeterminate)
                     downoadButton?.isHidden = true
                     downloadView?.isHidden = true
                     progressView?.isHidden = false
                     progrssButton?.isHidden = false
                     close.isHidden = false
                 } else {
-                    progressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                     downoadButton?.isHidden = false
                     downloadView?.isHidden = false
                     progressView?.isHidden = true
@@ -289,12 +292,12 @@ class ReceiverImageCell: BaseTableViewCell {
             if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                 ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
             }
-            progressBar?.isHidden = false
+        progressBar.addSubview(newProgressBar)
             progressView.isHidden = false
             progrssButton.isHidden = false
             downoadButton.isHidden = true
             downloadView.isHidden = true
-            progressBar?.transition(to: .indeterminate)
+//            progressBar?.transition(to: .indeterminate)
             filseSize.text = ""
             close.isHidden = false
     } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloaded {
@@ -325,7 +328,7 @@ class ReceiverImageCell: BaseTableViewCell {
                 downloadView.isHidden = false
                 downoadButton.isHidden = false
                 progrssButton.isHidden = true
-                progressBar?.isHidden = true
+            newProgressBar.removeFromSuperview()
                 progressView.isHidden = true
                 if let fileSiz = message?.mediaChatMessage?.mediaFileSize{
                 filseSize.text = "\(fileSiz)"

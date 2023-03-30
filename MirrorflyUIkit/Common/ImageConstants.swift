@@ -113,5 +113,9 @@ enum ImageConstant{
     // NotificationToneSelection
     static let tone_Unselect = "tone_Unselect"
     static let tone_selected = "tone_selected"
+    
+    // Chat Tags
+    static let select_user = "select_user"
+    static let selected_user = "selected_user"
 
 }

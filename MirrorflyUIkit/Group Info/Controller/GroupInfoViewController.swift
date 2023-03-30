@@ -195,13 +195,15 @@ class GroupInfoViewController: UIViewController {
     // MARK: Private Methods
     
     func getGroupMembers() {
-        groupMembers = [GroupParticipantDetail]()
-        groupMembers = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid})
-        
-        let myJid = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid == FlyDefaults.myJid})
-        groupMembers = groupMembers.sorted(by: { $0.profileDetail?.name.lowercased() ?? "" < $1.profileDetail?.name.lowercased() ?? "" })
-        groupMembers.insert(contentsOf: myJid, at: 0)
-        refreshData()
+      //  groupMembers = [GroupParticipantDetail]()
+        let getGroupMembers = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid != FlyDefaults.myJid})
+        if groupMembers != getGroupMembers {
+            groupMembers = getGroupMembers
+            let myJid = GroupManager.shared.getGroupMemebersFromLocal(groupJid: groupID).participantDetailArray.filter({$0.memberJid == FlyDefaults.myJid})
+            groupMembers = groupMembers.sorted(by: { $0.profileDetail?.name.lowercased() ?? "" < $1.profileDetail?.name.lowercased() ?? "" })
+            groupMembers.insert(contentsOf: myJid, at: 0)
+            refreshData()
+        }
     }
     
     func getParticipants() {
@@ -328,9 +330,7 @@ extension GroupInfoViewController: UITableViewDelegate, UITableViewDataSource {
             cell.onlineStatus?.text = ("\(groupMembers.count) Participants")
             cell.onlineStatus?.font = AppFont.Light.size(12)
             let imageUrl = profileDetails?.image ?? ""
-            cell.userImage?.sd_setImage(with: ChatUtils.getUserImaeUrl(imageUrl: imageUrl),
-                                        placeholderImage: UIImage(named: "ic_groupPlaceHolder"))
-            
+            cell.userImage?.loadFlyImage(imageURL: imageUrl, name: getUserName(jid: profileDetails?.jid ?? "", name: profileDetails?.name ?? "", nickName: profileDetails?.nickName ?? "", contactType: profileDetails?.contactType ?? .local), chatType: profileDetails?.profileChatType ?? .groupChat, jid: profileDetails?.jid ?? "")
             let gestureRecognizer = UITapGestureRecognizer(target: self,
                                                            action: #selector(didTapImage(sender:)))
             cell.userImage?.isUserInteractionEnabled = true
@@ -823,13 +823,15 @@ extension GroupInfoViewController: ProfileEventsDelegate {
     
     func usersBlockedMeListFetched(jidList: [String]) {
         setupConfiguration()
-        refreshData()
+        self.tableView.reloadSections([0,1], with: .none)
+       // refreshData()
     }
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         if jid ==  groupID {
             self.profileDetails = profileDetails
-            refreshData()
+           // refreshData()
+            self.tableView.reloadSections([0,1], with: .none)
         }else{
             if let updatedUser = groupMembers.firstIndex(where: { detail in
                 detail.memberJid == jid
@@ -1283,7 +1285,7 @@ extension GroupInfoViewController : AvailableFeaturesDelegate {
             }
             
         }
-        refreshData()
+        tableView?.reloadSections([1,2,4,5,6], with: .none)
     }
 }
 

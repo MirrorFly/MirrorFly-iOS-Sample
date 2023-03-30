@@ -280,7 +280,7 @@
                                             <constraint firstAttribute="trailing" secondItem="kgO-lQ-HYX" secondAttribute="trailing" constant="2" id="x8p-d8-Mfq"/>
                                         </constraints>
                                     </view>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NsD-Ti-QZF" customClass="NicoProgressBar" customModule="NicoProgress">
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NsD-Ti-QZF">
                                         <rect key="frame" x="216" y="34" width="24" height="3"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -24,7 +24,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var playBtn: UIButton?
     @IBOutlet weak var recvTime: UILabel?
     @IBOutlet weak var playView: UIView?
-    @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    @IBOutlet weak var nicoProgressBar: UIView!
     @IBOutlet weak var favImageView: UIImageView?
     @IBOutlet weak var audioReceiverImage: UIImageView?
     @IBOutlet weak var playImage: UIImageView?
@@ -70,7 +70,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
     typealias AudioCallBack = (_ sliderValue : Float) -> Void
         var audioCallBack: AudioCallBack? = nil
     var isStarredMessagePage: Bool? = false
-    
+    var newProgressBar: ProgressBar!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -94,8 +94,9 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         slider?.minimumValue = 0
         slider?.maximumValue = 100
         audioReceiverImage?.image = UIImage(named: ImageConstant.ic_music)
-        nicoProgressBar?.primaryColor = .gray
-        nicoProgressBar?.secondaryColor = .clear
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: nicoProgressBar.frame.width, height: nicoProgressBar.frame.height))
+        newProgressBar.primaryColor = .white
+        newProgressBar.bgColor = .clear
     }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -141,7 +142,6 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
         var getProfileDetails = ChatManager.profileDetaisFor(jid: message?.chatUserJid ?? "")
         var senderProfileDetails = ChatManager.profileDetaisFor(jid: message?.senderUserJid ?? "")
         senderProfileImage?.makeRounded()
-        senderProfileImage?.sd_imageIndicator = SDWebImageActivityIndicator.gray
         senderToLabel?.text = message?.messageChatType == .singleChat ? "You" : getUserName(jid : getProfileDetails?.jid ?? "" ,name: getProfileDetails?.name ?? "", nickName: getProfileDetails?.nickName ?? "", contactType: getProfileDetails?.contactType ?? .local)
         senderTextLabel?.text = getUserName(jid : senderProfileDetails?.jid ?? "" ,name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local)
     
@@ -405,14 +405,14 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
     
     func startDownload() {
         DispatchQueue.main.async { [weak self] in
-            self?.download?.image = UIImage(named: ImageConstant.ic_download_cancel)
-            self?.playBtn?.isHidden = true
-            self?.downloadButton?.isHidden = false
-            self?.download?.isHidden = false
-            self?.playImage?.isHidden = true
-            self?.nicoProgressBar?.isHidden = false
-            self?.slider?.isUserInteractionEnabled = false
-            self?.nicoProgressBar?.transition(to: .indeterminate)
+            guard let self else {return}
+            self.download?.image = UIImage(named: ImageConstant.ic_download_cancel)
+            self.playBtn?.isHidden = true
+            self.downloadButton?.isHidden = false
+            self.download?.isHidden = false
+            self.playImage?.isHidden = true
+            self.nicoProgressBar.addSubview(self.newProgressBar)
+            self.slider?.isUserInteractionEnabled = false
         }
     }
     
@@ -421,7 +421,7 @@ class AudioReceiver: BaseTableViewCell, AVAudioPlayerDelegate {
             self?.download?.image = UIImage(named: ImageConstant.ic_download)
             self?.download?.isHidden = false
             self?.playImage?.isHidden = true
-            self?.nicoProgressBar?.isHidden = true
+            self?.newProgressBar.removeFromSuperview()
             self?.playBtn?.isHidden = true
             self?.downloadButton?.isHidden = false
             self?.slider?.isUserInteractionEnabled = false

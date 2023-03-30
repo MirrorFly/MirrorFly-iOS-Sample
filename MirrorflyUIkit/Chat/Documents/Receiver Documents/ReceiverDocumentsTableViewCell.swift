@@ -23,7 +23,7 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
     @IBOutlet weak var sentTimeLabel: UILabel?
     @IBOutlet weak var groupSenderNameLabel: GroupReceivedMessageHeader!
     @IBOutlet weak var groupSenderNameView: UIView?
-    @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    @IBOutlet weak var nicoProgressBar: UIView!
     @IBOutlet weak var fwdButton: UIButton?
 
     @IBOutlet weak var bubbleLeadingCons: NSLayoutConstraint?
@@ -69,7 +69,7 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
     @IBOutlet weak var replyImageWidthCons: NSLayoutConstraint?
     @IBOutlet weak var replyStackViewTrailingCons: NSLayoutConstraint?
     @IBOutlet weak var senderToLabel: UILabel?
-    
+    var newProgressBar: ProgressBar!
     var isUploading: Bool? = false
     
     var selectedForwardMessage: [SelectedMessages]? = []
@@ -94,8 +94,9 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
         bubbleImageView?.roundCorners(corners: [.topLeft, .bottomRight, .topRight], radius: 5.0)
         documenTypeView?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: 5.0)
         starredMessageView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
-        nicoProgressBar?.primaryColor = .gray
-        nicoProgressBar?.secondaryColor = .clear
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: nicoProgressBar.frame.width, height: nicoProgressBar.frame.height))
+        newProgressBar.primaryColor = .gray
+        newProgressBar.bgColor = .clear
         replyView?.backgroundColor = .white
     }
     
@@ -122,7 +123,6 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
     
         let timeStamp =  message?.messageSentTime
         senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
-        senderProfileImageView?.sd_imageIndicator = SDWebImageActivityIndicator.gray
         senderProfileImageView?.makeRounded()
         let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
         setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
@@ -352,32 +352,30 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
         case .not_downloaded:
             downloadImageView?.image = UIImage(named: ImageConstant.ic_download)
             downloadImageView?.isHidden = false
-            nicoProgressBar?.isHidden = true
+            newProgressBar.removeFromSuperview()
             downloadButton?.isHidden = false
             downloadView?.isHidden = false
         case .failed:
             downloadImageView?.image = UIImage(named: ImageConstant.ic_download)
             downloadImageView?.isHidden = false
-            nicoProgressBar?.isHidden = true
+            newProgressBar.removeFromSuperview()
             downloadButton?.isHidden = false
             downloadView?.isHidden = false
         case .downloading:
             downloadImageView?.image = UIImage(named: ImageConstant.ic_download_cancel)
             downloadButton?.isHidden = false
             downloadImageView?.isHidden = false
-            nicoProgressBar?.isHidden = false
-            nicoProgressBar?.transition(to: .indeterminate)
+            nicoProgressBar.addSubview(newProgressBar)
             downloadView?.isHidden = false
         case .downloaded:
             downloadImageView?.isHidden = true
             downloadButton?.isHidden = true
-            nicoProgressBar?.isHidden = true
-            downloadView?.isHidden = true
+            newProgressBar.removeFromSuperview()
         default:
             downloadImageView?.image = UIImage(named: ImageConstant.ic_download)
             downloadImageView?.isHidden = false
             downloadButton?.isHidden = false
-            nicoProgressBar?.isHidden = true
+            newProgressBar.removeFromSuperview()
             downloadView?.isHidden = false
         }
         
@@ -437,12 +435,12 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
     
     func startDownload() {
         DispatchQueue.main.async { [weak self] in
-            self?.downloadImageView?.image = UIImage(named: ImageConstant.ic_download_cancel)
-            self?.downloadImageView?.isHidden = false
-            self?.downloadButton?.isHidden = false
-            self?.nicoProgressBar?.isHidden = false
-            self?.downloadView?.isHidden = false
-            self?.nicoProgressBar?.transition(to: .indeterminate)
+            guard let self else {return}
+            self.downloadImageView?.image = UIImage(named: ImageConstant.ic_download_cancel)
+            self.downloadImageView?.isHidden = false
+            self.downloadButton?.isHidden = false
+            self.nicoProgressBar.addSubview(self.newProgressBar)
+            self.downloadView?.isHidden = false
         }
     }
     
@@ -450,7 +448,7 @@ class ReceiverDocumentsTableViewCell: BaseTableViewCell {
         DispatchQueue.main.async { [weak self] in
             self?.downloadImageView?.image = UIImage(named: ImageConstant.ic_download)
             self?.downloadImageView?.isHidden = false
-            self?.nicoProgressBar?.isHidden = true
+            self?.newProgressBar.removeFromSuperview()
             self?.downloadButton?.isHidden = false
             self?.downloadView?.isHidden = false
         }

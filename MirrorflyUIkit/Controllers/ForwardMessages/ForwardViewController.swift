@@ -318,7 +318,9 @@ class ForwardViewController: UIViewController {
         } else {
             getRecentChatList()
         }
-
+        if isLoadingInProgress && segmentSelectedIndex == 0 {
+            initalLoader()
+        }
         //forwardTableView?.reloadData()
         //handleEmptyViewWhileSearch()
         // temporarily show empty message by default
@@ -444,7 +446,8 @@ extension ForwardViewController : UITableViewDelegate, UITableViewDataSource {
                 cell.statusUILabel?.text = contactDetails.status
                 let hashcode = contactDetails.name.hashValue
                 let color = randomColors[abs(hashcode) % randomColors.count]
-                cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType), color: color ?? .gray, profile: contactDetails)
+                let profileImage = contactDetails.thumbImage.isEmpty ? contactDetails.image : contactDetails.thumbImage
+                cell.setImage(imageURL: profileImage, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.contactType), color: color ?? .gray, profile: contactDetails)
                 //cell.setImage(imageURL: contactDetails.image, name: getUserName(jid: contactDetails.jid, name: contactDetails.name, nickName: contactDetails.nickName, contactType: contactDetails.isItSavedContact ? .live : .unknown), color: color ?? .gray, chatType: contactDetails.profileChatType, jid: contactDetails.jid)
                 cell.checkBoxImageView?.image = selectedJids.contains(contactDetails.jid) ?  UIImage(named: ImageConstant.ic_checked) : UIImage(named: ImageConstant.ic_check_box)
                 cell.setTextColorWhileSearch(searchText: searchTerm, profileDetail: contactDetails)
@@ -1018,18 +1021,20 @@ func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         if profileDatas.count > 0, let profileData = profileDatas.first  {
             if isSearchEnabled == true {
                 if  let index = filteredContactList.firstIndex(of: profileData) {
-                    filteredContactList[index].image = profileDetails.image
+                    let profileImage = profileDetails.thumbImage.isEmpty ? profileDetails.image : profileDetails.thumbImage
+                    filteredContactList[index].image = profileImage
                     filteredContactList[index].name = profileDetails.name
                     filteredContactList[index].status = profileDetails.status
             }
             } else {
                     if  let index = allContactsList.firstIndex(of: profileData) {
-                        allContactsList[index].image = profileDetails.image
+                        let profileImage = profileDetails.thumbImage.isEmpty ? profileDetails.image : profileDetails.thumbImage
+                        allContactsList[index].image = profileImage
                         allContactsList[index].name = profileDetails.name
                         allContactsList[index].status = profileDetails.status
                 }
             }
-                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status, "thumbImage": profileDetails.thumbImage]
                 NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
                 forwardTableView?.reloadData()
             }
@@ -1047,7 +1052,7 @@ func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
                         getAllRecentChat.filter({$0.profileType == .groupChat})[index].profileName = profileDetails.name
                 }
             }
-                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status, "thumbImage": profileDetails.thumbImage]
                 NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
                 forwardTableView?.reloadData()
             }
@@ -1056,16 +1061,18 @@ func userUpdatedTheirProfile(for jid: String, profileDetails: ProfileDetails) {
         if profileDatas.count > 0, let profileData = profileDatas.first  {
             if isSearchEnabled == true {
                 if  let index = getRecentChat.firstIndex(of: profileData) {
-                    getRecentChat[index].profileImage = profileDetails.image
+                    let profileImage = profileDetails.thumbImage.isEmpty ? profileDetails.image : profileDetails.thumbImage
+                    getRecentChat[index].profileImage = profileImage
                     getRecentChat[index].profileName = profileDetails.name
                 }
             } else {
                     if  let index = getAllRecentChat.firstIndex(of: profileData) {
-                        getAllRecentChat[index].profileImage = profileDetails.image
+                        let profileImage = profileDetails.thumbImage.isEmpty ? profileDetails.image : profileDetails.thumbImage
+                        getAllRecentChat[index].profileImage = profileImage
                         getAllRecentChat[index].profileName = profileDetails.name
                 }
             }
-                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+                let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status, "thumbImage": profileDetails.thumbImage]
                 NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
                 forwardTableView?.reloadData()
             }
@@ -1430,7 +1437,7 @@ extension ForwardViewController : UIScrollViewDelegate {
 extension ForwardViewController {
     private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
         //showConfirmationAlert
-        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(getProfileDetails?.nickName ?? "")?" : "Block \(self.getProfileDetails?.nickName ?? "")?", preferredStyle: .alert)
+        let alertViewController = UIAlertController.init(title: nil , message: (getBlocked(jid: jid) ) ? "Unblock \(name)?" : "Block \(name)?", preferredStyle: .alert)
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
             self?.dismiss(animated: true,completion: nil)

@@ -58,6 +58,7 @@ class VerifyOTPViewModel : NSObject
             if isSuccess {
                 if  data["newLogin"] as? Bool ?? false{
                     CallLogManager().deleteCallLogs()
+                    ChatManager.deleteAllChatTags()
                     Utility.saveInPreference(key: "clLastPageNumber", value: "1")
                     Utility.saveInPreference(key: "clLastTotalPages", value: "0")
                     Utility.saveInPreference(key: "clLastTotalRecords", value: "0")

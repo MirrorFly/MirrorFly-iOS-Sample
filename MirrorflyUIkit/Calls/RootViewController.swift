@@ -25,6 +25,10 @@ import LocalAuthentication
 }
 
 extension RootViewController : CallManagerDelegate {
+    func onRemoteVideoTrackAdded(userId: String, track: RTCVideoTrack) {
+        
+    }
+    
     
     func onUserSpeaking(userId: String, audioLevel: Int) {
         callViewController?.onUserSpeaking(userId: userId, audioLevel: audioLevel)
@@ -72,11 +76,18 @@ extension RootViewController : CallManagerDelegate {
 
                 if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
                     let secondsDifference = Calendar.current.dateComponents([.minute, .second], from: FlyDefaults.appBackgroundTime, to: Date())
-                    if secondsDifference.second ?? 0 > 32 {
+                    if secondsDifference.second ?? 0 > 32 || secondsDifference.minute ?? 0 > 0 {
                         FlyDefaults.showAppLock = true
                     }
                 }
 
+                if let topController = UIApplication.shared.keyWindow?.rootViewController {
+                    if let presentedViewController = topController.presentedViewController {
+                        if presentedViewController.isKind(of: UIAlertController.self) {
+                            presentedViewController.dismiss(animated: false)
+                        }
+                    }
+                }
                 let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
                 if  let navigationController = window?.rootViewController as? UINavigationController {
                     if CallManager.getCallDirection() == .Incoming &&  (navigationController.presentedViewController?.isKind(of: CallViewController.self) == false || navigationController.presentedViewController == nil){
@@ -132,8 +143,8 @@ extension RootViewController : CallManagerDelegate {
         callViewController?.onCallAction(callAction: callAction, userId: userId)
     }
     
-    func onLocalVideoTrackAdded(userId: String) {
-        callViewController?.onLocalVideoTrackAdded(userId: userId)
+    func onLocalVideoTrackAdded(userId: String, videoTrack: RTCVideoTrack) {
+        callViewController?.onLocalVideoTrackAdded(userId: userId, videoTrack: videoTrack)
     }
     
     func onMuteStatusUpdated(muteEvent: MuteEvent, userId: String) {

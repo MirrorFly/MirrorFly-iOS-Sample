@@ -61,6 +61,26 @@ extension UIViewController {
             exit(0)
         }
     }
+    
+    func lightUpAndFadeOut(button: UIButton){
+        UIView.animate(withDuration: 1) {
+            button.backgroundColor = UIColor.gray
+        }
+        UIView.animate(withDuration: 1) {
+            button.alpha = 0
+        }
+        UIView.animate(withDuration: 0.5) {
+            button.alpha = 1
+            button.backgroundColor = UIColor.clear
+        }
+        
+    }
+    func addButtonRipple(button: UIButton) {
+        let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
+        colorAnimation.fromValue = UIColor.lightGray.cgColor
+        colorAnimation.duration = 0.5  // animation duration
+        button.layer.add(colorAnimation, forKey: "ColorPulse")
+    }
 }
 
 // For admin blocking and unblocking

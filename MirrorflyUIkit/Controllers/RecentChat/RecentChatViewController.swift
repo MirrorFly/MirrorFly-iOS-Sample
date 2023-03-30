@@ -51,6 +51,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var chatActionAudioCallButton: UIButton!
     @IBOutlet weak var chatActionVideoCallButton: UIButton!
     
+    @IBOutlet weak var chatTagsCollectionView: UICollectionView!
     var longPressCount = 0
     var isCellLongPressed: Bool? = false
     var getRecentChat: [RecentChat] = []
@@ -71,7 +72,11 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     private var messageTxt: String?
     var tappedProfile : ProfileDetails? = nil
     var getArchiveChat: [RecentChat] = []
-    var showArchivedChat = false
+    var showArchivedChat = false {
+        didSet{
+            chatTagsCollectionView.isHidden = self.getChatTags.isEmpty ? true : showArchivedChat
+        }
+    }
     
     var totalPages = 2
     var totalUsers = 0
@@ -93,10 +98,25 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     let backgroundQueue = DispatchQueue(label: "recent")
     
     var availableFeatures = ChatManager.getAvailableFeatures()
+    var getChatTags: [ChatTagsModel] = []
+    var selectedChatTag: ChatTagsModel! {
+        didSet {
+            if !isSearchEnabled {
+                if  selectedChatTag?.tagId == FlyDefaults.myJid || selectedChatTag == nil {
+                    getRecentChatList()
+                } else {
+                    getRecentChatForSelectedChatTag(chatTag: selectedChatTag)
+                }
+                recentChatTableView?.reloadData()
+            }
+        }
+    }
+    
+    var selectedTagIndex = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        readUnreadButton.isHidden = true
+        getAllChatTags()
         selectionCountLabel?.textColor = UIColor(named: "buttonColor")
         contactViewModel =  ContactViewModel()
         recentChatViewModel = RecentChatViewModel()
@@ -133,6 +153,16 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         }.disposed(by: disposeBag)
     }
     
+    func setupDelegate() {
+        chatManager.connectionDelegate = self
+        ContactManager.shared.profileDelegate = self
+        chatManager.messageEventsDelegate = self
+        FlyMessenger.shared.messageEventsDelegate = self
+        GroupManager.shared.groupDelegate = self
+        ChatManager.shared.adminBlockDelegate = self
+        chatManager.archiveEventsDelegate = self
+    }
+    
     @objc private func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             recentChatTableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height + (recentChatTableView?.rowHeight ?? 0.0) + 30, right: 0)
@@ -148,8 +178,9 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),
                                                name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-
+        getAllChatTags()
         getRecentChatList()
+        
         if ENABLE_CONTACT_SYNC{
             getContactList()
         }else{
@@ -166,13 +197,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        chatManager.connectionDelegate = self
-        ContactManager.shared.profileDelegate = self
-        chatManager.messageEventsDelegate = self
-        FlyMessenger.shared.messageEventsDelegate = self
-        GroupManager.shared.groupDelegate = self
-        ChatManager.shared.adminBlockDelegate = self
-        chatManager.archiveEventsDelegate = self
+        setupDelegate()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -490,6 +515,7 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func headerArchiveBackAction(_ sender: UIButton) {
         hideArchiveHeader()
         //recentChatTableView?.reloadData()
+        getAllChatTags()
         getRecentChatList()
     }
     
@@ -616,12 +642,15 @@ class RecentChatViewController: UIViewController, UIGestureRecognizerDelegate {
                     if isSuccess {
                         var flydata = data
                         if let jid = flydata.getData() as? String, let index = self?.getRecentChat.firstIndex(where: {$0.jid == jid}) {
-                            self?.getRecentChat.remove(at: index)
-                            self?.recentChatTableView?.reloadData()
-                            self?.getOverallUnreadCount()
+                            DispatchQueue.main.async {
+                                self?.getRecentChat.remove(at: index)
+                                self?.recentChatTableView?.reloadData()
+                                self?.getOverallUnreadCount()
+                            }
                         }
                     }
                 })
+                self?.updateChatTagsUserList(jids: self?.selectionRecentChatList.compactMap{$0.jid} ?? [])
                 self?.clearSelectedColor()
                 self?.showHideEmptyMessage()
                 self?.longPressCount = 0
@@ -1406,66 +1435,130 @@ extension RecentChatViewController {
     }
     
     func getRecentChatList() {
-        recentChatListBuilder?.changeLimit(limit:  getAllRecentChat.isEmpty ? 80 : ((getAllRecentChat.count < 40 ? 40 : getAllRecentChat.count)))
-        recentChatListBuilder?.loadRecentChatList(completionHandler: {  [weak self] isSuccess, error, data in
-            var result = data
-            if  let weakSelf = self, let recentChatList = result.getData() as? [RecentChat], isSuccess{
-                weakSelf.isRecentLoadingDone = false
-                if weakSelf.isSearchEnabled == false {
-                    weakSelf.clearChatList()
-                    weakSelf.getRecentChat = recentChatList
-                    weakSelf.getAllRecentChat = recentChatList
-                    weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
-                        weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
+        
+        if selectedChatTag?.tagId == FlyDefaults.myJid || selectedChatTag == nil {
+            
+            recentChatListBuilder?.changeLimit(limit:  getAllRecentChat.isEmpty ? 80 : ((getAllRecentChat.count < 40 ? 40 : getAllRecentChat.count)))
+            recentChatListBuilder?.loadRecentChatList(completionHandler: {  [weak self] isSuccess, error, data in
+                var result = data
+                if  let weakSelf = self, let recentChatList = result.getData() as? [RecentChat], isSuccess{
+                    weakSelf.isRecentLoadingDone = false
+                    if weakSelf.isSearchEnabled == false {
+                        weakSelf.clearChatList()
+                        weakSelf.getRecentChat = recentChatList
+                        weakSelf.getAllRecentChat = recentChatList
+                        weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
+                            weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
+                        }
+                    } else {
+                        weakSelf.getRecentChat = recentChatList
+                        weakSelf.getAllRecentChat = recentChatList
+
+                        weakSelf.getRecentChat = weakSelf.searchBar?.text?.trim().isEmpty ?? false ? weakSelf.getAllRecentChat : weakSelf.getAllRecentChat.filter({ recentChat -> Bool in
+                            let name = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName,contactType: recentChat.isItSavedContact ? .live : .unknown)
+                            return (name.range(of: weakSelf.searchBar?.text?.trim() ?? "", options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false)
+                        })
+                        let archiveSearchChats = weakSelf.getArchiveChat.filter({ recentChat -> Bool in
+                            let name = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName,contactType: recentChat.isItSavedContact ? .live : .unknown)
+                            return (name.range(of: weakSelf.searchBar?.text?.trim() ?? "", options: [.caseInsensitive, .diacriticInsensitive]) != nil && recentChat.isDeletedUser == false)
+                        })
+                        weakSelf.getRecentChat = (weakSelf.getRecentChat + archiveSearchChats).sorted { $0.lastMessageTime > $1.lastMessageTime }
+                    }
+                    DispatchQueue.main.async { [weak self] in
+                        if self?.isSearchEnabled == false {
+                            //self?.recentChatTableView?.reloadData()
+                            self?.showHideEmptyMessage()
+                        }
+                        self?.getOverallUnreadCount()
                     }
                 }
-                DispatchQueue.main.async { [weak self] in
-                    if self?.isSearchEnabled == false {
-                        //self?.recentChatTableView?.reloadData()
-                        self?.showHideEmptyMessage()
+                
+            })
+            
+            ChatManager.getArchivedChatList { [weak self] isSuccess, error, data in
+                if isSuccess {
+                    self?.getArchiveChat = data["data"] as? [RecentChat] ?? []
+                    self?.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
+                        self?.getArchiveChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
                     }
-                    self?.getOverallUnreadCount()
+                    self?.showHideEmptyMessage()
                 }
             }
             
-        })
-
-        ChatManager.getArchivedChatList { [weak self] isSuccess, error, data in
-            if isSuccess {
-                self?.getArchiveChat = data["data"] as? [RecentChat] ?? []
-                self?.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
-                    self?.getArchiveChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
-                }
-                self?.showHideEmptyMessage()
+            if showArchivedChat && getArchiveChat.count == 0 {
+                hideArchiveHeader()
             }
+            //executeOnMainThread {
+                self.recentChatTableView?.reloadData()
+            //}
+            
+            //        recentChatViewModel?.getRecentChatList(isBackground: true, completionHandler: { [weak self] recentChatList in
+            //            if let weakSelf = self {
+            //                if weakSelf.isSearchEnabled == false {
+            //                    weakSelf.clearChatList()
+            //                    weakSelf.getRecentChat = recentChatList ?? []
+            //                    weakSelf.getAllRecentChat = recentChatList ?? []
+            //                    weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
+            //                        weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
+            //                    }
+            //                  //weakSelf.getMessageForSearch()
+            //                }
+            //                DispatchQueue.main.async { [weak self] in
+            //                    if self?.isSearchEnabled == false {
+            //                        self?.recentChatTableView?.reloadData()
+            //                        self?.showHideEmptyMessage()
+            //                    }
+            //                    self?.getOverallUnreadCount()
+            //                }
+            //            }
+            //        })
+        } else {
+            self.selectedChatTag = getChatTags.first(where: {$0.tagId == self.selectedChatTag.tagId})
+            if self.selectedChatTag != nil {
+                if let index = getChatTags.firstIndex(of: selectedChatTag) {
+                    let indexPath = IndexPath(item: index, section: 0)
+                    if selectedTagIndex != indexPath.item {
+                        self.chatTagsCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                    }
+                }
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else {
+                        return
+                    }
+                    if self.isSearchEnabled == false {
+                        self.showHideEmptyMessage()
+                    }
+                    self.getOverallUnreadCount()
+                }
+            } else {
+                self.selectedChatTag = ChatTagsModel(tagId: FlyDefaults.myJid, tagname: "All", taginfo: "", isRecommentedTag: false, memberIdList: [], currentUserId: FlyDefaults.myJid)
+                self.getRecentChatList()
+                return
+            }
+            getRecentChatForSelectedChatTag(chatTag: selectedChatTag)
+            DispatchQueue.main.async { [weak self] in
+                if self?.isSearchEnabled == false {
+                    //self?.recentChatTableView?.reloadData()
+                    self?.showHideEmptyMessage()
+                }
+                self?.getOverallUnreadCount()
+            }
+            
+            ChatManager.getArchivedChatList { [weak self] isSuccess, error, data in
+                if isSuccess {
+                    self?.getArchiveChat = data["data"] as? [RecentChat] ?? []
+                    self?.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
+                        self?.getArchiveChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
+                    }
+                    self?.showHideEmptyMessage()
+                }
+            }
+            if showArchivedChat && getArchiveChat.count == 0 {
+                hideArchiveHeader()
+            }
+            
+            recentChatTableView?.reloadData()
         }
-
-        if showArchivedChat && getArchiveChat.count == 0 {
-            hideArchiveHeader()
-        }
-
-        recentChatTableView?.reloadData()
-        
-//        recentChatViewModel?.getRecentChatList(isBackground: true, completionHandler: { [weak self] recentChatList in
-//            if let weakSelf = self {
-//                if weakSelf.isSearchEnabled == false {
-//                    weakSelf.clearChatList()
-//                    weakSelf.getRecentChat = recentChatList ?? []
-//                    weakSelf.getAllRecentChat = recentChatList ?? []
-//                    weakSelf.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
-//                        weakSelf.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
-//                    }
-//                  //weakSelf.getMessageForSearch()
-//                }
-//                DispatchQueue.main.async { [weak self] in
-//                    if self?.isSearchEnabled == false {
-//                        self?.recentChatTableView?.reloadData()
-//                        self?.showHideEmptyMessage()
-//                    }
-//                    self?.getOverallUnreadCount()
-//                }
-//            }
-//        })
     }
     
     func getLastMesssage() -> [ChatMessage]? {
@@ -1833,13 +1926,15 @@ extension RecentChatViewController : ProfileEventsDelegate {
         if let index = showArchivedChat ? getArchiveChat.firstIndex(where: { pd in pd.jid == jid }) : getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
             if showArchivedChat {
                 getArchiveChat[index].profileImage = profileDetails?.image
+                getArchiveChat[index].profileThumbImage = profileDetails?.thumbImage
                 getArchiveChat[index].profileName = profileDetails?.name ?? ""
             } else {
                 getRecentChat[index].profileImage = profileDetails?.image
+                getRecentChat[index].profileThumbImage = profileDetails?.thumbImage
                 getRecentChat[index].profileName = profileDetails?.name ?? ""
             }
             print("userUpdatedTheirProfile currentIndex \(currentIndex)")
-            let profile = ["jid": profileDetails?.jid, "name": profileDetails?.name, "image": profileDetails?.image, "status": profileDetails?.status]
+            let profile = ["jid": profileDetails?.jid, "name": profileDetails?.name, "image": profileDetails?.image, "status": profileDetails?.status, "thumbImage": profileDetails?.thumbImage]
             NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate),
                                             object: nil,userInfo: profile as [AnyHashable: Any])
             NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState),
@@ -1928,13 +2023,15 @@ extension RecentChatViewController : ProfileEventsDelegate {
         if let index = showArchivedChat ? getArchiveChat.firstIndex(where: { pd in pd.jid == jid }) : getRecentChat.firstIndex(where: { pd in pd.jid == jid }) {
             if showArchivedChat {
                 getArchiveChat[index].profileImage = profileDetails.image
+                getArchiveChat[index].profileThumbImage =  profileDetails.thumbImage
                 getArchiveChat[index].profileName = profileDetails.name
             } else {
                 getRecentChat[index].profileImage = profileDetails.image
+                getRecentChat[index].profileThumbImage = profileDetails.thumbImage
                 getRecentChat[index].profileName = profileDetails.name
             }
             print("userUpdatedTheirProfile currentIndex \(currentIndex)")
-            let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+            let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status, "thumbImage": profileDetails.thumbImage]
             NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil,
                                             userInfo: profile as [AnyHashable : Any])
             NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil,
@@ -2059,12 +2156,14 @@ extension RecentChatViewController : GroupEventsDelegate {
                 let group = self?.recentChatViewModel?.getGroupDetails(groupJid: groupJid)
                 if self?.showArchivedChat ?? false {
                     self?.getArchiveChat[index].profileImage = group?.image
+                    self?.getArchiveChat[index].profileThumbImage = group?.thumbImage
                     self?.getArchiveChat[index].profileName = group?.name ?? ""
                 } else {
                     self?.getRecentChat[index].profileImage = group?.image
+                    self?.getRecentChat[index].profileThumbImage = group?.thumbImage
                     self?.getRecentChat[index].profileName = group?.name ?? ""
                 }
-                let groupProfile = ["jid": group?.jid, "name": group?.name, "image": group?.image, "status": group?.status]
+                let groupProfile = ["jid": group?.jid, "name": group?.name, "image": group?.image, "status": group?.status, "thumbImage": group?.thumbImage]
                 
                 NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil,
                                                 userInfo: groupProfile as [AnyHashable : Any])
@@ -2228,7 +2327,7 @@ extension RecentChatViewController : UIScrollViewDelegate {
                     print("#fetch Pagination Done")
                     return
                 }
-                recentChatTableView?.tableFooterView = createTableFooterView()
+                //recentChatTableView?.tableFooterView = createTableFooterView()
                 if !isLoadingInProgress{
                     isLoadingInProgress = true
                     getUsersList(pageNo: searchTerm.isEmpty ? nextPage : searchNextPage, pageSize: 20, searchTerm: searchTerm)
@@ -2342,7 +2441,12 @@ extension RecentChatViewController : UIScrollViewDelegate {
             return
         }
         resetParams()
-        recentChatTableView?.reloadData()
+        DispatchQueue.main.async {
+            [weak self] in
+            guard let self else{return}
+            self.recentChatTableView?.reloadData()
+        }
+        
         getUsersList(pageNo: 1, pageSize: 20, searchTerm: searchTerm)
     }
     
@@ -2436,6 +2540,7 @@ extension RecentChatViewController: ArchiveEventsDelegate {
     //handle when chat archived/Unarchived
     func updateArchiveUnArchiveChats(toUser: String, archiveStatus: Bool) {
         executeOnMainThread { [ weak self] in
+            self?.getAllChatTags()
             self?.getRecentChatList()
         }
     }
@@ -2470,6 +2575,105 @@ extension RecentChatViewController : AvailableFeaturesDelegate {
                 MainTabBarController.tabBarDelegagte?.resetTabs()
             }
             
+        }
+    }
+}
+
+// CollectionViewDelegate
+extension RecentChatViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return getChatTags.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let chatTag = getChatTags[indexPath.item]
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RecentTagsCollectionCell", for: indexPath) as! RecentTagsCollectionCell
+        cell.setupCell(title: chatTag.tagname ?? "", isSelected: (selectedChatTag?.tagId == chatTag.tagId ||  selectedChatTag == nil && indexPath.item == 0) ? true : false)
+        return cell
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedChatTag = getChatTags[indexPath.item]
+        selectedTagIndex = indexPath.item
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        self.chatTagsCollectionView.reloadData()
+    }
+    
+    func getAllChatTags() {
+        ChatManager.getChatTagdata(completionHandler: { isSuccess, error, data in
+            if isSuccess {
+                var flyData = data
+                if let chatTags = flyData.getData() as? [ChatTagsModel]{
+                    self.getChatTags = chatTags.filter({!$0.isRecommentedTag})
+                    self.chatTagsCollectionView.isHidden = self.getChatTags.isEmpty
+                    if self.getChatTags.count > 0 {
+                        //Add Default tag "All"
+                        var chatTagModel = ChatTagsModel()
+                        chatTagModel.tagId = FlyDefaults.myJid
+                        chatTagModel.currentUserId = FlyDefaults.myJid
+                        chatTagModel.isRecommentedTag = false
+                        chatTagModel.tagname = "All"
+                        chatTagModel.memberIdList = []
+                        self.getChatTags.insert(chatTagModel, at: 0)
+                        self.chatTagsCollectionView.isHidden = self.showArchivedChat ? true : false
+                    }
+                    self.chatTagsCollectionView.reloadData()
+                    self.recentChatTableView?.reloadData()
+                }
+            }
+        })
+    }
+    
+    func getRecentChatForSelectedChatTag(chatTag: ChatTagsModel?) {
+        if !isSearchEnabled {
+            guard let chatTag else {return}
+            getRecentChat.removeAll()
+            for memberID in chatTag.memberIdList {
+                if let member = ChatManager.getRecentChatOf(jid: memberID) {
+                    if !member.isChatArchived {
+                        getRecentChat.append(member)
+                    }
+                    getRecentChat = getRecentChat.sorted(by: { $0.lastMessageTime < $1.lastMessageTime}).reversed()
+                    
+                    self.selectionRecentChatList.enumerated().forEach { (index,selectedRecentChat) in
+                        self.getRecentChat.filter({$0.jid == selectedRecentChat.jid}).first?.isSelected = selectedRecentChat.isSelected
+                    }
+                    
+                }
+            }
+            
+            DispatchQueue.main.async { [weak self] in
+                if self?.isSearchEnabled == false {
+                    self?.showHideEmptyMessage()
+                }
+                self?.getOverallUnreadCount()
+            }
+        }
+    }
+    
+    func updateChatTagsUserList(jids: [String]) {
+        
+        if getChatTags.count > 0 {
+            
+                for chatTag in getChatTags {
+                    
+                   if chatTag.tagId != FlyDefaults.myJid {
+                       
+                       let removeSet = Set(jids)
+                      
+                        var chatTagModel = ChatTagsModel()
+                        chatTagModel = chatTag
+                        chatTagModel.memberIdList = chatTag.memberIdList.filter { !removeSet.contains($0) }
+                        
+                        ChatManager.createOrUpdateChatTagdata(chatTag: chatTagModel) { isSuccess, error, data in
+                            
+                        }
+                    }
+                }
         }
     }
 }

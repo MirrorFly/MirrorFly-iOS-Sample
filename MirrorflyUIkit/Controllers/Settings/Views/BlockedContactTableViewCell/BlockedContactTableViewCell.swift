@@ -39,8 +39,8 @@ class BlockedContactTableViewCell: UITableViewCell {
         let name = FlyUtils.getUserName(jid: contact.jid, name: contact.name, nickName: contact.nickName, contactType: contact.contactType)
         userNameLabel?.text = name
         userContactLabel?.text = contact.mobileNumber
-
-        profileImageView?.loadFlyImage(imageURL: contact.image, name: name, jid: contact.jid, validateBlock: false)
+        let profileImage = contact.thumbImage.isEmpty ? contact.image : contact.thumbImage
+        profileImageView?.loadFlyImage(imageURL: profileImage, name: name, jid: contact.jid, validateBlock: false)
     }
     
 }

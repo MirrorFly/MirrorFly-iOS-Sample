@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wST-Oy-5V5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wST-Oy-5V5">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -46,11 +46,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="165" height="147"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <view contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZHb-6J-DJK" userLabel="videoView" customClass="RTCMTLVideoView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="165" height="147"/>
-                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                </view>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="c64-Ci-FUB" userLabel="profileImage">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_profile_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="c64-Ci-FUB" userLabel="videoBaseView">
                                                     <rect key="frame" x="0.0" y="0.0" width="165" height="147"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </imageView>
@@ -119,23 +115,28 @@
                                                         <constraint firstItem="CKM-oH-Tq5" firstAttribute="centerY" secondItem="mbE-nk-Z9r" secondAttribute="centerY" id="g27-1G-AAY"/>
                                                     </constraints>
                                                 </view>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IconVideoOffHighlighted" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v84-QC-Moh">
+                                                    <rect key="frame" x="62.666666666666657" y="53.666666666666657" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="S6J-8M-V65"/>
+                                                        <constraint firstAttribute="height" constant="40" id="spY-wV-I9P"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="ZHb-6J-DJK" firstAttribute="top" secondItem="UeS-hi-0pM" secondAttribute="top" id="0nH-Ff-XY4"/>
-                                                <constraint firstAttribute="bottom" secondItem="ZHb-6J-DJK" secondAttribute="bottom" id="1Sd-8p-9hw"/>
+                                                <constraint firstItem="c64-Ci-FUB" firstAttribute="leading" secondItem="UeS-hi-0pM" secondAttribute="leading" id="0Vv-DH-LPa"/>
                                                 <constraint firstItem="mbE-nk-Z9r" firstAttribute="leading" secondItem="UeS-hi-0pM" secondAttribute="leading" id="ETg-lm-Gbn"/>
                                                 <constraint firstItem="mbE-nk-Z9r" firstAttribute="top" secondItem="UeS-hi-0pM" secondAttribute="top" id="H19-RO-ZTD"/>
-                                                <constraint firstAttribute="bottom" secondItem="c64-Ci-FUB" secondAttribute="bottom" id="ILe-7t-AKH"/>
-                                                <constraint firstItem="ZHb-6J-DJK" firstAttribute="leading" secondItem="UeS-hi-0pM" secondAttribute="leading" id="L8u-II-44Y"/>
-                                                <constraint firstAttribute="trailing" secondItem="ZHb-6J-DJK" secondAttribute="trailing" id="Ofv-fS-q6J"/>
-                                                <constraint firstItem="c64-Ci-FUB" firstAttribute="top" secondItem="UeS-hi-0pM" secondAttribute="top" id="Pre-JH-J6i"/>
+                                                <constraint firstAttribute="bottom" secondItem="c64-Ci-FUB" secondAttribute="bottom" id="Mr7-Kj-tc2"/>
+                                                <constraint firstAttribute="trailing" secondItem="c64-Ci-FUB" secondAttribute="trailing" id="Peo-2x-HWZ"/>
+                                                <constraint firstItem="v84-QC-Moh" firstAttribute="centerX" secondItem="UeS-hi-0pM" secondAttribute="centerX" id="RZh-AZ-Q03"/>
                                                 <constraint firstItem="jKi-aC-Jag" firstAttribute="top" secondItem="UeS-hi-0pM" secondAttribute="top" id="Rah-fb-t3M"/>
                                                 <constraint firstAttribute="trailing" secondItem="mbE-nk-Z9r" secondAttribute="trailing" id="TND-2p-nfh"/>
                                                 <constraint firstAttribute="bottom" secondItem="jKi-aC-Jag" secondAttribute="bottom" id="Uny-wt-aW9"/>
-                                                <constraint firstAttribute="trailing" secondItem="c64-Ci-FUB" secondAttribute="trailing" id="bOK-N6-cRc"/>
+                                                <constraint firstItem="v84-QC-Moh" firstAttribute="centerY" secondItem="UeS-hi-0pM" secondAttribute="centerY" id="c4w-KD-9VG"/>
                                                 <constraint firstAttribute="trailing" secondItem="jKi-aC-Jag" secondAttribute="trailing" id="d9z-WU-WSW"/>
                                                 <constraint firstAttribute="bottom" secondItem="mbE-nk-Z9r" secondAttribute="bottom" id="fTz-wF-R9x"/>
-                                                <constraint firstItem="c64-Ci-FUB" firstAttribute="leading" secondItem="UeS-hi-0pM" secondAttribute="leading" id="ix1-mb-s8W"/>
+                                                <constraint firstItem="c64-Ci-FUB" firstAttribute="top" secondItem="UeS-hi-0pM" secondAttribute="top" id="rOw-hX-DSt"/>
                                                 <constraint firstItem="jKi-aC-Jag" firstAttribute="leading" secondItem="UeS-hi-0pM" secondAttribute="leading" id="usc-3G-rCt"/>
                                             </constraints>
                                         </collectionViewCellContentView>
@@ -145,14 +146,10 @@
                                             <outlet property="callActionsView" destination="jKi-aC-Jag" id="LNF-my-MEe"/>
                                             <outlet property="contentVIew" destination="UeS-hi-0pM" id="eqz-Dy-nvE"/>
                                             <outlet property="foreGroundView" destination="mbE-nk-Z9r" id="uRN-1e-ImA"/>
-                                            <outlet property="profileImage" destination="c64-Ci-FUB" id="kQv-Li-nxk"/>
-                                            <outlet property="profileImageLeading" destination="ix1-mb-s8W" id="bhO-EB-ndr"/>
-                                            <outlet property="profileImageTrailing" destination="bOK-N6-cRc" id="6Yb-96-caW"/>
                                             <outlet property="profileName" destination="9WR-bD-e10" id="nuo-gG-QUw"/>
                                             <outlet property="statusLable" destination="CKM-oH-Tq5" id="lbY-3l-5yl"/>
-                                            <outlet property="videoView" destination="ZHb-6J-DJK" id="nVw-6K-V11"/>
-                                            <outlet property="videoViewLeading" destination="L8u-II-44Y" id="T68-o3-9ze"/>
-                                            <outlet property="videoViewTrailing" destination="Ofv-fS-q6J" id="MJQ-AR-Ng8"/>
+                                            <outlet property="videoBaseView" destination="c64-Ci-FUB" id="ubm-dV-Nwv"/>
+                                            <outlet property="videoMuteImage" destination="v84-QC-Moh" id="rhF-C1-0kc"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -321,7 +318,7 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CCFGroupCallLogListCell" rowHeight="91" id="GDO-7b-Ain" customClass="CCFGroupCallLogListCell" customModule="Mirrorfly" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.666666030883789" width="414" height="91"/>
+                                        <rect key="frame" x="0.0" y="50" width="414" height="91"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GDO-7b-Ain" id="VGS-ni-jYP">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="91"/>
@@ -509,7 +506,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="IconVideoOffHighlighted" width="69.333335876464844" height="69.333335876464844"/>
         <image name="backArrow" width="19.333333969116211" height="13.666666984558105"/>
+        <image name="ic_profile_placeholder" width="139" height="139"/>
         <image name="mic.slash.fill" catalog="system" width="108" height="128"/>
         <image name="nameBG" width="187" height="86"/>
         <systemColor name="systemBackgroundColor">

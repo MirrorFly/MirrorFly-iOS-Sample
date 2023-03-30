@@ -33,6 +33,10 @@ protocol CallViewControllerDelegate {
     func onSwitchCamera()
 }
 
+protocol CallDismissDelegate {
+    func onCallControllerDismissed()
+}
+
 class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate, UIAdaptivePresentationControllerDelegate{
     @IBOutlet var outgoingCallView: OutGoingCallXib!
     @IBOutlet var collectionView: UICollectionView!
@@ -43,6 +47,8 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     var userName = String()
     var callUsersProfiles = NSMutableArray()
     var delegate : CallViewControllerDelegate?
+    static var dismissDelegate : CallDismissDelegate?
+    var dismissCalled = false
     var isAudioMuted = false {
         willSet {
             members.last?.isAudioMuted = newValue
@@ -97,6 +103,9 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     var isLocalViewSwitched = false
     var groupId : String = ""
     var switchVideoViews = PublishSubject<Bool>()
+    var localRenderer = RTCMTLVideoView(frame: .zero)
+    var remoteRenderer = RTCMTLVideoView(frame: .zero)
+    var remoteImage = emptyString()
     var callHoldLabel = UILabel()
     
     override func viewDidLoad() {
@@ -114,10 +123,9 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         updateUI()
         switchVideoViews.throttle(.milliseconds(200), latest: false ,scheduler: MainScheduler.instance).subscribe { [weak self] event in
             if CallManager.isOneToOneCall() && CallManager.isCallConnected(){
-                self?.removeOneToOneCallTracks()
                 self?.isLocalViewSwitched = !(self?.isLocalViewSwitched ?? false)
                 self?.oneToOneVideoViewTransforms()
-                self?.addAndRenderOneToOneCallTracks()
+                self?.switchLoaclandRemoteViews()
             }
         }
     }
@@ -171,8 +179,8 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         outgoingCallView.imageTop.constant = 8
         getContactNames()
         outgoingCallView.backBtn.addTarget(self, action: #selector(backAction(sender:)), for: .touchUpInside)
-        outgoingCallView.localVideoView.isHidden = true
-        outgoingCallView.remoteVideoView.isHidden = true
+        outgoingCallView.localUserVideoView.isHidden = true
+        outgoingCallView.remoteUserVideoView.isHidden = true
         outgoingCallView.cameraButton.isHidden = true
         outgoingCallView.OutGoingCallBG.isHidden = false
         outgoingCallView.OutGoingCallBG.image = UIImage(named: "call_bg")
@@ -182,8 +190,9 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     func showOneToOneVideoCallUI() {
         print("#call showOneToOneVideoCallUI")
-        outgoingCallView.localVideoView.isHidden = false
-        outgoingCallView.remoteVideoView.isHidden = false
+        
+        outgoingCallView.localUserVideoView.isHidden = false
+        outgoingCallView.remoteUserVideoView.isHidden = false
         collectionView.isHidden = CallManager.isOneToOneCall()
         outgoingCallView.outGoingAudioCallImageView.isHidden = true
         outgoingCallView.cameraButton.isHidden = false
@@ -208,13 +217,14 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         isCallConversionRequestedByMe = false
         outgoingCallView.localVideoViewHeight.constant =  160
         outgoingCallView.localVideoViewWidth.constant =  112
+        self.localRenderer.frame = CGRect(x: 0, y: 0, width: 160, height: 112)
         outgoingCallView.localVideoViewTrailing.constant = -16
         outgoingCallView.localVideoViewBottom.constant = -(outgoingCallView.callActionsViewHeight.constant + 16)
-        outgoingCallView.localVideoView.layer.cornerRadius = 12
-        outgoingCallView.localVideoView.layer.masksToBounds = true
+        outgoingCallView.localUserVideoView.layer.cornerRadius = 12
+        outgoingCallView.localUserVideoView.layer.masksToBounds = true
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(CallViewController.draggedView(_:)))
-        outgoingCallView.localVideoView.isUserInteractionEnabled = true
-        outgoingCallView.localVideoView.addGestureRecognizer(panGesture)
+        outgoingCallView.localUserVideoView.isUserInteractionEnabled = true
+        outgoingCallView.localUserVideoView.addGestureRecognizer(panGesture)
         outgoingCallView.timerLable.isHidden = false
         if CallManager.isCallConnected() {
             getContactNames()
@@ -228,13 +238,13 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             self?.view?.layoutIfNeeded()
         }
         let tap = UITapGestureRecognizer(target: self, action: #selector(smallVideoTileTapped(_:)))
-        outgoingCallView.localVideoView?.addGestureRecognizer(tap)
+        outgoingCallView.localUserVideoView?.addGestureRecognizer(tap)
         
     }
     
     @objc func draggedView(_ sender:UIPanGestureRecognizer){
         
-        let localView = outgoingCallView.localVideoView!
+        let localView = outgoingCallView.localUserVideoView!
         let translation = sender.translation(in: view)
         
         switch sender.state {
@@ -280,8 +290,8 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     
     func resetLocalVideCallUI() {
-        outgoingCallView?.localVideoView.layer.cornerRadius = 0
-        outgoingCallView?.localVideoView.layer.masksToBounds = true
+        outgoingCallView?.localUserVideoView.layer.cornerRadius = 0
+        outgoingCallView?.localUserVideoView.layer.masksToBounds = true
         outgoingCallView?.localVideoViewHeight.constant = getControllerViewHeight()
         outgoingCallView?.localVideoViewWidth.constant =  getControllerViewWidth()
         outgoingCallView?.localVideoViewTrailing.constant = 0
@@ -362,8 +372,8 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if !isOnCall{
             myCallStatus = .calling
         }
-        outgoingCallView?.localVideoView.removeGestureRecognizer(panGesture)
-        print("#call updateUI")
+        outgoingCallView?.localUserVideoView.removeGestureRecognizer(panGesture)
+        print("#call updateUI", CallManager.getAllCallUsersList())
         //enableButtons(buttons: outgoingCallView?.audioButton, isEnable: false)
         updateActionsUI()
         
@@ -385,10 +395,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
                 showOneToOneAudioCallUI()
             } else {
                 showOneToOneVideoCallUI()
-                renderLocalVideoView1to1()
                 if CallManager.isCallConnected() {
-                    renderRemoteVideoView1to1()
-                    renderLocalVideoView1to1()
                     showConnectedVideoCallOneToOneUI()
                 }
                 outgoingCallView?.videoButton.setImage(UIImage(named: "VideoEnabled" ), for: .normal)
@@ -396,7 +403,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         } else {
             for member in members {
                 if member.callStatus == .connected && CallManager.getCallType() == .Video {
-                    _ = requestForVideoTrack(jid: member.jid)
+                   // _ = requestForVideoTrack(jid: member.jid)
                 }
             }
             showGroupCallUI()
@@ -404,7 +411,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         if CallManager.getCallType() == .Video{
             outgoingCallView?.videoButton.setImage(UIImage(named: "VideoEnabled" ), for: .normal)
             if CallManager.getCallDirection() == .Incoming {
-                _ = requestForVideoTrack()
+               // _ = requestForVideoTrack()
             }
         }
         setMuteStatusText()
@@ -427,6 +434,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         ChatManager.shared.connectionDelegate = self
         CallManager.delegate = self
         AudioManager.shared().audioManagerDelegate = self
+        dismissCalled = false
         if CallManager.isOneToOneCall(){
                 outgoingCallView.OutgoingRingingStatusLabel.text = getStatusOfOneToOneCall()
         }else{
@@ -434,9 +442,9 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         }
        
         if isOnCall {
-            outgoingCallView.localVideoView.addGestureRecognizer(panGesture)
+            outgoingCallView.localUserVideoView.addGestureRecognizer(panGesture)
         }else{
-            outgoingCallView.localVideoView.removeGestureRecognizer(panGesture)
+            outgoingCallView.localUserVideoView.removeGestureRecognizer(panGesture)
         }
         setTopViewsHeight()
         outgoingCallView?.addParticipantBtn.addTarget(self, action: #selector(addParticipant(sender:)), for: .touchUpInside)
@@ -472,7 +480,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
         } else {
             for member in members {
                 if member.callStatus == .connected && CallManager.getCallType() == .Video {
-                    _ = requestForVideoTrack(jid: member.jid)
+                   // _ = requestForVideoTrack(jid: member.jid)
                 }
             }
             if isOnCall{
@@ -539,7 +547,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     
     func showHideCallAgainView(show: Bool,status: String) {
         if let outgoingCallView = outgoingCallView{
-            outgoingCallView.localVideoView.removeGestureRecognizer(panGesture)
+            outgoingCallView.localUserVideoView.removeGestureRecognizer(panGesture)
             outgoingCallView.OutgoingRingingStatusLabel.isHidden = status.isEmpty
             outgoingCallView.OutgoingRingingStatusLabel.text = CallManager.isCallConnected() ? CallStatus.connected.rawValue : status
             if show {
@@ -609,6 +617,10 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             clearViews()
             showHideCallAgainView(show: false, status: "Trying to connect")
             dismiss(animated: true, completion: nil)
+            if dismissCalled == false {
+                CallViewController.dismissDelegate?.onCallControllerDismissed()
+            }
+            dismissCalled = true
         }
     }
     
@@ -641,7 +653,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             }else{
                 if let myCell = collectionView?.cellForItem(at: IndexPath(item: findIndexOfUser(jid: FlyDefaults.myJid) ?? members.count - 1, section: 0)) as? GroupCallCell{
                     DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(600)) {
-                        myCell.videoView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                        myCell.videoBaseView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                     }
                 }
             }
@@ -653,7 +665,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             }else{
                 if let myCell = collectionView?.cellForItem(at: IndexPath(item: findIndexOfUser(jid: FlyDefaults.myJid) ?? members.count - 1, section: 0)) as? GroupCallCell{
                     DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(600)) {
-                        myCell.videoView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+                        myCell.videoBaseView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
                     }
                 }
             }
@@ -673,7 +685,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     @objc func SingleTapGesturTapped(_ sender: UITapGestureRecognizer) {
         // if members.count == 2 {
         
-        print(self.outgoingCallView.localVideoView.frame.origin.y)
+        print(self.outgoingCallView.localUserVideoView.frame.origin.y)
         
         if isTapped == false{
             isTapped = true
@@ -695,7 +707,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             let bottom = CGAffineTransform(translationX: 0, y: 0)
             
             let viewMaxY = safeAreaHeight - 172
-            if let localView = self.outgoingCallView.localVideoView{
+            if let localView = self.outgoingCallView.localUserVideoView{
                 if localView.frame.maxY > viewMaxY {
                     let gesture = UIPanGestureRecognizer()
                     gesture.state = .ended
@@ -722,22 +734,22 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             }, completion: nil)
         }
         
-        if self.outgoingCallView.localVideoView.frame.origin.y == 480.0 ||  self.outgoingCallView.localVideoView.frame.origin.y == 280.0 || self.outgoingCallView.localVideoView.frame.origin.y == 320.0{
+        if self.outgoingCallView.localUserVideoView.frame.origin.y == 480.0 ||  self.outgoingCallView.localUserVideoView.frame.origin.y == 280.0 || self.outgoingCallView.localUserVideoView.frame.origin.y == 320.0{
             if isTapped == true{
                 let bottom = CGAffineTransform(translationX: 0, y: 160)
                 UIView.animate(withDuration: 0.4, delay: 0.0, options: [], animations: {
-                    self.outgoingCallView.localVideoView.transform = bottom
+                    self.outgoingCallView.localUserVideoView.transform = bottom
                     self.callHoldLabel.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                 }, completion: nil)
             }else{
                 let top = CGAffineTransform(translationX: 0, y: -40)
                 UIView.animate(withDuration: 0.4, delay: 0.0, options: [], animations: {
-                    self.outgoingCallView.localVideoView.transform = top
+                    self.outgoingCallView.localUserVideoView.transform = top
                     self.callHoldLabel.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                 }, completion: nil)
             }
             
-            print(self.outgoingCallView.localVideoView.frame.origin.y)
+            print(self.outgoingCallView.localUserVideoView.frame.origin.y)
             
         }
         
@@ -873,8 +885,8 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
             outgoingCallView.cameraButton.isHidden = isVideoMuted
         }
         outgoingCallView.OutgoingRingingStatusLabel.isHidden = false
-        outgoingCallView?.localVideoView.isHidden = true
-        outgoingCallView?.remoteVideoView.isHidden = true
+        outgoingCallView?.localUserVideoView.isHidden = true
+        outgoingCallView?.remoteUserVideoView.isHidden = true
         getContactNames()
         outgoingCallView?.audioMuteStackView.isHidden = true
         outgoingCallView.OutgoingRingingStatusLabel.text = CallManager.isCallConnected() ? CallStatus.connected.rawValue : getCurrentCallStatusAsString()
@@ -884,7 +896,7 @@ class CallViewController: UIViewController ,AVPictureInPictureControllerDelegate
     func updateOneToOneVideoCallUI() {
         showOneToOneVideoCallUI()
         outgoingCallView.timerLable.isHidden = false
-        showConnectedVideoCallOneToOneUI()
+//        showConnectedVideoCallOneToOneUI()
     }
     
     func setMuteStatusText() {
@@ -1089,22 +1101,8 @@ extension CallViewController : UICollectionViewDelegate , UICollectionViewDataSo
             _ = updateCallStatus(jid: member.jid, status: .onHold)
         }
         groupCell.contentView.backgroundColor = UIColor(hexString: member.color)
-        groupCell.profileImage.isHidden = false
-        groupCell.profileImage.contentMode = .scaleAspectFill
+        groupCell.videoMuteImage.isHidden = !member.isVideoMuted
         if callStatus == .connected {
-            if CallManager.getCallType() == .Video ||  (member.videoTrack != nil && !member.isVideoMuted){
-                groupCell.videoView.isHidden = member.isVideoMuted
-                groupCell.profileImage.isHidden = !member.isVideoMuted
-                releaseTrackViewBy(member: member)
-                member.videoTrackView = groupCell.videoView
-                if let memberTrack = member.videoTrack {
-                    renderVideoView(view: member.videoTrackView, track: memberTrack)
-                }
-            } else{
-                groupCell.videoView.renderFrame(nil)
-                groupCell.videoView.isHidden = true
-                groupCell.profileImage.isHidden = false
-            }
             groupCell.audioIconImageView.isHidden = !member.isAudioMuted
             groupCell.foreGroundView.isHidden = true
             groupCell.callActionsView.isHidden = false
@@ -1118,22 +1116,22 @@ extension CallViewController : UICollectionViewDelegate , UICollectionViewDataSo
             groupCell.audioIconImageView.isHidden = true
             print("my status allTpe: \(CallManager.getCallType()) isVideoMuted: \(member.isVideoMuted) videoTrack \(member.videoTrack != nil)")
             if  CallManager.getCallType() == .Video ||  (member.videoTrack != nil && !member.isVideoMuted){
-                groupCell.videoView.isHidden = member.isVideoMuted
-                groupCell.profileImage.isHidden = !member.isVideoMuted
+//                groupCell.videoBaseView.isHidden = member.isVideoMuted
+//                groupCell.profileImage.isHidden = !member.isVideoMuted
                 if isBackCamera {
-                    groupCell.videoView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                    groupCell.videoBaseView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                 }else {
-                    groupCell.videoView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+                    groupCell.videoBaseView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
                 }
             } else {
-                groupCell.profileImage.isHidden = false
+               // groupCell.profileImage.isHidden = false
             }
         } else {
             groupCell.profileName.text = member.name
-            groupCell.videoView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+            groupCell.videoBaseView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         }
         if (isLastRow  && member.callStatus == .reconnecting) || (!isLastRow && member.callStatus != .connected) || member.callStatus == .onHold || (isLastRow && CallManager.isCallOnHold()){
-            groupCell.profileImage.isHidden = false
+            //groupCell.profileImage.isHidden = false
             groupCell.foreGroundView.isHidden = false
             groupCell.callActionsView.isHidden = true
             groupCell.statusLable.text = member.callStatus.rawValue.capitalized
@@ -1144,75 +1142,58 @@ extension CallViewController : UICollectionViewDelegate , UICollectionViewDataSo
             groupCell.profileName.font = AppFont.Regular.size(14)
         }
         if member.image.isEmpty {
-            Utility.IntialLetter(name: member.name, imageView: groupCell.profileImage, colorCode: member.color,frameSize: 128,fontSize: 64)
+            Utility.IntialLetter(name: member.name, imageView: groupCell.videoBaseView, colorCode: member.color,frameSize: 128,fontSize: 64)
         }else if let cachedImage = ImageCache.shared.object(forKey: member.image as NSString) {
-            groupCell.profileImage.clipsToBounds = true
-            groupCell.profileImage.contentMode = .scaleAspectFill
-            groupCell.profileImage.image = cachedImage
+            groupCell.videoBaseView.clipsToBounds = true
+            groupCell.videoBaseView.contentMode = .scaleAspectFill
+            groupCell.videoBaseView.image = cachedImage
         }else {
-            Utility.IntialLetter(name: member.name, imageView: groupCell.profileImage, colorCode: member.color,frameSize: 128,fontSize: 64)
-            Utility.download(token: member.image, profileImage: groupCell.profileImage, uniqueId: member.jid,name: member.name,colorCode: member.color,frameSize: 128,fontSize: 64,notify: true, completion: { [weak self] in
-                self?.reloadCollectionViewForIndex(index: self?.findIndexOfUser(jid: member.jid))
+            Utility.IntialLetter(name: member.name, imageView: groupCell.videoBaseView, colorCode: member.color,frameSize: 128,fontSize: 64)
+            Utility.download(token: member.image, profileImage: groupCell.videoBaseView, uniqueId: member.jid,name: member.name,colorCode: member.color,frameSize: 128,fontSize: 64,notify: true, completion: { [weak self] in
             })
         }
-        //        if (indexPath.row == 2 && members.count == 3) || (indexPath.row == 4 && members.count == 5) || (indexPath.row == 6 && members.count == 7) {
-        //            print("#lastCell \(collectionView.frame.size.width) \(collectionView.frame.size.width / 4) \(member.name)")
-        //            groupCell.profileImageLeading.constant = collectionView.frame.size.width / 5
-        //            groupCell.profileImageTrailing.constant = collectionView.frame.size.width / 5
-        //            groupCell.videoViewLeading.constant = collectionView.frame.size.width / 5
-        //            groupCell.videoViewTrailing.constant = collectionView.frame.size.width / 5
-        //            UIView.animate(withDuration: 0.100) {groupCell.contentView.layoutIfNeeded()}
-        //        }else {
-        //            groupCell.profileImageLeading.constant = 0
-        //            groupCell.profileImageTrailing.constant = 0
-        //            groupCell.videoViewLeading.constant = 0
-        //            groupCell.videoViewTrailing.constant = 0
-        //        }
         return groupCell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let lastRowIndex = collectionView.numberOfItems(inSection: collectionView.numberOfSections-1)
+        let width = collectionView.frame.size.width
+        let height = collectionView.frame.size.height
         switch members.count {
         case 1:
-            return CGSize(width: (collectionView.frame.size.width), height: (collectionView.frame.size.height))
+            return CGSize(width: (width), height: (height))
         case 2:
-            return CGSize(width: (collectionView.frame.size.width ) , height: (collectionView.frame.size.height  ) )
+            return CGSize(width: (width), height: (height))
         case 3:
             if collectionView.numberOfItems(inSection: 0) % 2 != 0 && indexPath.row == lastRowIndex - 1 {
-                return CGSize(width: collectionView.frame.size.width  , height: (collectionView.frame.size.height  ) / 2 )
-            }
-            else
-            {
-                return CGSize(width: (collectionView.frame.size.width ) / 2, height: (collectionView.frame.size.height  ) / 2)
+                return CGSize(width: width, height: (height) / 2 )
+            } else {
+                return CGSize(width: (width) / 2, height: (height) / 2)
             }
         case 4:
-            return CGSize(width: (collectionView.frame.size.width ) / 2, height: (collectionView.frame.size.height  ) / 2)
+            return CGSize(width: (width) / 2, height: (height) / 2)
         case 5:
             if collectionView.numberOfItems(inSection: 0) % 2 != 0 && indexPath.row == lastRowIndex - 1 {
-                return CGSize(width: collectionView.frame.size.width , height: (collectionView.frame.size.height ) / 3 )
-            }
-            else
-            {
-                return CGSize(width: (collectionView.frame.size.width ) / 2, height: (collectionView.frame.size.height ) / 3)
+                return CGSize(width: width , height: (height) / 3 )
+            } else {
+                return CGSize(width: (width) / 2, height: (height) / 3)
             }
         case 6:
-            return CGSize(width: (collectionView.frame.size.width ) / 2, height: (collectionView.frame.size.height ) / 3)
+            return CGSize(width: (width) / 2, height: (height) / 3)
         case 7:
             if collectionView.numberOfItems(inSection: 0) % 2 != 0 && indexPath.row == lastRowIndex - 1 {
-                return CGSize(width: collectionView.frame.size.width , height: (collectionView.frame.size.height ) / 4 )
-            }
-            else
-            {
-                return CGSize(width: (collectionView.frame.size.width ) / 2, height: (collectionView.frame.size.height  ) / 4)
+                return CGSize(width: width , height: (height) / 4 )
+            } else {
+                return CGSize(width: (width) / 2, height: (height) / 4)
             }
         case 8:
-            return CGSize(width: (collectionView.frame.size.width ) / 2, height: (collectionView.frame.size.height  ) / 4)
+            return CGSize(width: (width) / 2, height: (height) / 4)
         default:
             print("more than 8 person")
-            return CGSize(width: (collectionView.frame.size.width ), height: (collectionView.frame.size.height))
+            return CGSize(width: (width), height: (height))
         }
     }
+    
     
     func pictureInPictureControllerWillStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
     }
@@ -1242,10 +1223,13 @@ extension CallViewController : CallViewControllerDelegate {
         } else {
             setVideoBtnIcon()
             outgoingCallView.cameraButton.isHidden = isVideoMuted
-            if !isVideoMuted{
-                _ = requestForVideoTrack(jid: FlyDefaults.myJid)
+            if !isVideoMuted {
+                addGroupTracks(jid: FlyDefaults.myJid)
+            } else {
+                if let index = findIndexOfUser(jid: FlyDefaults.myJid) {
+                    updateVideoMuteStatus(index: index, userid: FlyDefaults.myJid, isMute: status)
+                }
             }
-            reloadCollectionViewForIndex(index: findIndexOfUser(jid:FlyDefaults.myJid))
             AudioManager.shared().routeToAvailableDevice(preferredDevice: currentOutputDevice)
         }
     }
@@ -1282,7 +1266,7 @@ extension CallViewController {
             return
         }
         self.callType = callType
-        addMyInfoToMembersArray(requestTrack: false)
+        addMyInfoToMembersArray()
         for userJid in usersList where userJid != FlyDefaults.myJid {
             let _ = addRemoteMembers(for: rosterManager.getContact(jid: userJid.lowercased())!)
         }
@@ -1350,6 +1334,137 @@ extension CallViewController {
 }
 
 extension CallViewController : CallManagerDelegate {
+    func onRemoteVideoTrackAdded(userId: String, track: RTCVideoTrack) {
+        print("onRemoteVideoTrackAdded", userId)
+        print("onRemoteVideoTrackAddedOneToOne", CallManager.isOneToOneCall())
+        executeOnMainThread {
+            if self.remoteImage.isEmpty {
+                Utility.IntialLetter(name: self.members.first?.name ?? "", imageView: self.outgoingCallView.remoteImageView, colorCode: self.members.first?.color ?? "",frameSize: 120,fontSize: 64)
+            } else {
+                let urlString = "\(FlyDefaults.baseURL)\(media)/\(self.remoteImage)?mf=\(FlyDefaults.authtoken)"
+                if let url = URL(string: urlString) {
+                    self.outgoingCallView.remoteImageView.sd_setImage(with: url)
+                }
+            }
+            if CallManager.isOneToOneCall() {
+                if let remoteView = self.outgoingCallView.remoteUserVideoView {
+                    self.remoteRenderer.removeFromSuperview()
+                    remoteView.willRemoveSubview(self.remoteRenderer)
+                    let localRen = RTCMTLVideoView(frame: .zero)
+                    self.remoteRenderer = localRen
+                    self.remoteRenderer.frame = CGRect(x: 0, y: 0, width: remoteView.bounds.width, height: remoteView.bounds.height)
+                    remoteView.addSubview(self.remoteRenderer)
+                    track.add(self.remoteRenderer)
+                    self.members.first?.videoTrack = track
+                    self.showConnectedVideoCallOneToOneUI()
+                }
+            } else {
+                if let index = self.findIndexOfUser(jid: userId) {
+                    self.members[index].videoTrack = track
+                    self.members[index].isVideoTrackAdded = true
+                    self.addGroupTracks(jid: FlyDefaults.myJid)
+                    self.addGroupTracks(jid: userId)
+                }
+            }
+        }
+    }
+    
+    func onLocalVideoTrackAdded(userId: String, videoTrack: RTCVideoTrack) {
+        print("#call onLocalVideoTrackAdded() : \(userId)")
+        if CallManager.isOneToOneCall()  {
+            outgoingCallView?.OutGoingCallBG.image = nil
+            outgoingCallView?.contentView.backgroundColor = .clear
+            addMyInfoToMembersArray(videoTrack: videoTrack)
+            self.members.last?.videoTrack = videoTrack
+            executeOnMainThread {
+                self.addlocalTrackToView(videoTrack: videoTrack)
+            }
+        } else {
+            if !CallManager.isCallConnected() {
+                executeOnMainThread {
+                    self.addlocalTrackToView(videoTrack: videoTrack)
+                }
+            }
+            addMyInfoToMembersArray(videoTrack: videoTrack)
+        }
+    }
+    
+    func addlocalTrackToView(videoTrack: RTCVideoTrack) {
+        if self.outgoingCallView != nil {
+            if let localView = self.outgoingCallView.localUserVideoView {
+                self.localRenderer.removeFromSuperview()
+                localView.willRemoveSubview(self.localRenderer)
+                let localRen = RTCMTLVideoView(frame: .zero)
+                self.localRenderer = localRen
+                self.localRenderer.frame = CGRect(x: 0, y: 0, width: localView.bounds.width, height: localView.bounds.height)
+                localView.addSubview(self.localRenderer)
+                videoTrack.add(self.localRenderer)
+            }
+        }
+    }
+    
+    func addMyInfoToMembersArray(videoTrack: RTCVideoTrack) {
+        let callMember = CallMember()
+        callMember.name = FlyDefaults.myName
+        callMember.image = FlyDefaults.myImageUrl
+        callMember.isCaller = CallManager.getCallDirection() == .Incoming ? false : true
+        callMember.jid = FlyDefaults.myJid
+        callMember.isVideoMuted = CallManager.getCallType() == .Audio
+        callMember.callStatus = CallManager.getCallDirection() == .Incoming ? (CallManager.isCallConnected() ? .connected : .connecting) : (CallManager.isCallConnected() ? .connected : .calling)
+        callMember.videoTrack = videoTrack
+        
+        if let index = findIndexOfUser(jid: FlyDefaults.myJid) {
+            members[index].videoTrack = videoTrack
+        } else {
+            isVideoMuted = callMember.isVideoMuted
+            members.append(callMember)
+        }
+        
+    }
+    
+    func addMyInfoToMembersArray() {
+        let callMember = CallMember()
+        callMember.name = FlyDefaults.myName
+        callMember.image = FlyDefaults.myImageUrl
+        callMember.isCaller = CallManager.getCallDirection() == .Incoming ? false : true
+        callMember.jid = FlyDefaults.myJid
+        callMember.isVideoMuted = CallManager.getCallType() == .Audio
+        callMember.callStatus = CallManager.getCallDirection() == .Incoming ? (CallManager.isCallConnected() ? .connected : .connecting) : (CallManager.isCallConnected() ? .connected : .calling)
+        
+        if let index = findIndexOfUser(jid: FlyDefaults.myJid) {
+            
+        } else {
+            isVideoMuted = callMember.isVideoMuted
+            members.append(callMember)
+        }
+    }
+    
+    func addRemoteMembers(for user : ProfileDetails, with status: CallStatus = .calling) -> Int  {
+        print("#call addRemoteMembers \(user.name) \(user.colorCode)")
+        var remoteUserProfile : ProfileDetails? = nil
+        if let pd = rosterManager.getContact(jid: user.jid.lowercased()) {
+            remoteUserProfile = pd
+        }else{
+            remoteUserProfile = ContactManager.shared.saveTempContact(userId: user.jid)
+        }
+        let callMember = CallMember()
+        callMember.jid = user.jid
+        callMember.callStatus = status
+        let userId = user.jid.components(separatedBy: "@").first!
+        callMember.name = getUserName(jid: remoteUserProfile?.jid ?? "",name: remoteUserProfile?.name ?? userId, nickName: remoteUserProfile?.nickName ?? userId,contactType: remoteUserProfile?.contactType ?? .unknown)
+        callMember.image = remoteUserProfile?.image ?? user.image
+        callMember.color = remoteUserProfile?.colorCode ?? "#00008B"
+        callMember.isVideoMuted = CallManager.getCallType() == .Audio
+        callMember.isVideoTrackAdded = false
+        remoteImage = remoteUserProfile?.image ?? user.image
+        if let index = findIndexOfUser(jid: user.jid){
+            return index
+        }else {
+            members.insert(callMember, at:  members.count >= 1 ? (members.count - 1) : 0 ) //0
+            return 0
+        }
+    }
+    
     func onVideoTrackAdded(userJid: String) {
         
     }
@@ -1506,17 +1621,16 @@ extension CallViewController : CallManagerDelegate {
                 if CallManager.isOneToOneCall() {
                     _ = self?.validateAndAddMember(jid: userId, with: .connected)
                     if CallManager.getCallType() == .Video {
-                        _ = self?.requestForVideoTrack(jid: userId)
-                        self?.renderRemoteVideoView1to1()
-                        self?.renderLocalVideoView1to1()
-                        self?.updateOneToOneVideoCallUI()
+                        self?.addOneToOneLocalTracks()
                         self?.setVideoBtnIcon()
+                        
                     }else{
                         self?.updateOneToOneAudioCallUI()
                     }
                 } else {
                     if self?.checkIfGroupCallUiIsVisible() ?? false { self?.showGroupCallUI() }
-                    _ = self?.requestForVideoTrack(jid: userId)
+                    //_ = self?.requestForVideoTrack(jid: userId)
+                    self?.addGroupTracks(jid: FlyDefaults.myJid)
                     _ = self?.updateMuteStatus(jid: userId, isMute: false, isAudio: CallManager.getCallType() == .Audio)
                     if CallManager.getCallStatus(userId:  userId.isEmpty ? FlyDefaults.myJid : userId ) == .ON_HOLD{
                         self?.addUpdateCallUsersWithStatus(userJid: userId, status: .onHold, reload: true)
@@ -1565,7 +1679,6 @@ extension CallViewController : CallManagerDelegate {
                 if CallManager.isOneToOneCall() && (self?.members.count == 2) {
                     self?.outgoingCallView?.OutgoingRingingStatusLabel.text = CallStatus.onHold.rawValue
                 }else{
-                    self?.reloadCollectionViewForIndex(index: indexValue)
                     self?.outgoingCallView?.OutgoingRingingStatusLabel.text =  CallStatus.connected.rawValue
                 }
                 self?.setHoldText(isShow: true)
@@ -1625,9 +1738,7 @@ extension CallViewController : CallManagerDelegate {
                     self?.outgoingCallView?.OutgoingRingingStatusLabel.text = "Reconnecting"
                     self?.outgoingCallView?.OutgoingRingingStatusLabel.isHidden = false
                 }else{
-                    if let index = self?.updateCallStatus(jid: userId, status: .reconnecting) {
-                        self?.reloadCollectionViewForIndex(index: index)
-                    }
+                    self?.updateCallStatus(jid: userId, status: .reconnecting)
                 }
             case .RECONNECTED:
                 print("#callStatus onCallStatus ====  .RECONNECTED \(userId) \(CallManager.getCallStatus(userId: userId)?.rawValue) 1-1 => \(CallManager.isOneToOneCall())  \((self?.isOnCall ?? false))")
@@ -1649,9 +1760,7 @@ extension CallViewController : CallManagerDelegate {
                     }
                 }else{
                     self?.outgoingCallView?.OutgoingRingingStatusLabel.text = CallStatus.connected.rawValue
-                    if let index = self?.updateCallStatus(jid: userId, status: .connected) {
-                        self?.reloadCollectionViewForIndex(index: index)
-                    }
+                    self?.updateCallStatus(jid: userId, status: .connected)
                 }
             case .CALLING_10S:
                 print("")
@@ -1696,29 +1805,17 @@ extension CallViewController : CallManagerDelegate {
         if userId == FlyDefaults.myJid {
             return
         }
+        
         if callAction == CallAction.ACTION_REMOTE_VIDEO_ADDED {
             print("#call onCallAction() ACTION_REMOTE_VIDEO_ADDED : \(userId)")
-            if let index = requestForVideoTrack(jid: userId) {
-                FlyLogWriter.sharedInstance.writeText("#call UI onCallAction  CallAction.ACTION_REMOTE_VIDEO_ADDED \(userId) \(members.count)")
-                if CallManager.isOneToOneCall() {
-                    renderLocalVideoView1to1()
-//                    renderRemoteVideoView1to1()
-                    members.first?.isVideoMuted = false
-                    setMuteStatusText()
-                }else {
-                    members[index].isVideoMuted = false
-                    reloadCollectionViewForIndex(index: index)
-                    FlyLogWriter.sharedInstance.writeText("#call UI onCallAction  CallAction.ACTION_REMOTE_VIDEO_ADDED  \(userId) at index \(index)")
-                    reloadCollectionViewForIndex(index: members.count - 1)
-                }
+            FlyLogWriter.sharedInstance.writeText("#call UI onCallAction  CallAction.ACTION_REMOTE_VIDEO_ADDED \(userId) \(members.count)")
+            if CallManager.isOneToOneCall(){
+                members.first?.isVideoMuted = false
+                setMuteStatusText()
+            }else {
+                FlyLogWriter.sharedInstance.writeText("#call UI onCallAction  CallAction.ACTION_REMOTE_VIDEO_ADDED  \(userId) at index \(index)")
             }
         } else if callAction == CallAction.ACTION_REMOTE_BUSY {
-            // Cancel the call
-//             if let contact = rosterManager.getContact(jid: userJid){
-//               let toast = Toast.init(text: "User" + contact.name + "busy")
-//               toast.show()
-//             }
-            
             let toast = Toast.init(text: "User is Busy")
             toast.show()
             
@@ -1729,21 +1826,19 @@ extension CallViewController : CallManagerDelegate {
                     removeDisConnectedUser(userIndex: index)
                 }
             }
-            
         }
         else if callAction == CallAction.ACTION_VIDEO_CALL_CONVERSION_ACCEPTED {
             print("#switch ACTION_VIDEO_CALL_CONVERSION_ACCEPTED me :\(isCallConversionRequestedByMe) remote: \(isCallConversionRequestedByRemote)  isVideo: \(CallManager.getCallType().rawValue)")
-                CallManager.setCallType(callType: .Video)
-                CallManager.muteVideo(false)
-                //            let _ = requestForVideoTrack(jid: nil)
-                members.first?.isVideoMuted = false
-                updateOneToOneVideoCallUI()
-                renderLocalVideoView1to1()
-                //            renderRemoteVideoView1to1()
-                isVideoMuted = false
-                setVideoBtnIcon()
-                resetConversionTimer()
-                AudioManager.shared().routeToAvailableDevice(preferredDevice: currentOutputDevice)
+            CallManager.setCallType(callType: .Video)
+            CallManager.muteVideo(false)
+            members.first?.isVideoMuted = false
+            switchLoaclandRemoteViews()
+            showOneToOneVideoCallUI()
+            outgoingCallView.timerLable.isHidden = false
+            isVideoMuted = false
+            setVideoBtnIcon()
+            resetConversionTimer()
+            AudioManager.shared().routeToAvailableDevice(preferredDevice: currentOutputDevice)
         }
         else if callAction == CallAction.ACTION_VIDEO_CALL_CONVERSION_REJECTED {
             print("#switch onCallAction \(callAction.rawValue)")
@@ -1756,8 +1851,6 @@ extension CallViewController : CallManagerDelegate {
             setVideoBtnIcon()
             CallManager.setCallType(callType: .Audio)
             updateOneToOneAudioCallUI()
-            releaseTrackViewBy(member: members[0])
-            releaseTrackViewBy(member: members[1])
         }
         else if callAction == CallAction.ACTION_VIDEO_CALL_CONVERSION {
             print("#switch onCallAction \(callAction.rawValue) me :\(isCallConversionRequestedByMe) remote: \(isCallConversionRequestedByRemote)  isVideo: \(CallManager.getCallType().rawValue)")
@@ -1765,7 +1858,7 @@ extension CallViewController : CallManagerDelegate {
             isCallConversionRequestedByRemote = true
             alertController?.dismiss(animated: true, completion:nil)
             showCallConversionConfirmationRequest()
-            let _ = requestForVideoTrack(jid: nil)
+            //let _ = requestForVideoTrack(jid: nil)
         }
         else if callAction == CallAction.CHANGE_TO_AUDIO_CALL {
             print("#switch onCallAction \(callAction.rawValue) me :\(isCallConversionRequestedByMe) remote: \(isCallConversionRequestedByRemote)  isVideo: \(CallManager.getCallType().rawValue)")
@@ -1773,8 +1866,7 @@ extension CallViewController : CallManagerDelegate {
             CallManager.setCallType(callType: .Audio)
             resetConversionTimer()
             updateOneToOneAudioCallUI()
-            releaseTrackViewBy(member: members[0])
-            releaseTrackViewBy(member: members[1])
+            removeRemoteOneToOneLocalTracks()
             AudioManager.shared().routeToAvailableDevice(preferredDevice: currentOutputDevice)
         }
         else if callAction == CallAction.ACTION_INVITE_USERS {
@@ -1782,7 +1874,7 @@ extension CallViewController : CallManagerDelegate {
             for userJid in getInvitedUsers(){
                 addUpdateCallUsersWithStatus(userJid: userJid, status: convertCallStatus(status: CallManager.getCallStatus(userId: userJid) ?? .CALLING), reload: true)
             }
-            
+
         }
         else if callAction == CallAction.ACTION_REMOTE_ENGAGED {
 //            if let contact = rosterManager.getContact(jid: userJid){
@@ -1791,7 +1883,7 @@ extension CallViewController : CallManagerDelegate {
 //            }
             let toast = Toast.init(text: "Call Engaged")
             toast.show()
-            
+
             if CallManager.isOneToOneCall() && isOnCall {
                 dismissWithDelay(callStatus: "Call Engaged")
             }else{
@@ -1799,26 +1891,6 @@ extension CallViewController : CallManagerDelegate {
                     removeDisConnectedUser(userIndex: index)
                 }
             }
-        }
-    }
-    
-    func onLocalVideoTrackAdded(userId: String) {
-        print("#call onLocalVideoTrackAdded() : \(userId)")
-        if CallManager.isOneToOneCall() {
-            outgoingCallView?.OutGoingCallBG.image = nil
-            outgoingCallView?.contentView.backgroundColor = .clear
-            addMyInfoToMembersArray(requestTrack: true)
-            renderLocalVideoView1to1()
-        } else {
-            if let _ = findIndexOfUser(jid: userId) {
-                _ = requestForVideoTrack(jid: userId)
-            }else{
-                addMyInfoToMembersArray(requestTrack: true)
-            }
-            if !isOnCall{
-                renderLocalVideoView1to1()
-            }
-            reloadCollectionViewForIndex(index: findIndexOfUser(jid:FlyDefaults.myJid))
         }
     }
     
@@ -1830,37 +1902,22 @@ extension CallViewController : CallManagerDelegate {
                 members.first?.isAudioMuted = true
                 setMuteStatusText()
             } else {
-                if let index = updateMuteStatus(jid: userId, isMute: true, isAudio: true){
-                    reloadCollectionViewForIndex(index: index)
-                }
+                updateMuteStatus(jid: userId, isMute: true, isAudio: true)
             }
         case .ACTION_REMOTE_AUDIO_UN_MUTE:
             if CallManager.isOneToOneCall() {
                 members.first?.isAudioMuted = false
                 setMuteStatusText()
             } else {
-                if let index = updateMuteStatus(jid: userId, isMute: false, isAudio: true){
-                    reloadCollectionViewForIndex(index: index)
-                }
+                updateMuteStatus(jid: userId, isMute: false, isAudio: true)
             }
         case .ACTION_REMOTE_VIDEO_MUTE:
             
             if CallManager.isOneToOneCall() {
-                if isLocalViewSwitched {
-                    outgoingCallView?.localVideoView?.renderFrame(nil)
-                }else{
-                    outgoingCallView?.remoteVideoView?.renderFrame(nil)
-                }
                 members.first?.isVideoMuted = true
                 setMuteStatusText()
             } else {
-                if let index = updateMuteStatus(jid: userId, isMute: true, isAudio: false) {
-                    
-                    if CallManager.getCallType() == .Audio && members[index].videoTrack != nil{
-                        releaseTrackViewBy(memberIndex: index)
-                    }
-                    reloadCollectionViewForIndex(index: index)
-                }
+                updateMuteStatus(jid: userId, isMute: true, isAudio: false)
             }
         case .ACTION_REMOTE_VIDEO_UN_MUTE:
             if CallManager.isOneToOneCall() {
@@ -1868,12 +1925,7 @@ extension CallViewController : CallManagerDelegate {
                 members.first?.isVideoMuted = false
                 setMuteStatusText()
             } else {
-                if let index = updateMuteStatus(jid: userId, isMute: false, isAudio: false) {
-                    if members[index].videoTrack == nil{ // CallManager.getCallType() == .Audio &&
-                        _ = requestForVideoTrack(jid: userId)
-                    }
-                    reloadCollectionViewForIndex(index: index)
-                }
+                updateMuteStatus(jid: userId, isMute: false, isAudio: false)
             }
         case .ACTION_LOCAL_AUDIO_MUTE:
             isAudioMuted = true
@@ -1886,10 +1938,8 @@ extension CallViewController : CallManagerDelegate {
     
     func switchAudioToVideoCall() {
         CallManager.setCallType(callType: .Video)
-        let _ = requestForVideoTrack(jid: nil)
-        updateOneToOneVideoCallUI()
-        renderLocalVideoView1to1()
-        renderRemoteVideoView1to1()
+        switchLoaclandRemoteViews()
+        showOneToOneVideoCallUI()
         isVideoMuted = false
         setVideoBtnIcon()
         resetConversionTimer()
@@ -1904,7 +1954,8 @@ extension CallViewController {
     func validateAndAddMember(jid: String? = nil, with status: CallStatus = .calling) -> Bool {
         
         if members.isEmpty || !members.contains(where: {$0.jid == FlyDefaults.myJid}) {
-            addMyInfoToMembersArray(requestTrack: CallManager.getCallType() == .Video)
+            //addMyInfoToMembersArray(requestTrack: CallManager.getCallType() == .Video)
+            addMyInfoToMembersArray()
         }
         
         if let jid = jid, jid != FlyDefaults.myJid {
@@ -1929,127 +1980,24 @@ extension CallViewController {
         return false
     }
     
-    func addRemoteMembers(for user : ProfileDetails, with status: CallStatus = .calling) -> Int  {
-        print("#call addRemoteMembers \(user.name) \(user.colorCode)")
-        var remoteUserProfile : ProfileDetails? = nil
-        if let pd = rosterManager.getContact(jid: user.jid.lowercased()) {
-            remoteUserProfile = pd
-        }else{
-            remoteUserProfile = ContactManager.shared.saveTempContact(userId: user.jid)
-        }
-        let callMember = CallMember()
-        callMember.jid = user.jid
-        callMember.callStatus = status
-        let userId = user.jid.components(separatedBy: "@").first!
-        callMember.name = getUserName(jid: remoteUserProfile?.jid ?? "",name: remoteUserProfile?.name ?? userId, nickName: remoteUserProfile?.nickName ?? userId,contactType: remoteUserProfile?.contactType ?? .unknown)
-        callMember.image = remoteUserProfile?.image ?? user.image
-        callMember.color = remoteUserProfile?.colorCode ?? "#00008B"
-        callMember.isVideoMuted = CallManager.getCallType() == .Audio
-        if let index = findIndexOfUser(jid: user.jid){
-            return index
-        }else {
-            members.insert(callMember, at:  members.count >= 1 ? (members.count - 1) : 0 ) //0
-            return 0
-        }
-    }
-    
-    func addMyInfoToMembersArray(requestTrack : Bool = false) {
-        let callMember = CallMember()
-        callMember.name = FlyDefaults.myName
-        callMember.image = FlyDefaults.myImageUrl
-        callMember.isCaller = CallManager.getCallDirection() == .Incoming ? false : true
-        callMember.jid = FlyDefaults.myJid
-        callMember.isVideoMuted = CallManager.getCallType() == .Audio
-        callMember.callStatus = CallManager.getCallDirection() == .Incoming ? (CallManager.isCallConnected() ? .connected : .connecting) : (CallManager.isCallConnected() ? .connected : .calling)
-        
-        if findIndexOfUser(jid: FlyDefaults.myJid) == nil {
-            isVideoMuted = callMember.isVideoMuted
-            members.append(callMember)
-        }
-        if requestTrack {
-            _ = requestForVideoTrack(jid: FlyDefaults.myJid)
-        }
-    }
-    
-    func requestForVideoTrack(jid : String? = nil) -> Int? {
-        if let memberJid = jid {
-            _ = validateAndAddMember(jid: memberJid, with: .connected)
-            if let videTrack = CallManager.getRemoteVideoTrack(jid: memberJid) {
-                FlyLogWriter.sharedInstance.writeText("#call UI requestForVideoTrack \(jid)")
-                if let index = findIndexOfUser(jid: memberJid) {
-                    releaseTrackViewBy(memberIndex: index)
-                    members[index].videoTrack = nil
-                    members[index].videoTrack = videTrack
-                    print("#mute Track available for : \(jid)")
-                    return index
-                }
-            }else{
-                FlyLogWriter.sharedInstance.writeText("#call UI requestForVideoTrack not available \(jid)")
-                print("#mute vTrack not available for : \(memberJid)")
-                print("#call requestForVideoTrack() Track not available for : \(memberJid)")
-            }
-        } else {
-            for member in members {
-                if let videTrack = CallManager.getRemoteVideoTrack(jid: member.jid) {
-                    if let index = findIndexOfUser(jid: member.jid) {
-                        releaseTrackViewBy(memberIndex: index)
-                        members[index].videoTrack = videTrack
-                        print("#mute Track available for : \(member.jid)")
-                    }
-                }else{
-                    print("#mute Track not available for : \(member.jid)")
-                    print("#call requestForVideoTrack() Track not available for : \(member.jid)")
-                }
-            }
-        }
-        return nil
-    }
-    
-    func clearAllTrackViews()  {
-        for member in members{
-            releaseTrackViewBy(member: member)
-        }
-        outgoingCallView?.localVideoView?.renderFrame(nil)
-        outgoingCallView?.remoteVideoView?.renderFrame(nil)
-    }
-    
-    func releaseTrackViewBy(memberIndex: Int) {
-        if memberIndex < members.count && memberIndex >= 0 {
-            if let trackView = members[memberIndex].videoTrackView, let track = members[memberIndex].videoTrack {
-                track.remove(trackView)
-                trackView.renderFrame(nil)
-            }
-        }
-    }
-    
-    func releaseTrackViewBy(member: CallMember?) {
-        if let member = member {
-            if let trackView = member.videoTrackView, let track = member.videoTrack {
-                track.remove(trackView)
-                trackView.renderFrame(nil)
-            }
-        }
-    }
-    
     func removeAllMembers() {
-        clearAllTrackViews()
+        //clearAllTrackViews()
         members.removeAll()
         collectionView?.reloadData()
     }
     
-    func updateMuteStatus(jid : String, isMute : Bool, isAudio : Bool) -> Int? {
+    func updateMuteStatus(jid : String, isMute : Bool, isAudio : Bool) {
         if let index = findIndexOfUser(jid: jid) {
             if isAudio {
                 members[index].isAudioMuted = isMute
+                updateUsersDetails(index: index, userid: jid)
             } else {
-                members[index].isVideoMuted = isMute
+                updateVideoMuteStatus(index: index, userid: jid, isMute: isMute)
             }
-            return index
         }
-        return nil
     }
     
-    func updateCallStatus(jid: String, status : CallStatus) -> Int? {
+    func updateCallStatus(jid: String, status : CallStatus) {
         print("#callStatus CVC \(jid)  \(status.rawValue)")
         if let index = findIndexOfUser(jid: jid) {
             print("#call updateCallStatus \(jid) \(status.rawValue)")
@@ -2058,15 +2006,54 @@ extension CallViewController {
             }else{
                 members[index].callStatus = status
             }
-            return index
+            updateUsersDetails(index: index, userid: jid)
         }
-        return nil
+    }
+    
+    func updateUsersDetails(index: Int, userid: String) {
+        if !CallManager.isOneToOneCall() && self.collectionView != nil {
+            let isLastRow = (index == members.count - 1)
+            let member = members[index]
+            if let groupCell = self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? GroupCallCell {
+                if (isLastRow  && member.callStatus == .reconnecting) || (!isLastRow && member.callStatus != .connected) || member.callStatus == .onHold || (isLastRow && CallManager.isCallOnHold()){
+                    groupCell.foreGroundView.isHidden = false
+                    groupCell.callActionsView.isHidden = true
+                    groupCell.statusLable.text = member.callStatus.rawValue.capitalized
+                }else{
+                    groupCell.foreGroundView.isHidden = true
+                    groupCell.callActionsView.isHidden = false
+                    groupCell.statusLable.textColor = UIColor(hexString: "#FFFFFF")
+                    groupCell.profileName.font = AppFont.Regular.size(14)
+                }
+
+                groupCell.audioIconImageView.isHidden = !member.isAudioMuted
+
+            }
+        }
+    }
+    
+    func updateVideoMuteStatus(index: Int, userid: String, isMute : Bool) {
+        if !CallManager.isOneToOneCall() && self.collectionView != nil {
+            if let groupCell = self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? GroupCallCell {
+                let member = members[index]
+                if CallManager.getCallType() == .Video {
+                    groupCell.videoMuteImage.isHidden = !isMute
+                    if isMute {
+                        member.videoTrackView.removeFromSuperview()
+                        groupCell.videoBaseView.willRemoveSubview(member.videoTrackView)
+                    } else {
+                        addGroupTracks(jid: userid)
+                    }
+                    members[index].isVideoMuted = isMute
+                }
+            }
+        }
     }
     
     func reloadCollectionViewForIndex(index: Int?) {
         DispatchQueue.main.async { [weak self] in
             if let itemIndex =  index, self?.collectionView?.numberOfItems(inSection: 0) ?? 0 > index ?? -1, self?.collectionView?.isHidden == false {
-                print("#callStatus #reloadCollectionViewForIndex \(index) \(self?.members[index!].jid)")
+                print("#callStatus #reloadCollectionViewForIndex \(itemIndex) \(self?.members[itemIndex].jid)")
                 let indexPath = IndexPath(item: itemIndex, section: 0)
                 self?.collectionView?.reloadItems(at: [indexPath])
             }
@@ -2107,7 +2094,7 @@ extension CallViewController {
         if !members.isEmpty && userIndex < members.count {
             if (collectionView?.numberOfItems(inSection: 0) ?? 0 > userIndex)  {
                 var oneToOneUsers : [CallMember] = []
-                releaseTrackViewBy(memberIndex: userIndex)
+                //releaseTrackViewBy(memberIndex: userIndex)
                 members.remove(at: userIndex)
                 print("#index \(userIndex) #count \(members.count)")
                 collectionView?.deleteItems(at: [IndexPath(item: userIndex, section: 0)])
@@ -2116,7 +2103,7 @@ extension CallViewController {
                    getContactNames()
                 }else if members.count == 2 {
                     if CallManager.getCallType() == .Video {
-                        clearAllTrackViews()
+                        //clearAllTrackViews()
                     }
                     oneToOneUsers.append(contentsOf: members)
                     removeAllMembers()
@@ -2132,9 +2119,10 @@ extension CallViewController {
                             SingleTapGesturTapped(UITapGestureRecognizer())
                         }
                     } else {
+                        print("switchLoaclandRemoteViews", members.count)
+                        updateOneToOneVideoCallUI()
+                        switchLoaclandRemoteViews()
                         showConnectedVideoCallOneToOneUI()
-                        renderRemoteVideoView1to1()
-                        renderLocalVideoView1to1()
                     }
                     outgoingCallView.OutgoingRingingStatusLabel.text = isCallOnHoldForOneToCall() ? CallStatus.onHold.rawValue : convertCallStatus(status: CallManager.getCallStatus(userId: (members.first?.jid)!) ?? .CALLING).rawValue
                     oneToOneUsers.removeAll()
@@ -2158,11 +2146,11 @@ extension CallViewController {
         let isNewUser = validateAndAddMember(jid: userJid, with: status)
         if (isOnCall || !(collectionView?.isHidden ?? false)) {
             if isNewUser {
-                if reload { insertUsersToCollectionView(userIndex: (members.count - 1 )) } //add new user before local user
+                if reload {
+                    insertUsersToCollectionView(userIndex: (members.count - 1 ))
+                } //add new user before local user
             } else {
-                if let index = updateCallStatus(jid: userJid, status: status) {
-                    if reload { reloadCollectionViewForIndex(index: index) }
-                }
+                updateCallStatus(jid: userJid, status: status)
             }
         }
     }
@@ -2176,38 +2164,7 @@ extension CallViewController {
         outgoingCallView?.audioMuteStackView.isHidden = true
     }
     
-    func renderLocalVideoView1to1() {
-        
-        DispatchQueue.main.async {  [weak self] in
-            self?.outgoingCallView?.localVideoView.isHidden = false
-            self?.outgoingCallView?.remoteVideoView.isHidden = false
-            if let _ = self?.outgoingCallView?.localVideoView, let _ = self?.outgoingCallView?.remoteVideoView {
-                if self?.members.last?.videoTrack == nil {
-                    _ = self?.requestForVideoTrack(jid: FlyDefaults.myJid)
-                }
-                if self?.members.first?.videoTrack == nil {
-                    _ = self?.requestForVideoTrack(jid: self?.members.first?.jid)
-                }
-                self?.removeOneToOneCallTracks()
-                self?.setVideoBtnIcon()
-                self?.addAndRenderOneToOneCallTracks()
-            }
-        }
-    }
-    
-    func renderRemoteVideoView1to1() {
-//        DispatchQueue.main.async { [weak self] in
-//            self?.outgoingCallView?.remoteVideoView.isHidden = false
-//            if let videoView = self?.outgoingCallView?.remoteVideoView {
-//                if self?.members.first?.videoTrack == nil {
-//                    _ = self?.requestForVideoTrack(jid: self?.members.first?.jid)
-//                }
-//                self?.members.first?.videoTrack?.add(videoView)
-//                self?.setVideoBtnIcon()
-//            }
-//        }
-        
-    }
+
     
     func renderVideoView(view: RTCMTLVideoView?, track : RTCVideoTrack?){
         if let memberTrack = track , let memberView = view {
@@ -2256,6 +2213,10 @@ extension CallViewController {
     }
     
     func dismissWithDelay(callStatus : String = "Disconnected"){
+        outgoingCallView?.localUserVideoView.willRemoveSubview(localRenderer)
+        outgoingCallView?.remoteUserVideoView.willRemoveSubview(remoteRenderer)
+        localRenderer.removeFromSuperview()
+        remoteRenderer.removeFromSuperview()
         self.groupId = ""
         self.isOnCall = false
         speakingTimer?.invalidate()
@@ -2263,7 +2224,7 @@ extension CallViewController {
         audioDevicesAlertController?.dismiss(animated: true, completion: {
             self.audioDevicesAlertController = nil
         })
-        outgoingCallView?.localVideoView.removeGestureRecognizer(panGesture)
+        outgoingCallView?.localUserVideoView.removeGestureRecognizer(panGesture)
         alertController?.dismiss(animated: true, completion: nil)
         callDurationTimer?.invalidate()
         callDurationTimer = nil
@@ -2543,43 +2504,87 @@ extension CallViewController {
 }
 
 extension CallViewController {
-    
-    func removeOneToOneCallTracks(){
-        if let localView = outgoingCallView?.localVideoView, let remoteView = outgoingCallView?.remoteVideoView {
-            if let localTrack = members.last?.videoTrack {
-                    localTrack.remove(localView)
-                    localTrack.remove(remoteView)
-                    localView.renderFrame(nil)
-            }
-            if let remoteTrack = members.first?.videoTrack {
-                    remoteTrack.remove(remoteView)
-                    remoteTrack.remove(localView)
-                    remoteView.renderFrame(nil)
+
+    func addOneToOneLocalTracks() {
+        if !outgoingCallView.localUserVideoView.subviews.contains(localRenderer) {
+            if let localView = outgoingCallView.localUserVideoView {
+                if let localTrack = members.last?.videoTrack {
+                    addVideoTrack(to: localView, isLocal: true, track: localTrack)
+                }
             }
         }
     }
     
-    func addAndRenderOneToOneCallTracks(){
-        if let localView = outgoingCallView.localVideoView, let remoteView = outgoingCallView.remoteVideoView{
-            if let localTrack = members.last?.videoTrack{
-                if isLocalViewSwitched{
-                    localTrack.add(remoteView)
-                }else{
-                    localTrack.add(localView)
+    func addGroupTracks(jid: String) {
+        if let index = self.findIndexOfUser(jid: jid) {
+            let member = self.members[index]
+            if let collectionView = self.collectionView, let groupCell = collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? GroupCallCell {
+                if let videoView = groupCell.videoBaseView {
+                    member.videoTrackView.removeFromSuperview()
+                    videoView.willRemoveSubview(member.videoTrackView)
+                }
+                let localRen = RTCMTLVideoView(frame: .zero)
+                if let baseView = groupCell.videoBaseView {
+                    member.videoTrackView = localRen
+                    member.videoTrackView.frame = CGRect(x: 0, y: 0, width: baseView.bounds.width, height: baseView.bounds.height)
+                    member.videoTrack?.add(member.videoTrackView)
+                    baseView.addSubview(member.videoTrackView)
+                    groupCell.videoMuteImage.isHidden = true
                 }
             }
-            if let remoteTrack = members.first?.videoTrack {
-                if isLocalViewSwitched{
-                    remoteTrack.add(localView)
-                }else{
-                    remoteTrack.add(remoteView)
+        }
+    }
+    
+    func switchLoaclandRemoteViews() {
+        if isLocalViewSwitched {
+            if let localView = outgoingCallView.localUserVideoView, let remoteView = outgoingCallView.remoteUserVideoView {
+                if let remoteTrack = members.first?.videoTrack {
+                    addVideoTrack(to: localView, isLocal: true, track: remoteTrack)
+                }
+                if let localTrack = members.last?.videoTrack {
+                    addVideoTrack(to: remoteView, isLocal: false, track: localTrack)
                 }
             }
+        } else {
+            if let localView = outgoingCallView.localUserVideoView, let remoteView = outgoingCallView.remoteUserVideoView {
+                if let localTrack = members.last?.videoTrack {
+                    addVideoTrack(to: localView, isLocal: true, track: localTrack)
+                }
+                if let remoteTrack = members.first?.videoTrack {
+                    addVideoTrack(to: remoteView, isLocal: false, track: remoteTrack)
+                }
+            }
+        }
+    }
+    
+    func addVideoTrack(to view: UIView, isLocal: Bool, track: RTCVideoTrack) {
+        let localRen = RTCMTLVideoView(frame: .zero)
+        if isLocal {
+            self.localRenderer.removeFromSuperview()
+            view.willRemoveSubview(self.localRenderer)
+            self.localRenderer = localRen
+            localRenderer.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+            view.addSubview(localRenderer)
+            track.add(localRenderer)
+        } else {
+            self.remoteRenderer.removeFromSuperview()
+            view.willRemoveSubview(self.remoteRenderer)
+            self.remoteRenderer = localRen
+            remoteRenderer.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+            view.addSubview(remoteRenderer)
+            track.add(remoteRenderer)
+        }
+    }
+    
+    func removeRemoteOneToOneLocalTracks() {
+        if let remoteView = self.outgoingCallView.remoteUserVideoView {
+            self.remoteRenderer.removeFromSuperview()
+            remoteView.willRemoveSubview(self.remoteRenderer)
         }
     }
     
     func oneToOneVideoViewTransforms(){
-        if let localView = outgoingCallView.localVideoView, let remoteView = outgoingCallView.remoteVideoView {
+        if let localView = outgoingCallView.localUserVideoView, let remoteView = outgoingCallView.remoteUserVideoView {
             if isBackCamera {
                 if isLocalViewSwitched{
                     remoteView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
@@ -2601,7 +2606,7 @@ extension CallViewController {
     }
     func setHoldText(isShow: Bool) {
         if CallManager.getCallStatus(userId: members.last?.jid ?? "") == .ON_HOLD {
-            if let localView = outgoingCallView.localVideoView {
+            if let localView = outgoingCallView.localUserVideoView {
                 if isShow {
                     if !localView.subviews.contains(callHoldLabel) {
                         callHoldLabel = UILabel(frame: CGRect(x: 0, y: 0, width: localView.bounds.width, height: localView.bounds.height))

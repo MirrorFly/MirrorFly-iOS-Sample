@@ -21,21 +21,19 @@ import Contacts
 import CallKit
 import FirebaseRemoteConfig
 
-
-let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
-let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
-let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
-let XMPP_PORT = 5222
-let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com/"
-let JANUS_URL = "wss://janus.mirrorfly.com"
-let CONTAINER_ID = "group.com.mirrorfly.qa"
-let ENABLE_CONTACT_SYNC = false
-let IS_LIVE = false
-let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
-let IS_MOBILE_NUMBER_LOGIN = false
-let APP_NAME = "UiKit"
-let ICLOUD_CONTAINER_ID = "iCloud.com.mirrorfly.qa"
-
+   let BASE_URL = "https://api-preprod-sandbox.mirrorfly.com/api/v1/"
+   let LICENSE_KEY = "lu3Om85JYSghcsB6vgVoSgTlSQArL5"
+   let XMPP_DOMAIN = "xmpp-preprod-sandbox.mirrorfly.com"
+   let XMPP_PORT = 5222
+   let SOCKETIO_SERVER_HOST = "https://signal-preprod-sandbox.mirrorfly.com"
+   let JANUS_URL = "wss://janus.mirrorfly.com"
+   let CONTAINER_ID = "group.com.mirrorfly.qa"
+   let ENABLE_CONTACT_SYNC = false
+   let IS_LIVE = false
+   let WEB_LOGIN_URL = "https://webchat-preprod-sandbox.mirrorfly.com/"
+   let IS_MOBILE_NUMBER_LOGIN = false
+   let APP_NAME = "UiKitQa"
+   let ICLOUD_CONTAINER_ID = "iCloud.com.mirrorfly.qa"
 
 let isMigrationDone = "isMigrationDone"
 
@@ -158,7 +156,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        NetworkReachability.shared.stopMonitoring()
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
@@ -189,7 +186,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
-        ChatManager.shared.startAutoDownload()
+        let current = UIApplication.shared.keyWindow?.getTopViewController()
+        if (current is AuthenticationPINViewController || current is FingerPrintPINViewController) {
+            if let vc = current as? FingerPrintPINViewController {
+                if vc.isSystemCancel {
+                    vc.authenticationWithTouchID()
+                }
+            }
+           return
+        }
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
     }
 
@@ -206,7 +211,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         contactSyncSubscription?.dispose()
-        NetStatus.shared.stopMonitoring()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.CNContactStoreDidChange, object: nil)
     }
 
@@ -214,10 +218,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         print("applicationProtectedDataDidBecomeAvailable")
         if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
             FlyDefaults.showAppLock = true
-            navigateTo()
+            showApplockScreen()
         }
     }
 
+    func showApplockScreen() {
+        
+        let current = UIApplication.shared.keyWindow?.getTopViewController()
+        if (current is AuthenticationPINViewController || current is FingerPrintPINViewController) {
+           return
+        }
+        
+        let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        let navigationController = window?.rootViewController  as? UINavigationController
+        if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable && FlyDefaults.showAppLock {
+            if !FlyDefaults.faceOrFingerAuthenticationFails {
+                let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
+                initialViewController.modalPresentationStyle = .overFullScreen
+                navigationController?.present(initialViewController, animated: false)
+            } else {
+                let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+                initialViewController.modalPresentationStyle = .overFullScreen
+                //navigationController?.present(initialViewController, animated: false)
+                navigationController?.pushViewController(initialViewController, animated: false)
+            }
+        }
+        else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false && FlyDefaults.showAppLock {
+            let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
+            initialViewController.modalPresentationStyle = .overFullScreen
+            //navigationController?.present(initialViewController, animated: false)
+            navigationController?.pushViewController(initialViewController, animated: false)
+        }
+    }
 }
 
 // MARK:- Push Notifications
@@ -282,6 +314,22 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                     }
                 }
             }
+        }else if response.notification.request.content.threadIdentifier == "media-call" {
+            pushChatId = "media-call"
+            if FlyDefaults.isBlockedByAdmin {
+                navigateToBlockedScreen()
+            } else {
+               
+                let navigationController : UINavigationController
+                let storyboard = UIStoryboard(name: Storyboards.main, bundle: nil)
+                let initialViewController = storyboard.instantiateViewController(withIdentifier: Identifiers.mainTabBarController) as! MainTabBarController
+                initialViewController.selectedIndex = 2
+                navigationController =  UINavigationController(rootViewController: initialViewController)
+                
+                UIApplication.shared.keyWindow?.rootViewController = navigationController
+                UIApplication.shared.keyWindow?.makeKeyAndVisible()
+            }
+
         }
     }
 }
@@ -508,7 +556,7 @@ extension AppDelegate {
     func networkMonitor() {
         NetworkReachability.shared.netStatusChangeHandler = {
             if NetworkReachability.shared.isConnected {
-                ChatManager.shared.startAutoDownload()
+                //ChatManager.shared.startAutoDownload()
             }
         }
     }

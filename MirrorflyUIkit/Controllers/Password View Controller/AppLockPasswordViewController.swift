@@ -49,17 +49,25 @@ class AppLockPasswordViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func viewPassword(_ sender: Any) {
+        if let button = sender as? UIButton {
+            addButtonRipple(button: button)
+        }
         self.enterNewPassword.isSecureTextEntry = !self.enterNewPassword.isSecureTextEntry
         self.enterNewImageView.image = self.enterNewPassword.isSecureTextEntry ? UIImage(named: ImageConstant.hide_Password) :  UIImage(named: ImageConstant.showeye_password)
     }
     
     @IBAction func viewPasswordConfirm(_ sender: Any) {
+        if let button = sender as? UIButton {
+            addButtonRipple(button: button)
+        }
         self.confirmNewPassword.isSecureTextEntry = !self.confirmNewPassword.isSecureTextEntry
         self.confirmNewImageView.image = self.confirmNewPassword.isSecureTextEntry ? UIImage(named: ImageConstant.hide_Password) :  UIImage(named: ImageConstant.showeye_password)
     }
     
     
+    
     @IBAction func saveButtonClick(_ sender: Any) {
+        view.endEditing(true)
         if updateNewpassword() == false {
             return
         }
@@ -72,32 +80,43 @@ class AppLockPasswordViewController: UIViewController, UITextFieldDelegate {
             FlyDefaults.appLockPassword = confirmNewPassword.text ?? ""
             FlyDefaults.appLockPasswordDate = Date()
             FlyDefaults.passwordAuthenticationAttemps = 0
-            AppAlert.shared.showToast(message: SuccessMessage.PINsetsuccessfully)
+            self.showToastWithMessage(message: SuccessMessage.PINsetsuccessfully)
             self.navigationController?.popViewController(animated: true)
         }
     }
     
     func updateNewpassword() -> Bool {
-        if enterNewPassword.text == "" || confirmNewPassword.text == "" {
-            AppAlert.shared.showToast(message: ErrorMessage.enterthePIN)
+        if enterNewPassword.text == "" {
+            self.showToastWithMessage(message: ErrorMessage.enterthePIN)
             return  false
         }
+        if confirmNewPassword.text == "" {
+            self.showToastWithMessage(message: ErrorMessage.enterconfirmPIN)
+            return false
+        }
         if (enterNewPassword.text?.count ?? 0) < 4 {
-            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
+            self.showToastWithMessage(message: ErrorMessage.enterValidPIN)
             return false
         } else if (confirmNewPassword.text?.count ?? 0) < 4 {
-            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
+            self.showToastWithMessage(message: ErrorMessage.enterValidPIN)
             return false
         }
         else if enterNewPassword.text != confirmNewPassword.text{
-            AppAlert.shared.showToast(message: ErrorMessage.passwordShouldbeSame)
+            self.showToastWithMessage(message: ErrorMessage.passwordShouldbeSame)
             return false
         }
         else if enterNewPassword.text == FlyDefaults.appLockPassword {
-            AppAlert.shared.showToast(message: ErrorMessage.oldPINnewPINsholdnotSame)
+            self.showToastWithMessage(message: ErrorMessage.oldPINnewPINsholdnotSame)
             return false
         }
         return true
+    }
+    
+    func showToastWithMessage(message: String) {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            AppAlert.shared.showToast(message: message)
+        }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -110,6 +129,11 @@ class AppLockPasswordViewController: UIViewController, UITextFieldDelegate {
         }
         let currentString =  (textField.text ?? "") as NSString
         let newString = currentString.replacingCharacters(in: range, with: string)
+        
+        if range.length == 1 && textField.isSecureTextEntry && newString.count > 0 {
+            textField.text = newString.substring(to: newString.count)
+            return false
+        }
         
         return newString.count <= maxLength
     }

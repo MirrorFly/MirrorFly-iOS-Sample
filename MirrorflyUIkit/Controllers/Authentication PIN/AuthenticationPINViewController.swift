@@ -74,19 +74,25 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         handleBackgroundAndForground()
         didMoveToBackground()
         willCometoForeground()
+        CallViewController.dismissDelegate = self
+    }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        CallViewController.dismissDelegate = nil
+    }
+
+    func showAlerts() {
         if FlyDefaults.showAppLock {
             if FlyDefaults.passwordAuthenticationAttemps > 5 {
                 showfailedAttempsActionAlert()
-            } else if daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) > 31-5 {
+            } else if daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) > 31-5 && daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) < 31 {
                 if FlyDefaults.pinChangeAlertShownDate != Date().xmppDateString {
                     showChangePinAlert()
                 }
-            } else if daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) > 31 {
+            } else if daysBetween(start: FlyDefaults.appLockPasswordDate, end: Date()) >= 31 {
                 showPinActionAlert()
             }
         }
-
     }
 
     func showPinActionAlert() {
@@ -125,30 +131,26 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     }
 
     func showfailedAttempsActionAlert() {
-        let values : [String] = ["Cancel", "Generate OTP"]
-        var actions = [(String, UIAlertAction.Style)]()
-        values.forEach { title in
-            actions.append((title, UIAlertAction.Style.default))
-        }
 
-        AppActionSheet.shared.showActionSeet(title : "", message: "Invalid PIN, Generate OTP to your registered mobile number", showCancel: false, actions: actions, style: .alert, sheetCallBack: { [weak self] didCancelTap, tappedTitle in
-            if !didCancelTap {
-                switch tappedTitle {
-                case "Generate OTP":
-                    self?.clearTextFields()
-                    self?.timeout.text = "01:00"
-                    self?.secondsRemaining = passwordResetTimer
-                    self?.resendHideView.isHidden = true
-                    self?.timeout.isHidden = false
-                    self?.forgotPassword()
-                    self?.isResetByFailedAttempts = true
-                default:
-                    print(" \(tappedTitle)")
-                }
-            } else {
-                print("createGroup Cancel")
-            }
-        })
+        let alertViewController = UIAlertController.init(title: "Invalid PIN, Generate OTP to your registered mobile number", message:"" , preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { [weak self] (action) in
+            
+        }
+        let blockAction = UIAlertAction(title: "Generate OTP", style: .default) { [weak self] (action) in
+            
+            self?.clearTextFields()
+            self?.timeout.text = "01:00"
+            self?.secondsRemaining = passwordResetTimer
+            self?.resendHideView.isHidden = true
+            self?.timeout.isHidden = false
+            self?.forgotPassword()
+            self?.isResetByFailedAttempts = true
+            
+        }
+        alertViewController.addAction(cancelAction)
+        alertViewController.addAction(blockAction)
+        present(alertViewController, animated: true)
     }
 
     func showChangePinAlert() {
@@ -182,6 +184,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+        showAlerts()
     }
     
     func setupUI() {
@@ -192,6 +195,14 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         txtForth.font = UIFont.font16px_appSemibold()
         txtFifth.font = UIFont.font16px_appSemibold()
         txtSixth.font = UIFont.font16px_appSemibold()
+        
+        txtFirst.tag = 1
+        txtSecond.tag = 2
+        txtThird.tag = 3
+        txtForth.tag = 4
+        txtFifth.tag = 5
+        txtSixth.tag = 6
+        
         hideForgotView.clipsToBounds = true
         hideForgotView.layer.cornerRadius = 15
         hideForgotView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
@@ -269,6 +280,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
     }
     
     @objc override func willCometoForeground() {
+        showAlerts()
         self.stopTimer()
         let difference = Int(Date().timeIntervalSince(currentBackgroundDate))
         print(difference)
@@ -375,7 +387,7 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                     }
                 }
             }else {
-                AppAlert.shared.showAlert(view: self, title: warning, message: ErrorMessage.noInternet, buttonTitle: okayButton)
+                AppAlert.shared.showToast(message: ErrorMessage.noInternet)
             }
         }
     }
@@ -407,37 +419,50 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                         self?.stopTimer()
                         DispatchQueue.main.async { [weak self] in
                             self?.stopLoading()
+                            self?.clearTextFields()
+                            self?.stopTimer()
+                            self?.timeout.text = "01:00"
+                            self?.secondsRemaining = passwordResetTimer
+                            self?.resendHideView.isHidden = true
+                            self?.timeout.isHidden = false
                             self?.hideForgotView.isHidden = true
                             self?.initialmainView.backgroundColor = UIColor.clear
                             let vc = AppLockPasswordViewController(nibName: "AppLockPasswordViewController", bundle: nil)
                             self?.navigationController?.pushViewController(vc, animated: true)
                         }
                         
+                     
+                       
+                        
+                       
+                        
                     }
                 }else {
-                    AppAlert.shared.showAlert(view: self, title: warning, message: ErrorMessage.noInternet, buttonTitle: okayButton)
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
                 }
             }else if verificationCode.count == 0 {
-                AppAlert.shared.showAlert(view: self, title: warning, message: ErrorMessage.enterOtp, buttonTitle: okayButton)
+                AppAlert.shared.showToast(message: ErrorMessage.enterOtp)
             }
             else {
-                AppAlert.shared.showAlert(view: self, title: warning, message: ErrorMessage.otpMismatch, buttonTitle: okayButton)
+                AppAlert.shared.showToast(message: ErrorMessage.otpMismatch)
             }
         }
     }
     
     //PIN VALIDATION
     func validateAppPIN() {
-        if FlyDefaults.passwordAuthenticationAttemps > 4 {
-            showfailedAttempsActionAlert()
+        if pinInput != FlyDefaults.appLockPassword  {
+            if FlyDefaults.passwordAuthenticationAttemps > 4 {
+                showfailedAttempsActionAlert()
+            }
         }
         
         if pinInput == FlyDefaults.appLockPassword  {
             if isResetByFailedAttempts {
                 if FlyDefaults.showAppLock {
-                    self.navigationController?.popToRootViewController(animated: false)
+                    self.popToRootView()
                 } else {
-                    self.navigationController?.popViewController(animated: true)
+                    self.popToView()
                 }
                 FlyDefaults.showAppLock = false
                 FlyDefaults.faceOrFingerAuthenticationFails = false
@@ -445,9 +470,9 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                 FlyDefaults.appLockenable = false
                 FlyDefaults.appFingerprintenable = false
                 if FlyDefaults.showAppLock {
-                    self.navigationController?.popToRootViewController(animated: false)
+                    self.popToRootView()
                 } else {
-                    self.navigationController?.popViewController(animated: true)
+                    self.popToView()
                 }
                 FlyDefaults.showAppLock = false
                 FlyDefaults.faceOrFingerAuthenticationFails = false
@@ -484,18 +509,18 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
                         FlyDefaults.appFingerprintenable = false
                     }
                     if FlyDefaults.showAppLock {
-                        self.navigationController?.popToRootViewController(animated: false)
+                        self.popToRootView()
                     } else {
-                        self.navigationController?.popViewController(animated: true)
+                        self.popToView()
                     }
                     FlyDefaults.showAppLock = false
                     FlyDefaults.faceOrFingerAuthenticationFails = false
                 } else {
 
                     if FlyDefaults.showAppLock {
-                        self.navigationController?.popToRootViewController(animated: false)
+                        self.popToRootView()
                     } else {
-                        self.navigationController?.popViewController(animated: true)
+                        self.popToView()
                     }
                     FlyDefaults.showAppLock = false
                     FlyDefaults.faceOrFingerAuthenticationFails = false
@@ -509,6 +534,22 @@ class AuthenticationPINViewController: BaseViewController, UITextFieldDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
             self?.pinInput = ""
             self?.pinEnteredcollectionview.reloadData()
+        }
+    }
+    
+    func popToRootView() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            FlyDefaults.passwordAuthenticationAttemps = 0
+            self?.navigationController?.popToRootViewController(animated: false)
+            self?.dismiss(animated: false)
+        }
+    }
+    
+    func popToView() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            FlyDefaults.passwordAuthenticationAttemps = 0
+            self?.navigationController?.popViewController(animated: true)
+            self?.dismiss(animated: false)
         }
     }
     
@@ -723,17 +764,45 @@ extension AuthenticationPINViewController:  CustomTextFieldDelegate {
             }
         }
         if string.count == 1 {
-            if (textField.text?.count ?? 0) == 1 && textField.tag == 0 {
+            if (textField.text?.count ?? 0) == 1 {
                 if (txtFirst.text?.count ?? 0) == 1 {
                     if (txtSecond.text?.count ?? 0) == 1 {
                         if (txtThird.text?.count ?? 0) == 1 {
                             if (txtForth.text?.count ?? 0) == 1 {
                                 if (txtFifth.text?.count ?? 0) == 1 {
-                                    txtSixth.text = string
-                                    DispatchQueue.main.async { [weak self] in
-                                        self?.dismissKeyboard()
+                                    if (txtSixth.text?.count ?? 0) == 1 {
+                                        
+                                        print("Textfield full")
+                                        
+                                        if (txtFirst.text?.count ?? 0) == 1 && textField.tag == 1 {
+                                            txtFirst.text = string
+                                            return false
+                                        }else if (txtSecond.text?.count ?? 0) == 1 && textField.tag == 2 {
+                                            txtSecond.text = string
+                                            return false
+                                        }else if (txtThird.text?.count ?? 0) == 1 && textField.tag == 3 {
+                                            txtThird.text = string
+                                            return false
+                                        }else if (txtForth.text?.count ?? 0) == 1 && textField.tag == 4 {
+                                            txtForth.text = string
+                                            return false
+                                        }else if (txtFifth.text?.count ?? 0) == 1 && textField.tag == 5 {
+                                            txtFifth.text = string
+                                            return false
+                                        }else if (txtSixth.text?.count ?? 0) == 1 && textField.tag == 6 {
+                                            txtSixth.text = string
+                                            return false
+                                        }else {
+                                            return false
+                                        }
+                                        
+                                    }else {
+                                        txtSixth.text = string
+                                        DispatchQueue.main.async { [weak self] in
+                                            self?.dismissKeyboard()
+                                        }
+                                        return false
                                     }
-                                    return false
                                 }else{
                                     txtFifth.text = string
                                     return false
@@ -802,3 +871,8 @@ extension AuthenticationPINViewController:  CustomTextFieldDelegate {
     
 }
 
+extension AuthenticationPINViewController: CallDismissDelegate {
+    func onCallControllerDismissed() {
+        showAlerts()
+    }
+}

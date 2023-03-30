@@ -27,7 +27,14 @@ class ContactViewController: UIViewController {
     @IBOutlet weak var headerView: UIView?
     
     var allContacts =  [ProfileDetails]()
-    var contacts = [ProfileDetails]()
+    var contacts = [ProfileDetails]() {
+        didSet {
+            executeOnMainThread { [weak self] in
+                guard let self else {return}
+                self.contactList.reloadData()
+            }
+        }
+    }
     var selectectProfiles = [ProfileDetails]()
     var selectedProfilesJid = NSMutableArray()
     var synced = false
@@ -160,7 +167,7 @@ class ContactViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.methodOfReceivedNotification(notification:)), name: Notification.Name(Identifiers.ncContactRefresh), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.contactSyncCompleted(notification:)), name: NSNotification.Name(FlyConstants.contactSyncState), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),name:Notification.Name(NetStatus.networkNotificationObserver),object: nil)
-        if ENABLE_CONTACT_SYNC || !groupJid.isEmpty{
+        if ENABLE_CONTACT_SYNC || !groupJid.isEmpty && searchTxt.text != "" {
             getCotactFromLocal(fromServer: false)
         }else{
             resetDataAndFetchUsersList()
@@ -265,7 +272,7 @@ class ContactViewController: UIViewController {
         if ENABLE_CONTACT_SYNC && CNContactStore.authorizationStatus(for: CNEntityType.contacts) == .denied && groupJid.isEmpty{
             contacts.removeAll()
             allContacts.removeAll()
-            contactList.reloadData()
+//            contactList.reloadData()
             return
         }
         print("#image getCotactFromLocal")
@@ -312,10 +319,11 @@ class ContactViewController: UIViewController {
             self?.allContacts.removeAll()
             self?.contacts.removeAll()
             self?.allContacts = profileDetails.sorted { getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType).capitalized < getUserName(jid: $1.jid, name: $1.name, nickName: $1.nickName,contactType: $1.contactType).capitalized }
-            self?.contacts = profileDetails
-            let contactDetails = self?.searchTxt.text?.count == 0 ? self?.allContacts : self?.allContacts.filter({  getUserName(jid: $0.jid,name: $0.name, nickName: $0.nickName, contactType: $0.contactType).capitalized.contains(self?.searchTxt.text?.capitalized ?? "")})
+            let searchString = self?.searchTxt.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let contactDetails = searchString?.count == 0 ? self?.allContacts : self?.allContacts.filter { term in
+                return getUserName(jid: term.jid ,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(searchString?.lowercased() ?? "")
+            }
             self?.contacts = contactDetails ?? []
-            self?.contactList.reloadData()
             let index = self?.currentIndex
             let count = self?.contacts.count
             if index ?? 0 > -1  && index ?? 0 < count ?? 0 {
@@ -330,7 +338,6 @@ class ContactViewController: UIViewController {
         if ENABLE_CONTACT_SYNC && CNContactStore.authorizationStatus(for: CNEntityType.contacts) == .denied && groupJid.isEmpty || FlyDefaults.isContactPermissionSkipped && ENABLE_CONTACT_SYNC{
             contacts.removeAll()
             allContacts.removeAll()
-            contactList.reloadData()
             return
         }
         if !groupJid.isEmpty{
@@ -361,7 +368,6 @@ class ContactViewController: UIViewController {
                 }
                 // weakSelf.randomColors = AppUtils.shared.setRandomColors(totalCount: weakSelf.contacts.count)
                 if error != nil {
-                    weakSelf.contactList.reloadData()
                     weakSelf.refreshControl.endRefreshing()
                 }
             }
@@ -623,9 +629,9 @@ extension ContactViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
         if ENABLE_CONTACT_SYNC{
             scrollToTableViewTop()
-            contacts = searchText.isEmpty ? allContacts : allContacts.filter { term in
-                return getUserName(jid: term.jid ,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(searchText.lowercased())
-                self.contactList.reloadData()
+            let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+            contacts = searchString.isEmpty ? allContacts : allContacts.filter { term in
+                return getUserName(jid: term.jid ,name: term.name, nickName: term.nickName, contactType: term.contactType).lowercased().contains(searchString.lowercased())
             }
         }else{
             let searchString = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -646,7 +652,6 @@ extension ContactViewController: UISearchBarDelegate {
         searchTerm = emptyString()
         if ENABLE_CONTACT_SYNC || !groupJid.isEmpty{
             contacts = allContacts
-            self.contactList.reloadData()
         }else{
             resetDataAndFetchUsersList()
         }
@@ -705,12 +710,13 @@ extension ContactViewController :  UITableViewDelegate, UITableViewDataSource {
             } else {
                 cell.status.isHidden = false
                 cell.status.text = profile.status
-                cell.profile.loadFlyImage(imageURL: profile.image, name: name, contactType: profile.contactType, jid: profile.jid)
+                let profileImage = profile.thumbImage.isEmpty ? profile.image : profile.thumbImage
+                cell.profile.loadFlyImage(imageURL: profileImage, name: name, contactType: profile.contactType, jid: profile.jid)
             }
             cell.checkBox.tag = indexPath.row
             cell.checkBox.isSelected = selectedProfilesJid.contains(profile.jid ?? "")
             cell.checkBox.isHidden = !isMultiSelect
-            cell.setTextColorWhileSearch(searchText: searchTxt.text ?? "", profile: profile)
+            cell.setTextColorWhileSearch(searchText: (searchTxt.text ?? "").trim(), profile: profile)
             cell.setLastContentTextColor(searchText: "", profile: profile)
             return cell
         }else {
@@ -886,7 +892,7 @@ extension ContactViewController : ProfileEventsDelegate {
         if  let index = allContacts.firstIndex(where: { pd in pd.jid == jid }) {
             allContacts[index] = profileDetails
             print("userUpdatedTheirProfile currentIndex \(currentIndex)")
-            let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status]
+            let profile = ["jid": profileDetails.jid, "name": profileDetails.name, "image": profileDetails.image, "status": profileDetails.status, "thumbImage": profileDetails.thumbImage]
             NotificationCenter.default.post(name: Notification.Name(Identifiers.ncProfileUpdate), object: nil, userInfo: profile as [AnyHashable : Any])
             NotificationCenter.default.post(name: Notification.Name(FlyConstants.contactSyncState), object: nil, userInfo: profile as [AnyHashable : Any])
             if let index = contacts.firstIndex(where: { pd in pd.jid == jid })  {
@@ -1247,7 +1253,7 @@ extension ContactViewController {
 
     private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
         //showConfirmationAlert
-        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(name ?? "")?" : "Block \(name ?? "")?", preferredStyle: .alert)
+        let alertViewController = UIAlertController.init(title: nil , message: (getBlocked(jid: jid) ) ? "Unblock \(name)?" : "Block \(name)?", preferredStyle: .alert)
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
             self?.dismiss(animated: true,completion: nil)

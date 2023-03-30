@@ -15,7 +15,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     @IBOutlet weak var uploadCancel: UIImageView?
     @IBOutlet weak var fwdViw: UIView?
     @IBOutlet weak var audioPlaySlider: UISlider?
-    @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    @IBOutlet var nicoProgressBar: UIView!
     @IBOutlet weak var updateCancelButton: UIButton?
     @IBOutlet weak var fwdBtn: UIButton?
     @IBOutlet weak var fwdIcon: UIImageView?
@@ -72,7 +72,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     typealias AudioCallBack = (_ sliderValue : Float) -> Void
     var audioCallBack: AudioCallBack? = nil
     var isStarredMessagePage: Bool? = false
-    
+    var newProgressBar: ProgressBar!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -92,8 +92,9 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         audioPlaySlider?.minimumValue = 0
         audioPlaySlider?.maximumValue = 100
         audioSenderIcon?.image = UIImage(named: ImageConstant.ic_music)
-        nicoProgressBar?.primaryColor = .white
-        nicoProgressBar?.secondaryColor = .clear
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: nicoProgressBar.frame.width, height: nicoProgressBar.frame.height))
+        newProgressBar.primaryColor = .white
+        newProgressBar.bgColor = .clear
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -136,7 +137,6 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
     
         let timeStamp =  message?.messageSentTime
         senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
-        senderProfileImageView?.sd_imageIndicator = SDWebImageActivityIndicator.gray
         senderProfileImageView?.makeRounded()
         let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
         setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
@@ -325,7 +325,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: ImageConstant.ic_upload)
                 updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
                 audioPlaySlider?.isUserInteractionEnabled = false
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
             } else if message?.mediaChatMessage?.mediaUploadStatus == .failed {
                 uploadCancel?.isHidden = false
                 playIcon?.isHidden = true
@@ -333,10 +333,10 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: ImageConstant.ic_upload)
                 updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
                 audioPlaySlider?.isUserInteractionEnabled = false
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
             } else if message?.mediaChatMessage?.mediaUploadStatus == .uploading {
                 uploadCancel?.image = UIImage(named: ImageConstant.ic_audioUploadCancel)
-                nicoProgressBar?.isHidden = false
+                nicoProgressBar.addSubview(newProgressBar)
                 uploadCancel?.isHidden = false
                 playIcon?.isHidden = true
                 playButton?.isHidden = true
@@ -344,17 +344,17 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 audioPlaySlider?.isUserInteractionEnabled = false
                 uploadingMediaObjects?.forEach({ chatMessage in
                     if chatMessage.messageId == message?.messageId {
-                        nicoProgressBar?.transition(to: .indeterminate)
-                        nicoProgressBar?.isHidden = false
+//                        nicoProgressBar?.transition(to: .indeterminate)
+                        nicoProgressBar.addSubview(newProgressBar)
                     } else {
-                        nicoProgressBar?.isHidden = false
+                        nicoProgressBar.addSubview(newProgressBar)
                     }
                 })
             } else if message?.mediaChatMessage?.mediaUploadStatus == .uploaded {
                 playIcon?.image = isPlaying ? UIImage(named: ImageConstant.ic_audio_pause) : UIImage(named: ImageConstant.ic_play)
                 playIcon?.isHidden = false
                 uploadCancel?.isHidden = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
                 audioPlaySlider?.isUserInteractionEnabled = true
                 playButton?.isHidden = false
             } else {
@@ -368,7 +368,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: "download")
                 updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
                 audioPlaySlider?.isUserInteractionEnabled = false
-                nicoProgressBar?.isHidden = false
+                newProgressBar.removeFromSuperview()
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .failed {
                 uploadCancel?.isHidden = false
                 playIcon?.isHidden = true
@@ -376,28 +376,29 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
                 uploadCancel?.image = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? UIImage(named: ImageConstant.ic_audioUploadCancel) : UIImage(named: "download")
                 updateCancelButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
                 audioPlaySlider?.isUserInteractionEnabled = false
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloading {
                 uploadCancel?.image = UIImage(named: ImageConstant.ic_audioUploadCancel)
-                nicoProgressBar?.isHidden = false
+                nicoProgressBar.addSubview(newProgressBar)
+//                nicoProgressBar?.transition(to: .indeterminate)
                 uploadCancel?.isHidden = false
                 playIcon?.isHidden = true
                 playButton?.isHidden = true
                 updateCancelButton?.isHidden = false
                 audioPlaySlider?.isUserInteractionEnabled = false
-                uploadingMediaObjects?.forEach({ chatMessage in
-                    if chatMessage.messageId == message?.messageId {
-                        nicoProgressBar?.transition(to: .indeterminate)
-                        nicoProgressBar?.isHidden = false
-                    } else {
-                        nicoProgressBar?.isHidden = false
-                    }
-                })
+//                uploadingMediaObjects?.forEach({ chatMessage in
+//                    if chatMessage.messageId == message?.messageId {
+//                        nicoProgressBar?.transition(to: .indeterminate)
+//                        nicoProgressBar?.startInit()
+//                    } else {
+//                        nicoProgressBar?.startInit()
+//                    }
+//                })
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloaded {
                 playIcon?.image = isPlaying ? UIImage(named: ImageConstant.ic_audio_pause) : UIImage(named: ImageConstant.ic_play)
                 playIcon?.isHidden = false
                 uploadCancel?.isHidden = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
                 audioPlaySlider?.isUserInteractionEnabled = true
                 playButton?.isHidden = false
             } else {
@@ -476,7 +477,7 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         uploadCancel?.image = UIImage(named: ImageConstant.ic_audioUploadCancel)
         updateCancelButton?.isHidden = false
         audioPlaySlider?.isUserInteractionEnabled = false
-        nicoProgressBar?.isHidden = false
+        nicoProgressBar.addSubview(newProgressBar)
     }
     
     func stopUpload() {
@@ -486,18 +487,25 @@ class AudioSender: BaseTableViewCell, AVAudioPlayerDelegate {
         uploadCancel?.image = UIImage(named: ImageConstant.ic_upload)
         updateCancelButton?.isHidden = false
         audioPlaySlider?.isUserInteractionEnabled = false
-        nicoProgressBar?.isHidden = true
+        newProgressBar.removeFromSuperview()
     }
     
     func stopDownload() {
         uploadCancel?.isHidden = false
         playIcon?.isHidden = true
         playButton?.isHidden = true
-        uploadCancel?.image = UIImage(named: "Download")
+        uploadCancel?.image = UIImage(named: "download")
         updateCancelButton?.isHidden = false
         audioPlaySlider?.isUserInteractionEnabled = false
-        nicoProgressBar?.isHidden = true
+        newProgressBar.removeFromSuperview()
     }
+    
+//    func showProgress(percentage: CGFloat) {
+//        executeOnMainThread { [weak self] in
+//            guard let self else {return}
+//            self.newProgressBar.setProg(per: percentage)
+//        }
+//    }
 }
 
 

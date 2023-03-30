@@ -44,6 +44,15 @@ class CallLogViewController: UIViewController {
 
     @IBOutlet weak var noCallLogView: UIView!
     @IBOutlet weak var searchCallLogLabel: UILabel!
+    
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action:
+                                    #selector(CallLogViewController.handleRefresh(_:)),
+                                 for: UIControl.Event.valueChanged)
+        refreshControl.tintColor = UIColor.gray
+        return refreshControl
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,10 +77,12 @@ class CallLogViewController: UIViewController {
             }
             
         }.disposed(by: disposeBag)
-        
+        callLogTableView.addSubview(refreshControl)
     }
    
     override func viewWillAppear(_ animated: Bool) {
+        
+        self.navigationController?.navigationBar.isHidden = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkChange(_:)),
                                                name: Notification.Name(NetStatus.networkNotificationObserver), object: nil)
@@ -91,50 +102,8 @@ class CallLogViewController: UIViewController {
             
         }
        
-        if !callLogArray.isEmpty {
-            
-            callLogTableView.reloadData()
-        }
-        else {
-            
-            isLoadingInProgress = true
-            callLogManager.getCallLogs(pageNumber: 1) { isSuccess, error, data in
-                if isSuccess {
-                    print(data)
-                    
-                    if let callLogs = data["data"] as? [String : Any]{
-                        
-                        if let totalPages = callLogs["totalPages"] as? Int ,let totalRecords = callLogs["totalRecords"] as? Int {
-                            self.callLogsTotalPages = totalPages
-                            self.callLogsTotalRecords = totalRecords
-                            self.pageNumber += 1
-                            
-                            Utility.saveInPreference(key: "clLastPageNumber", value: "\(self.pageNumber)")
-                            Utility.saveInPreference(key: "clLastTotalPages", value: "\(self.callLogsTotalPages)")
-                            Utility.saveInPreference(key: "clLastTotalRecords", value: "\(self.callLogsTotalRecords)")
-                        }
-                        
-                        if !self.isSearchEnabled {
-                            self.callLogArray = CallLogManager.getAllCallLogs()
-                            self.noCallLogView.isHidden = !self.callLogArray.isEmpty
-                        }
-                        self.allCallLogArray = self.callLogArray
-                        self.deleteAllBtn.isHidden = self.callLogArray.isEmpty
-                        self.callLogTableView.reloadData()
-                        
-                    }
-                } else {
-                    if !NetworkReachability.shared.isConnected{
-                        AppAlert.shared.showToast(message: ErrorMessage.noInternet)
-                    }else{
-                        var flyData = data
-                        if let message = flyData.getMessage() as? String{
-                            print("#error \(message)")
-                        }
-                    }
-                }
-                self.isLoadingInProgress = false
-            }
+        if NetworkReachability.shared.isConnected {
+            fetchCallLogsFromServer()
         }
         callLogManager.syncCallLogs { isSuccess, error, data in
             if isSuccess {
@@ -190,6 +159,7 @@ class CallLogViewController: UIViewController {
         ContactManager.shared.profileDelegate = self
         ChatManager.shared.adminBlockDelegate = self
         ChatManager.shared.availableFeaturesDelegate = self
+        CallManager.callLogDelegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -206,7 +176,7 @@ class CallLogViewController: UIViewController {
         //CallLogs Badge Count
         FlyDefaults.unreadMissedCallCount = 0
         NotificationCenter.default.post(name: NSNotification.Name("updateUnReadMissedCallCount"), object: FlyDefaults.unreadMissedCallCount)
-
+        CallManager.callLogDelegate = nil
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -215,13 +185,52 @@ class CallLogViewController: UIViewController {
             floaty.removeFromSuperview()
         }
     }
+    
+    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
+        if NetworkReachability.shared.isConnected {
+          fetchCallLogsFromServer()
+        }else {
+            refreshControl.endRefreshing()
+            AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+        }
+    }
    
-    @objc func appDidBecomeActive(){
-        // getsyncedLogs()
+    func fetchCallLogsFromServer(){
+        refreshControl.startRotating()
         callLogManager.getCallLogs(pageNumber: 1) { isSuccess, error, data in
             if isSuccess {
-                print(data)
+                if let callLogs = data["data"] as? [String : Any]{
+
+                    if let totalPages = callLogs["totalPages"] as? Int ,let totalRecords = callLogs["totalRecords"] as? Int {
+                        self.callLogsTotalPages = totalPages
+                        self.callLogsTotalRecords = totalRecords
+                        self.pageNumber += 1
+
+                        Utility.saveInPreference(key: "clLastPageNumber", value: "\(self.pageNumber)")
+                        Utility.saveInPreference(key: "clLastTotalPages", value: "\(self.callLogsTotalPages)")
+                        Utility.saveInPreference(key: "clLastTotalRecords", value: "\(self.callLogsTotalRecords)")
+                    }
+
+                    if !self.isSearchEnabled {
+                        self.callLogArray = CallLogManager.getAllCallLogs()
+                        self.noCallLogView.isHidden = !self.callLogArray.isEmpty
+                    }
+                    self.allCallLogArray = self.callLogArray
+                    self.deleteAllBtn.isHidden = self.callLogArray.isEmpty
+                    self.callLogTableView.reloadData()
+
+                }
+            } else {
+                if !NetworkReachability.shared.isConnected{
+                    AppAlert.shared.showToast(message: ErrorMessage.noInternet)
+                }else{
+                    var flyData = data
+                    if let message = flyData.getMessage() as? String{
+                        print("#error \(message)")
+                    }
+                }
             }
+            self.refreshControl.endRefreshing()
         }
     }
     
@@ -283,7 +292,8 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
                 memberCell?.contactNamelabel.attributedText = getAttributedUserName(name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), searchText: (callLogSearchBar.text ?? "").trim())
                 memberCell?.userImageView.layer.cornerRadius = (memberCell?.userImageView.frame.size.height)!/2
                 memberCell?.userImageView.layer.masksToBounds = true
-                memberCell?.userImageView.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType, jid: contact.jid, isBlockedByAdmin: ContactManager.shared.getUserProfileDetails(for: contact.jid)?.isBlockedByAdmin ?? false)
+                let profileImage = contact.thumbImage.isEmpty ? contact.image : contact.thumbImage
+                memberCell?.userImageView.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), chatType: contact.profileChatType,contactType: contact.contactType, jid: contact.jid, isBlockedByAdmin: ContactManager.shared.getUserProfileDetails(for: contact.jid)?.isBlockedByAdmin ?? false)
                 if getIsBlockedByMe(jid: jid) {
                     memberCell?.userImageView.image = UIImage(named: "ic_profile_placeholder")
                 }
@@ -331,11 +341,12 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
                 memberCell?.plusCountLbl.isHidden = true
                 for i in 0...contactJidArr.count - 1{
                     if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        let profileImage = contact.thumbImage.isEmpty ? contact.image : contact.thumbImage
                         if i == 0{
-                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgOne.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         if i == 1{
-                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgFour.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                             
                         }
                     }
@@ -344,15 +355,16 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
             } else if contactJidArr.count == 3 {
                 for i in 0...contactJidArr.count - 1{
                     if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        let profileImage = contact.thumbImage.isEmpty ? contact.image : contact.thumbImage
                         if i == 0{
-                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgOne.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         if i == 1{
-                            memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgThree.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         
                         if i == 2{
-                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgFour.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                     }
                 }
@@ -365,18 +377,19 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
             } else if contactJidArr.count == 4 {
                 for i in 0...contactJidArr.count - 1{
                     if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        let profileImage = contact.thumbImage.isEmpty ? contact.image : contact.thumbImage
                         if i == 0{
-                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgOne.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
                         }
                         else if i == 1{
-                            memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgTwo.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
                         }
                         
                         else if i == 2{
-                            memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgThree.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
                         }
                         else if i == 3{
-                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgFour.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType),contactType: contact.contactType, jid: contact.jid)
                         }
                         else {
                             break
@@ -399,18 +412,19 @@ extension CallLogViewController : UITableViewDataSource, UITableViewDelegate {
                 memberCell?.plusCountLbl.text =  "+ " + "\(fullNameArr.count - 4)"
                 for i in 0...contactJidArr.count - 1{
                     if let contact = rosterManager.getContact(jid: contactJidArr[i] as! String){
+                        let profileImage = contact.thumbImage.isEmpty ? contact.image : contact.thumbImage
                         if i == 0{
-                            memberCell?.imgOne.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgOne.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         else if i == 1{
-                            memberCell?.imgTwo.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgTwo.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         
                         else if i == 2{
-                            memberCell?.imgThree.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgThree.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         else if i == 3{
-                            memberCell?.imgFour.loadFlyImage(imageURL: contact.image, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
+                            memberCell?.imgFour.loadFlyImage(imageURL: profileImage, name: getUserName(jid : contact.jid ,name: contact.name, nickName: contact.nickName, contactType: contact.contactType), contactType: contact.contactType, jid: contact.jid)
                         }
                         else {
                             break
@@ -737,6 +751,7 @@ extension CallLogViewController {
         if isClearAll {
             callLogManager.deleteCallLog { [weak self] isSuccess, error, data in
                 if isSuccess {
+//                    ChatManager.deleteCallLogs(deleteAll: true, calllogIds: emptyString()) { isSuccess, error, data in }
                     print(data)
                     self?.deleteAllBtn.isHidden = true
                     self?.refreshTableview()
@@ -1075,5 +1090,26 @@ extension CallLogViewController: UISearchBarDelegate {
 
     func scrollToTableViewTop() {
         callLogTableView.setContentOffset(.zero, animated: false)
+    }
+}
+
+extension CallLogViewController : CallLogDelegate {
+    
+    func clearAllCallLog(){
+        callLogManager.deleteCallLog { [weak self] isSuccess, error, data in
+            if isSuccess {
+                print(data)
+                self?.deleteAllBtn.isHidden = true
+                self?.refreshTableview()
+            }
+        }
+    }
+    
+    func deleteCallLogs(callLogIds : [String]){
+        
+    }
+    
+    func callLogUpdate(calllogId : String){
+        
     }
 }

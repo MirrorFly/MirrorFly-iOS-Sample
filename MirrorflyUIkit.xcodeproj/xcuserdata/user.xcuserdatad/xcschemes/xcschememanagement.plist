@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>UiKitQaShare.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>60</integer>
+		</dict>
 		<key>notificationextention.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,16 +28,6 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>CEA2F92426569C590013F5E8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CEC08A9C27E23B0D005E48C5</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CEC08B6227E23B9F005E48C5</key>
 		<dict>
 			<key>primary</key>
 			<true/>

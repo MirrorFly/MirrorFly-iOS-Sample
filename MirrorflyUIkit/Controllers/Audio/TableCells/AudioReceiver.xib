@@ -315,7 +315,7 @@
                                                             <constraint firstAttribute="width" constant="12" id="gOW-cF-le8"/>
                                                         </constraints>
                                                     </imageView>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xvf-3g-HKs" customClass="NicoProgressBar" customModule="NicoProgress">
+                                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xvf-3g-HKs">
                                                         <rect key="frame" x="0.0" y="33" width="30" height="3"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
@@ -511,7 +511,7 @@
         <image name="foward" width="24" height="24"/>
         <image name="ic_audio_receive" width="28" height="28"/>
         <image name="ic_download" width="29" height="29"/>
-        <image name="ic_favouriteStarGray" width="16" height="16"/>
+        <image name="ic_favouriteStarGray" width="100" height="100"/>
         <image name="ic_play_dark" width="12" height="15"/>
         <image name="test-image.jpg" width="269" height="187"/>
         <namedColor name="audioReceive2">

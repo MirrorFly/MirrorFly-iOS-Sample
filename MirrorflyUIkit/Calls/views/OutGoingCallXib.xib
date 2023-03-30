@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -41,14 +41,15 @@
                 <outlet property="contentView" destination="Toa-Xc-0Qe" id="BjX-wf-3mX"/>
                 <outlet property="imageHeight" destination="mkk-Q9-Let" id="brN-fa-HlD"/>
                 <outlet property="imageTop" destination="rbP-QY-u8E" id="Nrt-QO-pOS"/>
-                <outlet property="localVideoView" destination="29V-b3-zvL" id="Fz5-8i-l53"/>
+                <outlet property="localUserVideoView" destination="29V-b3-zvL" id="jZt-wT-3Vd"/>
                 <outlet property="localVideoViewBottom" destination="LaH-lc-eOc" id="WSg-OS-mMZ"/>
                 <outlet property="localVideoViewHeight" destination="wnm-en-hkN" id="l6k-4P-5AL"/>
                 <outlet property="localVideoViewTrailing" destination="9fk-g9-Qyw" id="UcN-y1-fIa"/>
                 <outlet property="localVideoViewWidth" destination="o7p-mi-A2w" id="PGr-CV-AEH"/>
                 <outlet property="nameTop" destination="r7t-dk-Jkq" id="3Rd-dd-ZEc"/>
                 <outlet property="outGoingAudioCallImageView" destination="UY9-Ax-Jcy" id="wec-ME-3X4"/>
-                <outlet property="remoteVideoView" destination="Tni-kK-dpS" id="39g-6n-lyr"/>
+                <outlet property="remoteImageView" destination="sox-yf-FG2" id="zcd-kz-H9Y"/>
+                <outlet property="remoteUserVideoView" destination="Tni-kK-dpS" id="Qpm-IE-EIv"/>
                 <outlet property="speakerButton" destination="ivY-91-8wT" id="o6v-Wl-djO"/>
                 <outlet property="stackView" destination="vic-XV-0Md" id="nDY-X5-HcI"/>
                 <outlet property="timerLable" destination="KL9-w6-OdJ" id="9vi-YM-rOl"/>
@@ -62,11 +63,26 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <view clipsSubviews="YES" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Tni-kK-dpS" userLabel="remoteVideoView" customClass="RTCMTLVideoView">
+                <view clipsSubviews="YES" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Tni-kK-dpS" userLabel="remoteVideoView">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="redraw" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_profile_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="sox-yf-FG2">
+                            <rect key="frame" x="147" y="308" width="120" height="120"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="120" id="B2v-ZD-X1d"/>
+                                <constraint firstAttribute="width" constant="120" id="qhG-cc-Z6g"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="sox-yf-FG2" firstAttribute="centerY" secondItem="Tni-kK-dpS" secondAttribute="centerY" id="nz7-1s-JyY"/>
+                        <constraint firstItem="sox-yf-FG2" firstAttribute="centerX" secondItem="Tni-kK-dpS" secondAttribute="centerX" id="sah-Cn-e39"/>
+                    </constraints>
                 </view>
-                <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="29V-b3-zvL" userLabel="localVideoView" customClass="RTCMTLVideoView">
+                <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="29V-b3-zvL" userLabel="localVideoView">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="414" id="o7p-mi-A2w"/>
@@ -328,13 +344,11 @@
         <image name="addParticipant" width="17" height="18.666666030883789"/>
         <image name="call again_ic" width="54" height="54"/>
         <image name="call_bg" width="414" height="742"/>
-        <image name="camera" catalog="system" width="128" height="94"/>
+        <image name="camera" catalog="system" width="128" height="93"/>
         <image name="cancel_ic" width="54" height="54"/>
+        <image name="ic_profile_placeholder" width="139" height="139"/>
         <image name="mic.slash.fill" catalog="system" width="108" height="128"/>
         <image name="pipDownArrow" width="28" height="22.333333969116211"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemGray2Color">
             <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

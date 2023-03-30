@@ -22,7 +22,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     @IBOutlet weak var documetTypeImage: UIImageView?
     @IBOutlet weak var sentTimeLabel: UILabel?
     @IBOutlet weak var messageStatusImage: UIImageView?
-    @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    @IBOutlet weak var nicoProgressBar: UIView!
     
     //StarredMessages
     @IBOutlet weak var favImageView: UIImageView?
@@ -58,7 +58,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     @IBOutlet weak var replyMessageIconWidth: NSLayoutConstraint?
     
     var isUploading: Bool? = false
-    
+    var newProgressBar: ProgressBar!
     var isShowAudioLoadingIcon: Bool? = false
     
     var selectedForwardMessage: [SelectedMessages]? = []
@@ -82,8 +82,9 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         sentTimeLabel?.font = UIFont.font9px_appLight()
         replyView?.roundCorners(corners: [.topLeft, .topRight], radius: 5.0)
         cellBaseView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
-        nicoProgressBar?.primaryColor = .white
-        nicoProgressBar?.secondaryColor = .clear
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: nicoProgressBar.frame.width, height: nicoProgressBar.frame.height))
+        newProgressBar.primaryColor = .gray
+        newProgressBar.bgColor = .clear
     }
     
     func setSelectView(selected: Bool) {
@@ -109,7 +110,6 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
         
         let timeStamp =  message?.messageSentTime
         senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
-        senderImageview?.sd_imageIndicator = SDWebImageActivityIndicator.gray
         senderImageview?.makeRounded()
         let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
         setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
@@ -305,11 +305,10 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 uploadButton?.isHidden = false
 
                 if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
-                    nicoProgressBar?.isHidden = false
-                    nicoProgressBar?.transition(to: .indeterminate)
+                    nicoProgressBar.addSubview(newProgressBar)
                 } else {
                     print("sender", sendMediaMessages?.count ?? 0)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                     
                 }
                 documentNameTrailingCons?.isActive = true
@@ -320,10 +319,10 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 uploadButton?.isHidden = false
 
                 if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                 } else {
                     print("sender", sendMediaMessages?.count ?? 0)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                     
                 }
                 documentNameTrailingCons?.isActive = true
@@ -333,8 +332,7 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 uploadButton?.isHidden = true
                 uploadImageView?.isHidden = true
                 uploadCancelImage?.isHidden = false
-                nicoProgressBar?.isHidden = false
-                nicoProgressBar?.transition(to: .indeterminate)
+                nicoProgressBar.addSubview(newProgressBar)
                 documentNameTrailingCons?.isActive = true
                 doctNameTrailingWithoutImageCons?.isActive = false
             } else if message?.mediaChatMessage?.mediaUploadStatus == .uploaded {
@@ -350,13 +348,13 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 }
                 documentNameTrailingCons?.isActive = false
                 doctNameTrailingWithoutImageCons?.isActive = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
                 uploadCancelImage?.isHidden = true
                 uploadImageView?.isHidden = true
                 uploadButton?.isHidden = true
                 
             } else {
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
                 uploadCancelImage?.isHidden = true
                 uploadImageView?.isHidden = true
                 uploadButton?.isHidden = true
@@ -370,11 +368,10 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 uploadButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
                 if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
                     print("sender", sendMediaMessages?.count ?? 0)
-                    nicoProgressBar?.isHidden = false
-                    nicoProgressBar?.transition(to: .indeterminate)
+                    nicoProgressBar.addSubview(newProgressBar)
                 } else {
                     print("sender", sendMediaMessages?.count ?? 0)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                     
                 }
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .failed  {
@@ -383,17 +380,16 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                 uploadButton?.isHidden = (isShowAudioLoadingIcon == true && indexPath == IndexPath(row: 0, section: 0)) ? true : false
                 if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
                     print("sender", sendMediaMessages?.count ?? 0)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                 } else {
                     print("sender", sendMediaMessages?.count ?? 0)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                     
                 }
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloading {
                 uploadCancelImage?.image = UIImage(named: ImageConstant.ic_uploadCancel)
                 uploadCancelImage?.isHidden = false
-                nicoProgressBar?.isHidden = false
-                nicoProgressBar?.transition(to: .indeterminate)
+                nicoProgressBar.addSubview(newProgressBar)
                 
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloaded {
                 if let localPath = message?.mediaChatMessage?.mediaFileName {
@@ -407,16 +403,16 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
                     }
                 }
                 uploadCancelImage?.isHidden = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
                 
             } else {
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
             }
         }
         
         let status = message?.messageStatus
         if status == .acknowledged || status == .received || status == .delivered || status == .seen {
-            nicoProgressBar?.isHidden = true
+            newProgressBar.removeFromSuperview()
         }
         
         ChatUtils.setSenderBubbleBackground(imageView: bubbleImageView)
@@ -481,20 +477,19 @@ class SenderDocumentsTableViewCell: BaseTableViewCell {
     func startUpload() {
         uploadCancelImage?.isHidden = false
         uploadCancelImage?.image = UIImage(named: ImageConstant.ic_uploadCancel)
-        nicoProgressBar?.isHidden = false
-        nicoProgressBar?.transition(to: .indeterminate)
+        nicoProgressBar.addSubview(newProgressBar)
     }
     
     func stopUpload() {
         uploadCancelImage?.isHidden = false
         uploadCancelImage?.image = UIImage(named: ImageConstant.ic_upload)
-        nicoProgressBar?.isHidden = true
+        newProgressBar.removeFromSuperview()
     }
     
     func stopDownload() {
         uploadCancelImage?.isHidden = false
         uploadCancelImage?.image = UIImage(named: "Download")
-        nicoProgressBar?.isHidden = true
+        newProgressBar.removeFromSuperview()
     }
 }
 

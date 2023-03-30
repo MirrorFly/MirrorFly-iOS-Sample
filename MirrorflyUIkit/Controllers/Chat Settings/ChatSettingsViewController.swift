@@ -19,7 +19,7 @@ enum ChatSettingList: String, CaseIterable {
     case lastseen = "Last Seen"
     case UserBusyStatus = "User Busy Status"
     case autodownload = "Auto Download"
-    //case chatBackup = "ChatBackup"
+//    case chatBackup = "ChatBackup"
     case clearAllConversation = "Clear All Conversation"
 
 }
@@ -195,9 +195,9 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
             }
         case .lastseen:
             if isInternetConnected {
-                FlyDefaults.hideLastSeen = !FlyDefaults.hideLastSeen
-                ChatManager.enableDisableHideLastSeen( EnableLastSeen:FlyDefaults.hideLastSeen ) { isSuccess, flyError, flyData in
+                ChatManager.enableDisableHideLastSeen(EnableLastSeen: !FlyDefaults.hideLastSeen) { isSuccess, flyError, flyData in
                     print(flyData)
+                    tableView.reloadData()
                 }
             }
 
@@ -239,16 +239,12 @@ extension ChatSettingsViewController : UITableViewDelegate,UITableViewDataSource
             }
 
         case.autodownload:
-            FlyDefaults.autoDownloadEnable = !FlyDefaults.autoDownloadEnable
-            FlyDefaults.autoDownloadLastEnabledTime = FlyDefaults.autoDownloadEnable ? FlyUtils.getTimeInMillis() : 0
-
+            ChatManager.shared.enableAutoDownload(isEnable: !FlyDefaults.autoDownloadEnable)
+            
         case .ArchiveSettings:
             if isInternetConnected {
-                FlyDefaults.isArchivedChatEnabled = !FlyDefaults.isArchivedChatEnabled
-                ChatManager.enableDisableArchivedSettings(FlyDefaults.isArchivedChatEnabled) { isSuccess, error, data in
-                    if !isSuccess {
-                        FlyDefaults.isArchivedChatEnabled = !FlyDefaults.isArchivedChatEnabled
-                    }
+                ChatManager.enableDisableArchivedSettings(!FlyDefaults.isArchivedChatEnabled) { isSuccess, error, data in
+
                 }
             }
 
@@ -358,7 +354,7 @@ extension ChatSettingsViewController : AvailableFeaturesDelegate {
             chatSettingsArray = ChatSettingList.allCases
         }else if !availableFeatures.isTranslationEnabled && !availableFeatures.isClearChatEnabled {
             FlyDefaults.isTranlationEnabled = false
-            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,]
+            chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload]
         }else if !availableFeatures.isTranslationEnabled && availableFeatures.isClearChatEnabled {
             FlyDefaults.isTranlationEnabled = false
             chatSettingsArray = [.ArchiveSettings,.lastseen,.UserBusyStatus,.autodownload,.clearAllConversation]
