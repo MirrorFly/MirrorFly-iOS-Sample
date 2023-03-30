@@ -14,10 +14,12 @@ class SettingsViewController : BaseViewController {
     @IBOutlet weak var tblSettings : UITableView!
     @IBOutlet weak var lblVersion: UILabel!
     //@IBOutlet weak var lblLatestRelease: UILabel!
-
-    private var settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
     
     var availableFeatures = ChatManager.getAvailableFeatures()
+    
+    //private var settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","Archived Chats","About and Help","App Lock","Connection Label", "Logout"]
+    
+    private var settingsArr = [String]()
     
 
     override func viewDidLoad() {
@@ -102,6 +104,11 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             break
+        case "Chat Tags":
+            if let vc = UIStoryboard(name: "ChatTags", bundle: nil).instantiateViewController(withIdentifier: "ChatTagsController") as? ChatTagsController {
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+            break
         case "Notifications":
             if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "NotificationsViewController") as? NotificationsViewController {
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -179,13 +186,13 @@ extension SettingsViewController : AvailableFeaturesDelegate {
     func getSettingsArray() {
         
         if (!availableFeatures.isStarMessageEnabled && !availableFeatures.isBlockEnabled){
-            settingsArr = ["Chats","Notifications","About and Help","Delete My Account","Logout"]
+            settingsArr = ["Chats","Chat Tags","Notifications","About and Help","App Lock","Delete My Account","Logout"]
         }else if (!availableFeatures.isStarMessageEnabled && availableFeatures.isBlockEnabled) {
-            settingsArr = ["Chats","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
+            settingsArr = ["Chats","Chat Tags","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
         }else if (availableFeatures.isStarMessageEnabled && !availableFeatures.isBlockEnabled) {
-            settingsArr = ["Chats","Starred Messages","Notifications","About and Help","Delete My Account","Logout"]
+            settingsArr = ["Chats","Chat Tags","Starred Messages","Notifications","About and Help","App Lock","Delete My Account","Logout"]
         }else {
-            settingsArr = ["Chats","Starred Messages","Notifications","Blocked Contacts","About and Help","Delete My Account","Logout"]
+            settingsArr = ["Chats","Chat Tags","Starred Messages","Notifications","Blocked Contacts","About and Help","App Lock","Delete My Account","Logout"]
         }
         
     }

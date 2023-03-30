@@ -56,12 +56,21 @@ class MainTabBarController: UITabBarController{
 
         if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
             let secondsDifference = Calendar.current.dateComponents([.minute, .second], from: FlyDefaults.appBackgroundTime, to: Date())
-            if secondsDifference.second ?? 0 > 32 {
+            if secondsDifference.second ?? 0 > 32 || secondsDifference.minute ?? 0 > 0 {
                 FlyDefaults.showAppLock = true
             }
         }
 
         if FlyDefaults.appFingerprintenable  && FlyDefaults.appLockenable && FlyDefaults.showAppLock {
+            
+            let current = UIApplication.shared.keyWindow?.getTopViewController()
+            if (current is AuthenticationPINViewController || current is FingerPrintPINViewController) {
+                if let vc = current as? FingerPrintPINViewController {
+                    vc.authenticationWithTouchID()
+                }
+               return
+            }
+            
             if !FlyDefaults.faceOrFingerAuthenticationFails {
                 let initialViewController = FingerPrintPINViewController(nibName: "FingerPrintPINViewController", bundle: nil)
                 let navigationController =  UINavigationController(rootViewController: initialViewController)
@@ -75,6 +84,15 @@ class MainTabBarController: UITabBarController{
             }
         }
         else if FlyDefaults.appLockenable && FlyDefaults.appFingerprintenable == false && FlyDefaults.showAppLock {
+            
+            let current = UIApplication.shared.keyWindow?.getTopViewController()
+            if (current is AuthenticationPINViewController || current is FingerPrintPINViewController) {
+                if let vc = current as? FingerPrintPINViewController {
+                    vc.authenticationWithTouchID()
+                }
+               return
+            }
+            
             let initialViewController = AuthenticationPINViewController(nibName: "AuthenticationPINViewController", bundle: nil)
             initialViewController.login = true
             self.navigationController?.setNavigationBarHidden(true, animated: true)

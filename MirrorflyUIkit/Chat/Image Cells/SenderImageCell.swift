@@ -31,7 +31,7 @@ class SenderImageCell: BaseTableViewCell {
     @IBOutlet weak var fwdView: UIView?
     @IBOutlet weak var fwdButton: UIButton?
     @IBOutlet weak var process: UIImageView?
-    @IBOutlet weak var nicoProgressBar: NicoProgressBar?
+    @IBOutlet weak var nicoProgressBar: UIView!
     @IBOutlet weak var progressView: UIView?
     @IBOutlet weak var caption: UILabel?
     @IBOutlet weak var captionBottomCons: NSLayoutConstraint?
@@ -58,7 +58,7 @@ class SenderImageCell: BaseTableViewCell {
     @IBOutlet weak var forwardButton: UIButton?
     var composeMailDelegate: ShowMailComposeDelegate?
     var sendMediaMessages: [ChatMessage]? = []
-    
+    var newProgressBar: ProgressBar!
     var imageGeasture: UITapGestureRecognizer!
     var isUploading: Bool? = false
     var message : ChatMessage?
@@ -79,8 +79,9 @@ class SenderImageCell: BaseTableViewCell {
         cellView?.roundCorners(corners: [.topLeft, .bottomLeft, .topRight], radius: 5.0)
         imageContainer?.layer.cornerRadius = 5.0
         imageContainer?.clipsToBounds = true
-        nicoProgressBar?.primaryColor = .white
-        nicoProgressBar?.secondaryColor = .clear
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: nicoProgressBar.frame.width, height: nicoProgressBar.frame.height))
+        newProgressBar.primaryColor = .white
+        newProgressBar.bgColor = .clear
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -262,14 +263,13 @@ class SenderImageCell: BaseTableViewCell {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                     if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
                         print("sender",sendMediaMessages?.count)
-                        nicoProgressBar?.isHidden = false
-                        nicoProgressBar?.transition(to: .indeterminate)
+                        nicoProgressBar.addSubview(newProgressBar)
                         uploadView?.isHidden = true
                         progressView?.isHidden = false
                         retryButton?.isHidden = false
                     } else {
                         print("sender",sendMediaMessages?.count)
-                        nicoProgressBar?.isHidden = true
+                        newProgressBar.removeFromSuperview()
                         retryButton?.isHidden = false
                         uploadView?.isHidden = false
                         progressView?.isHidden = true
@@ -278,8 +278,7 @@ class SenderImageCell: BaseTableViewCell {
             } else if message?.mediaChatMessage?.mediaUploadStatus == .uploading {
                 if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
-                    nicoProgressBar?.isHidden = false
-                    nicoProgressBar?.transition(to: .indeterminate)
+                    nicoProgressBar.addSubview(newProgressBar)
                     progressView?.isHidden = false
                     uploadView?.isHidden = true
                     retryButton?.isHidden = false
@@ -300,13 +299,13 @@ class SenderImageCell: BaseTableViewCell {
                     }
                 }
                 retryButton?.isHidden = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar.removeFromSuperview()
                 progressView?.isHidden = true
                 uploadView?.isHidden = true
             } else {
                 if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar.removeFromSuperview()
                     progressView?.isHidden = true
                     retryButton?.isHidden = true
                     uploadView?.isHidden = true
@@ -332,14 +331,13 @@ class SenderImageCell: BaseTableViewCell {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
                     if ((sendMediaMessages?.count ?? 0) > 0 && (sendMediaMessages?.filter({$0.messageId == message?.messageId}).count ?? 0) > 0) {
                         print("sender",sendMediaMessages?.count)
-                        nicoProgressBar?.isHidden = false
-                        nicoProgressBar?.transition(to: .indeterminate)
+                        nicoProgressBar.addSubview(newProgressBar)
                         uploadView?.isHidden = true
                         progressView?.isHidden = false
                         retryButton?.isHidden = false
                     } else {
                         print("sender",sendMediaMessages?.count)
-                        nicoProgressBar?.isHidden = true
+                        newProgressBar.removeFromSuperview()
                         retryButton?.isHidden = false
                         uploadView?.isHidden = false
                         progressView?.isHidden = true
@@ -348,8 +346,7 @@ class SenderImageCell: BaseTableViewCell {
             } else if message?.mediaChatMessage?.mediaDownloadStatus == .downloading {
                 if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
-                    nicoProgressBar?.isHidden = false
-                    nicoProgressBar?.transition(to: .indeterminate)
+                    nicoProgressBar.addSubview(newProgressBar)
                     progressView?.isHidden = false
                     uploadView?.isHidden = true
                     retryButton?.isHidden = false
@@ -370,13 +367,13 @@ class SenderImageCell: BaseTableViewCell {
                     }
                 }
                 retryButton?.isHidden = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar?.removeFromSuperview()
                 progressView?.isHidden = true
                 uploadView?.isHidden = true
             } else {
                 if let thumbImage = message?.mediaChatMessage?.mediaThumbImage {
                     ChatUtils.setThumbnail(imageContainer: imageContainer ?? UIImageView(), base64String: thumbImage)
-                    nicoProgressBar?.isHidden = true
+                    newProgressBar?.removeFromSuperview()
                     progressView?.isHidden = true
                     retryButton?.isHidden = true
                     uploadView?.isHidden = true
@@ -387,7 +384,7 @@ class SenderImageCell: BaseTableViewCell {
             if status == .acknowledged || status == .received || status == .delivered || status == .seen {
                 uploadView?.isHidden = true
                 progressView?.isHidden = true
-                nicoProgressBar?.isHidden = true
+                newProgressBar?.removeFromSuperview()
                 retryButton?.isHidden = true
             }
        
@@ -429,20 +426,17 @@ class SenderImageCell: BaseTableViewCell {
         switch message?.mediaChatMessage?.mediaUploadStatus {
         case .not_uploaded:
             progressView?.isHidden = false
-            nicoProgressBar?.transition(to: .indeterminate)
-            nicoProgressBar?.isHidden = false
+            nicoProgressBar.addSubview(newProgressBar)
             retryButton?.isHidden = false
             uploadView?.isHidden = true
         case .uploading:
             progressView?.isHidden = false
-            nicoProgressBar?.isHidden = false
-            nicoProgressBar?.transition(to: .indeterminate)
+            nicoProgressBar.addSubview(newProgressBar)
             retryButton?.isHidden = false
             uploadView?.isHidden = true
         case .uploaded:
             progressView?.isHidden = false
-            nicoProgressBar?.transition(to: .indeterminate)
-            nicoProgressBar?.isHidden = false
+            nicoProgressBar.addSubview(newProgressBar)
             retryButton?.isHidden = false
             uploadView?.isHidden = true
         default:

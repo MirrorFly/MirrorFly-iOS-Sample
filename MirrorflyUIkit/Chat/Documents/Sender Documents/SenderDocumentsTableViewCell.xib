@@ -227,7 +227,7 @@
                                             <constraint firstItem="CbJ-TI-6ht" firstAttribute="top" secondItem="Ho1-W4-jUu" secondAttribute="top" id="wca-er-CWc"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="447-hI-Rif" customClass="NicoProgressBar" customModule="NicoProgress">
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="447-hI-Rif">
                                         <rect key="frame" x="217" y="39" width="24" height="3"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

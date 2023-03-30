@@ -32,7 +32,9 @@ class CallMember: NSObject {
     
     var videoTrack : RTCVideoTrack? = nil
     
-    var videoTrackView : RTCMTLVideoView? = nil
+    var videoTrackView = RTCMTLVideoView(frame: .zero)
+    
+    var isVideoTrackAdded: Bool = false
 }
 
 enum CallStatus : String {

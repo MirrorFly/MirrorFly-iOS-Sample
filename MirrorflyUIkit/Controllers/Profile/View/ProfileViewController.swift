@@ -8,6 +8,7 @@ import UIKit
 import AVFoundation
 import FlyCore
 import FlyCommon
+import FlyDatabase
 import Foundation
 import MobileCoreServices
 import Photos
@@ -67,6 +68,13 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
                                 for: .editingChanged)
 
         ContactManager.shared.getUsersIBlocked(fetchFromServer: true) { isSuccess, error, data in }
+        prefetchImages()
+    }
+    
+    func prefetchImages() {
+        let recentArray : [RecentChat] = FlyDatabaseController.shared.recentManager.getRecentChatWithConstraints(limit: 100, messageTime: 0)
+        let url = recentArray.compactMap{ ChatUtils.getUserImaeUrl(imageUrl: ($0.profileThumbImage?.isEmpty ?? true) ? $0.profileImage ?? "" : $0.profileThumbImage ?? "") }
+        SDWebImagePrefetcher.shared.prefetchURLs(url)
     }
     
     func setupUI() {
@@ -153,8 +161,15 @@ class ProfileViewController: UIViewController,ProfileViewControllerProtocol {
         handleBackgroundAndForground()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        ContactManager.shared.profileDelegate = self
+        ChatManager.shared.connectionDelegate = self
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        ContactManager.shared.profileDelegate = nil
+        ChatManager.shared.connectionDelegate = nil
     }
     
     override func viewDidLayoutSubviews(){
@@ -242,9 +257,40 @@ extension ProfileViewController {
     private func saveMyProfileDataToUserDefaults(profile : FlyProfile){
         FlyDefaults.myName = profile.name
         FlyDefaults.myImageUrl = profile.image
+        FlyDefaults.myImageToken = profile.image
         FlyDefaults.myMobileNumber = profile.mobileNumber
         FlyDefaults.myStatus = profile.status
         FlyDefaults.myEmail = profile.email
+    }
+
+    func updateProfile(profileDetails: ProfileDetails) {
+        executeOnMainThread { [weak self] in
+            self?.profileDetails = profileDetails
+            let mobileNumber = self?.profileDetails?.mobileNumber ?? ""
+            FlyDefaults.myImageToken = self?.profileDetails?.image ?? ""
+            if(self?.profileDetails?.image != "") {
+                self?.setImage(imageURL: self?.profileDetails?.image ?? "", completionHandler: { _ in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        self?.stopLoading()
+                    }
+                })
+                self?.isImagePicked = true
+            } else {
+                self?.getUserNameInitial()
+            }
+            print("profileDetails")
+            self?.nameTextField.text = self?.profileDetails?.name
+            self?.emailTextField.text = self?.profileDetails?.email
+            self?.getUserMobileNumber = self?.profileDetails!.mobileNumber ?? ""
+            if mobileNumber.isEmpty || mobileNumber.count < 6 {
+                self?.mobileNumberLabel.text = self?.getMobileNumber ?? ""
+            } else {
+                let mobileNumberWithoutCountryCode = AppUtils.shared.mobileNumberParse(phoneNo: mobileNumber)
+                self?.mobileNumberLabel.text = mobileNumberWithoutCountryCode
+            }
+
+            self?.statusLabel.text = self?.profileDetails?.status
+        }
     }
     
     // MARK: Update Profile
@@ -292,6 +338,7 @@ extension ProfileViewController {
                     }
                     Utility.saveInPreference(key: isProfileSaved, value: true)
                     Utility.saveInPreference(key: isLoginContactSyncDone, value: false)
+                    self?.getProfile()
                     if ENABLE_CONTACT_SYNC {
                         if self?.isSaveButtonTapped == true {
                             AppAlert.shared.showToast(message: profileUpdateSuccess.localized)
@@ -317,6 +364,7 @@ extension ProfileViewController {
                     print(data.getMessage() as! String)
                     AppAlert.shared.showToast(message: "Please try again later")
                 }
+                self?.profileImageLocalPath = ""
             }
         }else {
             stopLoading()
@@ -762,5 +810,90 @@ extension ProfileViewController: TatsiPickerViewControllerDelegate {
     
     func setCroppedImage(_ croppedImage: UIImage) {
         self.profileImage.image = croppedImage
+    }
+}
+
+extension ProfileViewController: ProfileEventsDelegate {
+    func userCameOnline(for jid: String) {
+
+    }
+
+    func userWentOffline(for jid: String) {
+
+    }
+
+    func userProfileFetched(for jid: String, profileDetails: FlyCommon.ProfileDetails?) {
+        if let details = profileDetails {
+            if details.jid == FlyDefaults.myJid {
+                print("#profile update: userProfileFetched \(details.image)")
+                updateProfile(profileDetails: details)
+            }
+        }
+    }
+
+    func myProfileUpdated() {
+
+    }
+
+    func usersProfilesFetched() {
+
+    }
+
+    func blockedThisUser(jid: String) {
+
+    }
+
+    func unblockedThisUser(jid: String) {
+
+    }
+
+    func usersIBlockedListFetched(jidList: [String]) {
+
+    }
+
+    func usersBlockedMeListFetched(jidList: [String]) {
+
+    }
+
+    func userUpdatedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
+        if profileDetails.jid == FlyDefaults.myJid {
+            print("#profile update: userUpdatedTheirProfile \(profileDetails.image)")
+            updateProfile(profileDetails: profileDetails)
+        }
+    }
+
+    func userBlockedMe(jid: String) {
+
+    }
+
+    func userUnBlockedMe(jid: String) {
+
+    }
+
+    func hideUserLastSeen() {
+
+    }
+
+    func getUserLastSeen() {
+
+    }
+
+    func userDeletedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
+
+    }
+
+}
+
+extension ProfileViewController: ConnectionEventDelegate {
+    func onConnected() {
+        getProfile()
+    }
+
+    func onDisconnected() {
+
+    }
+
+    func onConnectionNotAuthorized() {
+
     }
 }

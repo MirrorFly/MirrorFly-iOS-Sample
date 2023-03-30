@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
+// swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
 // swift-module-flags: -target arm64-apple-ios12.1 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FlyXmpp
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import FlyCommon
@@ -22,11 +22,12 @@ public protocol XMPPMessageDelegate : ObjectiveC.NSObjectProtocol {
   func didReceiveGroupChatMessage(messageId: Swift.String, from: Swift.String, groupJid: Swift.String, body: Swift.String, time: Swift.String)
   func onSentMessageStatusUpdated(from: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, time: Swift.String?)
   func onReceivedMessageStatusUpdated(toJid: Swift.String, messageId: Swift.String, updateType: FlyCommon.MessageStatus, fromJid: Swift.String)
-  func onMessagesCleared(toJid: Swift.String?, favourite: Swift.String?, deleteType: Swift.String?)
+  func onMessagesCleared(toJid: Swift.String?, favourite: Swift.String?, deleteType: Swift.String?, lastmessageId: Swift.String)
   func onMessagesClearedOrDeleted(messageIds: Swift.Array<Swift.String>)
   func onMessagesDeletedforEveryone(messageIds: Swift.Array<Swift.String>)
   func setOrUpdateFavourite(messageId: Swift.String, favourite: Swift.Bool, removeAllFavourite: Swift.Bool)
   func clearAllConversationForSyncedDevice()
+  func clearAllCallLogs()
 }
 @_inheritsConvenienceInitializers @objc public class NotificationMessageSupport : ObjectiveC.NSObject {
   public typealias pushReturnBlock = (UserNotifications.UNMutableNotificationContent?) -> Swift.Void
@@ -130,7 +131,7 @@ extension FlyXmpp.FlyXmppController {
   public func setGroupProfileInfo(profile: FlyCommon.ProfileDetails, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func blockUser(jid: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func unblockUser(jid: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
-  public func clearChat(toJid: Swift.String, chatType: FlyCommon.ChatType, clearChatExceptStarred: Swift.Bool, deleteType: Swift.Int, callback: @escaping FlyCommon.FlyCompletionHandler)
+  public func clearChat(toJid: Swift.String, chatType: FlyCommon.ChatType, clearChatExceptStarred: Swift.Bool, deleteType: Swift.Int, lastMessageId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func clearAllConversation(deleteType: Swift.Int, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func addFavourite(messageId: Swift.String, chatUserId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func updateFavourite(messageId: Swift.String, chatUserId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
@@ -160,6 +161,7 @@ extension FlyXmpp.FlyXmppController {
   public func sendCallMessage(for status: Swift.String, roomId: Swift.String, groupId: Swift.String, callType: Swift.String, callMode: Swift.String, callTime: Swift.String, startTime: Swift.String, endTime: Swift.String, callStatus: Swift.String, callFrom: Swift.String, users: [Swift.String], inviteUsers: [Swift.String], callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendWebLogout(socketId: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
   public func sendRegisterUpdate(callback: @escaping FlyCommon.FlyCompletionHandler)
+  public func sendDeleteCallLogs(deleteAll: Swift.Bool, calllogIds: Swift.String, callback: @escaping FlyCommon.FlyCompletionHandler)
 }
 extension FlyXmpp.FlyXmppController {
   public func generateXmppResource()

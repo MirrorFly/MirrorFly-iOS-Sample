@@ -43,6 +43,10 @@ class RecentChatTableViewCell: UITableViewCell {
         // Initialization code
         setupProfileImageUI()
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        profileImageView?.image = nil
+    }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -55,45 +59,6 @@ class RecentChatTableViewCell: UITableViewCell {
     
     private func getIsBlockedByMe(jid: String) -> Bool {
         return ChatManager.getContact(jid: jid)?.isBlockedMe ?? false
-    }
-    
-    func setImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
-        let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + (recentChat.profileImage ?? "") + "?mf=" + "" + FlyDefaults.authtoken)"
-        let url = URL(string: urlString)
-        var placeHolder = UIImage()
-        if recentChat.profileType == .groupChat {
-            placeHolder = UIImage(named: ImageConstant.ic_group_small_placeholder) ?? UIImage()
-        } else if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
-            placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
-        } else {
-            placeHolder = getPlaceholder(name: name, color: color)
-        }
-        
-        if recentChat.isBlockedByAdmin || getIsBlockedByMe(jid: recentChat.jid) {
-            profileImageView?.image = placeHolder
-        } else {
-            profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
-        }
-    }
-    
-    func setSingleChatImage(imageURL: String, name: String, color: UIColor , recentChat : RecentChat) {
-        var placeHolder = UIImage()
-        placeHolder = getPlaceholder(name: name, color: color)
-        let urlString = "\(FlyDefaults.baseURL + "" + media + "/" + imageURL + "?mf=" + "" + FlyDefaults.authtoken)"
-        var url = URL(string: urlString)
-        if recentChat.isDeletedUser || getIsBlockedByMe(jid: recentChat.jid) {
-            placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
-            profileImageView?.sd_setImage(with: nil, placeholderImage: placeHolder)
-        } else {
-            profileImageView?.sd_setImage(with: URL(string: ""), placeholderImage: placeHolder)
-        }
-        
-        if recentChat.isBlockedByAdmin || getIsBlockedByMe(jid: recentChat.jid){
-            placeHolder = UIImage(named: "ic_profile_placeholder") ?? UIImage()
-            profileImageView?.image = placeHolder
-        } else {
-            profileImageView?.sd_setImage(with: url, placeholderImage: placeHolder)
-        }
     }
     
     func getPlaceholder(name: String , color: UIColor)->UIImage {
@@ -176,7 +141,14 @@ class RecentChatTableViewCell: UITableViewCell {
         statusImageCons?.constant = 0
         receivedMessageTrailingCons?.constant = 0
         statusViewTralingCons?.constant = 0
-        setImage(imageURL: recentChat.profileImage ?? "", name: getUserName(jid : recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown), color: color, recentChat: recentChat)
+        let profileImage = ((recentChat.profileThumbImage?.isEmpty ?? true) ? recentChat.profileImage : recentChat.profileThumbImage) ?? ""
+        let userName = getUserName(jid: recentChat.jid,name: recentChat.profileName, nickName: recentChat.nickName, contactType: recentChat.isItSavedContact ? .live : .unknown)
+        if profileImage.isEmpty && recentChat.profileType == .singleChat {
+            profileImageView?.image = getPlaceholder(name: userName, color: getColor(userName: userName))
+        } else {
+            profileImageView?.loadFlyImage(imageURL: profileImage, name: userName,
+                                           chatType: recentChat.profileType, jid: recentChat.jid, isBlockedByAdmin: recentChat.isBlockedByAdmin, validateBlock: false)
+        }
     }
     
     // MARK: Set ChatTimeColor
@@ -213,11 +185,13 @@ class RecentChatTableViewCell: UITableViewCell {
         if fromArchive {
             muteImageView.isHidden = true
         }
-
-        if recentChatMessage.profileType == .groupChat {
-            setImage(imageURL: recentChatMessage.profileImage ?? "", name: recentChatMessage.profileName, color: color, recentChat: recentChatMessage)
+        let profileImage = ((recentChatMessage.profileThumbImage?.isEmpty ?? true) ? recentChatMessage.profileImage : recentChatMessage.profileThumbImage) ?? ""
+        let userName = getUserName(jid: recentChatMessage.jid,name: recentChatMessage.profileName, nickName: recentChatMessage.nickName, contactType: recentChatMessage.isItSavedContact ? .live : .unknown)
+        if profileImage.isEmpty && recentChatMessage.profileType == .singleChat {
+            profileImageView?.image = getPlaceholder(name: userName, color: getColor(userName: userName))
         } else {
-            setSingleChatImage(imageURL: recentChatMessage.profileImage ?? "", name: getUserName(jid: recentChatMessage.jid,name: recentChatMessage.profileName, nickName: recentChatMessage.nickName, contactType: recentChatMessage.isItSavedContact ? .live : .unknown), color: color, recentChat: recentChatMessage)
+            profileImageView?.loadFlyImage(imageURL: profileImage, name: userName,
+                                           chatType: recentChatMessage.profileType, jid: recentChatMessage.jid, isBlockedByAdmin: recentChatMessage.isBlockedByAdmin, validateBlock: false)
         }
         let messageTime = chatMessage?.messageChatType == .singleChat ? recentChatMessage.lastMessageTime : DateFormatterUtility.shared.getGroupMilliSeconds(milliSeconds: recentChatMessage.lastMessageTime)
       

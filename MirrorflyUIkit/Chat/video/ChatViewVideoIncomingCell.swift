@@ -23,7 +23,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     @IBOutlet weak var progressView: UIView!
     @IBOutlet weak var timeOverlay: UIImageView!
     @IBOutlet weak var closeImageView: UIImageView!
-    @IBOutlet weak var progressLoader: NicoProgressBar?
+    @IBOutlet weak var progressLoader: UIView!
     @IBOutlet weak var progressButton: UIButton!
     @IBOutlet weak var downloadView: UIView!
     @IBOutlet weak var downloadImageView: UIImageView!
@@ -82,7 +82,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     var selectedForwardMessage: [SelectedMessages]? = []
     var refreshDelegate: RefreshBubbleImageViewDelegate? = nil
     var isStarredMessagePage: Bool? = false
-    
+    var newProgressBar: ProgressBar!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -92,9 +92,9 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
     func setupUI() {
         videoGesture = UITapGestureRecognizer()
         imageContainer.addGestureRecognizer(videoGesture)
-        progressLoader?.primaryColor = .white
-        progressLoader?.secondaryColor = .clear
-        progressLoader?.determinateAnimationDuration = 0
+        newProgressBar = ProgressBar(frame: CGRect(x: 0, y: 0, width: progressLoader.frame.width, height: progressLoader.frame.height))
+        newProgressBar.primaryColor = .white
+        newProgressBar.bgColor = .clear
         caption.font = UIFont.font12px_appRegular()
         fileSizeLabel.font = UIFont.font12px_appSemibold()
         progressView.layer.cornerRadius = 4
@@ -139,7 +139,6 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
         
         let timeStamp =  message?.messageSentTime
         senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
-        senderProfileImageView?.sd_imageIndicator = SDWebImageActivityIndicator.gray
         senderProfileImageView?.makeRounded()
         let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
         setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
@@ -421,7 +420,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             progressView.isHidden = true
             playButton.isHidden = true
             fileSizeLabel.isHidden = false
-            progressLoader?.transition(to: .indeterminate)
+//            progressLoader?.transition(to: .indeterminate)
             if let fileSize = message?.mediaChatMessage?.mediaFileSize{
                 fileSizeLabel.text = "\(Units(bytes: Int64(fileSize)).getReadableUnit())"
             }else {
@@ -442,11 +441,12 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             downloadView.isHidden = true
             downloadButton.isHidden = true
             let progrss = message?.mediaChatMessage?.mediaProgressStatus ?? 0
-            progressLoader?.transition(to: .determinate(percentage: CGFloat(progrss/100)))
-            if progrss == 0 || progrss == 100{
-                progressLoader?.transition(to: .indeterminate)
-            }
-            progressLoader?.isHidden = false
+            newProgressBar.setProg(per: CGFloat(progrss))
+//            progressLoader?.transition(to: .determinate(percentage: CGFloat(progrss/100)))
+//            if progrss == 0 || progrss == 100{
+//                progressLoader?.transition(to: .indeterminate)
+//            }
+            progressLoader.addSubview(newProgressBar)
             progressView.isHidden = false
             playButton.isHidden = true
         case .downloaded:
@@ -461,7 +461,7 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
             downloadView.isHidden = true
             downloadButton.isHidden = true
             progressView.isHidden = true
-            progressLoader?.transition(to: .determinate(percentage: CGFloat(100)))
+//            progressLoader?.transition(to: .determinate(percentage: CGFloat(100)))
             playButton.isHidden = false
         default:
             downloadView.isHidden = false
@@ -474,5 +474,6 @@ class ChatViewVideoIncomingCell: BaseTableViewCell {
                 fileSizeLabel.text = ""
             }
         }
+        //delete media
     }
 }

@@ -116,13 +116,13 @@
                                                             </constraints>
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KJP-Rq-5fO">
-                                                            <rect key="frame" x="348" y="0.0" width="19" height="20"/>
+                                                            <rect key="frame" x="342" y="0.0" width="25" height="20"/>
                                                             <subviews>
-                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hide_Password" translatesAutoresizingMaskIntoConstraints="NO" id="qJP-wH-8r3">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="19" height="20"/>
+                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hide_Password" translatesAutoresizingMaskIntoConstraints="NO" id="qJP-wH-8r3">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="25" height="20"/>
                                                                 </imageView>
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Md-41-VGw">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="19" height="20"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="25" height="20"/>
                                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <color key="tintColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -143,14 +143,14 @@
                                                                 <constraint firstItem="4Md-41-VGw" firstAttribute="leading" secondItem="KJP-Rq-5fO" secondAttribute="leading" id="PYC-JO-IvA"/>
                                                                 <constraint firstAttribute="bottom" secondItem="qJP-wH-8r3" secondAttribute="bottom" id="SyT-8E-0BQ"/>
                                                                 <constraint firstAttribute="trailing" secondItem="4Md-41-VGw" secondAttribute="trailing" id="VR3-br-h5s"/>
-                                                                <constraint firstAttribute="width" constant="19" id="aDA-em-90W"/>
+                                                                <constraint firstAttribute="width" constant="25" id="aDA-em-90W"/>
                                                                 <constraint firstAttribute="trailing" secondItem="qJP-wH-8r3" secondAttribute="trailing" id="jk9-cm-cPF"/>
                                                                 <constraint firstItem="qJP-wH-8r3" firstAttribute="leading" secondItem="KJP-Rq-5fO" secondAttribute="leading" id="no8-23-Uc5"/>
                                                                 <constraint firstItem="qJP-wH-8r3" firstAttribute="top" secondItem="KJP-Rq-5fO" secondAttribute="top" id="qHA-ju-6i3"/>
                                                             </constraints>
                                                         </view>
                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="l31-om-cZR">
-                                                            <rect key="frame" x="31" y="0.0" width="317" height="20"/>
+                                                            <rect key="frame" x="31" y="0.0" width="311" height="20"/>
                                                             <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -223,13 +223,13 @@
                                                             </constraints>
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p73-lu-HH3">
-                                                            <rect key="frame" x="348" y="0.0" width="19" height="20"/>
+                                                            <rect key="frame" x="342" y="0.0" width="25" height="20"/>
                                                             <subviews>
-                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hide_Password" translatesAutoresizingMaskIntoConstraints="NO" id="Rpg-4f-x9E">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="19" height="20"/>
+                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hide_Password" translatesAutoresizingMaskIntoConstraints="NO" id="Rpg-4f-x9E">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="25" height="20"/>
                                                                 </imageView>
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pYh-On-tMp">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="19" height="20"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="25" height="20"/>
                                                                     <color key="tintColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                     <connections>
@@ -240,7 +240,7 @@
                                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                             <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="19" id="6Wb-85-egl"/>
+                                                                <constraint firstAttribute="width" constant="25" id="6Wb-85-egl"/>
                                                                 <constraint firstItem="Rpg-4f-x9E" firstAttribute="leading" secondItem="p73-lu-HH3" secondAttribute="leading" id="6vB-6v-Hmz"/>
                                                                 <constraint firstItem="pYh-On-tMp" firstAttribute="top" secondItem="p73-lu-HH3" secondAttribute="top" id="CLe-wF-Csb"/>
                                                                 <constraint firstAttribute="trailing" secondItem="pYh-On-tMp" secondAttribute="trailing" id="JAE-FT-QNe"/>
@@ -252,7 +252,7 @@
                                                             </constraints>
                                                         </view>
                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iko-nD-ypr">
-                                                            <rect key="frame" x="31" y="0.0" width="317" height="20"/>
+                                                            <rect key="frame" x="31" y="0.0" width="311" height="20"/>
                                                             <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -325,13 +325,13 @@
                                                             </constraints>
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HkZ-PM-b2F">
-                                                            <rect key="frame" x="348" y="0.0" width="19" height="20"/>
+                                                            <rect key="frame" x="342" y="0.0" width="25" height="20"/>
                                                             <subviews>
-                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hide_Password" translatesAutoresizingMaskIntoConstraints="NO" id="Rps-Xy-4x7">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="19" height="20"/>
+                                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hide_Password" translatesAutoresizingMaskIntoConstraints="NO" id="Rps-Xy-4x7">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="25" height="20"/>
                                                                 </imageView>
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pyM-tA-79o">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="19" height="20"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="25" height="20"/>
                                                                     <color key="tintColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                     <connections>
@@ -344,7 +344,7 @@
                                                             <constraints>
                                                                 <constraint firstAttribute="bottom" secondItem="pyM-tA-79o" secondAttribute="bottom" id="0cP-l7-W2G"/>
                                                                 <constraint firstAttribute="trailing" secondItem="Rps-Xy-4x7" secondAttribute="trailing" id="7W8-Em-8qy"/>
-                                                                <constraint firstAttribute="width" constant="19" id="IBe-O1-Lnz"/>
+                                                                <constraint firstAttribute="width" constant="25" id="IBe-O1-Lnz"/>
                                                                 <constraint firstItem="pyM-tA-79o" firstAttribute="top" secondItem="HkZ-PM-b2F" secondAttribute="top" id="gDx-t6-R2a"/>
                                                                 <constraint firstAttribute="trailing" secondItem="pyM-tA-79o" secondAttribute="trailing" id="jTQ-aA-Uzb"/>
                                                                 <constraint firstItem="pyM-tA-79o" firstAttribute="leading" secondItem="HkZ-PM-b2F" secondAttribute="leading" id="kQJ-xQ-nnw"/>
@@ -354,7 +354,7 @@
                                                             </constraints>
                                                         </view>
                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hJI-d9-wLK">
-                                                            <rect key="frame" x="31" y="0.0" width="317" height="20"/>
+                                                            <rect key="frame" x="31" y="0.0" width="311" height="20"/>
                                                             <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits" keyboardType="numberPad"/>

@@ -52,6 +52,7 @@ class UserProfileViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupDelegate()
         setUpStatusBar()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(UserProfileViewController.onProfileImage(_:)))
         profileImage?.isUserInteractionEnabled = false
@@ -59,6 +60,12 @@ class UserProfileViewController : UIViewController {
         profileImage?.addGestureRecognizer(tapGesture)
         nameTextField?.addTarget(self, action: #selector(UserProfileViewController.textFieldDidChange(_:)),
                                  for: .editingChanged)
+    }
+    
+    func setupDelegate() {
+        ChatManager.shared.availableFeaturesDelegate = self
+        ContactManager.shared.profileDelegate = self
+        ChatManager.shared.connectionDelegate = self
     }
     
     func setupUI() {
@@ -100,9 +107,7 @@ class UserProfileViewController : UIViewController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        ChatManager.shared.availableFeaturesDelegate = self
-        ContactManager.shared.profileDelegate = self
-        ChatManager.shared.connectionDelegate = self
+
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -124,19 +129,24 @@ class UserProfileViewController : UIViewController {
         let urlString = "\(FlyDefaults.baseURL)\(media)/\(imageURL)?mf=\(FlyDefaults.authtoken)"
         let url = URL(string: urlString)
         if url != URL(string: FlyDefaults.myProfileImageUrl) {
-            profileImage?.sd_setImage(with: url) { image, error, cache, url in
-                if error != nil {
-                    ChatManager.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
-                           if isSuccess {
-                               self?.profileImage?.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "ic_profile_placeholder"), completed: { [weak self]image,error,_,imageUrl in
-                                   self?.profileImage?.stopAnimating()
-                                   completionHandler(true)
-                               })
-                           }
-                       })
+            let placeholder = UIImage(named: "ic_profile_placeholder")
+
+            profileImage?.sd_setImage(with: url, placeholderImage: placeholder, options: [.continueInBackground,.decodeFirstFrameOnly,.highPriority,.scaleDownLargeImages], progress: nil){ (image, responseError, isFromCache, imageUrl) in
+                if let error = responseError as? NSError {
+                    if let errorCode = error.userInfo[SDWebImageErrorDownloadStatusCodeKey] as? Int {
+                        if errorCode == 401{
+                            ChatManager.refreshToken(completionHandler: { [weak self] isSuccess,flyError,flyData  in
+                                if isSuccess {
+                                    self?.profileImage?.sd_setImage(with: url, placeholderImage: placeholder, completed: { [weak self]image,error,_,imageUrl in
+                                        self?.profileImage?.stopAnimating()
+                                        completionHandler(true)
+                                    })
+                                }
+                            })
+                        }
+                    }
                 } else {
-                    self.profileImage?.stopAnimating()
-                    completionHandler(true)
+                    self.profileImage?.image = image
                 }
             }
         }
@@ -187,7 +197,7 @@ extension UserProfileViewController {
                                 })
                                 self?.isImagePicked = true
                             } else {
-                                self?.getUserNameInitial()
+                                self?.getUserNameInitial(name: self?.profileDetails?.name ?? "")
                             }
                             self?.nameTextField?.text = self?.profileDetails?.name
                             self?.emailTextField?.text = self?.profileDetails?.email
@@ -265,6 +275,7 @@ extension UserProfileViewController {
             stopLoading()
             AppAlert.shared.showToast(message: ErrorMessage.noInternet)
         }
+        profileImageLocalPath = emptyString()
     }
     
     //MARK: Remove Profile Image
@@ -347,23 +358,23 @@ extension UserProfileViewController: UITextFieldDelegate {
                 saveButton?.setTitle(save.localized, for: .normal)
             }
         }
-       if(!isImagePicked) {
-        if (textField == nameTextField) {
-                getUserNameInitial()
+        if(!isImagePicked) {
+            if (textField == nameTextField) {
+                getUserNameInitial(name: textField.text ?? "")
             }
         }
     }
     
-    func getUserNameInitial() {
-        if(( nameTextField?.text?.count)! > 0) {
-            if let trimmedName = nameTextField?.text?.trimmingCharacters(in: .whitespacesAndNewlines) {
+    func getUserNameInitial(name: String) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+            if name.count > 0 {
+                let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
                 let ipimage = IPImage(text: trimmedName, radius: Double(profileImage?.frame.size.height ?? 0.0), font: UIFont.font84px_appBold(), textColor: nil, randomBackgroundColor:  false)
                 profileImage?.image = ipimage.generateImage()
+            } else {
+                profileImage?.image = UIImage.init(named: ImageConstant.ic_profile_placeholder)
             }
         }
-         else {
-             profileImage?.image = UIImage.init(named: ImageConstant.ic_profile_placeholder)
-         }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -465,7 +476,7 @@ extension UserProfileViewController {
                                 return
                             }
                             if(nameText.count > 0) {
-                                self?.getUserNameInitial()
+                                self?.getUserNameInitial(name: nameText)
                             }
                             else {
                                 self?.profileImage?.image = UIImage.init(named: ImageConstant.ic_profile_placeholder)
@@ -648,6 +659,11 @@ extension UserProfileViewController: CropperViewControllerDelegate {
         }
         ContactManager.shared.profileDelegate = self
     }
+
+    func cropperDidCancel(_ cropper: CropperViewController) {
+        cropper.dismiss(animated: true, completion: nil)
+        isImagePicked = false
+    }
 }
 
 //MARK: For Gallery picker - Select photos and allow photos in permisssion
@@ -706,8 +722,10 @@ extension UserProfileViewController: TatsiPickerViewControllerDelegate {
                     self.stopLoading()
                 }
             })
+            isImagePicked = true
         } else {
-            getUserNameInitial()
+            isImagePicked = false
+            getUserNameInitial(name: profileDetails?.name ?? "")
         }
         nameTextField?.text = profileDetails?.name
         emailTextField?.text = profileDetails?.email
@@ -748,7 +766,9 @@ extension UserProfileViewController : ProfileEventsDelegate {
     
     func userProfileFetched(for jid: String, profileDetails: FlyCommon.ProfileDetails?) {
         if profileDetails?.jid == FlyDefaults.myJid {
-            updateChanges(profileDetails: profileDetails)
+            executeOnMainThread {
+                self.updateChanges(profileDetails: profileDetails)
+            }
         }
     }
     
@@ -778,7 +798,9 @@ extension UserProfileViewController : ProfileEventsDelegate {
     
     func userUpdatedTheirProfile(for jid: String, profileDetails: FlyCommon.ProfileDetails) {
         if profileDetails.jid == FlyDefaults.myJid {
-            updateChanges(profileDetails: profileDetails)
+            executeOnMainThread {
+                self.updateChanges(profileDetails: profileDetails)
+            }
         }
     }
     

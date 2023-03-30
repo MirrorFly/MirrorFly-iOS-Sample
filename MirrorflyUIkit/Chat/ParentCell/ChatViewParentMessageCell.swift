@@ -137,10 +137,10 @@ class ChatViewParentMessageCell: BaseTableViewCell {
         }
         let timeStamp =  message?.messageSentTime
         senderTimeLabel?.text = String(describing: DateFormatterUtility.shared.convertMillisecondsToSentTime(milliSeconds: timeStamp ?? 0.0))
-        senderProfileImage?.sd_imageIndicator = SDWebImageActivityIndicator.gray
         senderProfileImage?.makeRounded()
         let contactColor = getColor(userName: getUserName(jid: senderProfileDetails?.jid ?? "",name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local))
-        setImage(imageURL: senderProfileDetails?.image ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
+        let profileImage = (senderProfileDetails?.thumbImage.isEmpty ?? true) ? senderProfileDetails?.image : senderProfileDetails?.thumbImage
+        setImage(imageURL: profileImage ?? "", name: getUserName(jid: senderProfileDetails?.jid ?? "", name: senderProfileDetails?.name ?? "", nickName: senderProfileDetails?.nickName ?? "", contactType: senderProfileDetails?.contactType ?? .local), color: contactColor, chatType: senderProfileDetails?.profileChatType ?? .singleChat, jid: senderProfileDetails?.jid ?? "")
     }
     
     private func getisBlockedMe(jid: String) -> Bool {

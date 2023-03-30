@@ -97,13 +97,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Utility.getBoolFromPreference(key: isLoggedIn) && (FlyDefaults.isLoggedIn) {
             ChatManager.makeXMPPConnection()
         }
+        let current = UIApplication.shared.keyWindow?.getTopViewController()
+        if (current is AuthenticationPINViewController || current is FingerPrintPINViewController) {
+            if let vc = current as? FingerPrintPINViewController {
+                if vc.isSystemCancel {
+                    vc.authenticationWithTouchID()
+                }
+            }
+           return
+        }
         NotificationCenter.default.post(name: NSNotification.Name(didBecomeActive), object: nil)
         //setup remote config
         setupRemoteConfig()
         ForceUpdateChecker(listener: self).checkIsNeedUpdate()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(didEnterBackground), object: nil)
         iCloudmanager().checkAutoBackupSchedule()
-        ChatManager.shared.startAutoDownload()
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
@@ -122,7 +130,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if (FlyDefaults.appLockenable || FlyDefaults.appFingerprintenable) {
             let secondsDifference = Calendar.current.dateComponents([.minute, .second], from: FlyDefaults.appBackgroundTime, to: Date())
-            if secondsDifference.second ?? 0 > 32 {
+            if secondsDifference.second ?? 0 > 32 || secondsDifference.minute ?? 0 > 0 {
                 FlyDefaults.showAppLock = true
             }
         }

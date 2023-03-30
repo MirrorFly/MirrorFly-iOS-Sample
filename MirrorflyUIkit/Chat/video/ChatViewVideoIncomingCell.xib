@@ -318,9 +318,8 @@
                                                     <constraint firstAttribute="width" constant="80" id="Dcq-ae-5YB"/>
                                                 </constraints>
                                             </imageView>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3yW-GB-CWv" customClass="NicoProgressBar" customModule="NicoProgress">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3yW-GB-CWv">
                                                 <rect key="frame" x="0.0" y="32" width="80" height="3"/>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="3" id="3zP-c3-cVs"/>
                                                 </constraints>

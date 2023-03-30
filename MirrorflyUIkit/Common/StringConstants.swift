@@ -223,7 +223,9 @@ let addMoresecurityWith4DigitsecretPIN = "Add more security with 4 digit secret 
 let useFingerPrintIDorFaceID = "Use Fingerprint ID or Face id to unlock your phone"
 let changeThe4DigitSecurityPIN = "Change the 4 digit security PIN"
 let changePIN = "Change PIN"
-
+let tooManyFailedAttempts = "You have exceeded login attempts"
+let settingsNavigateMessage = "Please go to settings and authenticate Touch ID/Face ID & Passcode to open application again"
+let openSettingsMessage = "Open settings"
 
 //MARK: - Chat
 
@@ -388,16 +390,16 @@ public struct ErrorMessage {
     public static let numberDoesntMatch =  NSLocalizedString("mobileNumberDoesntMatch", comment: "")
     public static let invalidPIN = NSLocalizedString("Invalid PIN! Try again", comment: "")
     public static let invalidOLDPIN = NSLocalizedString("Invalid old PIN", comment: "")
-    public static let enternewPIN = NSLocalizedString("Enter the New PIN", comment: "")
-    public static let enterconfirmPIN = NSLocalizedString("Enter the Confirm PIN", comment: "")
+    public static let enternewPIN = NSLocalizedString("Enter the new PIN", comment: "")
+    public static let enterconfirmPIN = NSLocalizedString("Enter the confirm PIN", comment: "")
     public static let enterValidPIN = NSLocalizedString("PIN must be of 4 digits", comment: "")
     public static let enterthePIN = NSLocalizedString("Enter the PIN", comment: "")
     public static let passwordShouldbeSame = NSLocalizedString(" PIN and Confirm PIN must be same", comment: "")
     public static let oldPINnewPINsholdnotSame = NSLocalizedString("Old PIN and new PIN should not be same", comment: "")
     public static let validateAppLock = NSLocalizedString("Invalid PIN! Try again", comment: "")
-    public static let fingerPrintIsNotRegisteredinDevice = NSLocalizedString("Fingerprint is not registered in device", comment: "")
-    public static let pleaseEnablefingerPrintonYourdevice = NSLocalizedString("Please enable fingerprint on your device", comment: "")
-    
+    public static let fingerPrintIsNotRegisteredinDevice = NSLocalizedString("Fingerprint/Face ID is not registered in device", comment: "")
+    public static let pleaseEnablefingerPrintonYourdevice = NSLocalizedString("Please enable fingerprint/faceID on your device", comment: "")
+
     
 }
 // Error messages
@@ -406,6 +408,7 @@ public struct SuccessMessage {
     public static let successAuth = NSLocalizedString("successAuth", comment: "")
     public static let successOTP = NSLocalizedString("successOTP", comment: "")
     public static let PINsetsuccessfully = NSLocalizedString("PIN set successfully", comment: "")
+    public static let pinChangedSuccessfully = NSLocalizedString("PIN changed successfully", comment: "")
 }
 
 public struct AppRegex {

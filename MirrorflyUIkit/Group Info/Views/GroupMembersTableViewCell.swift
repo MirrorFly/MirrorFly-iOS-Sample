@@ -28,7 +28,10 @@ class GroupMembersTableViewCell: UITableViewCell {
         userImageView.layer.cornerRadius = 20
         
     }
-    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        userImageView.image = nil
+    }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
@@ -38,7 +41,7 @@ class GroupMembersTableViewCell: UITableViewCell {
         nickNameLabel.text = ""
         
         let userName = getUserName(jid : groupInfo.profileDetail?.jid ?? "", name: groupInfo.profileDetail?.name ?? "", nickName: groupInfo.profileDetail?.nickName ?? "", contactType: groupInfo.profileDetail?.contactType ?? .unknown)
-        let imageURL = groupInfo.profileDetail?.image ?? ""
+        let imageURL = ((groupInfo.profileDetail?.thumbImage.isEmpty ?? true) ? groupInfo.profileDetail?.image : groupInfo.profileDetail?.thumbImage) ?? ""
         
         nameLabel.text = userName
         statusLabel.text = groupInfo.profileDetail?.status

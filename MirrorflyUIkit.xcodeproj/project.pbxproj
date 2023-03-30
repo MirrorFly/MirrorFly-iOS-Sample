@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		39FF75663F5F2563B8C99F83 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CA1C9488825B91CB127CAB /* Pods_UiKitQaNotificationExtention.framework */; };
 		3D12788F27A7AC6D00A34436 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */; };
 		3D3C47DC28E5315D001F2520 /* DeleteForEveryOneViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3C47DA28E5315D001F2520 /* DeleteForEveryOneViewCell.swift */; };
 		3D3C47DD28E5315D001F2520 /* DeleteForEveryOneViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3D3C47DB28E5315D001F2520 /* DeleteForEveryOneViewCell.xib */; };
@@ -19,7 +18,7 @@
 		3DF9C99A28E6A7FA00154BBE /* DeleteForEveryOneReceiverCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9C99828E6A7FA00154BBE /* DeleteForEveryOneReceiverCell.xib */; };
 		3DF9C9A628E6E69300154BBE /* DeleteMessageForEveryOneAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF9C9A528E6E69300154BBE /* DeleteMessageForEveryOneAlertController.swift */; };
 		3DF9C9A928E6E6A300154BBE /* DeleteMessageForEveryOneAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9C9A828E6E6A300154BBE /* DeleteMessageForEveryOneAlertController.xib */; };
-		4B1006AF19355285DCA8F790 /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDC8BC8D303986ECB1FA95 /* Pods_UiKitQa.framework */; };
+		89B82246BBC2FD4C25D8F7FD /* Pods_UiKitQaNotificationExtention.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD3331B94C94F7BF0605FE22 /* Pods_UiKitQaNotificationExtention.framework */; };
 		CE0140B0298943F7002CE0F8 /* AppLockDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0140AE298943F6002CE0F8 /* AppLockDescriptionCell.swift */; };
 		CE0140B2298943F7002CE0F8 /* AppLockDescriptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0140AF298943F7002CE0F8 /* AppLockDescriptionCell.xib */; };
 		CE0755B4290067E1008F6C37 /* NotificationWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0755B3290067E1008F6C37 /* NotificationWebViewController.swift */; };
@@ -37,13 +36,24 @@
 		CE0E0517295EC56E006CD708 /* BackupProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0E0515295EC56E006CD708 /* BackupProgressViewController.swift */; };
 		CE0E0519295EC56E006CD708 /* BackupProgressViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0E0516295EC56E006CD708 /* BackupProgressViewController.xib */; };
 		CE0EE39927D8CAAE00C4823D /* GroupInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */; };
+		CE1391FB29C86BC400F31957 /* ProgressBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1391F929C86BC400F31957 /* ProgressBar.xib */; };
+		CE1391FD29C86BC400F31957 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1391FA29C86BC400F31957 /* ProgressBar.swift */; };
+		CE16161229955F6B002ED411 /* ChatTagsFooterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16161029955F6B002ED411 /* ChatTagsFooterCell.swift */; };
+		CE16161429955F6B002ED411 /* ChatTagsFooterCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE16161129955F6B002ED411 /* ChatTagsFooterCell.xib */; };
+		CE16161829956F23002ED411 /* CreateChatTagsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16161729956F23002ED411 /* CreateChatTagsController.swift */; };
 		CE167AC929200E8000C9CBA0 /* PINenteredCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE167AC729200E8000C9CBA0 /* PINenteredCollectionViewCell.swift */; };
 		CE167ACA29200E8000C9CBA0 /* PINenteredCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE167AC829200E8000C9CBA0 /* PINenteredCollectionViewCell.xib */; };
+		CE1D49032994FEB300CC510F /* ChatTags.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE1D49022994FEB300CC510F /* ChatTags.storyboard */; };
+		CE1D490A2995004000CC510F /* ChatTagsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D49092995003F00CC510F /* ChatTagsController.swift */; };
+		CE1D490F2995179000CC510F /* ChatTagsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D490D2995179000CC510F /* ChatTagsHeader.swift */; };
+		CE1D49112995179000CC510F /* ChatTagsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1D490E2995179000CC510F /* ChatTagsHeader.xib */; };
 		CE2A390B29227862005F7AF0 /* AppLockPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A390929227862005F7AF0 /* AppLockPasswordViewController.swift */; };
 		CE2A390C29227862005F7AF0 /* AppLockTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A390A29227862005F7AF0 /* AppLockTableViewCell.xib */; };
 		CE2A391429227C1C005F7AF0 /* AppLockTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A391329227C1C005F7AF0 /* AppLockTableViewCell.swift */; };
 		CE2FA0542812B38E004C0A85 /* ContactUsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2FA0532812B38E004C0A85 /* ContactUsController.swift */; };
 		CE31D80C274365BD0052FFFF /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE31D80B274365BD0052FFFF /* ChatViewModel.swift */; };
+		CE3915DB299527B70045B6FF /* ChatTagsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3915D9299527B70045B6FF /* ChatTagsCell.swift */; };
+		CE3915DD299527B70045B6FF /* ChatTagsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3915DA299527B70045B6FF /* ChatTagsCell.xib */; };
 		CE39193A2967F74A0004268E /* 1-second-of-silence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE3919392967F7490004268E /* 1-second-of-silence.mp3 */; };
 		CE40C5C426DDC0B5001F829F /* CountryPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5B826DDC0B4001F829F /* CountryPickerViewController.swift */; };
 		CE40C5C526DDC0B5001F829F /* ContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40C5B926DDC0B4001F829F /* ContactViewController.swift */; };
@@ -63,6 +73,7 @@
 		CE45DF1C29110E4300246601 /* ChatSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE45DF1B29110E4300246601 /* ChatSettingsViewController.swift */; };
 		CE45DF1F29110E8E00246601 /* AutodownloadSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE45DF1E29110E8E00246601 /* AutodownloadSelectionViewController.swift */; };
 		CE45DF2929111E7900246601 /* AutodownloadsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE45DF2829111E7900246601 /* AutodownloadsTableViewCell.swift */; };
+		CE46746B29C9799400169A96 /* AuthenticationExtenison.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE46746A29C9799400169A96 /* AuthenticationExtenison.swift */; };
 		CE48C12D26E1EB420016AEFC /* ImageEditController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE48C12B26E1EB410016AEFC /* ImageEditController.swift */; };
 		CE48C13226E1EBBD0016AEFC /* EditImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE48C13126E1EBBD0016AEFC /* EditImageCell.swift */; };
 		CE48C13426E1EBC80016AEFC /* ListImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE48C13326E1EBC80016AEFC /* ListImageCell.swift */; };
@@ -84,6 +95,7 @@
 		CE51791026E201D80077636C /* ImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE51790F26E201D80077636C /* ImagePreview.swift */; };
 		CE51791226E202600077636C /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE51791126E202600077636C /* ImageCell.swift */; };
 		CE51797C26E25EC80077636C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE51797B26E25EC80077636C /* ImageConverter.swift */; };
+		CE53698E29ACDBEA00B46DD2 /* RecentTagsCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE53698D29ACDBEA00B46DD2 /* RecentTagsCollectionCell.swift */; };
 		CE551334291D5AFB0039172A /* AuthenticationPINCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE551332291D5AFB0039172A /* AuthenticationPINCollectionViewCell.swift */; };
 		CE551335291D5AFB0039172A /* AuthenticationPINCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE551333291D5AFB0039172A /* AuthenticationPINCollectionViewCell.xib */; };
 		CE56250A26E0ED550020BDD3 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE56250926E0ED550020BDD3 /* LocationViewController.swift */; };
@@ -253,25 +265,6 @@
 		CEA4FFB726DFBACD004A1268 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA4FFB626DFBACD004A1268 /* ViewController.swift */; };
 		CEA4FFB926DFBB42004A1268 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA4FFB826DFBB42004A1268 /* ProfileModel.swift */; };
 		CEA664EC26D5315A007B8774 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEA664EE26D5315A007B8774 /* Localizable.strings */; };
-		CEA9CD1729B1BBFC00FBBFC3 /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0829B1BB9B00FBBFC3 /* FlyCall.xcframework */; };
-		CEA9CD1929B1BC0100FBBFC3 /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0429B1BB9400FBBFC3 /* FlyXmpp.xcframework */; };
-		CEA9CD1D29B1BC0A00FBBFC3 /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0729B1BB9900FBBFC3 /* FlyCommon.xcframework */; };
-		CEA9CD1F29B1BC0F00FBBFC3 /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0529B1BB9600FBBFC3 /* FlyDatabase.xcframework */; };
-		CEA9CD2129B1BC4100FBBFC3 /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0829B1BB9B00FBBFC3 /* FlyCall.xcframework */; };
-		CEA9CD2229B1BC4100FBBFC3 /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0829B1BB9B00FBBFC3 /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA9CD2429B1BC4300FBBFC3 /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0729B1BB9900FBBFC3 /* FlyCommon.xcframework */; };
-		CEA9CD2529B1BC4300FBBFC3 /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0729B1BB9900FBBFC3 /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA9CD2829B1BC4700FBBFC3 /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0529B1BB9600FBBFC3 /* FlyDatabase.xcframework */; };
-		CEA9CD2929B1BC4700FBBFC3 /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0529B1BB9600FBBFC3 /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA9CD2A29B1BC4900FBBFC3 /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0629B1BB9700FBBFC3 /* FlyNetwork.xcframework */; };
-		CEA9CD2B29B1BC4900FBBFC3 /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0629B1BB9700FBBFC3 /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA9CD2C29B1BC4B00FBBFC3 /* FlyTranslate.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0229B1BB9000FBBFC3 /* FlyTranslate.xcframework */; };
-		CEA9CD2D29B1BC4B00FBBFC3 /* FlyTranslate.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0229B1BB9000FBBFC3 /* FlyTranslate.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA9CD2E29B1BC4D00FBBFC3 /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0429B1BB9400FBBFC3 /* FlyXmpp.xcframework */; };
-		CEA9CD2F29B1BC4D00FBBFC3 /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD0429B1BB9400FBBFC3 /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA9CD3829B1C04600FBBFC3 /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD3629B1C03700FBBFC3 /* FlyCore.xcframework */; };
-		CEA9CD3929B1C13B00FBBFC3 /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD3629B1C03700FBBFC3 /* FlyCore.xcframework */; };
-		CEA9CD3A29B1C13B00FBBFC3 /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9CD3629B1C03700FBBFC3 /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEAAD17328ACF3EF002B8B6C /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAAD17228ACF3EF002B8B6C /* BaseViewController.swift */; };
 		CEAB42CF298799A50061429A /* ForceUpdateAlert.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEAB42CE298799A50061429A /* ForceUpdateAlert.xib */; };
 		CEAB42D2298799CC0061429A /* ForceUpdateAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAB42D1298799CC0061429A /* ForceUpdateAlert.swift */; };
@@ -281,9 +274,26 @@
 		CEAF528128337075001165A4 /* SenderDocumentsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEAF527F28337075001165A4 /* SenderDocumentsTableViewCell.xib */; };
 		CEAF5286283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAF5284283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift */; };
 		CEAF5287283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEAF5285283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib */; };
+		CEB03663299CBB1D00D5C5A2 /* CustomChatTagsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB03661299CBB1D00D5C5A2 /* CustomChatTagsCell.swift */; };
+		CEB03665299CBB1D00D5C5A2 /* CustomChatTagsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB03662299CBB1D00D5C5A2 /* CustomChatTagsCell.xib */; };
+		CEBA0CD0299628E700B6FF3C /* AddPeopleOrGroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBA0CCF299628E700B6FF3C /* AddPeopleOrGroupController.swift */; };
+		CEBA0CD22996773E00B6FF3C /* SelectedUserCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBA0CD12996773E00B6FF3C /* SelectedUserCollectionCell.swift */; };
+		CEBB5B5A29D463E40091CF2D /* FlyCall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4929D463CD0091CF2D /* FlyCall.xcframework */; };
+		CEBB5B5B29D463E40091CF2D /* FlyCall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4929D463CD0091CF2D /* FlyCall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEBB5B5D29D463E60091CF2D /* FlyCommon.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4A29D463CE0091CF2D /* FlyCommon.xcframework */; };
+		CEBB5B5E29D463E60091CF2D /* FlyCommon.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4A29D463CE0091CF2D /* FlyCommon.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEBB5B5F29D463E90091CF2D /* FlyCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4829D463CC0091CF2D /* FlyCore.xcframework */; };
+		CEBB5B6029D463E90091CF2D /* FlyCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4829D463CC0091CF2D /* FlyCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEBB5B6129D463EA0091CF2D /* FlyDatabase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4729D463CB0091CF2D /* FlyDatabase.xcframework */; };
+		CEBB5B6229D463EA0091CF2D /* FlyDatabase.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4729D463CB0091CF2D /* FlyDatabase.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEBB5B6329D463EC0091CF2D /* FlyNetwork.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4529D463CA0091CF2D /* FlyNetwork.xcframework */; };
+		CEBB5B6429D463EC0091CF2D /* FlyNetwork.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4529D463CA0091CF2D /* FlyNetwork.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEBB5B6529D463EE0091CF2D /* FlyTranslate.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4B29D463CE0091CF2D /* FlyTranslate.xcframework */; };
+		CEBB5B6629D463EE0091CF2D /* FlyTranslate.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4B29D463CE0091CF2D /* FlyTranslate.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEBB5B6729D463F00091CF2D /* FlyXmpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4629D463CB0091CF2D /* FlyXmpp.xcframework */; };
+		CEBB5B6829D463F00091CF2D /* FlyXmpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEBB5B4629D463CB0091CF2D /* FlyXmpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEBE3BD92959CF1F004E7C49 /* FooterSectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEBE3BD82959CF1F004E7C49 /* FooterSectionCell.xib */; };
 		CEC08B7F27E24F41005E48C5 /* GoogleService-Qa-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEC08B7E27E24F41005E48C5 /* GoogleService-Qa-Info.plist */; };
-		CEC08B8027E24F4A005E48C5 /* GoogleService-Prod-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEC08B7C27E24F23005E48C5 /* GoogleService-Prod-Info.plist */; };
 		CEC2D48927A5AAA700AB107A /* ContactInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC2D48827A5AAA700AB107A /* ContactInfoViewModel.swift */; };
 		CECB62492933B0400041D2B1 /* NavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB62482933B0400041D2B1 /* NavigationControllerExtension.swift */; };
 		CECB992526CE71BF00B24448 /* SF-UI-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CECB992426CE71BF00B24448 /* SF-UI-Display-Bold.otf */; };
@@ -340,8 +350,11 @@
 		CEF8A4D32959CD5100D669B6 /* HeaderSectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF8A4C62959CD5100D669B6 /* HeaderSectionCell.xib */; };
 		CEFA0EC6292F56EF003CBE9C /* BlockedContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFA0EC4292F56EF003CBE9C /* BlockedContactTableViewCell.swift */; };
 		CEFA0EC7292F56EF003CBE9C /* BlockedContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFA0EC5292F56EF003CBE9C /* BlockedContactTableViewCell.xib */; };
+		CEFC0F26299A3B2300EA177C /* UserListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFC0F24299A3B2300EA177C /* UserListCell.swift */; };
+		CEFC0F28299A3B2300EA177C /* UserListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFC0F25299A3B2300EA177C /* UserListCell.xib */; };
 		CEFD043026CD25B90017287F /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = CEFD042F26CD25B90017287F /* countries.json */; };
 		CEFD043226CD3D4B0017287F /* CountryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFD043126CD3D4B0017287F /* CountryModel.swift */; };
+		F3122666631DDFCC94B7D41E /* Pods_UiKitQa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8527FAED8B497DD7EC6B8A /* Pods_UiKitQa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -355,19 +368,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CEA9CD2329B1BC4200FBBFC3 /* Embed Frameworks */ = {
+		CEBB5B5C29D463E40091CF2D /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEA9CD2D29B1BC4B00FBBFC3 /* FlyTranslate.xcframework in Embed Frameworks */,
-				CEA9CD2529B1BC4300FBBFC3 /* FlyCommon.xcframework in Embed Frameworks */,
-				CEA9CD3A29B1C13B00FBBFC3 /* FlyCore.xcframework in Embed Frameworks */,
-				CEA9CD2229B1BC4100FBBFC3 /* FlyCall.xcframework in Embed Frameworks */,
-				CEA9CD2B29B1BC4900FBBFC3 /* FlyNetwork.xcframework in Embed Frameworks */,
-				CEA9CD2F29B1BC4D00FBBFC3 /* FlyXmpp.xcframework in Embed Frameworks */,
-				CEA9CD2929B1BC4700FBBFC3 /* FlyDatabase.xcframework in Embed Frameworks */,
+				CEBB5B6629D463EE0091CF2D /* FlyTranslate.xcframework in Embed Frameworks */,
+				CEBB5B5E29D463E60091CF2D /* FlyCommon.xcframework in Embed Frameworks */,
+				CEBB5B5B29D463E40091CF2D /* FlyCall.xcframework in Embed Frameworks */,
+				CEBB5B6429D463EC0091CF2D /* FlyNetwork.xcframework in Embed Frameworks */,
+				CEBB5B6829D463F00091CF2D /* FlyXmpp.xcframework in Embed Frameworks */,
+				CEBB5B6229D463EA0091CF2D /* FlyDatabase.xcframework in Embed Frameworks */,
+				CEBB5B6029D463E90091CF2D /* FlyCore.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,9 +399,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1CBF0F32304E3C76CDBDA843 /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
-		21CA1C9488825B91CB127CAB /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D796C968B53ECD53490B1C4 /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
+		006154ED9F7BF96A08452DB1 /* Pods_MirrorflyNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MirrorflyNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		144B689018350F5D25A2A48D /* Pods-UiKitQa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.release.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.release.xcconfig"; sourceTree = "<group>"; };
+		1EFA0529F6E0B3216EBD328E /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
 		3D12788E27A7AC6D00A34436 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		3D3C47DA28E5315D001F2520 /* DeleteForEveryOneViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteForEveryOneViewCell.swift; sourceTree = "<group>"; };
 		3D3C47DB28E5315D001F2520 /* DeleteForEveryOneViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeleteForEveryOneViewCell.xib; sourceTree = "<group>"; };
@@ -399,8 +412,13 @@
 		3DF9C99828E6A7FA00154BBE /* DeleteForEveryOneReceiverCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeleteForEveryOneReceiverCell.xib; sourceTree = "<group>"; };
 		3DF9C9A528E6E69300154BBE /* DeleteMessageForEveryOneAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMessageForEveryOneAlertController.swift; sourceTree = "<group>"; };
 		3DF9C9A828E6E6A300154BBE /* DeleteMessageForEveryOneAlertController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeleteMessageForEveryOneAlertController.xib; sourceTree = "<group>"; };
-		5E61A30642442A7019A3E852 /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
-		7E8ACC54184DE87495DB4EAA /* Pods-UiKitQaNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
+		43CF4425FBDF31E74B64E172 /* Pods_Mirrorfly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mirrorfly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		46703D03BA078EA4BEFAE494 /* Pods-MirrorflyNotificationExtention.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyNotificationExtention.release.xcconfig"; path = "Target Support Files/Pods-MirrorflyNotificationExtention/Pods-MirrorflyNotificationExtention.release.xcconfig"; sourceTree = "<group>"; };
+		5F416E8E11C0461A52832CFD /* Pods-UiKitQaNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQaNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQaNotificationExtention/Pods-UiKitQaNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
+		7B8527FAED8B497DD7EC6B8A /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9825EB95E2616EE5B41823B6 /* Pods-MirrorflyNotificationExtention.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MirrorflyNotificationExtention.debug.xcconfig"; path = "Target Support Files/Pods-MirrorflyNotificationExtention/Pods-MirrorflyNotificationExtention.debug.xcconfig"; sourceTree = "<group>"; };
+		A24C132E565A3E2330DF7A02 /* Pods-Mirrorfly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirrorfly.release.xcconfig"; path = "Target Support Files/Pods-Mirrorfly/Pods-Mirrorfly.release.xcconfig"; sourceTree = "<group>"; };
+		AD3331B94C94F7BF0605FE22 /* Pods_UiKitQaNotificationExtention.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQaNotificationExtention.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0140AE298943F6002CE0F8 /* AppLockDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockDescriptionCell.swift; sourceTree = "<group>"; };
 		CE0140AF298943F7002CE0F8 /* AppLockDescriptionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppLockDescriptionCell.xib; sourceTree = "<group>"; };
 		CE0755B3290067E1008F6C37 /* NotificationWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationWebViewController.swift; sourceTree = "<group>"; };
@@ -418,8 +436,17 @@
 		CE0E0515295EC56E006CD708 /* BackupProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackupProgressViewController.swift; sourceTree = "<group>"; };
 		CE0E0516295EC56E006CD708 /* BackupProgressViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BackupProgressViewController.xib; sourceTree = "<group>"; };
 		CE0EE39827D8CAAE00C4823D /* GroupInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoViewModel.swift; sourceTree = "<group>"; };
+		CE1391F929C86BC400F31957 /* ProgressBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressBar.xib; sourceTree = "<group>"; };
+		CE1391FA29C86BC400F31957 /* ProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		CE16161029955F6B002ED411 /* ChatTagsFooterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTagsFooterCell.swift; sourceTree = "<group>"; };
+		CE16161129955F6B002ED411 /* ChatTagsFooterCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTagsFooterCell.xib; sourceTree = "<group>"; };
+		CE16161729956F23002ED411 /* CreateChatTagsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChatTagsController.swift; sourceTree = "<group>"; };
 		CE167AC729200E8000C9CBA0 /* PINenteredCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PINenteredCollectionViewCell.swift; sourceTree = "<group>"; };
 		CE167AC829200E8000C9CBA0 /* PINenteredCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PINenteredCollectionViewCell.xib; sourceTree = "<group>"; };
+		CE1D49022994FEB300CC510F /* ChatTags.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChatTags.storyboard; sourceTree = "<group>"; };
+		CE1D49092995003F00CC510F /* ChatTagsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTagsController.swift; sourceTree = "<group>"; };
+		CE1D490D2995179000CC510F /* ChatTagsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTagsHeader.swift; sourceTree = "<group>"; };
+		CE1D490E2995179000CC510F /* ChatTagsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTagsHeader.xib; sourceTree = "<group>"; };
 		CE1FD791280F7A3D0075304E /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE1FD795280F7B3B0075304E /* FlyTranslate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FlyTranslate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2A390929227862005F7AF0 /* AppLockPasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppLockPasswordViewController.swift; sourceTree = "<group>"; };
@@ -427,6 +454,8 @@
 		CE2A391329227C1C005F7AF0 /* AppLockTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppLockTableViewCell.swift; sourceTree = "<group>"; };
 		CE2FA0532812B38E004C0A85 /* ContactUsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsController.swift; sourceTree = "<group>"; };
 		CE31D80B274365BD0052FFFF /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		CE3915D9299527B70045B6FF /* ChatTagsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTagsCell.swift; sourceTree = "<group>"; };
+		CE3915DA299527B70045B6FF /* ChatTagsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTagsCell.xib; sourceTree = "<group>"; };
 		CE3919392967F7490004268E /* 1-second-of-silence.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "1-second-of-silence.mp3"; sourceTree = "<group>"; };
 		CE40C5B826DDC0B4001F829F /* CountryPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryPickerViewController.swift; sourceTree = "<group>"; };
 		CE40C5B926DDC0B4001F829F /* ContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactViewController.swift; sourceTree = "<group>"; };
@@ -446,6 +475,7 @@
 		CE45DF1B29110E4300246601 /* ChatSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatSettingsViewController.swift; sourceTree = "<group>"; };
 		CE45DF1E29110E8E00246601 /* AutodownloadSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutodownloadSelectionViewController.swift; sourceTree = "<group>"; };
 		CE45DF2829111E7900246601 /* AutodownloadsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutodownloadsTableViewCell.swift; sourceTree = "<group>"; };
+		CE46746A29C9799400169A96 /* AuthenticationExtenison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationExtenison.swift; sourceTree = "<group>"; };
 		CE48C12B26E1EB410016AEFC /* ImageEditController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageEditController.swift; sourceTree = "<group>"; };
 		CE48C13126E1EBBD0016AEFC /* EditImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageCell.swift; sourceTree = "<group>"; };
 		CE48C13326E1EBC80016AEFC /* ListImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListImageCell.swift; sourceTree = "<group>"; };
@@ -467,6 +497,7 @@
 		CE51790F26E201D80077636C /* ImagePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreview.swift; sourceTree = "<group>"; };
 		CE51791126E202600077636C /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		CE51797B26E25EC80077636C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
+		CE53698D29ACDBEA00B46DD2 /* RecentTagsCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentTagsCollectionCell.swift; sourceTree = "<group>"; };
 		CE551332291D5AFB0039172A /* AuthenticationPINCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationPINCollectionViewCell.swift; sourceTree = "<group>"; };
 		CE551333291D5AFB0039172A /* AuthenticationPINCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AuthenticationPINCollectionViewCell.xib; sourceTree = "<group>"; };
 		CE56250926E0ED550020BDD3 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
@@ -650,13 +681,6 @@
 		CEA4FFB626DFBACD004A1268 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CEA4FFB826DFBB42004A1268 /* ProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		CEA664ED26D5315A007B8774 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		CEA9CD0229B1BB9000FBBFC3 /* FlyTranslate.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyTranslate.xcframework; sourceTree = "<group>"; };
-		CEA9CD0429B1BB9400FBBFC3 /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
-		CEA9CD0529B1BB9600FBBFC3 /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
-		CEA9CD0629B1BB9700FBBFC3 /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
-		CEA9CD0729B1BB9900FBBFC3 /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
-		CEA9CD0829B1BB9B00FBBFC3 /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
-		CEA9CD3629B1C03700FBBFC3 /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
 		CEAAD17228ACF3EF002B8B6C /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		CEAAD19328AD1D74002B8B6C /* DeleteMyAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteMyAccountVC.swift; sourceTree = "<group>"; };
 		CEAAD19428AD1D74002B8B6C /* DMAReasonVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DMAReasonVC.swift; sourceTree = "<group>"; };
@@ -668,15 +692,21 @@
 		CEAF527F28337075001165A4 /* SenderDocumentsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderDocumentsTableViewCell.xib; sourceTree = "<group>"; };
 		CEAF5284283370B9001165A4 /* ReceiverDocumentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiverDocumentsTableViewCell.swift; sourceTree = "<group>"; };
 		CEAF5285283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReceiverDocumentsTableViewCell.xib; sourceTree = "<group>"; };
+		CEB03661299CBB1D00D5C5A2 /* CustomChatTagsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChatTagsCell.swift; sourceTree = "<group>"; };
+		CEB03662299CBB1D00D5C5A2 /* CustomChatTagsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomChatTagsCell.xib; sourceTree = "<group>"; };
+		CEBA0CCF299628E700B6FF3C /* AddPeopleOrGroupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPeopleOrGroupController.swift; sourceTree = "<group>"; };
+		CEBA0CD12996773E00B6FF3C /* SelectedUserCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedUserCollectionCell.swift; sourceTree = "<group>"; };
+		CEBB5B4529D463CA0091CF2D /* FlyNetwork.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyNetwork.xcframework; sourceTree = "<group>"; };
+		CEBB5B4629D463CB0091CF2D /* FlyXmpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyXmpp.xcframework; sourceTree = "<group>"; };
+		CEBB5B4729D463CB0091CF2D /* FlyDatabase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyDatabase.xcframework; sourceTree = "<group>"; };
+		CEBB5B4829D463CC0091CF2D /* FlyCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCore.xcframework; sourceTree = "<group>"; };
+		CEBB5B4929D463CD0091CF2D /* FlyCall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCall.xcframework; sourceTree = "<group>"; };
+		CEBB5B4A29D463CE0091CF2D /* FlyCommon.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyCommon.xcframework; sourceTree = "<group>"; };
+		CEBB5B4B29D463CE0091CF2D /* FlyTranslate.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FlyTranslate.xcframework; sourceTree = "<group>"; };
 		CEBE3BD82959CF1F004E7C49 /* FooterSectionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FooterSectionCell.xib; sourceTree = "<group>"; };
-		CEC08B6127E23B0D005E48C5 /* Mirrorfly-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mirrorfly-Info.plist"; path = "/Users/user/Desktop/UiKit/Mirrorfly-Info.plist"; sourceTree = "<absolute>"; };
-		CEC08B7227E23B9F005E48C5 /* MirrorflyNotificationExtention-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MirrorflyNotificationExtention-Info.plist"; path = "/Users/user/Desktop/UiKit/MirrorflyNotificationExtention-Info.plist"; sourceTree = "<absolute>"; };
-		CEC08B7427E243D9005E48C5 /* MirrorflyNotificationextention.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = MirrorflyNotificationextention.entitlements; sourceTree = "<group>"; };
-		CEC08B7C27E24F23005E48C5 /* GoogleService-Prod-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Prod-Info.plist"; sourceTree = "<group>"; };
 		CEC08B7E27E24F41005E48C5 /* GoogleService-Qa-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Qa-Info.plist"; sourceTree = "<group>"; };
 		CEC2D48827A5AAA700AB107A /* ContactInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactInfoViewModel.swift; sourceTree = "<group>"; };
 		CECB62482933B0400041D2B1 /* NavigationControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerExtension.swift; sourceTree = "<group>"; };
-		CECB98F426CE658D00B24448 /* Mirrorfly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mirrorfly.entitlements; sourceTree = "<group>"; };
 		CECB98F526CE65EE00B24448 /* MirrorflyUIkitQa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MirrorflyUIkitQa.entitlements; sourceTree = "<group>"; };
 		CECB992426CE71BF00B24448 /* SF-UI-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Bold.otf"; sourceTree = "<group>"; };
 		CECB992626CE71CB00B24448 /* SF-UI-Display-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-UI-Display-Heavy.otf"; sourceTree = "<group>"; };
@@ -734,9 +764,12 @@
 		CEF8A4C62959CD5100D669B6 /* HeaderSectionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeaderSectionCell.xib; sourceTree = "<group>"; };
 		CEFA0EC4292F56EF003CBE9C /* BlockedContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedContactTableViewCell.swift; sourceTree = "<group>"; };
 		CEFA0EC5292F56EF003CBE9C /* BlockedContactTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockedContactTableViewCell.xib; sourceTree = "<group>"; };
+		CEFC0F24299A3B2300EA177C /* UserListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListCell.swift; sourceTree = "<group>"; };
+		CEFC0F25299A3B2300EA177C /* UserListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserListCell.xib; sourceTree = "<group>"; };
 		CEFD042F26CD25B90017287F /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
 		CEFD043126CD3D4B0017287F /* CountryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryModel.swift; sourceTree = "<group>"; };
-		FEEDC8BC8D303986ECB1FA95 /* Pods_UiKitQa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UiKitQa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6B08C2E9B4D0F777B3A98E7 /* Pods-UiKitQa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UiKitQa.debug.xcconfig"; path = "Target Support Files/Pods-UiKitQa/Pods-UiKitQa.debug.xcconfig"; sourceTree = "<group>"; };
+		F77D7E608ACF91310C50E454 /* Pods-Mirrorfly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mirrorfly.debug.xcconfig"; path = "Target Support Files/Pods-Mirrorfly/Pods-Mirrorfly.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -744,14 +777,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEA9CD2C29B1BC4B00FBBFC3 /* FlyTranslate.xcframework in Frameworks */,
-				CEA9CD2429B1BC4300FBBFC3 /* FlyCommon.xcframework in Frameworks */,
-				CEA9CD2829B1BC4700FBBFC3 /* FlyDatabase.xcframework in Frameworks */,
-				CEA9CD2E29B1BC4D00FBBFC3 /* FlyXmpp.xcframework in Frameworks */,
-				CEA9CD2A29B1BC4900FBBFC3 /* FlyNetwork.xcframework in Frameworks */,
-				CEA9CD2129B1BC4100FBBFC3 /* FlyCall.xcframework in Frameworks */,
-				CEA9CD3929B1C13B00FBBFC3 /* FlyCore.xcframework in Frameworks */,
-				4B1006AF19355285DCA8F790 /* Pods_UiKitQa.framework in Frameworks */,
+				CEBB5B6529D463EE0091CF2D /* FlyTranslate.xcframework in Frameworks */,
+				CEBB5B5D29D463E60091CF2D /* FlyCommon.xcframework in Frameworks */,
+				CEBB5B6729D463F00091CF2D /* FlyXmpp.xcframework in Frameworks */,
+				CEBB5B6329D463EC0091CF2D /* FlyNetwork.xcframework in Frameworks */,
+				CEBB5B5A29D463E40091CF2D /* FlyCall.xcframework in Frameworks */,
+				CEBB5B5F29D463E90091CF2D /* FlyCore.xcframework in Frameworks */,
+				CEBB5B6129D463EA0091CF2D /* FlyDatabase.xcframework in Frameworks */,
+				F3122666631DDFCC94B7D41E /* Pods_UiKitQa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,12 +792,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEA9CD1D29B1BC0A00FBBFC3 /* FlyCommon.xcframework in Frameworks */,
-				CEA9CD1929B1BC0100FBBFC3 /* FlyXmpp.xcframework in Frameworks */,
-				CEA9CD3829B1C04600FBBFC3 /* FlyCore.xcframework in Frameworks */,
-				CEA9CD1729B1BBFC00FBBFC3 /* FlyCall.xcframework in Frameworks */,
-				CEA9CD1F29B1BC0F00FBBFC3 /* FlyDatabase.xcframework in Frameworks */,
-				39FF75663F5F2563B8C99F83 /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
+				89B82246BBC2FD4C25D8F7FD /* Pods_UiKitQaNotificationExtention.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -841,8 +869,10 @@
 				CE8BC8E6280EB466007FF8C3 /* FlyTranslate.framework */,
 				CEA178D4274F8ABC00EAD2A3 /* FlyCall.framework */,
 				CEA178D3274F8ABC00EAD2A3 /* FlyCommon.framework */,
-				FEEDC8BC8D303986ECB1FA95 /* Pods_UiKitQa.framework */,
-				21CA1C9488825B91CB127CAB /* Pods_UiKitQaNotificationExtention.framework */,
+				43CF4425FBDF31E74B64E172 /* Pods_Mirrorfly.framework */,
+				006154ED9F7BF96A08452DB1 /* Pods_MirrorflyNotificationExtention.framework */,
+				7B8527FAED8B497DD7EC6B8A /* Pods_UiKitQa.framework */,
+				AD3331B94C94F7BF0605FE22 /* Pods_UiKitQaNotificationExtention.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -850,10 +880,14 @@
 		6B19A949DEFF3996B7AA7823 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2D796C968B53ECD53490B1C4 /* Pods-UiKitQa.debug.xcconfig */,
-				1CBF0F32304E3C76CDBDA843 /* Pods-UiKitQa.release.xcconfig */,
-				5E61A30642442A7019A3E852 /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
-				7E8ACC54184DE87495DB4EAA /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
+				F77D7E608ACF91310C50E454 /* Pods-Mirrorfly.debug.xcconfig */,
+				A24C132E565A3E2330DF7A02 /* Pods-Mirrorfly.release.xcconfig */,
+				9825EB95E2616EE5B41823B6 /* Pods-MirrorflyNotificationExtention.debug.xcconfig */,
+				46703D03BA078EA4BEFAE494 /* Pods-MirrorflyNotificationExtention.release.xcconfig */,
+				E6B08C2E9B4D0F777B3A98E7 /* Pods-UiKitQa.debug.xcconfig */,
+				144B689018350F5D25A2A48D /* Pods-UiKitQa.release.xcconfig */,
+				5F416E8E11C0461A52832CFD /* Pods-UiKitQaNotificationExtention.debug.xcconfig */,
+				1EFA0529F6E0B3216EBD328E /* Pods-UiKitQaNotificationExtention.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -914,6 +948,66 @@
 				CE0B4FBE27A414E3005349EB /* ContactInfoCell.xib */,
 			);
 			path = contactData;
+			sourceTree = "<group>";
+		};
+		CE1391F829C86BC400F31957 /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				CE1391F929C86BC400F31957 /* ProgressBar.xib */,
+				CE1391FA29C86BC400F31957 /* ProgressBar.swift */,
+			);
+			path = ProgressBar;
+			sourceTree = "<group>";
+		};
+		CE16160F29955F22002ED411 /* ChatTagsSection */ = {
+			isa = PBXGroup;
+			children = (
+				CE16161029955F6B002ED411 /* ChatTagsFooterCell.swift */,
+				CE16161129955F6B002ED411 /* ChatTagsFooterCell.xib */,
+			);
+			path = ChatTagsSection;
+			sourceTree = "<group>";
+		};
+		CE16161629956EEC002ED411 /* CreateChatTags */ = {
+			isa = PBXGroup;
+			children = (
+				CE16161729956F23002ED411 /* CreateChatTagsController.swift */,
+			);
+			path = CreateChatTags;
+			sourceTree = "<group>";
+		};
+		CE1D49082994FF6C00CC510F /* ChatTags */ = {
+			isa = PBXGroup;
+			children = (
+				CEBA0CCE299628A200B6FF3C /* AddPeopleOrGroup */,
+				CE16161629956EEC002ED411 /* CreateChatTags */,
+				CE16160F29955F22002ED411 /* ChatTagsSection */,
+				CE1D49132995272700CC510F /* ChatTagsCell */,
+				CE1D490C2995175000CC510F /* ChatTagsHeader */,
+				CE1D49092995003F00CC510F /* ChatTagsController.swift */,
+			);
+			path = ChatTags;
+			sourceTree = "<group>";
+		};
+		CE1D490C2995175000CC510F /* ChatTagsHeader */ = {
+			isa = PBXGroup;
+			children = (
+				CE1D490D2995179000CC510F /* ChatTagsHeader.swift */,
+				CE1D490E2995179000CC510F /* ChatTagsHeader.xib */,
+			);
+			path = ChatTagsHeader;
+			sourceTree = "<group>";
+		};
+		CE1D49132995272700CC510F /* ChatTagsCell */ = {
+			isa = PBXGroup;
+			children = (
+				CE3915D9299527B70045B6FF /* ChatTagsCell.swift */,
+				CE3915DA299527B70045B6FF /* ChatTagsCell.xib */,
+				CEB03661299CBB1D00D5C5A2 /* CustomChatTagsCell.swift */,
+				CEB03662299CBB1D00D5C5A2 /* CustomChatTagsCell.xib */,
+				CE53698D29ACDBEA00B46DD2 /* RecentTagsCollectionCell.swift */,
+			);
+			path = ChatTagsCell;
 			sourceTree = "<group>";
 		};
 		CE2A38FB29227633005F7AF0 /* Password View Controller */ = {
@@ -987,6 +1081,7 @@
 		CE40C5B726DDC09E001F829F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				CE1D49082994FF6C00CC510F /* ChatTags */,
 				CEAB42CD298799830061429A /* ForceUpdateAlert */,
 				3D67D3FE28E70EDE00BBC373 /* DeleteMessagesAlert */,
 				3DF9C9A428E6E63C00154BBE /* DeleteMessageForEveryOneAlertController */,
@@ -1530,13 +1625,13 @@
 		CEA2F91C26569C590013F5E8 = {
 			isa = PBXGroup;
 			children = (
-				CEA9CD0829B1BB9B00FBBFC3 /* FlyCall.xcframework */,
-				CEA9CD0729B1BB9900FBBFC3 /* FlyCommon.xcframework */,
-				CEA9CD3629B1C03700FBBFC3 /* FlyCore.xcframework */,
-				CEA9CD0529B1BB9600FBBFC3 /* FlyDatabase.xcframework */,
-				CEA9CD0629B1BB9700FBBFC3 /* FlyNetwork.xcframework */,
-				CEA9CD0229B1BB9000FBBFC3 /* FlyTranslate.xcframework */,
-				CEA9CD0429B1BB9400FBBFC3 /* FlyXmpp.xcframework */,
+				CEBB5B4929D463CD0091CF2D /* FlyCall.xcframework */,
+				CEBB5B4A29D463CE0091CF2D /* FlyCommon.xcframework */,
+				CEBB5B4829D463CC0091CF2D /* FlyCore.xcframework */,
+				CEBB5B4729D463CB0091CF2D /* FlyDatabase.xcframework */,
+				CEBB5B4529D463CA0091CF2D /* FlyNetwork.xcframework */,
+				CEBB5B4B29D463CE0091CF2D /* FlyTranslate.xcframework */,
+				CEBB5B4629D463CB0091CF2D /* FlyXmpp.xcframework */,
 				CEA2F92726569C590013F5E8 /* MirrorflyUIkit */,
 				CE448B6E27883692002774DD /* fly_call_ringtone.mp3 */,
 				CE448B702788426F002774DD /* fly_reconnecting_tone.mp3 */,
@@ -1577,7 +1672,6 @@
 				CE9121122795453100B007E0 /* qrCode */,
 				CE968372274B94E600701ADF /* group */,
 				CECB98F526CE65EE00B24448 /* MirrorflyUIkitQa.entitlements */,
-				CECB98F426CE658D00B24448 /* Mirrorfly.entitlements */,
 				CE31D80A274365760052FFFF /* ViewModels */,
 				CEF4371827390BDA008D0F39 /* Calls */,
 				CEA2F9C62657D0210013F5E8 /* Strings */,
@@ -1599,7 +1693,6 @@
 		CEA2F93D26569D8B0013F5E8 /* Plist */ = {
 			isa = PBXGroup;
 			children = (
-				CEC08B6127E23B0D005E48C5 /* Mirrorfly-Info.plist */,
 				CEA2F93626569C5C0013F5E8 /* MirrorflyUIkit-info.plist */,
 			);
 			path = Plist;
@@ -1617,6 +1710,7 @@
 		CEA2F94B26569F730013F5E8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				CE1391F829C86BC400F31957 /* ProgressBar */,
 				CEABA5F427704731004CF761 /* ChatUtils.swift */,
 				CEA4FF1F26DF750B004A1268 /* ValueConstants.swift */,
 				CED0F3DA26CBB35E002E376A /* NetworkReachability.swift */,
@@ -1660,6 +1754,7 @@
 				CE9EF37726F32261006D22C7 /* TextFieldDelegate.swift */,
 				CEF4372227390D9D008D0F39 /* ColorExtension.swift */,
 				CECB62482933B0400041D2B1 /* NavigationControllerExtension.swift */,
+				CE46746A29C9799400169A96 /* AuthenticationExtenison.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1720,6 +1815,7 @@
 				CEA2F93326569C5C0013F5E8 /* LaunchScreen.storyboard */,
 				CEA2F92E26569C590013F5E8 /* Main.storyboard */,
 				CEA2F97B2656A0DD0013F5E8 /* Profile.storyboard */,
+				CE1D49022994FEB300CC510F /* ChatTags.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1934,6 +2030,16 @@
 			path = "Receiver Documents";
 			sourceTree = "<group>";
 		};
+		CEBA0CCE299628A200B6FF3C /* AddPeopleOrGroup */ = {
+			isa = PBXGroup;
+			children = (
+				CEFC0F23299A3AE600EA177C /* UserListCell */,
+				CEBA0CCF299628E700B6FF3C /* AddPeopleOrGroupController.swift */,
+				CEBA0CD12996773E00B6FF3C /* SelectedUserCollectionCell.swift */,
+			);
+			path = AddPeopleOrGroup;
+			sourceTree = "<group>";
+		};
 		CEBE3BDB2959CF3E004E7C49 /* headersection */ = {
 			isa = PBXGroup;
 			children = (
@@ -1946,7 +2052,6 @@
 		CEC08B8227E24FD8005E48C5 /* GooglePlist */ = {
 			isa = PBXGroup;
 			children = (
-				CEC08B7C27E24F23005E48C5 /* GoogleService-Prod-Info.plist */,
 				CEC08B7E27E24F41005E48C5 /* GoogleService-Qa-Info.plist */,
 			);
 			path = GooglePlist;
@@ -2073,10 +2178,8 @@
 		CEF43745273BCA77008D0F39 /* NotificationExtention */ = {
 			isa = PBXGroup;
 			children = (
-				CEC08B7427E243D9005E48C5 /* MirrorflyNotificationextention.entitlements */,
 				CEF43750273BCAB2008D0F39 /* NotificationExtentionQa.entitlements */,
 				CEF43746273BCA77008D0F39 /* NotificationService.swift */,
-				CEC08B7227E23B9F005E48C5 /* MirrorflyNotificationExtention-Info.plist */,
 				CEF43748273BCA77008D0F39 /* Info.plist */,
 			);
 			path = NotificationExtention;
@@ -2114,6 +2217,15 @@
 			path = BlockedContactTableViewCell;
 			sourceTree = "<group>";
 		};
+		CEFC0F23299A3AE600EA177C /* UserListCell */ = {
+			isa = PBXGroup;
+			children = (
+				CEFC0F24299A3B2300EA177C /* UserListCell.swift */,
+				CEFC0F25299A3B2300EA177C /* UserListCell.xib */,
+			);
+			path = UserListCell;
+			sourceTree = "<group>";
+		};
 		CEFD042E26CD25AA0017287F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2129,16 +2241,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEA2F93926569C5C0013F5E8 /* Build configuration list for PBXNativeTarget "UiKitQa" */;
 			buildPhases = (
-				D5120B2596B9529A92149EB5 /* [CP] Check Pods Manifest.lock */,
+				300C9C093A11245B9E6E249F /* [CP] Check Pods Manifest.lock */,
 				CEA2F92126569C590013F5E8 /* Sources */,
 				CEA2F92226569C590013F5E8 /* Frameworks */,
 				CEA2F92326569C590013F5E8 /* Resources */,
 				CEF4374C273BCA77008D0F39 /* Embed App Extensions */,
 				CED4FB5C277DE60D008FAF15 /* ShellScript */,
 				CEC08B8327E25037005E48C5 /* Google Plist */,
-				CEA9CD2329B1BC4200FBBFC3 /* Embed Frameworks */,
-				FA05B4C012C47EAD256DDCB2 /* [CP] Embed Pods Frameworks */,
-				AD725ED8D23ABC1143A259CF /* [CP] Copy Pods Resources */,
+				CEBB5B5C29D463E40091CF2D /* Embed Frameworks */,
+				2FCF5F3D7AF1C34F8BFEE10E /* [CP] Embed Pods Frameworks */,
+				07A9ACA62F100DD859121EAE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2154,7 +2266,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEF4374F273BCA77008D0F39 /* Build configuration list for PBXNativeTarget "UiKitQaNotificationExtention" */;
 			buildPhases = (
-				2B569217BA0402D395B26B7B /* [CP] Check Pods Manifest.lock */,
+				3CFDD318B3231160660BD649 /* [CP] Check Pods Manifest.lock */,
 				CEF43740273BCA76008D0F39 /* Sources */,
 				CEF43741273BCA76008D0F39 /* Frameworks */,
 				CEF43742273BCA76008D0F39 /* Resources */,
@@ -2218,13 +2330,15 @@
 				CE955ADE295EFD75006525EA /* skytone.mp3 in Resources */,
 				CE0B4FB127A3E44F005349EB /* ContactImageCell.xib in Resources */,
 				CE79DEB128FD307E0008B3D7 /* SingleMessageInfoCell.xib in Resources */,
-				CEC08B8027E24F4A005E48C5 /* GoogleService-Prod-Info.plist in Resources */,
+				CE16161429955F6B002ED411 /* ChatTagsFooterCell.xib in Resources */,
 				CE955AD8295EFD75006525EA /* coin_drop.mp3 in Resources */,
 				CE56254426E14E200020BDD3 /* ChatViewLocationIncomingCell.xib in Resources */,
 				CE613AF1293A18F900995C9B /* ClearAllChatTableViewCell.xib in Resources */,
+				CE1391FB29C86BC400F31957 /* ProgressBar.xib in Resources */,
 				CECB992926CE71D400B24448 /* SF-UI-Display-Light.otf in Resources */,
 				CE167ACA29200E8000C9CBA0 /* PINenteredCollectionViewCell.xib in Resources */,
 				CED5EE0927990D850071A109 /* WebSettingsCell.xib in Resources */,
+				CEB03665299CBB1D00D5C5A2 /* CustomChatTagsCell.xib in Resources */,
 				CE4AF3A726F23AA3001EBB3B /* AudioReceiver.xib in Resources */,
 				CECB992D26CE71E800B24448 /* SF-UI-Display-Regular.otf in Resources */,
 				CE79DEC928FD7DFA0008B3D7 /* GroupDividerCell.xib in Resources */,
@@ -2242,6 +2356,7 @@
 				CEA387372751142E00F35120 /* NotificationCell.xib in Resources */,
 				CE955ADA295EFD75006525EA /* hello.mp3 in Resources */,
 				CE8F53D52743AD7C00B201F4 /* ChatViewVideoIncomingCell.xib in Resources */,
+				CE1D49112995179000CC510F /* ChatTagsHeader.xib in Resources */,
 				CEAF5287283370B9001165A4 /* ReceiverDocumentsTableViewCell.xib in Resources */,
 				CE6839F827D0E7440056DB8D /* GroupOptionsTableViewCell.xib in Resources */,
 				CECB992B26CE71DF00B24448 /* SF-UI-Display-Medium.otf in Resources */,
@@ -2271,11 +2386,14 @@
 				CECB992F26CE720900B24448 /* SF-UI-Display-Semibold.otf in Resources */,
 				CEC08B7F27E24F41005E48C5 /* GoogleService-Qa-Info.plist in Resources */,
 				CE5BB0A02900281B00D16A49 /* NotificationTableViewCell.xib in Resources */,
+				CE1D49032994FEB300CC510F /* ChatTags.storyboard in Resources */,
 				CECB992526CE71BF00B24448 /* SF-UI-Display-Bold.otf in Resources */,
 				CE955AD0295EFD75006525EA /* keys.mp3 in Resources */,
 				CE955ACA295EFD75006525EA /* popcorn.mp3 in Resources */,
+				CE3915DD299527B70045B6FF /* ChatTagsCell.xib in Resources */,
 				CE48C13A26E1EBF20016AEFC /* SenderImageCell.xib in Resources */,
 				CEE70879276893D90072A50F /* ForwardViewController.xib in Resources */,
+				CEFC0F28299A3B2300EA177C /* UserListCell.xib in Resources */,
 				CE0E0519295EC56E006CD708 /* BackupProgressViewController.xib in Resources */,
 				CE6C98602804053D009D508E /* ChatSettingsTableViewCell.xib in Resources */,
 				CEAF528128337075001165A4 /* SenderDocumentsTableViewCell.xib in Resources */,
@@ -2327,7 +2445,63 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2B569217BA0402D395B26B7B /* [CP] Check Pods Manifest.lock */ = {
+		07A9ACA62F100DD859121EAE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2FCF5F3D7AF1C34F8BFEE10E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		300C9C093A11245B9E6E249F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UiKitQa-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3CFDD318B3231160660BD649 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2347,23 +2521,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AD725ED8D23ABC1143A259CF /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CEC08B8327E25037005E48C5 /* Google Plist */ = {
@@ -2403,45 +2560,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
-		D5120B2596B9529A92149EB5 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-UiKitQa-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FA05B4C012C47EAD256DDCB2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UiKitQa/Pods-UiKitQa-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2457,6 +2575,7 @@
 				CEA3D8CC27F4283200C9BE92 /* AboutUsViewController.swift in Sources */,
 				CE6839F727D0E7440056DB8D /* GroupOptionsTableViewCell.swift in Sources */,
 				CEAB42D2298799CC0061429A /* ForceUpdateAlert.swift in Sources */,
+				CE1D490F2995179000CC510F /* ChatTagsHeader.swift in Sources */,
 				CE40C5C826DDC0B5001F829F /* MainTabBarController.swift in Sources */,
 				CE8DFD8E280E84A60043B6A8 /* UILabelExtension.swift in Sources */,
 				CEAF528028337075001165A4 /* SenderDocumentsTableViewCell.swift in Sources */,
@@ -2471,6 +2590,7 @@
 				CE6C9868280477E9009D508E /* LanguageSelectionTableViewCell.swift in Sources */,
 				CE4361A7290EC528003CC840 /* NotificationViewModel.swift in Sources */,
 				CEF8A4C82959CD5100D669B6 /* ViewAllMediaViewModel.swift in Sources */,
+				CE53698E29ACDBEA00B46DD2 /* RecentTagsCollectionCell.swift in Sources */,
 				CE51790E26E1FCE00077636C /* ImageDetail.swift in Sources */,
 				CED57CE82893B3EA000A456E /* AppAudioRecorder.swift in Sources */,
 				CE85EDFA274CF9AF002A6D50 /* ParticipantCell.swift in Sources */,
@@ -2543,9 +2663,12 @@
 				CE0140B0298943F7002CE0F8 /* AppLockDescriptionCell.swift in Sources */,
 				CEE7126B291A7B0800C16387 /* ChangeAppLockViewController.swift in Sources */,
 				CED5EE0827990D850071A109 /* WebSettingsCell.swift in Sources */,
+				CE3915DB299527B70045B6FF /* ChatTagsCell.swift in Sources */,
 				CE8FAC642726980400C92634 /* ContactRefresh.swift in Sources */,
+				CE16161829956F23002ED411 /* CreateChatTagsController.swift in Sources */,
 				CE51797C26E25EC80077636C /* ImageConverter.swift in Sources */,
 				CED70D44274B6069005895ED /* CustomPhotoAlbum.swift in Sources */,
+				CE16161229955F6B002ED411 /* ChatTagsFooterCell.swift in Sources */,
 				CEA2F95C26569FFE0013F5E8 /* UserDefaults.swift in Sources */,
 				CEE7126F291B7DE200C16387 /* AuthenticationPINViewController.swift in Sources */,
 				CEE70878276893D90072A50F /* ForwardViewController.swift in Sources */,
@@ -2581,6 +2704,7 @@
 				CEF8A4D22959CD5100D669B6 /* LinkCell.swift in Sources */,
 				CE4AF3A826F23AA3001EBB3B /* AudioReceiver.swift in Sources */,
 				CE56257226E2B7400020BDD3 /* ChatContactViewController.swift in Sources */,
+				CEFC0F26299A3B2300EA177C /* UserListCell.swift in Sources */,
 				CE5BB09C29000F3400D16A49 /* NotificationsViewController.swift in Sources */,
 				CE40C5CF26DDC0B5001F829F /* OTPViewModel.swift in Sources */,
 				CE9CD31A2951DB2200EFE68A /* AutoBackupPopupViewController.swift in Sources */,
@@ -2590,10 +2714,12 @@
 				CEA4FF2026DF750B004A1268 /* ValueConstants.swift in Sources */,
 				CE0E0517295EC56E006CD708 /* BackupProgressViewController.swift in Sources */,
 				CE9705D7294C6DA6007246A8 /* RestoreInstructionsTableViewCell.swift in Sources */,
+				CEBA0CD22996773E00B6FF3C /* SelectedUserCollectionCell.swift in Sources */,
 				CE167AC929200E8000C9CBA0 /* PINenteredCollectionViewCell.swift in Sources */,
 				CE9121162795484200B007E0 /* QRCodeScanner.swift in Sources */,
 				CE0755B4290067E1008F6C37 /* NotificationWebViewController.swift in Sources */,
 				CE9EF37826F32261006D22C7 /* TextFieldDelegate.swift in Sources */,
+				CEBA0CD0299628E700B6FF3C /* AddPeopleOrGroupController.swift in Sources */,
 				CE48C13926E1EBF20016AEFC /* SenderImageCell.swift in Sources */,
 				CEA4FFB726DFBACD004A1268 /* ViewController.swift in Sources */,
 				3DF9C99928E6A7FA00154BBE /* DeleteForEveryOneReceiverCell.swift in Sources */,
@@ -2607,7 +2733,9 @@
 				CE9EC9DC26CD79DF0089D9EB /* ImageViewExtension.swift in Sources */,
 				CEF437292739212D008D0F39 /* OutGoingCallXib.swift in Sources */,
 				CE6C985C280404DA009D508E /* ChatSettingsTableViewCell.swift in Sources */,
+				CE1391FD29C86BC400F31957 /* ProgressBar.swift in Sources */,
 				CE9EC7E226CA67BA0089D9EB /* Identifiers.swift in Sources */,
+				CEB03663299CBB1D00D5C5A2 /* CustomChatTagsCell.swift in Sources */,
 				CEA3D8C627F4283200C9BE92 /* AboutandHelpViewController.swift in Sources */,
 				CE968374274B950400701ADF /* NewGroupViewController.swift in Sources */,
 				CE79DEB428FD3BD30008B3D7 /* MessageInfoViewModel.swift in Sources */,
@@ -2632,6 +2760,7 @@
 				CE9705D8294C6DA6007246A8 /* ChatBackupTableViewCell.swift in Sources */,
 				3DF9C9A628E6E69300154BBE /* DeleteMessageForEveryOneAlertController.swift in Sources */,
 				CE2A391429227C1C005F7AF0 /* AppLockTableViewCell.swift in Sources */,
+				CE1D490A2995004000CC510F /* ChatTagsController.swift in Sources */,
 				CEC2D48927A5AAA700AB107A /* ContactInfoViewModel.swift in Sources */,
 				CE97059A294C5BB5007246A8 /* iCloudEventDelegate.swift in Sources */,
 				CEFA0EC6292F56EF003CBE9C /* BlockedContactTableViewCell.swift in Sources */,
@@ -2649,6 +2778,7 @@
 				CEF8A4D02959CD5100D669B6 /* ViewAllMediaController.swift in Sources */,
 				CEA2F92B26569C590013F5E8 /* SceneDelegate.swift in Sources */,
 				CE40C5CA26DDC0B5001F829F /* OTPViewController.swift in Sources */,
+				CE46746B29C9799400169A96 /* AuthenticationExtenison.swift in Sources */,
 				CEF2D9C628F3F7470059693B /* MessageInfoViewController.swift in Sources */,
 				3D12788F27A7AC6D00A34436 /* UserProfileViewController.swift in Sources */,
 				CE9FA02826F06BC70082EFA5 /* SearchRecentChatTableViewCell.swift in Sources */,
@@ -2828,7 +2958,7 @@
 		};
 		CEA2F93A26569C5C0013F5E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D796C968B53ECD53490B1C4 /* Pods-UiKitQa.debug.xcconfig */;
+			baseConfigurationReference = E6B08C2E9B4D0F777B3A98E7 /* Pods-UiKitQa.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
@@ -2839,7 +2969,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 345;
+				CURRENT_PROJECT_VERSION = 361;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
@@ -2881,7 +3011,7 @@
 		};
 		CEA2F93B26569C5C0013F5E8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CBF0F32304E3C76CDBDA843 /* Pods-UiKitQa.release.xcconfig */;
+			baseConfigurationReference = 144B689018350F5D25A2A48D /* Pods-UiKitQa.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
@@ -2892,7 +3022,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 345;
+				CURRENT_PROJECT_VERSION = 361;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
@@ -2932,7 +3062,7 @@
 		};
 		CEF4374D273BCA77008D0F39 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5E61A30642442A7019A3E852 /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
+			baseConfigurationReference = 5F416E8E11C0461A52832CFD /* Pods-UiKitQaNotificationExtention.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -2940,7 +3070,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 345;
+				CURRENT_PROJECT_VERSION = 361;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G44VFA67ZG;
 				ENABLE_BITCODE = NO;
@@ -2980,14 +3110,14 @@
 		};
 		CEF4374E273BCA77008D0F39 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7E8ACC54184DE87495DB4EAA /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
+			baseConfigurationReference = 1EFA0529F6E0B3216EBD328E /* Pods-UiKitQaNotificationExtention.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = notificationextention/NotificationExtentionQa.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: CONTUS SUPPORT INTERACTIVE PRIVATE LIMITED";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 345;
+				CURRENT_PROJECT_VERSION = 361;
 				DEVELOPMENT_TEAM = G44VFA67ZG;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = G44VFA67ZG;
 				ENABLE_BITCODE = NO;

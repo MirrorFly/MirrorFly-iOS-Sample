@@ -57,16 +57,25 @@ class ChangeAppLockViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func viewOldPassword(_ sender: Any) {
+        if let button = sender as? UIButton {
+            addButtonRipple(button: button)
+        }
         viewPassword(textField: self.enterOldPassword, imageView: self.oldImageView)
 
     }
     
     @IBAction func viewNewPassword(_ sender: Any) {
+        if let button = sender as? UIButton {
+            addButtonRipple(button: button)
+        }
         viewPassword(textField:  self.enterNewPassword, imageView: self.ennterNewImage)
 
     }
     
     @IBAction func viewPasswordConfirm(_ sender: Any) {
+        if let button = sender as? UIButton {
+            addButtonRipple(button: button)
+        }
         viewPassword(textField:  self.confirmNewPassword, imageView: self.enterConfirmImage)
 
     }
@@ -84,7 +93,8 @@ class ChangeAppLockViewController: UIViewController, UITextFieldDelegate {
             FlyDefaults.appLockPassword = confirmNewPassword.text ?? ""
             FlyDefaults.appLockPasswordDate = Date()
             print(confirmNewPassword.text ?? "")
-            AppAlert.shared.showToast(message: SuccessMessage.PINsetsuccessfully)
+            FlyDefaults.appFingerprintenable = false
+            self.showToastWithMessage(message: SuccessMessage.pinChangedSuccessfully)
         }
         self.navigationController?.popViewController(animated: true)
     }
@@ -102,57 +112,67 @@ class ChangeAppLockViewController: UIViewController, UITextFieldDelegate {
         }
         let currentString =  (textField.text ?? "") as NSString
         let newString = currentString.replacingCharacters(in: range, with: string)
+        
+       
+        if range.length == 1 && textField.isSecureTextEntry && newString.count > 0 {
+            textField.text = newString.substring(to: newString.count)
+            return false
+        }
 
         return newString.count <= maxLength
     }
     
     func changePassword() -> Bool {
+        view.endEditing(true)
         if enterNewPassword.text == nil || enterNewPassword.text == "" && confirmNewPassword.text == nil || confirmNewPassword.text == "" && enterOldPassword.text == nil || enterOldPassword.text == "" {
-            AppAlert.shared.showToast(message: ErrorMessage.invalidOLDPIN)
-            return false
-        }
-        if enterNewPassword.text == nil || enterNewPassword.text == "" && confirmNewPassword.text == nil || confirmNewPassword.text == "" {
-            AppAlert.shared.showToast(message: ErrorMessage.enterthePIN)
+            self.showToastWithMessage(message: ErrorMessage.invalidOLDPIN)
             return false
         }
         if enterOldPassword.text == nil || enterOldPassword.text == "" {
-            AppAlert.shared.showToast(message: ErrorMessage.enterthePIN)
+            self.showToastWithMessage(message: ErrorMessage.enterthePIN)
             return false
         }
         if enterNewPassword.text == nil || enterNewPassword.text == "" {
-            AppAlert.shared.showToast(message: ErrorMessage.enternewPIN)
+            self.showToastWithMessage(message: ErrorMessage.enternewPIN)
             return false
         }
         if confirmNewPassword.text == nil || confirmNewPassword.text == "" {
-            AppAlert.shared.showToast(message: ErrorMessage.enterconfirmPIN)
+            self.showToastWithMessage(message: ErrorMessage.enterconfirmPIN)
             return false
         }
         if (enterOldPassword.text?.count ?? 0) < 4 {
-            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
+            self.showToastWithMessage(message: ErrorMessage.enterValidPIN)
             return false
         }
         if (enterNewPassword.text?.count ?? 0) < 4 {
-            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
+            self.showToastWithMessage(message: ErrorMessage.enterValidPIN)
             return false
         }
         if (confirmNewPassword.text?.count ?? 0) < 4 {
-            AppAlert.shared.showToast(message: ErrorMessage.enterValidPIN)
+            self.showToastWithMessage(message: ErrorMessage.enterValidPIN)
             return false
         }
         if enterOldPassword.text != FlyDefaults.appLockPassword{
-            AppAlert.shared.showToast(message: ErrorMessage.invalidOLDPIN)
+            self.showToastWithMessage(message: ErrorMessage.invalidOLDPIN)
             return false
         }
         
         if confirmNewPassword.text != enterNewPassword.text {
-            AppAlert.shared.showToast(message: ErrorMessage.passwordShouldbeSame)
+            self.showToastWithMessage(message: ErrorMessage.passwordShouldbeSame)
             return false
         }
         if enterOldPassword.text == enterNewPassword.text {
-            AppAlert.shared.showToast(message: ErrorMessage.oldPINnewPINsholdnotSame)
+            self.showToastWithMessage(message: ErrorMessage.oldPINnewPINsholdnotSame)
             return false
         }
         
         return true
+    }
+    
+    func showToastWithMessage(message: String) {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            AppAlert.shared.showToast(message: message)
+        }
     }
 }

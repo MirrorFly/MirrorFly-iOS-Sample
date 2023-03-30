@@ -661,7 +661,7 @@ extension AddParticipantsViewController {
 
     private func showBlockUnblockConfirmationPopUp(jid: String,name: String) {
         //showConfirmationAlert
-        let alertViewController = UIAlertController.init(title: getBlocked(jid: jid) ? "Unblock?" : "Block?" , message: (getBlocked(jid: jid) ) ? "Unblock \(name ?? "")?" : "Block \(name ?? "")?", preferredStyle: .alert)
+        let alertViewController = UIAlertController.init(title: nil , message: (getBlocked(jid: jid) ) ? "Unblock \(name)?" : "Block \(name)?", preferredStyle: .alert)
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (action) in
             self?.dismiss(animated: true,completion: nil)
