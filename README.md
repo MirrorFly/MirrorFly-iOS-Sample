@@ -4,20 +4,18 @@
 
 # **MirrorFly iOS SDK For Video Chat & Calls**
 
-MirrorFly iOS SDK is the easiest way to add real-time messaging, video calling, voice calling and 1000+ custom CPaaS features into any iOS app. It comes with 500+ AI-powered features that can automate the conversational flow of your platform in just about 24 hours. 
+Integrate enterprise-grade communication capabilities into your iOS app following this step-by-step implementation guide. MirrorFly's customizable white-label SDK delivers pre-built messaging and calling functionality optimized for Apple devices with straightforward client-side integration. This readme covers required frameworks, dependency management, supplementary components, and complete setup procedures.
 
-The key highlights of MirrorFly iOS SDK include complete customization over features and security, support for on-premise/ on-cloud deployments, full data sovereignty and complete source code access. The SDK is easy to install and integrate an extensive range of communication features within hours. 
-
-# **🤹 Key Product Offerings** 
+# **🤹 Key Product Offerings**
 
 MirrorFly helps build omni-channel communication apps for any kind of business
 
 **💬 [In-app Messaging](https://www.mirrorfly.com/chat-api-solution.php)** \- Connect users individually or as groups via instant messaging features.  
-**🎯 [HD Video Calling](https://www.mirrorfly.com/video-call-solution.php)**\- Engage users over face-to-face conversations anytime, and from anywhere.   
-**🦾 [HQ Voice Calling](https://www.mirrorfly.com/voice-call-solution.php)** \- Deliver crystal clear audio calling experiences with latency as low as 3ms.   
-🤖 [**AI Voice Agent**](https://www.mirrorfly.com/conversational-ai/voice-agent/) \- Build custom  AI voicebots that can understand, act and respond to user questions.   
+**🎯 [HD Video Calling](https://www.mirrorfly.com/video-call-solution.php)**\- Engage users over face-to-face conversations anytime, and from anywhere.  
+**🦾 [HQ Voice Calling](https://www.mirrorfly.com/voice-call-solution.php)** \- Deliver crystal clear audio calling experiences with latency as low as 3ms.  
+🤖 [**AI Voice Agent**](https://www.mirrorfly.com/conversational-ai/voice-agent/) \- Build custom AI voicebots that can understand, act and respond to user questions.  
 **🤖 [AI Chatbot](https://www.mirrorfly.com/conversational-ai/chatbot/)** \- Deploy white-label AI chatbots that drive autonomous conversations across any web or mobile app.  
-**🦾 [Live Streaming](https://www.mirrorfly.com/live-streaming-sdk.php)** \- Broadcast video content to millions of viewers around the world, within your own enterprise app. 
+**🦾 [Live Streaming](https://www.mirrorfly.com/live-streaming-sdk.php)** \- Broadcast video content to millions of viewers around the world, within your own enterprise app.
 
 ### **⚒️Call & Chat SDK for iOS**
 
@@ -25,9 +23,9 @@ MirrorFly helps build omni-channel communication apps for any kind of business
 
 The below are the requirements for chat SDK for iOS,
 
-* Xcode 15.0 or later  
-* iOS 13.0 or later  
-* Swift 6.0 or later
+- Xcode 15.0 or later
+- iOS 13.0 or later
+- Swift 6.0 or later
 
 ### [**Things To Be Noted Before You Get Started**](https://www.mirrorfly.com/docs/chat/ios/v3/quick-start#things-to-be-noted-before-you-get-started)
 
@@ -249,11 +247,11 @@ CallManager.isVideoCallPermissionsGranted()
 
 To send custom data when making a call, use the optional `metaData` parameter in all `makeCall` methods. This parameter accepts an array of type `CallMetadata`.
 
-*Caution:* The Call SDK processes only the first three metadata elements. Avoid including large data, as it may interfere with the successful transfer of the VoIP call payload.
+Caution: The Call SDK processes only the first three metadata elements. Avoid including large data, as it may disrupt the successful transfer of the VoIP call payload.
 
 ### [**Make a voice call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#make-a-voice-call)
 
-The voice call feature enables users to initiate a one-to-one audio call with another SDK user, including optional call metadata. Use the following method to make a voice call:
+The Voice Call feature allows users to initiate a one-to-one audio call with another SDK user, including optional call metadata. Use the following method to initiate a voice call:
 
 ```swift
 try CallManager.makeVoiceCall(TO_USERID, CALL_METADATA) { isSuccess, flyError in
@@ -270,7 +268,7 @@ try CallManager.makeVoiceCall(TO_USERID, CALL_METADATA) { isSuccess, flyError in
 
 ### [**Make a video call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#make-a-video-call)
 
-The video call feature allows users to initiate a one-to-one video call with another SDK user, including optional call metadata. Use the following method to make a video call:
+The Video Call feature allows users to initiate a one-to-one video call with another SDK user, including optional call metadata. Use the following method to initiate a video call:
 
 ```swift
 try CallManager.makeVideoCall(TO_USERID, CALL_METADATA) { isSuccess, flyError in
@@ -287,7 +285,7 @@ try CallManager.makeVideoCall(TO_USERID, CALL_METADATA) { isSuccess, flyError in
 
 ### [**Make a group voice call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#make-a-group-voice-call)
 
-The group voice call feature enables users to initiate a voice call with multiple SDK users, including optional call metadata. Use the following method to make a group voice call:
+The Group Voice Call feature allows users to initiate a voice call with multiple SDK users, including optional call metadata. Use the following method to start a group voice call:
 
 ```swift
 try CallManager.makeGroupVoiceCall(USERID_LIST, GROUP_ID, CALL_METADATA) { isSuccess, flyError in
@@ -304,7 +302,7 @@ try CallManager.makeGroupVoiceCall(USERID_LIST, GROUP_ID, CALL_METADATA) { isSuc
 
 ### [**Make a group video call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#make-a-group-video-call)
 
-The group video call feature allows users to initiate a video call with multiple SDK users, including optional call metadata. Use the following method to make a group video call:
+The Group Video Call feature allows users to initiate a video call with multiple SDK users, including optional call metadata. Use the following method to start a group video call:
 
 ```swift
 try CallManager.makeGroupVideoCall(USERID_LIST, GROUP_ID, CALL_METADATA) { isSuccess, flyError in
@@ -321,7 +319,7 @@ try CallManager.makeGroupVideoCall(USERID_LIST, GROUP_ID, CALL_METADATA) { isSuc
 
 ### [**Add participants to the call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#add-participants-to-the-call)
 
-After a call is connected, you can add users to the ongoing call. The SDK provides methods to invite users, and once they accept the incoming call, they will join the active call.
+After a call is connected, you can add participants to the ongoing session. The SDK provides methods to invite users, and once they accept the incoming call, they join the active call.
 
 ```swift
 CallManager.inviteUsersToOngoingCall(USERID_LIST) { isSuccess, flyError in
@@ -336,7 +334,7 @@ CallManager.inviteUsersToOngoingCall(USERID_LIST) { isSuccess, flyError in
 
 ### [**Receiving a incoming audio/video call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#receiving-a-incoming-audiovideo-call)
 
-Whenever you receive an audio or video call from another SDK user, report it to FlyCallSDK using `NotificationCenter`.
+Whenever an audio or video call is received from another SDK user, report it to FlyCallSDK via NotificationCenter.
 
 ```swift
 NotificationCenter.default.post(
@@ -349,7 +347,7 @@ Through `messageDict` pass the payload of the call.
 
 ### [**Disconnect the ongoing call**](https://www.mirrorfly.com/docs/audio-video/ios/v2/making-a-call/#disconnect-the-ongoing-call)
 
-Whenever you make an audio or video call to another SDK user and want to disconnect either before the call connects or after the conversation ends, call the following SDK method when the user presses the disconnect button in your call UI. This will end the call and notify the other participant.
+When making an audio or video call to another SDK user, you can disconnect either before the call connects or after the conversation ends. Invoke the following SDK method when the user presses the disconnect button in your call UI to terminate the call and notify the other participant.
 
 ```swift
 CallManager.disconnectCall()
@@ -360,25 +358,27 @@ CallManager.disconnectCall()
 MirrorFly offers full freedom with the hosting options:  
 **Self-hosted:** Deploy your client on your own data centers, private cloud or third-party servers.  
 [Check out our multi-tenant cloud hosting](https://www.mirrorfly.com/self-hosted-chat-solution.php)  
-**Cloud:** Host your client on MirrorFly’s multi-tenant cloud servers.   
+**Cloud:** Host your client on MirrorFly’s multi-tenant cloud servers.  
 [Check out our multi-tenant cloud hosting](https://www.mirrorfly.com/multi-tenant-chat-for-saas.php)
 
 # **📱 Mobile Client**
+
 MirrorFly offers a fully-built client SafeTalk that is available in:
+
 - iOS
 - Android
 
-You can use this client as a messaging app, or customize, rebrand & white-label it as your chat client. 
+You can use this client as a messaging app, or customize, rebrand & white-label it as your chat client.
 
 # **📚 Learn More**
 
-* [Developer Documentation](https://www.mirrorfly.com/docs/)  
-* [Product Tutorials](https://www.mirrorfly.com/tutorials/)  
-* [Dart Documentation](https://pub.dev/packages/mirrorfly_plugin)  
-* [Pubdev Documentation](https://pub.dev/packages/mirrorfly_plugin)  
-* [Npmjs Documentation](https://www.npmjs.com/~contus)  
-* [On-premise Deployment](https://www.mirrorfly.com/on-premises-chat-server.php)   
-* [See who's using MirrorFly](https://www.mirrorfly.com/chat-use-cases.php)
+- [Developer Documentation](https://www.mirrorfly.com/docs/)
+- [Product Tutorials](https://www.mirrorfly.com/tutorials/)
+- [Dart Documentation](https://pub.dev/packages/mirrorfly_plugin)
+- [Pubdev Documentation](https://pub.dev/packages/mirrorfly_plugin)
+- [Npmjs Documentation](https://www.npmjs.com/~contus)
+- [On-premise Deployment](https://www.mirrorfly.com/on-premises-chat-server.php)
+- [See who's using MirrorFly](https://www.mirrorfly.com/chat-use-cases.php)
 
 # **🧑‍💻 Hire Experts**
 
@@ -386,7 +386,7 @@ Need a tech team to build your enterprise app? [Hire a full team of experts](htt
 
 # **⏱️ Round-the-clock Support**
 
-If you’d like to take help when working with our solution, feel free to [contact our experts](https://www.mirrorfly.com/contact-sales.php) who will be available to help you anytime of the day or night. 
+If you’d like to take help when working with our solution, feel free to [contact our experts](https://www.mirrorfly.com/contact-sales.php) who will be available to help you anytime of the day or night.
 
 ## **💼 Become a Part of our amazing team**
 
@@ -394,9 +394,9 @@ We're always on the lookout for talented developers, support specialists, and pr
 
 ## **🗞️ Get the Latest Updates**
 
-* [Blog](https://www.mirrorfly.com/blog/)  
-* [Facebook](https://www.facebook.com/MirrorFlyofficial/)  
-* [Twitter](https://twitter.com/mirrorflyteam)  
-* [LinkedIn](https://www.linkedin.com/showcase/mirrorfly-official/)  
-* [Youtube](https://www.youtube.com/@mirrorflyofficial)  
-* [Instagram](https://www.instagram.com/mirrorflyofficial/)
+- [Blog](https://www.mirrorfly.com/blog/)
+- [Facebook](https://www.facebook.com/MirrorFlyofficial/)
+- [Twitter](https://twitter.com/mirrorflyteam)
+- [LinkedIn](https://www.linkedin.com/showcase/mirrorfly-official/)
+- [Youtube](https://www.youtube.com/@mirrorflyofficial)
+- [Instagram](https://www.instagram.com/mirrorflyofficial/)
